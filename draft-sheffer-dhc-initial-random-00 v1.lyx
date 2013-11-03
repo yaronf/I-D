@@ -645,8 +645,189 @@ reference "sec:Applicability"
  describes various ways of applying it in different settings.
 \end_layout
 
+\begin_layout Subsection
+Conventions used in this document
+\end_layout
+
+\begin_layout Standard
+All the DHCP related terms used in this document are to be interpreted as
+ defined in the Dynamic Host Configuration Protocol v4 (DHCPv4) 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC2131
+\end_layout
+
+\end_inset
+
+ and Dynamic Host Configuration Protocol v6 (DHCPv6) 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC3315
+\end_layout
+
+\end_inset
+
+ specifications.
+ DHCP refers to both DHCPv4 and DHCPv6 messages and entities throughout
+ this document.
+\end_layout
+
+\begin_layout Standard
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+ "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are
+ to be interpreted as described in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC2119
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Section
 The Initial Randomness Extension
+\end_layout
+
+\begin_layout Subsection
+Extension Format
+\end_layout
+
+\begin_layout Standard
+The extension consists of a single Flags octet, followed by a variable-length
+ Random Material field of arbitrary (random) octets.
+ The field's length is at least 16 octets, and at most 64 octets.
+\end_layout
+
+\begin_layout Standard
+DHCPv4:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+\align left
+
+ Code               Random Material
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+
++-----+-----+-----+-----+-----+-----+-----+-----+---
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+
+|TBD1 | Len | Flg |  r1 |  r2 |  r3 |  r4 |  r5 |   ...
+    +-----+-----+-----+-----+-----+-----+-----+-----+---
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+DHCPv4 Extension
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The Len field is the length of the Flags field and the random octets, and
+ excludes the Code field and the Length field itself.
+\end_layout
+
+\begin_layout Standard
+Flags consists of the following bit flags:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align left
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+\align left
+
+       +-+-+-+-+-+-+-+-+
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+
+       |X|X|X|X|t|p|T|P|
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+
+       +-+-+-+-+-+-+-+-+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Flags
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Client and Server Behavior
 \end_layout
 
 \begin_layout Section
@@ -864,6 +1045,29 @@ hic event, such as an unplanned power down.
 IANA Considerations
 \end_layout
 
+\begin_layout Standard
+This document defines the DHCP Initial Randomness option which requires
+ assignment of DHCPv4 option code TBD1 assigned from the "Bootp and DHCP
+ options" registry (http://www.iana.org/assignments/ bootp-dhcp-parameters/bootp-d
+hcp-parameters.xml), as specified in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC2939
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+This document defines the DHCP Initial Randomness option which requires
+ assignment of DHCPv6 option code TBD2 assigned from the "DHCP option Codes"
+ registry (http://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xml).
+\end_layout
+
 \begin_layout Section
 Acknowledgements
 \end_layout
@@ -885,10 +1089,6 @@ BOOTP for RNG
 Normative References
 \end_layout
 
-\begin_layout Section
-Informative References
-\end_layout
-
 \begin_layout Standard
 \begin_inset Flex BibXML
 status collapsed
@@ -896,8 +1096,8 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
-name "rfc1264"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1264.xml"
+name "rfc2131"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2131.xml"
 
 \end_inset
 
@@ -913,8 +1113,8 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
-name "rfc3933"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3933.xml"
+name "rfc2939"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2939.xml"
 
 \end_inset
 
@@ -924,23 +1124,13 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3933.xml"
 \end_inset
 
 
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "rfc4794"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4794.xml"
-
-\end_inset
-
-
 \end_layout
 
-\end_inset
+\begin_layout Section
+Informative References
+\end_layout
 
-
+\begin_layout Standard
 \begin_inset Flex EmbeddedBibXML
 status collapsed
 
