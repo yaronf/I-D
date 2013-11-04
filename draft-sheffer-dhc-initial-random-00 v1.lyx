@@ -852,6 +852,7 @@ The kernel uses randomness for various basic protocols.
  early on in the system's life-cycle) and message IDs for numerous protocols,
  e.g.
  DNS.
+ In addition, a lot of entropy is used for ASLR.
 \end_layout
 
 \begin_layout Subsection
@@ -886,7 +887,7 @@ Alternatives to This Proposal
 \end_layout
 
 \begin_layout Standard
-In general, there are two good alternatives to the current solution:
+In general, there are three good alternatives to the current solution:
 \end_layout
 
 \begin_layout Enumerate
@@ -899,14 +900,25 @@ Pre-provisioning, with the manufacturer of the device creating a unique
  and secret value on each new device, and seeding the RNG with this value.
 \end_layout
 
-\begin_layout Standard
-In fact, option #2 can be implemented by the current extension, when used
- in a secure environment.
+\begin_layout Enumerate
+In virtual systems, use of randomness obtained from the host (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Virtual-Hosts"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
-While both alternatives are technically feasible today, there are still
- many platforms that do not use either one.
+It is noted that option #2 can be implemented by the current extension,
+ when used in a secure network.
+\end_layout
+
+\begin_layout Standard
+While all alternatives are technically feasible today, there are still many
+ platforms that do not use any of them.
 \end_layout
 
 \begin_layout Subsection
@@ -935,6 +947,12 @@ Servers typically have much less opportunity to seed their entropy pool
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Virtual-Hosts"
+
+\end_inset
+
 Virtual Hosts
 \end_layout
 
