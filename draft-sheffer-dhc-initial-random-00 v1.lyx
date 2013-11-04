@@ -738,8 +738,13 @@ status open
 \begin_layout Plain Layout
 \align left
 
-|TBD1 | Len | Flg |  r1 |  r2 |  r3 |  r4 |  r5 |   ...
-    +-----+-----+-----+-----+-----+-----+-----+-----+---
+|TBD1 | Len | Flg |  r1 |  r2 |  r3 |  r4 |  r5 | ...
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+
++-----+-----+-----+-----+-----+-----+-----+-----+---
 \end_layout
 
 \end_inset
@@ -1114,6 +1119,23 @@ status collapsed
 \begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
+name "rfc2119"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
 name "rfc2131"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2131.xml"
 
@@ -1133,6 +1155,23 @@ status collapsed
 LatexCommand href
 name "rfc2939"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2939.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "rfc3315"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3315.xml"
 
 \end_inset
 
