@@ -701,13 +701,15 @@ Extension Format
 \end_layout
 
 \begin_layout Standard
-The extension consists of a single Flags octet, followed by a variable-length
- Random Material field of arbitrary (random) octets.
- The field's length is at least 16 octets, and at most 64 octets.
+The extension consists of a variable-length Random Material field of arbitrary
+ (random) octets.
+ The field's length MUST be either 0, or between 16 and 64 octets.
+ If the length is 0, it means that the sender requests randomness from the
+ other side and does not include any random material of its own.
 \end_layout
 
-\begin_layout Standard
-DHCPv4:
+\begin_layout Subsubsection
+DHCPv4
 \end_layout
 
 \begin_layout Standard
@@ -726,25 +728,25 @@ status open
 \begin_layout Plain Layout
 \align left
 
- Code               Random Material
+ Code               Random Octets
 \end_layout
 
 \begin_layout Plain Layout
 \align left
 
-+-----+-----+-----+-----+-----+-----+-----+-----+---
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
 \end_layout
 
 \begin_layout Plain Layout
 \align left
 
-|TBD1 | Len | Flg |  r1 |  r2 |  r3 |  r4 |  r5 | ...
+|TBD1 | Len |  X  |  X  | r0  |  r1 |  r2 |  r3 |  r4 | ...
 \end_layout
 
 \begin_layout Plain Layout
 \align left
 
-+-----+-----+-----+-----+-----+-----+-----+-----+---
++-----+-----+-----+-----+-----+-----+-----+-----+-----+
 \end_layout
 
 \end_inset
@@ -770,12 +772,21 @@ DHCPv4 Extension
 \end_layout
 
 \begin_layout Standard
-The Len field is the length of the Flags field and the random octets, and
- excludes the Code field and the Length field itself.
+The Code field is TBD by IANA.
 \end_layout
 
 \begin_layout Standard
-Flags consists of the following bit flags:
+The Len field is the length of the random octets, and excludes the Code
+ field and the Length field itself.
+\end_layout
+
+\begin_layout Standard
+The X octets are used for padding, they MUST be sent as zero and MUST be
+ ignored by the receiver.
+\end_layout
+
+\begin_layout Subsubsection
+DHCPv6
 \end_layout
 
 \begin_layout Standard
@@ -794,19 +805,44 @@ status open
 \begin_layout Plain Layout
 \align left
 
-       +-+-+-+-+-+-+-+-+
+     0                   1                   2                   3 
 \end_layout
 
 \begin_layout Plain Layout
 \align left
 
-       |X|X|X|X|t|p|T|P|
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 \end_layout
 
 \begin_layout Plain Layout
 \align left
 
-       +-+-+-+-+-+-+-+-+ 
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+
+    |       Option Code (TBD2)      |            OptLen             |
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+
+    |                       Random Octets...
+                        +
+\end_layout
+
+\begin_layout Plain Layout
+\align left
+
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 \end_layout
 
 \end_inset
@@ -818,7 +854,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Flags
+DHCPv6 Extension
 \end_layout
 
 \end_inset
@@ -829,10 +865,44 @@ Flags
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+The Option Code is TBD by IANA.
+\end_layout
+
+\begin_layout Standard
+The OptLen field is the length of the random octets, and excludes the Option
+ Code field and the OptLen field itself.
 \end_layout
 
 \begin_layout Subsection
 Client and Server Behavior
+\end_layout
+
+\begin_layout Standard
+A client MAY use this extension in a DHCPREQUEST or a DHCPINFORM message.
+ The client SHOULD include random material in its request if it believes
+ it has seen more than n bits of physical entropy, where n is defined by
+ local policy.
+ If the client does not include any random material, it MAY still use this
+ extension to signal that it requests random material from the server.
+\end_layout
+
+\begin_layout Standard
+A server MAY use this extension in a DHCPACK message.
+ A server using this extension MUST include a non-empty Random Octets field.
+\end_layout
+
+\begin_layout Standard
+If a server is also a DHCP client, it is RECOMMENDED that the server obtain
+ random material from its upstream server before it serves randomness to
+ its clients.
+\end_layout
+
+\begin_layout Standard
+Both client and server MUST NOT send random material unless they believe
+ it is cryptographically strong.
 \end_layout
 
 \begin_layout Section
@@ -968,6 +1038,8 @@ Virtual machines (VMs) are probably the most entropy-starved computers.
  In public cloud environments, a DHCP server is often unavailable.
  In such environments, the best solution is for the guest to obtain randomness
  from the host machine, using techniques such as [virtio].
+ In addition, automation (orchestration) frameworks can pre-provision servers
+ with entropy.
  Note that VMs are also subject to related attacks, such as [vm rollback].
 \end_layout
 
@@ -978,21 +1050,8 @@ Home Routers
 \begin_layout Standard
 These devices are typically deployed as DHCP servers themselves, and typically
  start off with very little entropy.
- Unfortunately the current extension cannot be used to initialize them.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Include a facility for the _client_ to send entropy, so that desktops can
- seed the router's entropy?
-\end_layout
-
-\end_inset
-
-
+ Such devices can mix random material received from clients into their entropy
+ pool.
 \end_layout
 
 \begin_layout Section
@@ -1062,6 +1121,20 @@ The current extension is targeted at the initial bootstrap of a host or
  reboot.
  The state SHOULD be stored periodically so that it is not lost upon a catastrop
 hic event, such as an unplanned power down.
+\end_layout
+
+\begin_layout Subsection
+Protocol Signaling
+\end_layout
+
+\begin_layout Standard
+This protocol does not allow the client or the server to signal what type
+ of random material is being requested or offered.
+ Specifically, they are unable to signal whether randomness is being backed
+ by measured physical entropy.
+ This was done to simplify the protocol, and also because the protocol is
+ vulnerable to both active and passive attackers that may be present on
+ the network and could alter any such signals.
 \end_layout
 
 \begin_layout Section

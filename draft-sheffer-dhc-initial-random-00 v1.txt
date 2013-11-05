@@ -4,8 +4,8 @@
 Network Working Group                                         Y. Sheffer
 Internet-Draft                                                  Porticor
 Intended status: Standards Track                              P. Hoffman
-Expires: May 8, 2014                                                VPNC
-                                                        November 4, 2013
+Expires: May 9, 2014                                                VPNC
+                                                        November 5, 2013
 
 
           A DHCP Extension To Provide Initial Random Material
@@ -35,7 +35,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on May 8, 2014.
+   This Internet-Draft will expire on May 9, 2014.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Sheffer & Hoffman          Expires May 8, 2014                  [Page 1]
+Sheffer & Hoffman          Expires May 9, 2014                  [Page 1]
 
 Internet-Draft             Initial Randomness              November 2013
 
@@ -63,31 +63,34 @@ Internet-Draft             Initial Randomness              November 2013
 
 Table of Contents
 
-   1.    Introduction  . . . . . . . . . . . . . . . . . . . . . . . . 3
-   1.1.  Conventions used in this document . . . . . . . . . . . . . . 3
-   2.    The Initial Randomness Extension  . . . . . . . . . . . . . . 3
-   2.1.  Extension Format  . . . . . . . . . . . . . . . . . . . . . . 3
-   2.2.  Client and Server Behavior  . . . . . . . . . . . . . . . . . 4
-   3.    Use of Random Material  . . . . . . . . . . . . . . . . . . . 4
-   3.1.  Kernel Use  . . . . . . . . . . . . . . . . . . . . . . . . . 4
-   3.2.  User-Space Applications . . . . . . . . . . . . . . . . . . . 4
-   4.    Alternatives and Applicability  . . . . . . . . . . . . . . . 5
-   4.1.  Alternatives to This Proposal . . . . . . . . . . . . . . . . 5
-   4.2.  Desktop Computers and Other Clients . . . . . . . . . . . . . 5
-   4.3.  Servers . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
-   4.4.  Virtual Hosts . . . . . . . . . . . . . . . . . . . . . . . . 5
-   4.5.  Home Routers  . . . . . . . . . . . . . . . . . . . . . . . . 6
-   5.    Security Considerations . . . . . . . . . . . . . . . . . . . 6
-   5.1.  RNG Properties  . . . . . . . . . . . . . . . . . . . . . . . 6
-   5.2.  Resistance Against Network Attacks  . . . . . . . . . . . . . 6
-   5.3.  Denial of Service . . . . . . . . . . . . . . . . . . . . . . 6
-   5.4.  Saving RNG State  . . . . . . . . . . . . . . . . . . . . . . 7
-   6.    IANA Considerations . . . . . . . . . . . . . . . . . . . . . 7
-   7.    Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . 7
-   8.    References  . . . . . . . . . . . . . . . . . . . . . . . . . 7
-   8.1.  Normative References  . . . . . . . . . . . . . . . . . . . . 7
-   8.2.  Informative References  . . . . . . . . . . . . . . . . . . . 8
-         Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . 8
+   1.      Introduction  . . . . . . . . . . . . . . . . . . . . . . . 3
+   1.1.    Conventions used in this document . . . . . . . . . . . . . 3
+   2.      The Initial Randomness Extension  . . . . . . . . . . . . . 3
+   2.1.    Extension Format  . . . . . . . . . . . . . . . . . . . . . 3
+   2.1.1.  DHCPv4  . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+   2.1.2.  DHCPv6  . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+   2.2.    Client and Server Behavior  . . . . . . . . . . . . . . . . 4
+   3.      Use of Random Material  . . . . . . . . . . . . . . . . . . 5
+   3.1.    Kernel Use  . . . . . . . . . . . . . . . . . . . . . . . . 5
+   3.2.    User-Space Applications . . . . . . . . . . . . . . . . . . 5
+   4.      Alternatives and Applicability  . . . . . . . . . . . . . . 5
+   4.1.    Alternatives to This Proposal . . . . . . . . . . . . . . . 5
+   4.2.    Desktop Computers and Other Clients . . . . . . . . . . . . 6
+   4.3.    Servers . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+   4.4.    Virtual Hosts . . . . . . . . . . . . . . . . . . . . . . . 6
+   4.5.    Home Routers  . . . . . . . . . . . . . . . . . . . . . . . 6
+   5.      Security Considerations . . . . . . . . . . . . . . . . . . 6
+   5.1.    RNG Properties  . . . . . . . . . . . . . . . . . . . . . . 7
+   5.2.    Resistance Against Network Attacks  . . . . . . . . . . . . 7
+   5.3.    Denial of Service . . . . . . . . . . . . . . . . . . . . . 7
+   5.4.    Saving RNG State  . . . . . . . . . . . . . . . . . . . . . 7
+   5.5.    Protocol Signaling  . . . . . . . . . . . . . . . . . . . . 7
+   6.      IANA Considerations . . . . . . . . . . . . . . . . . . . . 8
+   7.      Acknowledgements  . . . . . . . . . . . . . . . . . . . . . 8
+   8.      References  . . . . . . . . . . . . . . . . . . . . . . . . 8
+   8.1.    Normative References  . . . . . . . . . . . . . . . . . . . 8
+   8.2.    Informative References  . . . . . . . . . . . . . . . . . . 8
+           Authors' Addresses  . . . . . . . . . . . . . . . . . . . . 9
 
 
 
@@ -105,10 +108,7 @@ Table of Contents
 
 
 
-
-
-
-Sheffer & Hoffman          Expires May 8, 2014                  [Page 2]
+Sheffer & Hoffman          Expires May 9, 2014                  [Page 2]
 
 Internet-Draft             Initial Randomness              November 2013
 
@@ -155,39 +155,80 @@ Internet-Draft             Initial Randomness              November 2013
 
 2.1.  Extension Format
 
-   The extension consists of a single Flags octet, followed by a
-   variable-length Random Material field of arbitrary (random) octets.
-   The field's length is at least 16 octets, and at most 64 octets.
-
-   DHCPv4:
-
-
+   The extension consists of a variable-length Random Material field of
+   arbitrary (random) octets.  The field's length MUST be either 0, or
+   between 16 and 64 octets.  If the length is 0, it means that the
+   sender requests randomness from the other side and does not include
+   any random material of its own.
 
 
-Sheffer & Hoffman          Expires May 8, 2014                  [Page 3]
+
+
+Sheffer & Hoffman          Expires May 9, 2014                  [Page 3]
 
 Internet-Draft             Initial Randomness              November 2013
 
 
-    Code               Random Material
-   +----+----+----+----+----+----+----+----+--
-   |TBD1 | Len | Flg |  r1 |  r2 |  r3 |  r4 |  r5 | ...
-   +----+----+----+----+----+----+----+----+--
+2.1.1.  DHCPv4
+
+    Code               Random Octets
+   +----+----+----+----+----+----+----+----+----+
+   |TBD1 | Len |  X  |  X  | r0  |  r1 |  r2 |  r3 |  r4 | ...
+   +----+----+----+----+----+----+----+----+----+
 
                         Figure 1: DHCPv4 Extension
 
-   The Len field is the length of the Flags field and the random octets,
-   and excludes the Code field and the Length field itself.
+   The Code field is TBD by IANA.
 
-   Flags consists of the following bit flags:
+   The Len field is the length of the random octets, and excludes the
+   Code field and the Length field itself.
 
-          +-+-+-+-+-+-+-+-+
-          |X|X|X|X|t|p|T|P|
-          +-+-+-+-+-+-+-+-+
+   The X octets are used for padding, they MUST be sent as zero and MUST
+   be ignored by the receiver.
 
-                              Figure 2: Flags
+2.1.2.  DHCPv6
+
+        0                   1                   2                   3
+        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |       Option Code (TBD2)      |            OptLen             |
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       |                       Random Octets...                        +
+       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                        Figure 2: DHCPv6 Extension
+
+   The Option Code is TBD by IANA.
+
+   The OptLen field is the length of the random octets, and excludes the
+   Option Code field and the OptLen field itself.
 
 2.2.  Client and Server Behavior
+
+   A client MAY use this extension in a DHCPREQUEST or a DHCPINFORM
+   message.  The client SHOULD include random material in its request if
+   it believes it has seen more than n bits of physical entropy, where n
+   is defined by local policy.  If the client does not include any
+   random material, it MAY still use this extension to signal that it
+   requests random material from the server.
+
+   A server MAY use this extension in a DHCPACK message.  A server using
+   this extension MUST include a non-empty Random Octets field.
+
+   If a server is also a DHCP client, it is RECOMMENDED that the server
+   obtain random material from its upstream server before it serves
+
+
+
+Sheffer & Hoffman          Expires May 9, 2014                  [Page 4]
+
+Internet-Draft             Initial Randomness              November 2013
+
+
+   randomness to its clients.
+
+   Both client and server MUST NOT send random material unless they
+   believe it is cryptographically strong.
 
 
 3.  Use of Random Material
@@ -215,16 +256,6 @@ Internet-Draft             Initial Randomness              November 2013
    collected.
 
 
-
-
-
-
-
-Sheffer & Hoffman          Expires May 8, 2014                  [Page 4]
-
-Internet-Draft             Initial Randomness              November 2013
-
-
 4.  Alternatives and Applicability
 
    We describe several use cases, and for each one, whether and how this
@@ -240,6 +271,16 @@ Internet-Draft             Initial Randomness              November 2013
    2.  Pre-provisioning, with the manufacturer of the device creating a
        unique and secret value on each new device, and seeding the RNG
        with this value.
+
+
+
+
+
+Sheffer & Hoffman          Expires May 9, 2014                  [Page 5]
+
+Internet-Draft             Initial Randomness              November 2013
+
+
    3.  In virtual systems, use of randomness obtained from the host (see
        Section 4.4).
 
@@ -273,28 +314,29 @@ Internet-Draft             Initial Randomness              November 2013
    typically available and the current solution is viable and
    recommended.  In public cloud environments, a DHCP server is often
    unavailable.  In such environments, the best solution is for the
-
-
-
-Sheffer & Hoffman          Expires May 8, 2014                  [Page 5]
-
-Internet-Draft             Initial Randomness              November 2013
-
-
    guest to obtain randomness from the host machine, using techniques
-   such as [virtio].  Note that VMs are also subject to related attacks,
-   such as [vm rollback].
+   such as [virtio].  In addition, automation (orchestration) frameworks
+   can pre-provision servers with entropy.  Note that VMs are also
+   subject to related attacks, such as [vm rollback].
 
 4.5.  Home Routers
 
    These devices are typically deployed as DHCP servers themselves, and
-   typically start off with very little entropy.  Unfortunately the
-   current extension cannot be used to initialize them.
+   typically start off with very little entropy.  Such devices can mix
+   random material received from clients into their entropy pool.
 
 
 5.  Security Considerations
 
    In addition to those listed here, please refer to [randomness] for
+
+
+
+Sheffer & Hoffman          Expires May 9, 2014                  [Page 6]
+
+Internet-Draft             Initial Randomness              November 2013
+
+
    further considerations.
 
 5.1.  RNG Properties
@@ -326,17 +368,6 @@ Internet-Draft             Initial Randomness              November 2013
    attacks, the server SHOULD rate-limit responses to this particular
    extension.
 
-
-
-
-
-
-
-Sheffer & Hoffman          Expires May 8, 2014                  [Page 6]
-
-Internet-Draft             Initial Randomness              November 2013
-
-
 5.4.  Saving RNG State
 
    The current extension is targeted at the initial bootstrap of a host
@@ -344,6 +375,22 @@ Internet-Draft             Initial Randomness              November 2013
    preserved across reboot.  The state SHOULD be stored periodically so
    that it is not lost upon a catastrophic event, such as an unplanned
    power down.
+
+5.5.  Protocol Signaling
+
+   This protocol does not allow the client or the server to signal what
+   type of random material is being requested or offered.  Specifically,
+   they are unable to signal whether randomness is being backed by
+   measured physical entropy.  This was done to simplify the protocol,
+   and also because the protocol is vulnerable to both active and
+   passive attackers that may be present on the network and could alter
+   any such signals.
+
+
+
+Sheffer & Hoffman          Expires May 9, 2014                  [Page 7]
+
+Internet-Draft             Initial Randomness              November 2013
 
 
 6.  IANA Considerations
@@ -385,14 +432,6 @@ Internet-Draft             Initial Randomness              November 2013
               and M. Carney, "Dynamic Host Configuration Protocol for
               IPv6 (DHCPv6)", RFC 3315, July 2003.
 
-
-
-
-Sheffer & Hoffman          Expires May 8, 2014                  [Page 7]
-
-Internet-Draft             Initial Randomness              November 2013
-
-
 8.2.  Informative References
 
    [Stats]    Arkko, J., "Distribution of Processing Times",
@@ -402,6 +441,12 @@ Internet-Draft             Initial Randomness              November 2013
    [Tao]      Hoffman, P., Ed., ""The Tao of IETF: A Novice's Guide to
               the Internet Engineering Task Force", 2012,
               <http://www.ietf.org/tao.html>.
+
+
+
+Sheffer & Hoffman          Expires May 9, 2014                  [Page 8]
+
+Internet-Draft             Initial Randomness              November 2013
 
 
 Authors' Addresses
@@ -444,5 +489,16 @@ Authors' Addresses
 
 
 
-Sheffer & Hoffman          Expires May 8, 2014                  [Page 8]
+
+
+
+
+
+
+
+
+
+
+
+Sheffer & Hoffman          Expires May 9, 2014                  [Page 9]
 
