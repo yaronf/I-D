@@ -612,9 +612,40 @@ True Random Number Generator
 \end_layout
 
 \begin_layout Standard
-Recently it was discovered [factorable.net] that a relatively high percentage
- of TLS and SSH public keys in the wild share a factor.
- The reason for that is 
+Recently it was discovered 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+Mining
+\end_layout
+
+\end_inset
+
+ that a relatively high percentage of TLS and SSH public keys in the wild
+ share a factor.
+ The reason for that is presumed (though not proven by the authors) to be
+ lack of true randomness (often referred to as 
+\begin_inset Quotes eld
+\end_inset
+
+entropy
+\begin_inset Quotes erd
+\end_inset
+
+) when the devices are first started.
+ Security protocols, in particular SSH 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4253
+\end_layout
+
+\end_inset
+
+, that generate secret parameters when the device is first started end up
+ with parameters that are vulnerable to guessing.
 \end_layout
 
 \begin_layout Standard
@@ -704,8 +735,8 @@ Extension Format
 The extension consists of a variable-length Random Material field of arbitrary
  (random) octets.
  The field's length MUST be either 0, or between 16 and 64 octets.
- If the length is 0, it means that the sender requests randomness from the
- other side and does not include any random material of its own.
+ If the length is 0, it means that the sender is requesting randomness from
+ the server and does not include any random material of its own.
 \end_layout
 
 \begin_layout Subsubsection
@@ -886,7 +917,8 @@ A client MAY use this extension in a DHCPREQUEST or a DHCPINFORM message.
  it has seen more than n bits of physical entropy, where n is defined by
  local policy.
  If the client does not include any random material, it MAY still use this
- extension to signal that it requests random material from the server.
+ extension, with an empty Random Octets field, to signal that it requests
+ random material from the server.
 \end_layout
 
 \begin_layout Standard
@@ -927,7 +959,8 @@ The kernel uses randomness for various basic protocols.
  early on in the system's life-cycle) and message IDs for numerous protocols,
  e.g.
  DNS.
- In addition, a lot of entropy is used for ASLR.
+ In addition, a significant amount of entropy is used for address space
+ layout randomization (ASLR).
 \end_layout
 
 \begin_layout Subsection
@@ -939,7 +972,18 @@ Randomness is critical to all important security protocols: TLS, SSH and
  IPsec.
  SSH stands out because a long-lived server key is typically generated as
  soon as the SSH server is started for the first time.
- This is often too early for enough entropy to have been collected.
+ This is often too early for enough entropy to have been collected, leading
+ to the issues discussed in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+Mining
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -953,8 +997,9 @@ Alternatives and Applicability
 \end_layout
 
 \begin_layout Standard
-We describe several use cases, and for each one, whether and how this extension
- can be used.
+This section lists several viable alternatives to the current proposal.
+ Then we discuss several use cases, and for each one, whether and how this
+ extension can be used.
 \end_layout
 
 \begin_layout Subsection
@@ -967,7 +1012,17 @@ In general, there are three good alternatives to the current solution:
 
 \begin_layout Enumerate
 Use of an on-board hardware based TRNG, such as the Intel RdRand instruction
- [xxx].
+ 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+IntelArch
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Enumerate
@@ -996,6 +1051,22 @@ While all alternatives are technically feasible today, there are still many
  platforms that do not use any of them.
 \end_layout
 
+\begin_layout Standard
+As discussed in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:RNG-Properties"
+
+\end_inset
+
+, a good random number generator must be able to mix randomness from multiple
+ sources, in a manner than accumulates entropy even if some of the sources
+ are highly non-random and/or observable to an attacker.
+ So as a best practice, implementors that have multiple sources available
+ to them should mix them together, to avoid known and unknown issues with
+ any of the sources.
+\end_layout
+
 \begin_layout Subsection
 Desktop Computers and Other Clients
 \end_layout
@@ -1003,7 +1074,7 @@ Desktop Computers and Other Clients
 \begin_layout Standard
 Desktop computers and mobile devices can often sample entropy from their
  interaction with the user, e.g.
- from timing variations in keyboard input.
+ from timing variations in keyboard input and mouse movements.
  However in many cases such interaction takes place relatively late, and
  using this DHCP extension can provide earlier random material.
 \end_layout
@@ -1037,10 +1108,30 @@ Virtual machines (VMs) are probably the most entropy-starved computers.
  and the current solution is viable and recommended.
  In public cloud environments, a DHCP server is often unavailable.
  In such environments, the best solution is for the guest to obtain randomness
- from the host machine, using techniques such as [virtio].
+ from the host machine, using techniques such as 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+VirtIORNG
+\end_layout
+
+\end_inset
+
+.
  In addition, automation (orchestration) frameworks can pre-provision servers
  with entropy.
- Note that VMs are also subject to related attacks, such as [vm rollback].
+ Note that VMs are also subject to related attacks, such as 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+Rollback
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -1054,16 +1145,37 @@ These devices are typically deployed as DHCP servers themselves, and typically
  pool.
 \end_layout
 
+\begin_layout Standard
+Home routers that are also DHCP clients (e.g.
+ DOCSIS cable modems) should first attempt to obtain randomness from their
+ upstream router.
+\end_layout
+
 \begin_layout Section
 Security Considerations
 \end_layout
 
 \begin_layout Standard
-In addition to those listed here, please refer to [randomness] for further
- considerations.
+In addition to those listed here, please refer to 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4086
+\end_layout
+
+\end_inset
+
+ for further considerations.
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:RNG-Properties"
+
+\end_inset
+
 RNG Properties
 \end_layout
 
@@ -1073,12 +1185,12 @@ This document assumes a modern crypto-grade RNG on both client and server,
 \end_layout
 
 \begin_layout Itemize
-The output stream cannot be distinguished from truly random without knowing
- the secret state.
+The output stream cannot be distinguished from a truly random one without
+ knowing the secret state.
 \end_layout
 
 \begin_layout Itemize
-The RNG can be fed by external material.
+The RNG can be fed by external material at any time.
  Such material will normally increase, and will never decrease the generator's
  entropy.
 \end_layout
@@ -1133,8 +1245,8 @@ This protocol does not allow the client or the server to signal what type
  Specifically, they are unable to signal whether randomness is being backed
  by measured physical entropy.
  This was done to simplify the protocol, and also because the protocol is
- vulnerable to both active and passive attackers that may be present on
- the network and could alter any such signals.
+ vulnerable to active attackers that may be present on the network and could
+ alter any such signals.
 \end_layout
 
 \begin_layout Section
@@ -1144,8 +1256,14 @@ IANA Considerations
 \begin_layout Standard
 This document defines the DHCP Initial Randomness option which requires
  assignment of DHCPv4 option code TBD1 assigned from the "Bootp and DHCP
- options" registry (http://www.iana.org/assignments/ bootp-dhcp-parameters/bootp-d
-hcp-parameters.xml), as specified in 
+ options" registry (
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.iana.org/assignments/ bootp-dhcp-parameters/bootp-dhcp-parameters.xml"
+
+\end_inset
+
+), as specified in 
 \begin_inset Flex EntityXRef
 status collapsed
 
@@ -1161,7 +1279,14 @@ RFC2939
 \begin_layout Standard
 This document defines the DHCP Initial Randomness option which requires
  assignment of DHCPv6 option code TBD2 assigned from the "DHCP option Codes"
- registry (http://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xml).
+ registry (
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xml"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Section
@@ -1261,15 +1386,35 @@ Informative References
 \end_layout
 
 \begin_layout Standard
-\begin_inset Flex EmbeddedBibXML
+\begin_inset Flex BibXML
 status collapsed
 
 \begin_layout Plain Layout
-<reference anchor='Stats' target="http://www.arkko.com/tools/lifecycle/wgdistr.html
-" > <front> <title>Distribution of Processing Times</title> <author initials='J.'
- surname='Arkko' fullname='J.
- Arkko'> <organization /> </author> <date year='2012' month='December' />
- </front> </reference> 
+\begin_inset CommandInset href
+LatexCommand href
+name "rfc4086"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4086.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "rfc4253"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4253.xml"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1279,18 +1424,63 @@ status collapsed
 status collapsed
 
 \begin_layout Plain Layout
-<reference anchor='Tao' target="http://www.ietf.org/tao.html" >
+<reference anchor='Mining' target="https://factorable.net/" > <front> <title>Mini
+ng Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices</title>
+ <author initials='N.' surname='Heninger' fullname='Nadia Heninger'> <organizatio
+n /></author><author initials='Z.' surname='Durumeric' fullname='Zakir Durumeric'
+> <organization /></author><author initials='E.' surname='Wustrow' fullname='Eric
+ Wustrow'> <organization /></author><author initials='J.
+ A.' surname='Halderman' fullname='J.
+ Alex Halderman'> <organization /> </author> <date year='2012' month='August'
+ /> </front> <seriesInfo name="Proceedings of the 21st USENIX Security Symposium
+" value=""/></reference> 
 \end_layout
 
-\begin_layout Plain Layout
-<front> <title>"The Tao of IETF: A Novice's Guide to the Internet Engineering
- Task Force</title> <author initials='P.' surname='Hoffman' fullname='P.
- Hoffman' role="editor"> <organization /></author> <date year='2012' />
- </front>
-\end_layout
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
 
 \begin_layout Plain Layout
-</reference> 
+<reference anchor='IntelArch'  > <front> <title>Intel 64 and IA-32 Architectures
+ Software Developer's Manual Combined Volumes 2A, 2B, and 2C: Instruction
+ Set Reference, A-Z</title> <author fullname='Intel Corp.'> <organization
+ /> </author> <date year='2012' month='December' /> </front> </reference>
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor='VirtIORNG' target="http://wiki.qemu-project.org/Features/VirtIO
+RNG" > <front> <title>VirtIORNG QEmu Feature Page</title> <author initials='C.
+ R.' surname='Robinson' fullname='Cole Robinson'><organization>Red Hat </organiza
+tion> </author><author initials='A.
+ S.' surname='Shah' fullname='Amit Shah'><organization>Red Hat </organization></a
+uthor> <date year='2013' month='February' /> </front> </reference> 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor='Rollback' target="http://ipads.se.sjtu.edu.cn/lib/exe/fetch.php?me
+dia=publications:rollback.pdf" > <front> <title>Defending against VM Rollback
+ Attack </title> <author initials='Y.' surname='Xia' fullname='Yubin Xia'>
+ <organization /></author><author initials='Y.' surname='Liu' fullname='Yutao
+ Liu'> <organization /></author><author initials='H.' surname='Chen' fullname='Ha
+ibo Chen'> <organization /></author><author initials='B.' surname='Zang'
+ fullname='Binyu Zang'> <organization /> </author> <date year='2012' month='June
+' /> </front> <seriesInfo name="Dependable Systems and Networks Workshops
+ (DSN-W), 2012" value=""/></reference> 
 \end_layout
 
 \end_inset

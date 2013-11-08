@@ -4,8 +4,8 @@
 Network Working Group                                         Y. Sheffer
 Internet-Draft                                                  Porticor
 Intended status: Standards Track                              P. Hoffman
-Expires: May 9, 2014                                                VPNC
-                                                        November 5, 2013
+Expires: May 12, 2014                                               VPNC
+                                                        November 8, 2013
 
 
           A DHCP Extension To Provide Initial Random Material
@@ -35,7 +35,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on May 9, 2014.
+   This Internet-Draft will expire on May 12, 2014.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Sheffer & Hoffman          Expires May 9, 2014                  [Page 1]
+Sheffer & Hoffman         Expires May 12, 2014                  [Page 1]
 
 Internet-Draft             Initial Randomness              November 2013
 
@@ -78,18 +78,18 @@ Table of Contents
    4.2.    Desktop Computers and Other Clients . . . . . . . . . . . . 6
    4.3.    Servers . . . . . . . . . . . . . . . . . . . . . . . . . . 6
    4.4.    Virtual Hosts . . . . . . . . . . . . . . . . . . . . . . . 6
-   4.5.    Home Routers  . . . . . . . . . . . . . . . . . . . . . . . 6
-   5.      Security Considerations . . . . . . . . . . . . . . . . . . 6
+   4.5.    Home Routers  . . . . . . . . . . . . . . . . . . . . . . . 7
+   5.      Security Considerations . . . . . . . . . . . . . . . . . . 7
    5.1.    RNG Properties  . . . . . . . . . . . . . . . . . . . . . . 7
    5.2.    Resistance Against Network Attacks  . . . . . . . . . . . . 7
    5.3.    Denial of Service . . . . . . . . . . . . . . . . . . . . . 7
-   5.4.    Saving RNG State  . . . . . . . . . . . . . . . . . . . . . 7
-   5.5.    Protocol Signaling  . . . . . . . . . . . . . . . . . . . . 7
+   5.4.    Saving RNG State  . . . . . . . . . . . . . . . . . . . . . 8
+   5.5.    Protocol Signaling  . . . . . . . . . . . . . . . . . . . . 8
    6.      IANA Considerations . . . . . . . . . . . . . . . . . . . . 8
    7.      Acknowledgements  . . . . . . . . . . . . . . . . . . . . . 8
    8.      References  . . . . . . . . . . . . . . . . . . . . . . . . 8
    8.1.    Normative References  . . . . . . . . . . . . . . . . . . . 8
-   8.2.    Informative References  . . . . . . . . . . . . . . . . . . 8
+   8.2.    Informative References  . . . . . . . . . . . . . . . . . . 9
            Authors' Addresses  . . . . . . . . . . . . . . . . . . . . 9
 
 
@@ -108,7 +108,7 @@ Table of Contents
 
 
 
-Sheffer & Hoffman          Expires May 9, 2014                  [Page 2]
+Sheffer & Hoffman         Expires May 12, 2014                  [Page 2]
 
 Internet-Draft             Initial Randomness              November 2013
 
@@ -123,9 +123,13 @@ Internet-Draft             Initial Randomness              November 2013
    packets etc., may not suffice when bootstrapping a device for the
    first time.
 
-   Recently it was discovered [factorable.net] that a relatively high
-   percentage of TLS and SSH public keys in the wild share a factor.
-   The reason for that is
+   Recently it was discovered [Mining] that a relatively high percentage
+   of TLS and SSH public keys in the wild share a factor.  The reason
+   for that is presumed (though not proven by the authors) to be lack of
+   true randomness (often referred to as "entropy") when the devices are
+   first started.  Security protocols, in particular SSH [RFC4253], that
+   generate secret parameters when the device is first started end up
+   with parameters that are vulnerable to guessing.
 
    This document proposes that network devices request initial random
    material from a DHCP server.  The server can provide such material
@@ -157,17 +161,17 @@ Internet-Draft             Initial Randomness              November 2013
 
    The extension consists of a variable-length Random Material field of
    arbitrary (random) octets.  The field's length MUST be either 0, or
-   between 16 and 64 octets.  If the length is 0, it means that the
-   sender requests randomness from the other side and does not include
-   any random material of its own.
 
 
 
-
-Sheffer & Hoffman          Expires May 9, 2014                  [Page 3]
+Sheffer & Hoffman         Expires May 12, 2014                  [Page 3]
 
 Internet-Draft             Initial Randomness              November 2013
 
+
+   between 16 and 64 octets.  If the length is 0, it means that the
+   sender is requesting randomness from the server and does not include
+   any random material of its own.
 
 2.1.1.  DHCPv4
 
@@ -209,22 +213,23 @@ Internet-Draft             Initial Randomness              November 2013
    message.  The client SHOULD include random material in its request if
    it believes it has seen more than n bits of physical entropy, where n
    is defined by local policy.  If the client does not include any
-   random material, it MAY still use this extension to signal that it
-   requests random material from the server.
+   random material, it MAY still use this extension, with an empty
+   Random Octets field, to signal that it requests random material from
+   the server.
+
+
+
+
+Sheffer & Hoffman         Expires May 12, 2014                  [Page 4]
+
+Internet-Draft             Initial Randomness              November 2013
+
 
    A server MAY use this extension in a DHCPACK message.  A server using
    this extension MUST include a non-empty Random Octets field.
 
    If a server is also a DHCP client, it is RECOMMENDED that the server
    obtain random material from its upstream server before it serves
-
-
-
-Sheffer & Hoffman          Expires May 9, 2014                  [Page 4]
-
-Internet-Draft             Initial Randomness              November 2013
-
-
    randomness to its clients.
 
    Both client and server MUST NOT send random material unless they
@@ -244,8 +249,8 @@ Internet-Draft             Initial Randomness              November 2013
    The kernel uses randomness for various basic protocols.  Two
    important examples are TCP Syn cookies (where a long-lived key is
    generated early on in the system's life-cycle) and message IDs for
-   numerous protocols, e.g.  DNS.  In addition, a lot of entropy is used
-   for ASLR.
+   numerous protocols, e.g.  DNS.  In addition, a significant amount of
+   entropy is used for address space layout randomization (ASLR).
 
 3.2.  User-Space Applications
 
@@ -253,34 +258,34 @@ Internet-Draft             Initial Randomness              November 2013
    and IPsec.  SSH stands out because a long-lived server key is
    typically generated as soon as the SSH server is started for the
    first time.  This is often too early for enough entropy to have been
-   collected.
+   collected, leading to the issues discussed in [Mining].
 
 
 4.  Alternatives and Applicability
 
-   We describe several use cases, and for each one, whether and how this
-   extension can be used.
+   This section lists several viable alternatives to the current
+   proposal.  Then we discuss several use cases, and for each one,
+   whether and how this extension can be used.
 
 4.1.  Alternatives to This Proposal
 
    In general, there are three good alternatives to the current
    solution:
 
-   1.  Use of an on-board hardware based TRNG, such as the Intel RdRand
-       instruction [xxx].
-   2.  Pre-provisioning, with the manufacturer of the device creating a
-       unique and secret value on each new device, and seeding the RNG
-       with this value.
 
 
 
 
-
-Sheffer & Hoffman          Expires May 9, 2014                  [Page 5]
+Sheffer & Hoffman         Expires May 12, 2014                  [Page 5]
 
 Internet-Draft             Initial Randomness              November 2013
 
 
+   1.  Use of an on-board hardware based TRNG, such as the Intel RdRand
+       instruction [IntelArch].
+   2.  Pre-provisioning, with the manufacturer of the device creating a
+       unique and secret value on each new device, and seeding the RNG
+       with this value.
    3.  In virtual systems, use of randomness obtained from the host (see
        Section 4.4).
 
@@ -290,13 +295,21 @@ Internet-Draft             Initial Randomness              November 2013
    While all alternatives are technically feasible today, there are
    still many platforms that do not use any of them.
 
+   As discussed in Section 5.1, a good random number generator must be
+   able to mix randomness from multiple sources, in a manner than
+   accumulates entropy even if some of the sources are highly non-random
+   and/or observable to an attacker.  So as a best practice,
+   implementors that have multiple sources available to them should mix
+   them together, to avoid known and unknown issues with any of the
+   sources.
+
 4.2.  Desktop Computers and Other Clients
 
    Desktop computers and mobile devices can often sample entropy from
    their interaction with the user, e.g. from timing variations in
-   keyboard input.  However in many cases such interaction takes place
-   relatively late, and using this DHCP extension can provide earlier
-   random material.
+   keyboard input and mouse movements.  However in many cases such
+   interaction takes place relatively late, and using this DHCP
+   extension can provide earlier random material.
 
 4.3.  Servers
 
@@ -315,9 +328,17 @@ Internet-Draft             Initial Randomness              November 2013
    recommended.  In public cloud environments, a DHCP server is often
    unavailable.  In such environments, the best solution is for the
    guest to obtain randomness from the host machine, using techniques
-   such as [virtio].  In addition, automation (orchestration) frameworks
-   can pre-provision servers with entropy.  Note that VMs are also
-   subject to related attacks, such as [vm rollback].
+   such as [VirtIORNG].  In addition, automation (orchestration)
+
+
+
+Sheffer & Hoffman         Expires May 12, 2014                  [Page 6]
+
+Internet-Draft             Initial Randomness              November 2013
+
+
+   frameworks can pre-provision servers with entropy.  Note that VMs are
+   also subject to related attacks, such as [Rollback].
 
 4.5.  Home Routers
 
@@ -325,18 +346,13 @@ Internet-Draft             Initial Randomness              November 2013
    typically start off with very little entropy.  Such devices can mix
    random material received from clients into their entropy pool.
 
+   Home routers that are also DHCP clients (e.g.  DOCSIS cable modems)
+   should first attempt to obtain randomness from their upstream router.
+
 
 5.  Security Considerations
 
-   In addition to those listed here, please refer to [randomness] for
-
-
-
-Sheffer & Hoffman          Expires May 9, 2014                  [Page 6]
-
-Internet-Draft             Initial Randomness              November 2013
-
-
+   In addition to those listed here, please refer to [RFC4086] for
    further considerations.
 
 5.1.  RNG Properties
@@ -344,11 +360,11 @@ Internet-Draft             Initial Randomness              November 2013
    This document assumes a modern crypto-grade RNG on both client and
    server, which should have at least the following properties:
 
-   o  The output stream cannot be distinguished from truly random
+   o  The output stream cannot be distinguished from a truly random one
       without knowing the secret state.
-   o  The RNG can be fed by external material.  Such material will
-      normally increase, and will never decrease the generator's
-      entropy.
+   o  The RNG can be fed by external material at any time.  Such
+      material will normally increase, and will never decrease the
+      generator's entropy.
    o  The generator's internal state can never be revealed to an
       attacker, even if the attacker can feed any amount of known data
       into the RNG.
@@ -368,6 +384,15 @@ Internet-Draft             Initial Randomness              November 2013
    attacks, the server SHOULD rate-limit responses to this particular
    extension.
 
+
+
+
+
+Sheffer & Hoffman         Expires May 12, 2014                  [Page 7]
+
+Internet-Draft             Initial Randomness              November 2013
+
+
 5.4.  Saving RNG State
 
    The current extension is targeted at the initial bootstrap of a host
@@ -382,29 +407,22 @@ Internet-Draft             Initial Randomness              November 2013
    type of random material is being requested or offered.  Specifically,
    they are unable to signal whether randomness is being backed by
    measured physical entropy.  This was done to simplify the protocol,
-   and also because the protocol is vulnerable to both active and
-   passive attackers that may be present on the network and could alter
-   any such signals.
-
-
-
-Sheffer & Hoffman          Expires May 9, 2014                  [Page 7]
-
-Internet-Draft             Initial Randomness              November 2013
+   and also because the protocol is vulnerable to active attackers that
+   may be present on the network and could alter any such signals.
 
 
 6.  IANA Considerations
 
    This document defines the DHCP Initial Randomness option which
    requires assignment of DHCPv4 option code TBD1 assigned from the
-   "Bootp and DHCP options" registry (http://www.iana.org/assignments/
-   bootp-dhcp-parameters/bootp-dhcp-parameters.xml), as specified in
+   "Bootp and DHCP options" registry (<http://www.iana.org/assignments/
+   bootp-dhcp-parameters/bootp-dhcp-parameters.xml>), as specified in
    [RFC2939].
 
    This document defines the DHCP Initial Randomness option which
    requires assignment of DHCPv6 option code TBD2 assigned from the
-   "DHCP option Codes" registry (http://www.iana.org/assignments/
-   dhcpv6-parameters/dhcpv6-parameters.xml).
+   "DHCP option Codes" registry (<http://www.iana.org/assignments/
+   dhcpv6-parameters/dhcpv6-parameters.xml>).
 
 
 7.  Acknowledgements
@@ -424,6 +442,13 @@ Internet-Draft             Initial Randomness              November 2013
    [RFC2131]  Droms, R., "Dynamic Host Configuration Protocol",
               RFC 2131, March 1997.
 
+
+
+Sheffer & Hoffman         Expires May 12, 2014                  [Page 8]
+
+Internet-Draft             Initial Randomness              November 2013
+
+
    [RFC2939]  Droms, R., "Procedures and IANA Guidelines for Definition
               of New DHCP Options and Message Types", BCP 43, RFC 2939,
               September 2000.
@@ -434,17 +459,48 @@ Internet-Draft             Initial Randomness              November 2013
 
 8.2.  Informative References
 
-   [Stats]    Arkko, J., "Distribution of Processing Times",
-              December 2012,
-              <http://www.arkko.com/tools/lifecycle/wgdistr.html>.
+   [RFC4086]  Eastlake, D., Schiller, J., and S. Crocker, "Randomness
+              Requirements for Security", BCP 106, RFC 4086, June 2005.
 
-   [Tao]      Hoffman, P., Ed., ""The Tao of IETF: A Novice's Guide to
-              the Internet Engineering Task Force", 2012,
-              <http://www.ietf.org/tao.html>.
+   [RFC4253]  Ylonen, T. and C. Lonvick, "The Secure Shell (SSH)
+              Transport Layer Protocol", RFC 4253, January 2006.
+
+   [Mining]   Heninger, N., Durumeric, Z., Wustrow, E., and J.
+              Halderman, "Mining Your Ps and Qs: Detection of Widespread
+              Weak Keys in Network Devices", Proceedings of the 21st
+              USENIX Security Symposium , August 2012,
+              <https://factorable.net/>.
+
+   [IntelArch]
+              "Intel 64 and IA-32 Architectures Software Developer's
+              Manual Combined Volumes 2A, 2B, and 2C: Instruction Set
+              Reference, A-Z", December 2012.
+
+   [VirtIORNG]
+              Robinson, C. and A. Shah, "VirtIORNG QEmu Feature Page",
+              February 2013,
+              <http://wiki.qemu-project.org/Features/VirtIORNG>.
+
+   [Rollback]
+              Xia, Y., Liu, Y., Chen, H., and B. Zang, "Defending
+              against VM Rollback Attack", Dependable Systems and
+              Networks Workshops (DSN-W), 2012 , June 2012, <http://
+              ipads.se.sjtu.edu.cn/lib/exe/
+              fetch.php?media=publications:rollback.pdf>.
 
 
 
-Sheffer & Hoffman          Expires May 9, 2014                  [Page 8]
+
+
+
+
+
+
+
+
+
+
+Sheffer & Hoffman         Expires May 12, 2014                  [Page 9]
 
 Internet-Draft             Initial Randomness              November 2013
 
@@ -500,5 +556,5 @@ Authors' Addresses
 
 
 
-Sheffer & Hoffman          Expires May 9, 2014                  [Page 9]
+Sheffer & Hoffman         Expires May 12, 2014                 [Page 10]
 
