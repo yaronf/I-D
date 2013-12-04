@@ -244,8 +244,8 @@ End
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
-\tracking_changes false
-\output_changes false
+\tracking_changes true
+\output_changes true
 \html_math_output 0
 \html_css_as_file 0
 \html_be_strict false
@@ -572,16 +572,18 @@ paul.hoffman@vpnc.org
 \end_layout
 
 \begin_layout Abstract
-Some network devices have gotten little or no entropy from their underlying
- operating systems when they are first started.
- As a result, cryptographic applications can be initialized into a state
+Some network devices get little or no entropy from their underlying operating
+ systems when they are first started.
+ As a result, cryptographic applications started before there is sufficient
+ entropy in the operating system's pool can be initialized into a state
  that can be exploited by an attacker.
  This document defines a DHCP extension that can provide the operating system
  of a network device with some initial randomness that can only be known
  by an attacker who is on the same network segment as the device and its
  DHCP server.
- This random input can, in turn, be used by the operating system to seed
- its random pool early in the boot procedure.
+ The operating system can mix this random input into its random pool early
+ in the boot procedure and thus have more entropy available when cryptographic
+ applications start.
 \end_layout
 
 \begin_layout Standard
@@ -598,8 +600,7 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Many security algorithms and all security protocols require random material
- for secure use.
+Security protocols require random bits for secure use.
  Ideally, such randomness should be provided to the operating system (OS)
  by a physical source of entropy, a 
 \begin_inset Quotes eld
@@ -610,11 +611,11 @@ True Random Number Generator
 \end_inset
 
  (TRNG).
- Unfortunately, such sources of entropy are not generally available, and
- there may not be enough random bits obtainable from other sources such
- as clock variations, observed packets, and so on when bootstrapping a device
- for the first time.
- Furhter, some OSs do not retain randomness pools across reboots, leading
+ Unfortunately, such sources of entropy are not generally available.
+ All common OSs use random bits from other sources such as clock variations,
+ event timing, network traffic, and so on, to create a pool of random bits
+ available to applications.
+ Further, some OSs do not retain randomness pools across reboots, leading
  to the need for fresh random bits each time a system is started.
 \end_layout
 
@@ -629,18 +630,10 @@ Mining
 
 \end_inset
 
- that a relatively high percentage of TLS and SSH public keys in the wild
- share a factor.
- The reason for that is presumed (though not proven by the authors) to be
- lack of true randomness (often referred to as 
-\begin_inset Quotes eld
-\end_inset
-
-entropy
-\begin_inset Quotes erd
-\end_inset
-
-) when the devices are first started.
+ that a relatively large number of TLS and SSH public keys in the wild share
+ a factor.
+ The reason for that is presumed to be lack of much initial randomness when
+ devices are first started and the keys are created.
  Security protocols, in particular SSH 
 \begin_inset Flex EntityXRef
 status collapsed
@@ -651,16 +644,15 @@ RFC4253
 
 \end_inset
 
-, that generate secret parameters when the device is first started end up
- with long-lived private keys that are vulnerable to guessing.
+, that generate secret parameters before there is sufficient randomness
+ end up with long-lived private keys that are vulnerable to guessing.
 \end_layout
 
 \begin_layout Standard
 This document proposes that network devices use DHCP to request additional
- initial random material to be mixed in with its OS's own random pool early
- in the boot process.
- The server can provide such material from a deterministic but cryptographically
- strong process (a 
+ random material to be mixed in with the recipient's operating system's
+ own random pool early in the boot process.
+ The DHCP server can provide such material from its own 
 \begin_inset Quotes eld
 \end_inset
 
@@ -668,9 +660,9 @@ Pseudo-Random Number Generator
 \begin_inset Quotes erd
 \end_inset
 
-, PRNG).
- The network device's OS can then mix the obtained material into its own
- PRNG.
+ (PRNG).
+ The requesting network device's OS can then mix the obtained material into
+ its own PRNG.
 \end_layout
 
 \begin_layout Standard
@@ -745,6 +737,15 @@ The extension consists of a variable-length Random Material field of arbitrary
  The field's length MUST be either 0, or between 16 and 64 octets.
  If the length is 0, it means that the sender is requesting randomness from
  the server and does not include any random material of its own.
+\end_layout
+
+\begin_layout Standard
+The design of the extension allows the DHCP client to request the server
+ to send random material, and for both client and server to each offer its
+ own random material to the other party.
+ If the receiving party cryptographically mixes the offered random material
+ into its random pool, even if that material is completely predictable (such
+ as all zeros), it will not have a negative effect on the pool.
 \end_layout
 
 \begin_layout Subsubsection
@@ -931,67 +932,14 @@ A client MAY use this extension in a DHCPREQUEST or a DHCPINFORM message.
 
 \begin_layout Standard
 A server MAY use this extension in a DHCPACK message.
- A server using this extension MUST include a non-empty Random Octets field.
+ A server using this extension that is unable to provide random material
+ SHOULD include an empty Random Octets field.
 \end_layout
 
 \begin_layout Standard
-If a server is also a DHCP client, it is RECOMMENDED that the server obtain
- random material from its upstream server before it serves randomness to
- its clients.
-\end_layout
-
-\begin_layout Standard
-Both client and server MUST NOT send random material unless they believe
- it is cryptographically strong.
-\end_layout
-
-\begin_layout Section
-Use of Random Material
-\end_layout
-
-\begin_layout Standard
-Understanding the uses of cryptographic random material within a typical
- host will help to relax OS-level dependencies and allow the various components
- to only request randomness when enough entropy is available.
- This discussion is at a high level, and focused on Linux, but we assume
- that other operating systems employ similar mechanisms.
-\end_layout
-
-\begin_layout Subsection
-Kernel Use
-\end_layout
-
-\begin_layout Standard
-The kernel uses randomness for various basic protocols.
- Two important examples are TCP Syn cookies (where a long-lived key is generated
- early on in the system's life-cycle) and message IDs for numerous protocols,
- e.g.
- DNS.
- In addition, a significant amount of entropy is used for address space
- layout randomization (ASLR).
-\end_layout
-
-\begin_layout Subsection
-User-Space Applications
-\end_layout
-
-\begin_layout Standard
-Randomness is critical to all important security protocols: TLS, SSH and
- IPsec.
- SSH stands out because a long-lived server key is typically generated as
- soon as the SSH server is started for the first time.
- This is often too early for enough entropy to have been collected, leading
- to the issues discussed in 
-\begin_inset Flex EntityXRef
-status collapsed
-
-\begin_layout Plain Layout
-Mining
-\end_layout
-
-\end_inset
-
-.
+If a server is also a DHCP client to some other DHCP server on a different
+ interface, it is RECOMMENDED that the server obtain random material from
+ its upstream server before it serves randomness to its clients.
 \end_layout
 
 \begin_layout Section
@@ -1039,14 +987,7 @@ Pre-provisioning, with the manufacturer of the device creating a unique
 \end_layout
 
 \begin_layout Enumerate
-In virtual systems, use of randomness obtained from the host (see 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Virtual-Hosts"
-
-\end_inset
-
-).
+In virtual systems, use of randomness obtained from the host.
 \end_layout
 
 \begin_layout Standard
@@ -1073,90 +1014,6 @@ reference "sub:RNG-Properties"
  So as a best practice, implementors that have multiple sources available
  to them should mix them together, to avoid known and unknown issues with
  any of the sources.
-\end_layout
-
-\begin_layout Subsection
-Desktop Computers and Other Clients
-\end_layout
-
-\begin_layout Standard
-Desktop computers and mobile devices can often sample entropy from their
- interaction with the user, e.g.
- from timing variations in keyboard input and mouse movements.
- However in many cases such interaction takes place relatively late, and
- using this DHCP extension can provide earlier random material.
-\end_layout
-
-\begin_layout Subsection
-Servers
-\end_layout
-
-\begin_layout Standard
-Servers typically have much less opportunity to seed their entropy pool
- from human interaction, and so are probably the best candidates for using
- this extension.
- Note that although most servers do not request an IP address through DHCP,
- they can request other DHCP parameters, including the current extension,
- through the DHCPINFORM message.
-\end_layout
-
-\begin_layout Subsection
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Virtual-Hosts"
-
-\end_inset
-
-Virtual Hosts
-\end_layout
-
-\begin_layout Standard
-Virtual machines (VMs) are probably the most entropy-starved computers.
- For VMs running in private networks, a DHCP server is typically available
- and the current solution is viable and recommended.
- In public cloud environments, a DHCP server is often unavailable.
- In such environments, the best solution is for the guest to obtain randomness
- from the host machine, using techniques such as 
-\begin_inset Flex EntityXRef
-status collapsed
-
-\begin_layout Plain Layout
-VirtIORNG
-\end_layout
-
-\end_inset
-
-.
- In addition, automation (orchestration) frameworks can pre-provision servers
- with entropy.
- Note that VMs are also subject to related attacks, such as 
-\begin_inset Flex EntityXRef
-status collapsed
-
-\begin_layout Plain Layout
-Rollback
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Subsection
-Home Routers
-\end_layout
-
-\begin_layout Standard
-These devices are typically deployed as DHCP servers themselves, and typically
- start off with very little entropy.
- Such devices can mix random material received from clients into their entropy
- pool.
-\end_layout
-
-\begin_layout Standard
-Home routers that are also DHCP clients (e.g.
- DOCSIS cable modems) should first attempt to obtain randomness from their
- upstream router.
 \end_layout
 
 \begin_layout Section
@@ -1198,7 +1055,8 @@ The output stream cannot be distinguished from a truly random one without
 \end_layout
 
 \begin_layout Itemize
-The RNG can be fed by external material at any time.
+The RNG can be fed by any external material, even material known by an attacker,
+ at any time.
  Such material will normally increase, and will never decrease the generator's
  entropy.
 \end_layout
@@ -1237,13 +1095,12 @@ Saving RNG State
 \begin_layout Standard
 The current extension is targeted at the initial bootstrap of a host or
  device.
- It is strongly RECOMMENDED that implementations ensure that the generator's
- state is preserved across reboot.
- The state SHOULD be stored periodically so that it is not lost upon a catastrop
-hic event, such as an unplanned power down.
- We note that some devices do not preserve seed state across reboots (for
- security reasons or because of resource limitations), and such devices
- have the most to benefit from additional randomness at boot time.
+ Different devices choose whether or not to save random state across reboots
+ based on their particular design considerations.
+ In short, saving state causes the booting machine to have some random material
+ already; saving state also allows someone who can view the quiescent state
+ (such as reading from the drive) to know the initial state of the OS's
+ random pool.
 \end_layout
 
 \begin_layout Subsection
@@ -1454,44 +1311,11 @@ n /></author><author initials='Z.' surname='Durumeric' fullname='Zakir Durumeric
 status collapsed
 
 \begin_layout Plain Layout
-<reference anchor='IntelArch'  > <front> <title>Intel 64 and IA-32 Architectures
+<reference anchor='IntelArch' > <front> <title>Intel 64 and IA-32 Architectures
  Software Developer's Manual Combined Volumes 2A, 2B, and 2C: Instruction
  Set Reference, A-Z</title> <author fullname='Intel Corp.'> <organization
  /> </author> <date year='2012' month='December' /> </front> </reference>
  
-\end_layout
-
-\end_inset
-
-
-\begin_inset Flex EmbeddedBibXML
-status collapsed
-
-\begin_layout Plain Layout
-<reference anchor='VirtIORNG' target="http://wiki.qemu-project.org/Features/VirtIO
-RNG" > <front> <title>VirtIORNG QEmu Feature Page</title> <author initials='C.
- R.' surname='Robinson' fullname='Cole Robinson'><organization>Red Hat </organiza
-tion> </author><author initials='A.
- S.' surname='Shah' fullname='Amit Shah'><organization>Red Hat </organization></a
-uthor> <date year='2013' month='February' /> </front> </reference> 
-\end_layout
-
-\end_inset
-
-
-\begin_inset Flex EmbeddedBibXML
-status collapsed
-
-\begin_layout Plain Layout
-<reference anchor='Rollback' target="http://ipads.se.sjtu.edu.cn/lib/exe/fetch.php?me
-dia=publications:rollback.pdf" > <front> <title>Defending against VM Rollback
- Attack </title> <author initials='Y.' surname='Xia' fullname='Yubin Xia'>
- <organization /></author><author initials='Y.' surname='Liu' fullname='Yutao
- Liu'> <organization /></author><author initials='H.' surname='Chen' fullname='Ha
-ibo Chen'> <organization /></author><author initials='B.' surname='Zang'
- fullname='Binyu Zang'> <organization /> </author> <date year='2012' month='June
-' /> </front> <seriesInfo name="Dependable Systems and Networks Workshops
- (DSN-W), 2012" value=""/></reference> 
 \end_layout
 
 \end_inset
