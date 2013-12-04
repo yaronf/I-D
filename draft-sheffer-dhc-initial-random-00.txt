@@ -4,8 +4,8 @@
 Network Working Group                                         Y. Sheffer
 Internet-Draft                                                  Porticor
 Intended status: Standards Track                              P. Hoffman
-Expires: June 7, 2014                                               VPNC
-                                                        December 4, 2013
+Expires: June 8, 2014                                               VPNC
+                                                        December 5, 2013
 
 
           A DHCP Extension To Provide Initial Random Material
@@ -40,7 +40,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on June 7, 2014.
+   This Internet-Draft will expire on June 8, 2014.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Sheffer & Hoffman         Expires June 7, 2014                  [Page 1]
+Sheffer & Hoffman         Expires June 8, 2014                  [Page 1]
 
 Internet-Draft             Initial Randomness              December 2013
 
@@ -108,7 +108,7 @@ Table of Contents
 
 
 
-Sheffer & Hoffman         Expires June 7, 2014                  [Page 2]
+Sheffer & Hoffman         Expires June 8, 2014                  [Page 2]
 
 Internet-Draft             Initial Randomness              December 2013
 
@@ -164,7 +164,7 @@ Internet-Draft             Initial Randomness              December 2013
 
 
 
-Sheffer & Hoffman         Expires June 7, 2014                  [Page 3]
+Sheffer & Hoffman         Expires June 8, 2014                  [Page 3]
 
 Internet-Draft             Initial Randomness              December 2013
 
@@ -220,7 +220,7 @@ Internet-Draft             Initial Randomness              December 2013
 
 
 
-Sheffer & Hoffman         Expires June 7, 2014                  [Page 4]
+Sheffer & Hoffman         Expires June 8, 2014                  [Page 4]
 
 Internet-Draft             Initial Randomness              December 2013
 
@@ -276,7 +276,7 @@ Internet-Draft             Initial Randomness              December 2013
 
 
 
-Sheffer & Hoffman         Expires June 7, 2014                  [Page 5]
+Sheffer & Hoffman         Expires June 8, 2014                  [Page 5]
 
 Internet-Draft             Initial Randomness              December 2013
 
@@ -332,7 +332,7 @@ Internet-Draft             Initial Randomness              December 2013
 
 
 
-Sheffer & Hoffman         Expires June 7, 2014                  [Page 6]
+Sheffer & Hoffman         Expires June 8, 2014                  [Page 6]
 
 Internet-Draft             Initial Randomness              December 2013
 
@@ -388,7 +388,7 @@ Internet-Draft             Initial Randomness              December 2013
 
 
 
-Sheffer & Hoffman         Expires June 7, 2014                  [Page 7]
+Sheffer & Hoffman         Expires June 8, 2014                  [Page 7]
 
 Internet-Draft             Initial Randomness              December 2013
 
@@ -444,5 +444,5 @@ Authors' Addresses
 
 
 
-Sheffer & Hoffman         Expires June 7, 2014                  [Page 8]
+Sheffer & Hoffman         Expires June 8, 2014                  [Page 8]
 
