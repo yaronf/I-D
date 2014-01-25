@@ -700,6 +700,7 @@ docName="draft-sheffer-autovpn-00">
     <?rfc include="reference.RFC.5386.xml"?>
     <?rfc include="reference.RFC.5387.xml"?>
     <?rfc include="reference.RFC.6023.xml"?>
+    <?rfc include="reference.RFC.6480.xml"?>
     <reference anchor="oe-history" target="http://nohats.ca/wordpress/blog/2013/09/12/history-and-implementation-status-of-opportunistic-encryption-for-ipsec/"><front><title>History and implementation status of Opportunistic Encryption for IPsec</title>
     <author initials="P. W." surname="Wouters" fullname="Paul Wouters"><organization/></author><date year="2013" month="September"/>
     </front></reference>
@@ -716,6 +717,11 @@ docName="draft-sheffer-autovpn-00">
         authorization data (as proposed in <xref target="RFC4322"/>) is risky, since the
         authorization protocol allows a MITM, and also exposes clear traffic. This issue is TBD,
         and for now, authorization will only be removed when a peer is deleted.
+        </t>
+        <t>
+        We should look at alternative ways to prove address ownership. For example, if the gateway G1 can prove its ownership of
+        a certain address range, it might send an RPKI <xref target="RFC6480"/> certificate to that effect, plus proof of possession in IKE_AUTH.
+        The peer gateway G2 might then decide to allow a wider traffic selector including all of G1's addresses, instead of just S1. 
         </t>
         <t>
         Also TBD are the IPsec policy implications, within the framework of <xref target="RFC4301"/>,
