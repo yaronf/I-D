@@ -32,12 +32,11 @@ docName="draft-sheffer-autovpn-00">
     </author>
     <date year="2014" />
     <abstract>
-      <t>This document describes the AutoVPN architecture.
-      This architecture allows IPsec security associations to be set up
-      with no prior configuration, using the "leap of faith" paradigm. The document
-      defines a lightweight protocol for verifying that traffic to a given server is routed
-      through a particular security gateway. In addition, we define a user interface element
-      in IKE to allow humans to later validate the security association.
+      <t>This document describes the AutoVPN architecture.  AutoVPN allows IPsec security associations to be set up with no
+prior configuration, using the "leap of faith" paradigm.  The
+document defines a lightweight protocol for negotiating such
+opportunistic encryption either directly between hosts or between
+two security gateways on the path.
       </t>
     </abstract>
   </front>
@@ -88,7 +87,9 @@ docName="draft-sheffer-autovpn-00">
         <t>It should be robust, efficient and network friendly enough to be
         enabled by default.</t>
         <t>It should be deployable on (existing) security gateways, rather
-        than requiring changes to servers.</t>
+        than requiring changes to hosts.</t>
+	<t>It should also work on hosts that are not protected by gateways, i.e. hosts
+	that are themselves IPsec endpoints.</t>
         <t>It should require zero configuration. Some limited level
         of security should be provided by devices which are not
         configured.</t>
@@ -122,11 +123,11 @@ docName="draft-sheffer-autovpn-00">
       which would otherwise be transmitted in the clear. What
       follows is a high level description of the sequence of
       operations.</t>
-      <t>We use S1 and S2 to denote two servers (endpoints), and G1
-      and G2 to denote two IPsec gateways, protecting S1 and S2
+      <t>We use H1 and H2 to denote two hosts (endpoints), and G1
+      and G2 to denote two IPsec gateways, protecting H1 and H2
       respectively. This setup is shown in <xref target="architecture"/> below.
       The solution described here is also applicable when
-      one or both servers is collocated with its respective gateway. Unfortunately it cannot
+      one or both hosts is collocated with its respective gateway. Unfortunately it cannot
       be optimized for these cases, since source IP addresses can always be spoofed.
       </t>
            <figure anchor="architecture" title="Deployment Architecture">
@@ -134,21 +135,21 @@ docName="draft-sheffer-autovpn-00">
               <![CDATA[
    +--------+   +---------+                  +---------+   +--------+
    |        |   |         |                  |         |   |        |
-   | Server |   | Gateway |   / -------- \   | Gateway |   | Server |
-   |   S1   |---|   G1    |---| Internet |---|   G2    |---|   S2   |
+   |  Host  |   | Gateway |   / -------- \   | Gateway |   |  Host  |
+   |   H1   |---|   G1    |---| Internet |---|   G2    |---|   H2   |
    |        |   |         |   \ -------- /   |         |   |        |
    +--------+   +---------+                  +---------+   +--------+]]>
             </artwork>
           </figure>
       <t>
-      Initially, only S1 knows of S2's address. The protocol below allows both intervening
+      Initially, only H1 knows of H2's address. The protocol below allows both intervening
       gateways to discover each other, and to gain assurance that each one is on-path of
-      the opposite server, i.e. it can see traffic
-      addressed to the respective server, and can respond to such traffic.
+      the opposite host, i.e. it can see traffic
+      addressed to the respective host, and can respond to such traffic.
       </t>
       <t>We assume that both G1 and G2 contain access control functionality,
       as required by the IPsec architecture, and that both allow some clear traffic
-      between S1 and S2.</t>
+      between H1 and H2.</t>
       <t>The message sequence below is motivated to a great extent by the need to cater
       to NAT devices in front of G1, the original initiator. It is assumed that correctly
       implemented NAT devices will perform correct reverse translation of ICMP
@@ -158,19 +159,19 @@ docName="draft-sheffer-autovpn-00">
       <t>Another major consideration is which side should drive the exchange. We have chosen
       the responder side (G2), since in an Internet where most traffic uses HTTP, the responder
       side knows best which traffic should be protected.</t>
-      <t>Lastly, we could have saved one round trip by allowing G2 to spoof S2's address.
+      <t>Lastly, we could have saved one round trip by allowing G2 to spoof H2's address.
       We believe this would have been ill advised.</t>
      <t>
      The flow of messages is depicted in <xref target="message-sequence"/>.
       <list style="symbols">
-        <t>S1 creates a network connection to S2, for example by sending a TCP SYN
-        packet. S2 replies normally to S1.</t>
+        <t>H1 creates a network connection to H2, for example by sending a TCP SYN
+        packet. H2 replies normally to H1.</t>
         <t>G2 intercepts the reply packet, but lets it pass
         through. The connection proceeds normally, possibly
         including data packets.</t>
-        <t>G2 sends a Probe Request message, addressed to S1.</t>
+        <t>G2 sends a Probe Request message, addressed to H1.</t>
         <t>G1 intercepts the Probe Request, does not forward it,
-        and sends a Probe Response, addressed to S2. Note that if S1 is NOT protected
+        and sends a Probe Response, addressed to H2. Note that if H1 is NOT protected
         by a gateway, it will receive the Probe Request message and
         therefore the message should be
         designed to have no effect on innocent receivers.</t>
@@ -181,14 +182,14 @@ docName="draft-sheffer-autovpn-00">
         G1 now initiates an IKE_SA_INIT exchange to G2. This message includes payloads that
         can be correlated with the previous messages.</t>
         <t>G1 and G2 negotiate an IPsec SA, potentially for all traffic between
-        S1 and S2.</t>
-        <t>Both G1 and G2 now move the traffic between S1 and S2
+        H1 and H2.</t>
+        <t>Both G1 and G2 now move the traffic between H1 and H2
         into the new SA.</t>
       </list></t>
                  <figure anchor="message-sequence" title="Message Sequence">
             <artwork>
               <![CDATA[
- S1                G1                              G2                S2
+ H1                G1                              G2                H2
 ====              ====                            ====              ====
  ||                ||  Syn                         ||                ||
  ||----------------------------------------------------------------->||
@@ -221,7 +222,7 @@ docName="draft-sheffer-autovpn-00">
     exchange.</t>
     <t>
     The normal execution sequence of the protocol is as follows. G2 generates a
-    fresh, randomly generated value Nonce-R, and sends to S1:
+    fresh, randomly generated value Nonce-R, and sends to H1:
     </t>
     <t>
         <list style="empty">
@@ -229,9 +230,9 @@ docName="draft-sheffer-autovpn-00">
         </list>
     </t>
     <t>
-    G1 intercepts the received message and does not forward it to S1. G1 MAY verify that the message
+    G1 intercepts the received message and does not forward it to H1. G1 MAY verify that the message
     corresponds to an ongoing connection, using the packet fragment contained in the ICMP
-    envelope. G1 generates a fresh, random Nonce-I and sends to S2:
+    envelope. G1 generates a fresh, random Nonce-I and sends to H2:
     </t>
     <t>
         <list style="empty">
@@ -240,7 +241,7 @@ docName="draft-sheffer-autovpn-00">
     </t>
     <t>
     where the content of Nonce-R is copied from the request.
-    G2 intercepts this message, and does not forward it to S2. G2 MUST verify that Nonce-R
+    G2 intercepts this message, and does not forward it to H2. G2 MUST verify that Nonce-R
     is valid, and silently ignore the message otherwise. G2 replies with:
     </t>
     <t>
@@ -267,7 +268,7 @@ docName="draft-sheffer-autovpn-00">
     <section title="ICMP Encoding">
     <t>
     Each payload is encoded as an ICMP Extension Object, as per <xref target="RFC4884"/>.
-    ICMP Error messages contain a copy of (part of) the original packet, and this MAY be used
+    ICMP Error messages contain a copy of (part of) the original packet, and this is used
     to associate the ICMP message with the original clear traffic.
     ICMP header fields are populated as follows:
     <list style="symbols">
@@ -464,8 +465,8 @@ docName="draft-sheffer-autovpn-00">
     investigation before a useful solution can be proposed:</t>
     <t>
     <list style="symbols">
-    <t>If traffic from a server which is behind NAT (S1) is inserted directly into an IPsec
-    tunnel, it will emerge as-is on the other side, and the receiving server might see a
+    <t>If traffic from a host which is behind NAT (H1) is inserted directly into an IPsec
+    tunnel, it will emerge as-is on the other side, and the receiving host might see a
     non-routable <xref target="RFC1918"/> source address.</t>
     <t>The initiating gateway may not have enough information to formulate its IKE Traffic
     Selector payload (TSi).</t>
@@ -474,7 +475,7 @@ docName="draft-sheffer-autovpn-00">
     <t>
     A solution that can be considered is for G1 to request a
     Tunnel Inner Address using an IKE Configuration Payload, and to
-    perform NAT on traffic originating from S1 so that it appears to
+    perform NAT on traffic originating from H1 so that it appears to
     be sourced from that address. One of the issues with this
     solution is that the initial clear connection will necessarily
     be broken because of the address change.
@@ -552,10 +553,10 @@ docName="draft-sheffer-autovpn-00">
         <list style="symbols">
         <t>Unknown. This may also be a certificate which had been manually removed,
         through a manual operation or for a number of reasons listed below.</t>
-        <t>Known but unverified. A DN is associated with a certificate's issuer fingerprint,
+        <t>Known but unverified. A DN is associated with a certificate's fingerprint,
         and additional
         information may be available ("contact details").
-        When not used, such certificates may be deleted form the table, after some site-specific
+        When not used, such certificates may be deleted from the table, after some site-specific
         timeout. It is RECOMMENDED that this timeout be larger than 7 days.</t>
         <t>Trusted identity. The administrator can manually mark a certificate as Trusted.
         Alternatively,
@@ -628,7 +629,7 @@ docName="draft-sheffer-autovpn-00">
         The shared secret is associated with the pair of gateway identities, specifically
         with the IDi, IDr payloads exchanged between the gateways. Once a shared secret
         is established, both gateways MUST use it with the associated peer, in preference
-        to certificate-based or other form of authentication.
+        to certificate-based or other forms of authentication.
         A shared secret MAY be initiated for a peer in Unverified or Trusted state.
         On each gateway, the shared secret is associated with the peer gateway's certificate,
         and both MUST NOT be timed out regardless of the certificate's trust state.
@@ -721,7 +722,7 @@ docName="draft-sheffer-autovpn-00">
         <t>
         We should look at alternative ways to prove address ownership. For example, if the gateway G1 can prove its ownership of
         a certain address range, it might send an RPKI <xref target="RFC6480"/> certificate to that effect, plus proof of possession in IKE_AUTH.
-        The peer gateway G2 might then decide to allow a wider traffic selector including all of G1's addresses, instead of just S1. 
+        The peer gateway G2 might then decide to allow a wider traffic selector including all of G1's addresses, instead of just H1. 
         </t>
         <t>
         Also TBD are the IPsec policy implications, within the framework of <xref target="RFC4301"/>,
