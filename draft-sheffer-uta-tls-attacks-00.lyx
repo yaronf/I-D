@@ -1,0 +1,1228 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass docbook
+\use_default_options true
+\maintain_unincluded_children false
+\begin_local_layout
+Format 31
+
+InsetLayout Flex:PI_Strict
+    LyXType Custom
+    HTMLTag div
+    LabelString PI_Strict
+End
+
+InsetLayout Flex:PI
+    LyXType Custom
+    HTMLTag div
+    LabelString PI
+End
+
+InsetLayout Flex:PI_SymRefs
+    LyXType Custom
+    HTMLTag div
+    LabelString PI_SymRefs
+End
+
+InsetLayout Flex:PI_SortRefs
+    LyXType Custom
+    HTMLTag div
+    LabelString PI_SortRefs
+End
+
+InsetLayout Flex:PI_TOC
+    LyXType Custom
+    HTMLTag div
+    LabelString PI_TOC
+End
+
+InsetLayout Flex:PI_TOCIndent
+    LyXType Custom
+    HTMLTag div
+    LabelString PI_TOCIndent
+End
+
+InsetLayout Flex:PI_TOCDepth
+    LyXType Custom
+    HTMLTag div
+    LabelString PI_TOCDepth
+End
+
+InsetLayout Flex:PI_TOCNarrow
+    LyXType Custom
+    HTMLTag div
+    LabelString PI_TOCNarrow
+End
+
+InsetLayout Flex:PI_TOCCompact
+    LyXType Custom
+    HTMLTag div
+    LabelString PI_TOCCompact
+End
+
+InsetLayout Flex:PI_TOCAppendix
+    LyXType Custom
+    HTMLTag div
+    LabelString PI_TOCAppendix
+End
+
+InsetLayout Flex:DocName
+    LyXType Custom
+    HTMLTag div
+    LabelString DocName
+End
+
+InsetLayout Flex:IntendedStatus
+    LyXType Custom
+    HTMLTag div
+    LabelString IntendedStatus
+End
+
+InsetLayout Flex:Updates
+    LyXType Custom
+    HTMLTag div
+    LabelString Updates
+End
+
+InsetLayout Flex:Obsoletes
+    LyXType Custom
+    HTMLTag div
+    LabelString Obsoletes
+End
+
+InsetLayout Flex:SeriesNo
+    LyXType Custom
+    HTMLTag div
+    LabelString SeriesNo
+End
+
+InsetLayout Flex:RFCNumber
+    LyXType Custom
+    HTMLTag div
+    LabelString RFCNumber
+End
+
+InsetLayout Flex:IPR
+    LyXType Custom
+    HTMLTag div
+    LabelString IPR
+End
+
+InsetLayout Flex:IETFArea
+    LyXType Custom
+    HTMLTag div
+    LabelString IETFArea
+End
+
+InsetLayout Flex:IETFWorkingGroup
+    LyXType Custom
+    HTMLTag div
+    LabelString IETFWorkingGroup
+End
+
+InsetLayout Flex:XML2RFCKeyword
+    LyXType Custom
+    HTMLTag div
+    LabelString XML2RFCKeyword
+End
+
+InsetLayout Flex:TitleAbbrev
+    LyXType Custom
+    HTMLTag div
+    LabelString TitleAbbrev
+End
+
+InsetLayout Flex:AuthorRole
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthRole
+End
+
+InsetLayout Flex:AuthorInitials
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthInitials
+End
+
+InsetLayout Flex:AuthorSurname
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthSurname
+End
+
+InsetLayout Flex:AuthorOrg
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthOrg
+End
+
+InsetLayout Flex:AuthorOrgAbbrev
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthOrgAbbrev
+End
+
+InsetLayout Flex:AuthorEmailAddr
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthEmailAddr
+End
+
+InsetLayout Flex:AuthorAddrStreet
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthAddrStreet
+End
+
+InsetLayout Flex:AuthorAddrCity
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthAddrCity
+End
+
+InsetLayout Flex:AuthorAddrRegion
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthAddrRegion
+End
+
+InsetLayout Flex:AuthorAddrCode
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthAddrCode
+End
+
+InsetLayout Flex:AuthorAddrCountry
+    LyXType Custom
+    HTMLTag div
+    LabelString AuthAddrCountry
+End
+
+InsetLayout Flex:EntityXRef
+    LyXType Custom
+    HTMLTag div
+    LabelString EntityXRef
+End
+
+InsetLayout Flex:BibXML
+    LyXType Custom
+    HTMLTag div
+    LabelString BibXML
+End
+
+InsetLayout Flex:EmbeddedBibXML
+    LyXType Custom
+    HTMLTag div
+    LabelString EmbeddedBibXML
+End
+\end_local_layout
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman cmr
+\font_sans cmss
+\font_typewriter cmtt
+\font_default_family ttdefault
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Summarizing Current Attacks on TLS and DTLS
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex DocName
+status collapsed
+
+\begin_layout Plain Layout
+draft-sheffer-uta-tls-attacks-00
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex IPR
+status collapsed
+
+\begin_layout Plain Layout
+trust200902
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex IntendedStatus
+status collapsed
+
+\begin_layout Plain Layout
+info
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex IETFWorkingGroup
+status collapsed
+
+\begin_layout Plain Layout
+uta
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex TitleAbbrev
+status collapsed
+
+\begin_layout Plain Layout
+TLS Attacks
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex XML2RFCKeyword
+status collapsed
+
+\begin_layout Plain Layout
+Internet-Draft
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex PI TOC
+status collapsed
+
+\begin_layout Plain Layout
+yes
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex PI SymRefs
+status collapsed
+
+\begin_layout Plain Layout
+yes
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex PI TOCIndent
+status collapsed
+
+\begin_layout Plain Layout
+no
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex PI
+status collapsed
+
+\begin_layout Plain Layout
+comments="yes"
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex PI
+status collapsed
+
+\begin_layout Plain Layout
+inline="yes"
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex PI
+status collapsed
+
+\begin_layout Plain Layout
+compact="yes"
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Yaron Sheffer
+\begin_inset Flex AuthorOrg
+status collapsed
+
+\begin_layout Plain Layout
+Porticor
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorOrgAbbrev
+status collapsed
+
+\begin_layout Plain Layout
+Porticor
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorInitials
+status collapsed
+
+\begin_layout Plain Layout
+Y.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorSurname
+status collapsed
+
+\begin_layout Plain Layout
+Sheffer
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrStreet
+status collapsed
+
+\begin_layout Plain Layout
+29 HaHarash St.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrCity
+status collapsed
+
+\begin_layout Plain Layout
+Hod HaSharon
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrCountry
+status collapsed
+
+\begin_layout Plain Layout
+Israel
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrCode
+status collapsed
+
+\begin_layout Plain Layout
+4501303
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorEmailAddr
+status collapsed
+
+\begin_layout Plain Layout
+yaronf.ietf@gmail.com
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Ralph Holz
+\begin_inset Flex AuthorOrg
+status open
+
+\begin_layout Plain Layout
+Technische Universitaet Muenchen
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorOrgAbbrev
+status open
+
+\begin_layout Plain Layout
+TUM
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorInitials
+status collapsed
+
+\begin_layout Plain Layout
+R.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorSurname
+status collapsed
+
+\begin_layout Plain Layout
+Holz
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrStreet
+status collapsed
+
+\begin_layout Plain Layout
+Boltzmannstr.
+ 3
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrCity
+status collapsed
+
+\begin_layout Plain Layout
+Garching
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrCountry
+status collapsed
+
+\begin_layout Plain Layout
+Germany
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrCode
+status collapsed
+
+\begin_layout Plain Layout
+85748
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorEmailAddr
+status collapsed
+
+\begin_layout Plain Layout
+holz@net.in.tum.de 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Peter Saint-Andre
+\begin_inset Flex AuthorOrg
+status collapsed
+
+\begin_layout Plain Layout
+Porticor
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorOrgAbbrev
+status collapsed
+
+\begin_layout Plain Layout
+Porticor
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorInitials
+status collapsed
+
+\begin_layout Plain Layout
+Y.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorSurname
+status collapsed
+
+\begin_layout Plain Layout
+Sheffer
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrStreet
+status collapsed
+
+\begin_layout Plain Layout
+29 HaHarash St.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrCity
+status collapsed
+
+\begin_layout Plain Layout
+Hod HaSharon
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrCountry
+status collapsed
+
+\begin_layout Plain Layout
+Israel
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorAddrCode
+status collapsed
+
+\begin_layout Plain Layout
+4501303
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorEmailAddr
+status collapsed
+
+\begin_layout Plain Layout
+yaronf.ietf@gmail.com
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+Over the last few years there have been several serious attacks on TLS,
+ including attacks on its most commonly used ciphers and modes of operation.
+ This document summarizes these attacks, with the goal of motivating generic
+ and protocol-specific recommendations on the usage of TLS and DTLS.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Over the last few years there have been several major attacks on TLS 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC5246
+\end_layout
+
+\end_inset
+
+, including attacks on its most commonly used ciphers and modes of operation.
+ Details are given in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Attacks"
+
+\end_inset
+
+, but suffice it to say that both AES-CBC and RC4, which together make up
+ for most current usage, have been seriously attacked in the context of
+ TLS.
+\end_layout
+
+\begin_layout Standard
+This situation motivated the creation of the UTA working group, which is
+ tasked with the creation of generic and protocol-specific recommendation
+ for the use of TLS and DTLS.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Quotes eld
+\end_inset
+
+Attacks always get better; they never get worse
+\begin_inset Quotes erd
+\end_inset
+
+ (ironically, this saying is attributed to the NSA).
+ This list of attacks describes our knowledge as of this writing.
+ It seems likely that new attacks will be invented in the future.
+\end_layout
+
+\begin_layout Subsection
+Conventions used in this document
+\end_layout
+
+\begin_layout Standard
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+ "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are
+ to be interpreted as described in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC2119
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Attacks"
+
+\end_inset
+
+Attacks on TLS
+\end_layout
+
+\begin_layout Standard
+This section lists the attacks that motivated the current recommendations.
+ This is not intended to be an extensive survey of TLS's security.
+\end_layout
+
+\begin_layout Standard
+While there are widely deployed mitigations for some of the attacks listed
+ below, we believe that their root causes necessitate a more systemic solution.
+\end_layout
+
+\begin_layout Subsection
+BEAST
+\end_layout
+
+\begin_layout Standard
+The BEAST attack 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+BEAST
+\end_layout
+
+\end_inset
+
+ uses issues with the TLS 1.0 implementation of CBC (that is, the predictable
+ initialization vector) to decrypt parts of a packet, and specifically shows
+ how this can be used to decrypt HTTP cookies when run over TLS.
+\end_layout
+
+\begin_layout Subsection
+Lucky Thirteen
+\end_layout
+
+\begin_layout Standard
+A consequence of the MAC-then-encrypt design in all current versions of
+ TLS is the existence of padding oracle attacks 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+Padding-Oracle
+\end_layout
+
+\end_inset
+
+.
+ A recent incarnation of these attacks is the Lucky Thirteen attack 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+CBC-Attack
+\end_layout
+
+\end_inset
+
+, a timing side-channel attack that allows the attacker to decrypt arbitrary
+ ciphertext.
+\end_layout
+
+\begin_layout Subsection
+Attacks on RC4
+\end_layout
+
+\begin_layout Standard
+The RC4 algorithm 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RC4
+\end_layout
+
+\end_inset
+
+ has been used with TLS (and previously, SSL) for many years.
+ Attacks have also been known for a long time, e.g.
+ 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RC4-Attack-FMS
+\end_layout
+
+\end_inset
+
+.
+ But recent attacks (
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RC4-Attack
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RC4-Attack-AlF
+\end_layout
+
+\end_inset
+
+) have weakened this algorithm even more.
+ See 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.popov-tls-prohibiting-rc4
+\end_layout
+
+\end_inset
+
+ for more details.
+\end_layout
+
+\begin_layout Subsection
+Compression Attacks: CRIME and BREACH
+\end_layout
+
+\begin_layout Standard
+The CRIME attack 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+CRIME
+\end_layout
+
+\end_inset
+
+ allows an active attacker to decrypt cyphertext (specifically, cookies)
+ when TLS is used with protocol-level compression.
+\end_layout
+
+\begin_layout Standard
+The BREACH attack 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+BREACH
+\end_layout
+
+\end_inset
+
+ makes similar use of HTTP-level compression to decrypt secret data passed
+ in the HTTP response.
+ We note that compression of the HTTP message body is much more prevalent
+ than compression at the TLS level.
+\end_layout
+
+\begin_layout Standard
+The former attack can be mitigated by disabling TLS compression, as recommended
+ below.
+ We are not aware of mitigations at the protocol level to the latter attack,
+ and so application-level mitigations are needed (see 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+BREACH
+\end_layout
+
+\end_inset
+
+).
+ For example, implementations of HTTP that use CSRF tokens will need to
+ randomize them even when the recommendations of [XXX] are adopted.
+\end_layout
+
+\begin_layout Section
+Security Considerations
+\end_layout
+
+\begin_layout Standard
+This document describes protocol attacks in an informational manner, and
+ in itself does not have any security implications.
+ Its companion documents certainly do.
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:IANA-Considerations"
+
+\end_inset
+
+IANA Considerations
+\end_layout
+
+\begin_layout Standard
+[Note to RFC Editor: please remove this section before publication.]
+\end_layout
+
+\begin_layout Standard
+This document requires no IANA actions.
+\end_layout
+
+\begin_layout Section
+Acknowledgements
+\end_layout
+
+\begin_layout Standard
+We would like to thank Stephen Farrell, Simon Josefsson, Yoav Nir, Kenny
+ Paterson, Patrick Pelletier, and Rich Salz for their review of a previous
+ version of this document.
+\end_layout
+
+\begin_layout Standard
+The document was prepared using the lyx2rfc tool, created by Nico Williams.
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:References"
+
+\end_inset
+
+Normative References
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "rfc2119"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "rfc5246"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Informative References
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "I-D.popov-tls-prohibiting-rc4"
+target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.popov-tls-prohibiting-rc4.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="CBC-Attack"> <front> <title>Lucky Thirteen: Breaking
+ the TLS and DTLS Record Protocols</title> <author initials="N.J." surname="AlFard
+an" fullname="Nadhem J.
+ AlFardan"/> <author initials="K." surname="Paterson" fullname="K.
+ Paterson"/> <date year="2013" /> </front> <seriesInfo name="IEEE Symposium
+ on Security and Privacy" value=""/> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="BEAST" target="http://packetstormsecurity.com/files/105499/Bro
+wser-Exploit-Against-SSL-TLS.html"> <front> <title>Browser Exploit Against
+ SSL/TLS</title> <author initials="J." surname="Rizzo" fullname="Juliano
+ Rizzo"/> <author initials="T." surname="Duong" fullname="Thai Duong"/> <date
+ year="2011" /> </front> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="CRIME"> <front> <title>The CRIME Attack</title> <author
+ initials="J." surname="Rizzo" fullname="Juliano Rizzo"/> <author initials="T."
+ surname="Duong" fullname="Thai Duong"/> <date year="2012" /> </front> <seriesIn
+fo name="EKOparty Security Conference" value="2012"/> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="BREACH" target='http://breachattack.com/'> <front> <title>The
+ BREACH Attack</title> <author initials="A." surname="Prado" fullname="Angelo
+ Prado"/> <author initials="N." surname="Harris" fullname="Neal Harris"/>
+ <author initials="Y." surname="Gluck" fullname="Yoel Gluck"/> <date year="2013"
+ /> </front> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="RC4"> <front> <title>Applied Cryptography: Protocols,
+ Algorithms, and Source Code in C, 2nd Ed.</title> <author initials="B." surname="
+Schneier" fullname="Bruce Schneier"/> <date year="1996" /> </front> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="RC4-Attack-FMS"> <front> <title>Weaknesses in the Key
+ Scheduling Algorithm of RC4</title> <author initials="S." surname="Fluhrer"
+ fullname="Scott Fluhrer"/> <author initials="I." surname="Mantin" fullname="Itsi
+k Mantin"/> <author initials="A." surname="Shamir" fullname="Adi Shamir"/>
+ <date year="2001" /> </front> <seriesInfo name="Selected Areas in Cryptography"
+ value=""/> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="RC4-Attack"> <front> <title>Full Plaintext Recovery Attack
+ on Broadcast RC4</title> <author initials="T." surname="ISOBE" fullname="Takanor
+i ISOBE"/> <author initials="T." surname="OHIGASHI" fullname="Toshihiro OHIGASHI"
+/> <author initials="Y." surname="WATANABE" fullname="Yuhei WATANABE"/> <author
+ initials="M." surname="MORII" fullname="Masakatu MORII"/> <date year="2013"
+ /> </front> <seriesInfo name="International Workshop on Fast Software Encryptio
+n" value=""/> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="RC4-Attack-AlF" target='https://www.usenix.org/conference/useni
+xsecurity13/security-rc4-tls'> <front> <title>On the Security of RC4 in
+ TLS</title> <author initials="N." surname="AlFardan" fullname="Nadhem AlFardan"/
+> <author initials="D.J." surname="Bernstein" fullname="Daniel J.
+ Bernstein"/> <author initials="K.G." surname="Paterson" fullname="Kenneth
+ G.
+ Paterson"/> <author initials="B." surname="Poettering" fullname="Bertram
+ Poettering"/> <author initials="J.C.N." surname="Schuldt" fullname="Jacob
+ C.
+ N.
+ Schuldt"/><date year="2013" /> </front> <seriesInfo name="Usenix Security
+ Symposium" value="2013"/> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="Padding-Oracle" target='http://www.iacr.org/cryptodb/archive/20
+02/EUROCRYPT/2850/2850.pdf'> <front> <title>Security Flaws Induced by CBC
+ Padding Applications to SSL, IPSEC, WTLS...</title> <author initials="S." surname="
+Vaudenay" fullname="Serge Vaudenay"/> <date year="2002" /> </front> <seriesInfo
+ name="EUROCRYPT" value="2002"/> </reference>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+Appendix: Change Log
+\end_layout
+
+\begin_layout Standard
+Note to RFC Editor: please remove this section before publication.
+\end_layout
+
+\begin_layout Subsection
+-00
+\end_layout
+
+\begin_layout Itemize
+Initial version, extracted from draft-sheffer-tls-bcp-01.
+\end_layout
+
+\end_body
+\end_document
