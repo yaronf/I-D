@@ -598,7 +598,7 @@ Peter Saint-Andre
 status collapsed
 
 \begin_layout Plain Layout
-Porticor
+&yet
 \end_layout
 
 \end_inset
@@ -608,7 +608,7 @@ Porticor
 status collapsed
 
 \begin_layout Plain Layout
-Porticor
+&yet
 \end_layout
 
 \end_inset
@@ -618,57 +618,17 @@ Porticor
 status collapsed
 
 \begin_layout Plain Layout
-Y.
+P.
 \end_layout
 
 \end_inset
 
 
 \begin_inset Flex AuthorSurname
-status collapsed
+status open
 
 \begin_layout Plain Layout
-Sheffer
-\end_layout
-
-\end_inset
-
-
-\begin_inset Flex AuthorAddrStreet
-status collapsed
-
-\begin_layout Plain Layout
-29 HaHarash St.
-\end_layout
-
-\end_inset
-
-
-\begin_inset Flex AuthorAddrCity
-status collapsed
-
-\begin_layout Plain Layout
-Hod HaSharon
-\end_layout
-
-\end_inset
-
-
-\begin_inset Flex AuthorAddrCountry
-status collapsed
-
-\begin_layout Plain Layout
-Israel
-\end_layout
-
-\end_inset
-
-
-\begin_inset Flex AuthorAddrCode
-status collapsed
-
-\begin_layout Plain Layout
-4501303
+Saint-Andre
 \end_layout
 
 \end_inset
@@ -678,7 +638,7 @@ status collapsed
 status collapsed
 
 \begin_layout Plain Layout
-yaronf.ietf@gmail.com
+ietf@stpeter.im
 \end_layout
 
 \end_inset
@@ -747,6 +707,21 @@ Attacks always get better; they never get worse
  (ironically, this saying is attributed to the NSA).
  This list of attacks describes our knowledge as of this writing.
  It seems likely that new attacks will be invented in the future.
+\end_layout
+
+\begin_layout Standard
+For a more detailed discussion of the attacks listed here, the interested
+ reader is referred to 
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+Attacks-iSec
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -828,7 +803,7 @@ Padding-Oracle
 .
  A recent incarnation of these attacks is the Lucky Thirteen attack 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 CBC-Attack
@@ -922,7 +897,17 @@ CRIME
 \end_layout
 
 \begin_layout Standard
-The BREACH attack 
+The TIME attack 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+TIME
+\end_layout
+
+\end_inset
+
+ and the later BREACH attack 
 \begin_inset Flex EntityXRef
 status collapsed
 
@@ -932,8 +917,8 @@ BREACH
 
 \end_inset
 
- makes similar use of HTTP-level compression to decrypt secret data passed
- in the HTTP response.
+ both make similar use of HTTP-level compression to decrypt secret data
+ passed in the HTTP response.
  We note that compression of the HTTP message body is much more prevalent
  than compression at the TLS level.
 \end_layout
@@ -954,7 +939,7 @@ BREACH
 
 ).
  For example, implementations of HTTP that use CSRF tokens will need to
- randomize them even when the recommendations of [XXX] are adopted.
+ randomize them even when the recommendations of [TBD] are adopted.
 \end_layout
 
 \begin_layout Section
@@ -1131,6 +1116,21 @@ status collapsed
 status collapsed
 
 \begin_layout Plain Layout
+<reference anchor="TIME" target='https://media.blackhat.com/eu-13/briefings/Beery/
+bh-eu-13-a-perfect-crime-beery-wp.pdf'> <front> <title>A Perfect CRIME? Only
+ TIME Will Tell</title> <author initials="T." surname="Be'ery" fullname="Tal
+ Be'ery"/> <author initials="A." surname="Shulman" fullname="Amichai Shulman"/>
+ <date year="2013" /> </front> <seriesInfo name="Black Hat Europe" value="2013"/
+> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
 <reference anchor="RC4"> <front> <title>Applied Cryptography: Protocols,
  Algorithms, and Source Code in C, 2nd Ed.</title> <author initials="B." surname="
 Schneier" fullname="Bruce Schneier"/> <date year="1996" /> </front> </reference>
@@ -1186,6 +1186,21 @@ xsecurity13/security-rc4-tls'> <front> <title>On the Security of RC4 in
  N.
  Schuldt"/><date year="2013" /> </front> <seriesInfo name="Usenix Security
  Symposium" value="2013"/> </reference>
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex EmbeddedBibXML
+status collapsed
+
+\begin_layout Plain Layout
+<reference anchor="Attacks-iSec" target='https://www.isecpartners.com/media/106031
+/ssl_attacks_survey.pdf'> <front> <title>Attacks on SSL, a comprehensive
+ study of BEAST, CRIME, TIME, BREACH, Lucky13 and RC4 biases</title> <author
+ initials="P.G." surname="Sarkar" fullname="Pratik Guha Sarkar"/> <author
+ initials="S." surname="Fitzgerald" fullname="Shawn Fitzgerald"/><date month="8"
+ year="2013" /> </front>  </reference>
 \end_layout
 
 \end_inset

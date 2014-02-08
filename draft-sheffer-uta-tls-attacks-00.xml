@@ -40,16 +40,10 @@
         <email>holz@net.in.tum.de</email>
       </address>
     </author>
-    <author initials="Y." surname="Sheffer" fullname="Peter Saint-Andre">
-      <organization abbrev="Porticor">Porticor</organization>
+    <author initials="P." surname="Saint-Andre" fullname="Peter Saint-Andre">
+      <organization abbrev="&amp;yet">&amp;yet</organization>
       <address>
-        <postal>
-          <street>29 HaHarash St.</street>
-          <city>Hod HaSharon</city>
-          <code>4501303</code>
-          <country>Israel</country>
-        </postal>
-        <email>yaronf.ietf@gmail.com</email>
+        <email>ietf@stpeter.im</email>
       </address>
     </author>
     <date month="February" year="2014"/>
@@ -63,14 +57,16 @@ Over the last few years there have been several serious attacks on TLS, includin
     </abstract>
   </front>
   <middle>
-    <section title="Introduction" anchor="d1e349">
+    <section title="Introduction" anchor="d1e329">
       <t>
 Over the last few years there have been several major attacks on TLS <xref target="RFC5246"/>, including attacks on its most commonly used ciphers and modes of operation. Details are given in  <xref target="sec_Attacks"/>, but suffice it to say that both AES-CBC and RC4, which together make up for most current usage, have been seriously attacked in the context of TLS.</t>
       <t>
 This situation motivated the creation of the UTA working group, which is tasked with the creation of generic and protocol-specific recommendation for the use of TLS and DTLS.</t>
       <t>
 “Attacks always get better; they never get worse” (ironically, this saying is attributed to the NSA). This list of attacks describes our knowledge as of this writing. It seems likely that new attacks will be invented in the future.</t>
-      <section title="Conventions used in this document" anchor="d1e374">
+      <t>
+For a more detailed discussion of the attacks listed here, the interested reader is referred to <xref target="Attacks-iSec"/>.</t>
+      <section title="Conventions used in this document" anchor="d1e363">
         <t>
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.</t>
       </section>
@@ -80,28 +76,28 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 This section lists the attacks that motivated the current recommendations. This is not intended to be an extensive survey of TLS's security.</t>
       <t>
 While there are widely deployed mitigations for some of the attacks listed below, we believe that their root causes necessitate a more systemic solution.</t>
-      <section title="BEAST" anchor="d1e403">
+      <section title="BEAST" anchor="d1e392">
         <t>
 The BEAST attack <xref target="BEAST"/> uses issues with the TLS 1.0 implementation of CBC (that is, the predictable initialization vector) to decrypt parts of a packet, and specifically shows how this can be used to decrypt HTTP cookies when run over TLS.</t>
       </section>
-      <section title="Lucky Thirteen" anchor="d1e418">
+      <section title="Lucky Thirteen" anchor="d1e407">
         <t>
 A consequence of the MAC-then-encrypt design in all current versions of TLS is the existence of padding oracle attacks <xref target="Padding-Oracle"/>. A recent incarnation of these attacks is the Lucky Thirteen attack <xref target="CBC-Attack"/>, a timing side-channel attack that allows the attacker to decrypt arbitrary ciphertext.</t>
       </section>
-      <section title="Attacks on RC4" anchor="d1e439">
+      <section title="Attacks on RC4" anchor="d1e428">
         <t>
 The RC4 algorithm <xref target="RC4"/> has been used with TLS (and previously, SSL) for many years. Attacks have also been known for a long time, e.g. <xref target="RC4-Attack-FMS"/>. But recent attacks (<xref target="RC4-Attack"/>, <xref target="RC4-Attack-AlF"/>) have weakened this algorithm even more. See <xref target="I-D.popov-tls-prohibiting-rc4"/> for more details.</t>
       </section>
-      <section title="Compression Attacks: CRIME and BREACH" anchor="d1e479">
+      <section title="Compression Attacks: CRIME and BREACH" anchor="d1e468">
         <t>
 The CRIME attack <xref target="CRIME"/> allows an active attacker to decrypt cyphertext (specifically, cookies) when TLS is used with protocol-level compression.</t>
         <t>
-The BREACH attack <xref target="BREACH"/> makes similar use of HTTP-level compression to decrypt secret data passed in the HTTP response. We note that compression of the HTTP message body is much more prevalent than compression at the TLS level.</t>
+The TIME attack <xref target="TIME"/> and the later BREACH attack <xref target="BREACH"/> both make similar use of HTTP-level compression to decrypt secret data passed in the HTTP response. We note that compression of the HTTP message body is much more prevalent than compression at the TLS level.</t>
         <t>
-The former attack can be mitigated by disabling TLS compression, as recommended below. We are not aware of mitigations at the protocol level to the latter attack, and so application-level mitigations are needed (see <xref target="BREACH"/>). For example, implementations of HTTP that use CSRF tokens will need to randomize them even when the recommendations of [XXX] are adopted.</t>
+The former attack can be mitigated by disabling TLS compression, as recommended below. We are not aware of mitigations at the protocol level to the latter attack, and so application-level mitigations are needed (see <xref target="BREACH"/>). For example, implementations of HTTP that use CSRF tokens will need to randomize them even when the recommendations of [TBD] are adopted.</t>
       </section>
     </section>
-    <section title="Security Considerations" anchor="d1e512">
+    <section title="Security Considerations" anchor="d1e507">
       <t>
 This document describes protocol attacks in an informational manner, and in itself does not have any security implications. Its companion documents certainly do.</t>
     </section>
@@ -111,7 +107,7 @@ This document describes protocol attacks in an informational manner, and in itse
       <t>
 This document requires no IANA actions.</t>
     </section>
-    <section title="Acknowledgements" anchor="d1e535">
+    <section title="Acknowledgements" anchor="d1e530">
       <t>
 We would like to thank Stephen Farrell, Simon Josefsson, Yoav Nir, Kenny Paterson, Patrick Pelletier, and Rich Salz for their review of a previous version of this document.</t>
       <t>
@@ -122,11 +118,11 @@ The document was prepared using the lyx2rfc tool, created by Nico Williams.</t>
     <references title="Normative References">&rfc2119;
 &rfc5246;
 </references>
-    <references title="Informative References">&I-D.popov-tls-prohibiting-rc4;<reference anchor="CBC-Attack"><front><title>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</title><author initials="N.J." surname="AlFardan" fullname="Nadhem J. AlFardan"/><author initials="K." surname="Paterson" fullname="K. Paterson"/><date year="2013"/></front><seriesInfo name="IEEE Symposium on Security and Privacy" value=""/></reference><reference anchor="BEAST" target="http://packetstormsecurity.com/files/105499/Browser-Exploit-Against-SSL-TLS.html"><front><title>Browser Exploit Against SSL/TLS</title><author initials="J." surname="Rizzo" fullname="Juliano Rizzo"/><author initials="T." surname="Duong" fullname="Thai Duong"/><date year="2011"/></front></reference><reference anchor="CRIME"><front><title>The CRIME Attack</title><author initials="J." surname="Rizzo" fullname="Juliano Rizzo"/><author initials="T." surname="Duong" fullname="Thai Duong"/><date year="2012"/></front><seriesInfo name="EKOparty Security Conference" value="2012"/></reference><reference anchor="BREACH" target="http://breachattack.com/"><front><title>The BREACH Attack</title><author initials="A." surname="Prado" fullname="Angelo Prado"/><author initials="N." surname="Harris" fullname="Neal Harris"/><author initials="Y." surname="Gluck" fullname="Yoel Gluck"/><date year="2013"/></front></reference><reference anchor="RC4"><front><title>Applied Cryptography: Protocols, Algorithms, and Source Code in C, 2nd Ed.</title><author initials="B." surname="Schneier" fullname="Bruce Schneier"/><date year="1996"/></front></reference><reference anchor="RC4-Attack-FMS"><front><title>Weaknesses in the Key Scheduling Algorithm of RC4</title><author initials="S." surname="Fluhrer" fullname="Scott Fluhrer"/><author initials="I." surname="Mantin" fullname="Itsik Mantin"/><author initials="A." surname="Shamir" fullname="Adi Shamir"/><date year="2001"/></front><seriesInfo name="Selected Areas in Cryptography" value=""/></reference><reference anchor="RC4-Attack"><front><title>Full Plaintext Recovery Attack on Broadcast RC4</title><author initials="T." surname="ISOBE" fullname="Takanori ISOBE"/><author initials="T." surname="OHIGASHI" fullname="Toshihiro OHIGASHI"/><author initials="Y." surname="WATANABE" fullname="Yuhei WATANABE"/><author initials="M." surname="MORII" fullname="Masakatu MORII"/><date year="2013"/></front><seriesInfo name="International Workshop on Fast Software Encryption" value=""/></reference><reference anchor="RC4-Attack-AlF" target="https://www.usenix.org/conference/usenixsecurity13/security-rc4-tls"><front><title>On the Security of RC4 in TLS</title><author initials="N." surname="AlFardan" fullname="Nadhem AlFardan"/><author initials="D.J." surname="Bernstein" fullname="Daniel J. Bernstein"/><author initials="K.G." surname="Paterson" fullname="Kenneth G. Paterson"/><author initials="B." surname="Poettering" fullname="Bertram Poettering"/><author initials="J.C.N." surname="Schuldt" fullname="Jacob C. N. Schuldt"/><date year="2013"/></front><seriesInfo name="Usenix Security Symposium" value="2013"/></reference><reference anchor="Padding-Oracle" target="http://www.iacr.org/cryptodb/archive/2002/EUROCRYPT/2850/2850.pdf"><front><title>Security Flaws Induced by CBC Padding Applications to SSL, IPSEC, WTLS...</title><author initials="S." surname="Vaudenay" fullname="Serge Vaudenay"/><date year="2002"/></front><seriesInfo name="EUROCRYPT" value="2002"/></reference></references>
-    <section title="Appendix: Change Log" anchor="d1e637">
+    <references title="Informative References">&I-D.popov-tls-prohibiting-rc4;<reference anchor="CBC-Attack"><front><title>Lucky Thirteen: Breaking the TLS and DTLS Record Protocols</title><author initials="N.J." surname="AlFardan" fullname="Nadhem J. AlFardan"/><author initials="K." surname="Paterson" fullname="K. Paterson"/><date year="2013"/></front><seriesInfo name="IEEE Symposium on Security and Privacy" value=""/></reference><reference anchor="BEAST" target="http://packetstormsecurity.com/files/105499/Browser-Exploit-Against-SSL-TLS.html"><front><title>Browser Exploit Against SSL/TLS</title><author initials="J." surname="Rizzo" fullname="Juliano Rizzo"/><author initials="T." surname="Duong" fullname="Thai Duong"/><date year="2011"/></front></reference><reference anchor="CRIME"><front><title>The CRIME Attack</title><author initials="J." surname="Rizzo" fullname="Juliano Rizzo"/><author initials="T." surname="Duong" fullname="Thai Duong"/><date year="2012"/></front><seriesInfo name="EKOparty Security Conference" value="2012"/></reference><reference anchor="BREACH" target="http://breachattack.com/"><front><title>The BREACH Attack</title><author initials="A." surname="Prado" fullname="Angelo Prado"/><author initials="N." surname="Harris" fullname="Neal Harris"/><author initials="Y." surname="Gluck" fullname="Yoel Gluck"/><date year="2013"/></front></reference><reference anchor="TIME" target="https://media.blackhat.com/eu-13/briefings/Beery/bh-eu-13-a-perfect-crime-beery-wp.pdf"><front><title>A Perfect CRIME? Only TIME Will Tell</title><author initials="T." surname="Be'ery" fullname="Tal Be'ery"/><author initials="A." surname="Shulman" fullname="Amichai Shulman"/><date year="2013"/></front><seriesInfo name="Black Hat Europe" value="2013"/></reference><reference anchor="RC4"><front><title>Applied Cryptography: Protocols, Algorithms, and Source Code in C, 2nd Ed.</title><author initials="B." surname="Schneier" fullname="Bruce Schneier"/><date year="1996"/></front></reference><reference anchor="RC4-Attack-FMS"><front><title>Weaknesses in the Key Scheduling Algorithm of RC4</title><author initials="S." surname="Fluhrer" fullname="Scott Fluhrer"/><author initials="I." surname="Mantin" fullname="Itsik Mantin"/><author initials="A." surname="Shamir" fullname="Adi Shamir"/><date year="2001"/></front><seriesInfo name="Selected Areas in Cryptography" value=""/></reference><reference anchor="RC4-Attack"><front><title>Full Plaintext Recovery Attack on Broadcast RC4</title><author initials="T." surname="ISOBE" fullname="Takanori ISOBE"/><author initials="T." surname="OHIGASHI" fullname="Toshihiro OHIGASHI"/><author initials="Y." surname="WATANABE" fullname="Yuhei WATANABE"/><author initials="M." surname="MORII" fullname="Masakatu MORII"/><date year="2013"/></front><seriesInfo name="International Workshop on Fast Software Encryption" value=""/></reference><reference anchor="RC4-Attack-AlF" target="https://www.usenix.org/conference/usenixsecurity13/security-rc4-tls"><front><title>On the Security of RC4 in TLS</title><author initials="N." surname="AlFardan" fullname="Nadhem AlFardan"/><author initials="D.J." surname="Bernstein" fullname="Daniel J. Bernstein"/><author initials="K.G." surname="Paterson" fullname="Kenneth G. Paterson"/><author initials="B." surname="Poettering" fullname="Bertram Poettering"/><author initials="J.C.N." surname="Schuldt" fullname="Jacob C. N. Schuldt"/><date year="2013"/></front><seriesInfo name="Usenix Security Symposium" value="2013"/></reference><reference anchor="Attacks-iSec" target="https://www.isecpartners.com/media/106031/ssl_attacks_survey.pdf"><front><title>Attacks on SSL, a comprehensive study of BEAST, CRIME, TIME, BREACH, Lucky13 and RC4 biases</title><author initials="P.G." surname="Sarkar" fullname="Pratik Guha Sarkar"/><author initials="S." surname="Fitzgerald" fullname="Shawn Fitzgerald"/><date month="8" year="2013"/></front></reference><reference anchor="Padding-Oracle" target="http://www.iacr.org/cryptodb/archive/2002/EUROCRYPT/2850/2850.pdf"><front><title>Security Flaws Induced by CBC Padding Applications to SSL, IPSEC, WTLS...</title><author initials="S." surname="Vaudenay" fullname="Serge Vaudenay"/><date year="2002"/></front><seriesInfo name="EUROCRYPT" value="2002"/></reference></references>
+    <section title="Appendix: Change Log" anchor="d1e643">
       <t>
 Note to RFC Editor: please remove this section before publication.</t>
-      <section title="-00" anchor="d1e646">
+      <section title="-00" anchor="d1e652">
         <t>
           <list style="symbols">
             <t>
