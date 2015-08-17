@@ -31,6 +31,7 @@ author:
     email: yaronf.ietf@gmail.com
 
 normative:
+  RFC2104:
   RFC2119:
   I-D.ietf-tls-tls13:
   RFC5077:
@@ -38,6 +39,7 @@ normative:
 informative:
   RFC6962:
   RFC7469:
+  I-D.perrin-tls-tack:
   Oreo:
     title: "Firm Grip Handshakes: A Tool for Bidirectional Vouching"
     date: 2012
@@ -64,7 +66,8 @@ of this solution is that no manual management actions are required.
 # Introduction
 The weaknesses of the global PKI system are by now widely known. There are many attempts
 to resolve them, including Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key
-Pinning (HPKP) {{RFC7469}}, and TACK {{XXX}}. CT requires cooperation of a large
+Pinning (HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.
+CT requires cooperation of a large
 portion of the hundreds of
 extant certificate authorities (CAs) before it can be used "for real", in enforcing
 mode. TACK has not been standardized. HPKP is a standard,
@@ -212,10 +215,10 @@ We follow the message notation of {{I-D.ietf-tls-tls13}}.
      struct {
          select (Role) {
              case client:
-		         pinning_ticket ticket<0..1>; // 0 tickets on the first connection
+		         pinning_ticket ticket<0..1>; // 0 tickets on 1st connection
 
              case server:
-                 pinning_proof proof<0..1>; // 0 proofs on the first connection
+                 pinning_proof proof<0..1>; // 0 proofs on 1st connection
                  pinning_ticket ticket<0..1>; // omitted only on ramp down
                  uint32 lifetime;
        }
@@ -267,8 +270,8 @@ session-ticket protection key, which is already synchronized. For example:
 
 The proof sent by the server consists of this value:
 
-    proof = HMAC(old_pinning_secret, "pinning proof" + '\0' + client.random +
-                 server.random + Hash(server-public-key))
+    proof = HMAC(old_pinning_secret, "pinning proof" + '\0' +
+                 client.random + server.random + Hash(server-public-key))
 
 where HMAC {{RFC2104}} uses the Hash algorithm for the handshake.
 
@@ -303,7 +306,7 @@ The protocol is orthogonal to certificate validation, in the sense that, if the
 server's certificate has been revoked or is invalid for some other reason,
 the client MUST refuse to connect to it.
 
-## Disabling Pinning {{#ramp_down}}
+## Disabling Pinning {#ramp_down}
 
 A server implementing this protocol MUST have a "ramp down" mode of operation where:
 
@@ -321,7 +324,7 @@ but the server MUST still accept valid tickets that use the old, compromised key
 Clients who still hold old pinning tickets will remain vulnerable to MITM attacks,
 but those that connect to the correct server will immediately receive new tickets.
 
-# Comparison: HPKP Deployment {{#hpkp}}
+# Comparison: HPKP Deployment {#hpkp}
 
 The current IETF standard for certificate pinning is the Public Key Pinning Extension
 for HTTP, or HPKP. Unfortunately HPKP has not seen wide deployment yet. This may
