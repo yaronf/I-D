@@ -6,7 +6,7 @@ category: std
 updates: 
 obsoletes:
 
-ipr: pre5378Trust200902
+ipr: trust200902
 area: General
 workgroup:
 keyword: Internet-Draft
@@ -58,8 +58,6 @@ used for TLS session resumption, as a way to pin server certificates.
 That is, to ensure the client that it is connecting to the right server even
 in the presence of corrupt certificate authorities. The main advantage
 of this solution is that no manual management actions are required.
-
-[[TODO change IPR]]
 
 --- middle
 
