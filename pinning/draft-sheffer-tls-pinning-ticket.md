@@ -168,7 +168,7 @@ server's first response, in the returned PinningTicket extension.
             [] Indicates messages protected using keys
                derived from the master secret.
 
-The server computes a pinning_secret value ({#pinning_secret})
+The server computes a pinning_secret value ({{pinning_secret}})
 in order to generate the ticket.
 When the connection setup is complete, the client computes 
 the same pinning\_secret value and saves it locally, together with the received
@@ -204,7 +204,7 @@ handshake_failure alert, and SHOULD log this failure.
 
 The client MUST verify the proof, and if it fails to do so,
 MUST issue a handshake\_failure alert
-and abort the connection (and see also {#client_error}. When the connection is successfully
+and abort the connection (see also {{client_error}}). When the connection is successfully
 set up, the
 client SHOULD store the new ticket along with the corresponding pinning\_secret.
 
@@ -231,10 +231,10 @@ We follow the message notation of {{I-D.ietf-tls-tls13}}.
      struct {
          select (Role) {
              case client:
-		 pinning_ticket ticket<0..1>; // 0 tickets on 1st connection
+		 pinning_ticket ticket<0..1>; // no tickets on 1st connection
 
              case server:
-                 pinning_proof proof<0..1>; // 0 proofs on 1st connection
+                 pinning_proof proof<0..1>; // no proofs on 1st connection
                  pinning_ticket ticket<0..1>; // omitted only on ramp down
                  uint32 lifetime;
        }
