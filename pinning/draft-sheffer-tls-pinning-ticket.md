@@ -1,5 +1,5 @@
 ﻿---
-title: TLS Certificate Pinning with Tickets
+title: TLS Server Identity Pinning with Tickets
 abbrev: Pinning Tickets
 docname: draft-sheffer-tls-pinning-ticket-latest
 category: std
@@ -38,7 +38,9 @@ normative:
 
 informative:
   RFC6962:
+  RFC7258:
   RFC7469:
+  RFC7507:
   I-D.perrin-tls-tack:
   Oreo:
     title: "Firm Grip Handshakes: A Tool for Bidirectional Vouching"
@@ -62,16 +64,22 @@ of this solution is that no manual management actions are required.
 --- middle
 
 # Introduction
-The weaknesses of the global PKI system are by now widely known. There are many attempts
-to resolve them, including Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key
+The weaknesses of the global PKI system are by now widely known. Essentially,
+any valid CA may issue a certificate for any organization without the
+organization's approval (a misissued or "fake" certificate),
+and use the certificate to impersonate the organization.
+There are many attempts
+to resolve these weaknesses, including Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key
 Pinning (HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.
 CT requires cooperation of a large
 portion of the hundreds of
 extant certificate authorities (CAs) before it can be used "for real", in enforcing
-mode. TACK has not been standardized. HPKP is a standard,
+mode. It is noted that the relevant industry forum (CA/Browser Forum) is indeed pushing for such
+extensive adoption.
+TACK has not been standardized. HPKP is a standard,
 but so far has proven hard to deploy (see {{hpkp}}).
 This proposal augments these mechanisms
-with a much easier to implement and deploy solution for certificate pinning, by
+with a much easier to implement and deploy solution for server identity pinning, by
 reusing some of the mechanisms behind TLS session resumption.
 
 When a client first connects to a server, the server responds with a ticket and a
@@ -79,8 +87,9 @@ committed lifetime. The ticket is modeled on the session resumption ticket, but 
 distinct from it. Specifically, the ticket acts as a "second factor" for proving
 the server's identity;
 the ticket does not authenticate the client. The
-committed lifetime indicates for how long the server promises to accept the ticket,
-i.e. to retain the server-side ticket-encryption key. The committed lifetime is
+committed lifetime indicates for how long the server promises to
+retain the server-side ticket-encryption key, which allows it to complete
+the protocol exchange correctly and prove its identity. The committed lifetime is
 typically on the order of weeks or months. We follow the Trust On First Use (TOFU)
 model, in that the first server authentication is only based on PKI certificate
 validation, but for any follow-on sessions, the client is further ensuring the server's
@@ -103,10 +112,9 @@ it exists.
 client and the server. This allows for server-side detection of MITM attacks using
 large-scale analytics.
 
-A note on terminology: we use the term "certificate pinning" throughout this document,
-since this is the term commonly in use for similar solutions. Strictly speaking,
-our solution does not pin the server's certificate and therefore should better
-be termed "identity pinning" or "server pinning".
+A note on terminology: unlike other solutions in this space, we do not
+do "certificate pinning", since the protocol is oblivious to the server's
+certificate. We prefer the term "server identity pinning" for this new solution.
 
 ## Conventions used in this document
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
@@ -127,9 +135,10 @@ The PSK handshake MUST NOT include the extension defined here.
 
 ## Initial Connection
 
-When a client first connects to a server, it requests a pinning ticket and receives it
+When a client first connects to a server, it requests a pinning ticket by sending an
+empty PinningTicket extension, and receives it
 as part of the
-server's first response, in a PinningTicket extension.
+server's first response, in the returned PinningTicket extension.
 
      Client                                               Server
 
@@ -194,8 +203,9 @@ on this client. The server MUST then abort the connection with a
 handshake_failure alert, and SHOULD log this failure.
 
 The client MUST verify the proof, and if it fails to do so,
-MUST issue a handshake_failure alert
-and abort the connection. When the connection is successfully set up, the
+MUST issue a handshake\_failure alert
+and abort the connection (and see also {#client_error}. When the connection is successfully
+set up, the
 client SHOULD store the new ticket along with the corresponding pinning\_secret.
 
 Although this is an extension, if the client already has a ticket for a server,
@@ -286,7 +296,7 @@ and the same hash is also used over the server's public key.
 
 # Operational Considerations
 
-The main motivation behind the current protocol is to enable certificate
+The main motivation behind the current protocol is to enable identity
 pinning without the need for manual operations. Manual operations are susceptible
 to human error and in the case of certificate pinning, can easily result in
 "server bricking": the server becoming inaccessible to some or all of its users.
@@ -357,12 +367,12 @@ long, e.g. 3 months. This is assuming a pin period ("max age") of 1 month.
 1. Once we get the expiration reminder, issue two new certificates and install
 the new "main"
 certificate on servers. Change the HPKP header to send the old
-main certificate as the main pin,
+main certificate as the main pin (actually, what is sent is the certificate's SPKI),
 the new main certificate as the backup, and the new backup certificate as a secondary backup
 (in case the new main certificate gets compromised). This transition period must be at least
 one month, so as not to break clients who still pin to the old main certificate.
 1. Shortly before expiration, change the HPKP header again to send the new
-main certificate as
+main certificate's SPKI as
 the main pin and the new backup certificate as the backup pin.
 
 To summarize:
@@ -396,12 +406,38 @@ to the original server. The pinning proof includes a hash of the server's
 public key, to ensure the client that the proof was in fact generated by
 the server with which it is initiating the connection.
 
-## Server-Side Error Detection
+## Pervasive Monitoring
+
+Some organizations, and even some countries perform pervasive monitoring on their
+constituents {{RFC7258}}. This often takes the form of SSL proxies. Because of
+the TOFU property, this protocol does not provide any security in such cases.
+
+## Server-Side Error Detection {#server_error}
 
 Uniquely, this protocol allows the server to detect clients that present incorrect
 tickets and therefore can be assumed to be victims of a MITM attack. Server operators
 can use such cases as indications of ongoing attacks, similarly to fake certificate
 attacks that took place in a few countries in the past.
+
+## Client Policy
+
+Like it or not, some clients are normally deployed behind an SSL proxy.
+Similarly to {{RFC7469}}, it is acceptable to allow pinning to be disabled for some hosts
+according to local policy. For example, a UA MAY disable pinning for hosts whose
+validated certificate chain terminates at a user-defined trust anchor, rather than
+a trust anchor built-in to the UA (or underlying platform). Moreover, a client MAY accept
+an empty PinningTicket extension from such hosts as a valid response.
+
+## Client-Side Error Behavior {#client_error}
+
+When a client receives an incorrect or empty PinningTicket from a pinned server, it MUST
+abort the handshake and MUST NOT retry with no PinningTicket in the request. Doing
+otherwise would expose the client to trivial fallback attacks, similar to
+those described in {{RFC7507}}.
+
+This rule can however have negative affects on clients that move from behind SSL proxies into
+the open Internet. Therefore, browser and library vendors MUST provide a documented way to
+remove stored pins.
 
 ## Client Privacy
 
@@ -421,3 +457,5 @@ Benny Pinkas
 and Omer Berkman. The current protocol is but a
 distant relative of the original Oreo protocol, and any errors are the
 draft author's alone.
+
+I would like to thank Yoav Nir for his comments on this draft.
