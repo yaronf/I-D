@@ -55,10 +55,10 @@ informative:
 
 Fake public-key certificates are an ongoing problem for users of TLS. Several solutions
 have been proposed, but none is currently in wide use.
-This document proposes to extend TLS with opaque tickets, similar to the ones being
-used for TLS session resumption, as a way to pin server certificates.
+This document proposes to extend TLS with opaque tickets, similar to those being
+used for TLS session resumption, as a way to pin the server's identity.
 That is, to ensure the client that it is connecting to the right server even
-in the presence of corrupt certificate authorities. The main advantage
+in the presence of corrupt certificate authorities and fake certificates. The main advantage
 of this solution is that no manual management actions are required.
 
 --- middle
