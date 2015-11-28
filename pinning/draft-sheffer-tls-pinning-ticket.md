@@ -231,27 +231,28 @@ We follow the message notation of {{I-D.ietf-tls-tls13}}.
      struct {
          select (Role) {
              case client:
-		 pinning_ticket ticket<0..1>; // no tickets on 1st connection
+	       pinning_ticket ticket<0..2^16-1>; // no ticket on 1st connection
 
              case server:
-                 pinning_proof proof<0..1>; // no proofs on 1st connection
-                 pinning_ticket ticket<0..1>; // omitted only on ramp down
-                 uint32 lifetime;
+               pinning_proof proof<0..2^8-1>; // no proof on 1st connection
+               pinning_ticket ticket<0..2^16-1>; // omitted on ramp down
+               uint32 lifetime;
        }
     } PinningTicketExtension;
 
 ticket
 : a pinning ticket sent by the client or returned by the server. The ticket is opaque
-to the client.
+to the client. The extension MUST contain exactly 0 or 1 tickets.
 
 proof
 : a demonstration by the server that it understands the ticket and therefore that
 it is in possession of the secret that was used to generate it originally. The
 proof is further bound to the server's public key to prevent some MITM attacks.
+The extension MUST contain exactly 0 or 1 proofs.
 
 lifetime
 : the duration (in seconds) that the server commits to accept the newly offered
-ticket in the future. This period MUST be at least one week.
+ticket in the future. This period MUST be at least 604800 (one week).
 
 # Cryptographic Operations {#crypto}
 
@@ -384,6 +385,33 @@ To summarize:
 | Shortly before expiration but not earlier than the previous change + 1 month | New main certificate | New backup certificate
 | Regular operation: after rotation | New main certificate | New backup certificate
 
+## Comparison: TACK
+
+Compared with HPKP, TACK is a lot more similar to the current draft.
+It can even be argued that this document is a symmetric-cryptography variant of TACK.
+That said, there are still a few significant differences:
+
+- Probably the most important difference is that with TACK, validation of the server
+certificate is no longer required, and in fact TACK specifies it as a "MAY" requirement
+(Sec. 5.3).
+With ticket pinning, certificate validation by the client remains a MUST requirement, and the
+ticket acts only as a seccond factor. If the pinning secret is compromised, the server's
+security is not immediately at risk.
+- Both TACK and the current draft are mostly orthogonal to the server certificate as far as
+their life cycle, and so both can be deployed with no manual steps.
+- TACK uses ECDSA to sign the sever's public key. This allows cooperating clients
+to share server assertions between themselves. This is an optional TACK feature,
+one that cannot be done with pinning tickets.
+- TACK allows multiple servers to share its public keys. Such sharing is disallowed
+by the current document.
+- TACK does not allow the server to track a particular client, and so has better
+privacy properties than the current draft.
+- TACK has an interesting way to determine the pin's lifetime, setting it
+to the time period since the pin was first observed, with a hard upper bound of 30 days.
+The current draft makes the lifetime explicit, which may be more flexible to deploy.
+For example, Web sites which are only visited rarely by users may opt for a longer
+period than other sites that expect users to visit on a daily basis.
+
 # Security Considerations
 
 [[Todo: add more threats]]
@@ -458,4 +486,16 @@ and Omer Berkman. The current protocol is but a
 distant relative of the original Oreo protocol, and any errors are the
 draft author's alone.
 
-I would like to thank Yoav Nir for his comments on this draft.
+I would like to thank Dave Garrett, Daniel Kahn Gillmor and Yoav Nir for their comments on this draft.
+
+--- back
+
+# Document History
+
+## draft-sheffer-tls-pinning-ticket-01
+
+- Corrected the notation for variable-sized vectors.
+
+## draft-sheffer-tls-pinning-ticket-00
+
+Initial version.
