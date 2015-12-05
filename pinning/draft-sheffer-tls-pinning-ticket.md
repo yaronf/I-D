@@ -37,6 +37,7 @@ normative:
   RFC5077:
 
 informative:
+  RFC6454:
   RFC6962:
   RFC7258:
   RFC7469:
@@ -76,7 +77,9 @@ portion of the hundreds of
 extant certificate authorities (CAs) before it can be used "for real", in enforcing
 mode. It is noted that the relevant industry forum (CA/Browser Forum) is indeed pushing for such
 extensive adoption.
-TACK has not been standardized. HPKP is a standard,
+TACK has some similarities to the current proposal, but work on it seems to have stalled.
+{{tack}} compares our porposal to TACK.
+HPKP is a standard,
 but so far has proven hard to deploy (see {{hpkp}}).
 This proposal augments these mechanisms
 with a much easier to implement and deploy solution for server identity pinning, by
@@ -113,7 +116,7 @@ client and the server. This allows for server-side detection of MITM attacks usi
 large-scale analytics.
 
 A note on terminology: unlike other solutions in this space, we do not
-do "certificate pinning", since the protocol is oblivious to the server's
+do "certificate pinning" (or "public key pinning"), since the protocol is oblivious to the server's
 certificate. We prefer the term "server identity pinning" for this new solution.
 
 ## Conventions used in this document
@@ -168,7 +171,7 @@ server's first response, in the returned PinningTicket extension.
             [] Indicates messages protected using keys
                derived from the master secret.
 
-The server computes a pinning_secret value ({{pinning_secret}})
+The server computes a pinning_secret value ({{pinning-secret}})
 in order to generate the ticket.
 When the connection setup is complete, the client computes 
 the same pinning\_secret value and saves it locally, together with the received
@@ -216,8 +219,13 @@ See also {{ramp_down}} on ramping down support for this extension.
 
 ## Indexing the Pins {#indexing}
 
-[[TODO. Probably need to index by server name (SNI) and port. And should forbid
-use with IP addresses, similarly to SNI.]]
+Each pin is associated with a host name, protocol (TLS or DTLS) and port number. The host name MUST be
+the value sent inside the Server Name Indication (SNI) extension.
+This definition is similar to
+a Web Origin {{RFC6454}}, but does not assume the existence of a URL.
+
+IP addresses are ephemeral and forbidden in SNI and therefore Pins MUST NOT be associated
+with IP addresses.
 
 # Message Definitions
 
@@ -231,11 +239,11 @@ We follow the message notation of {{I-D.ietf-tls-tls13}}.
      struct {
          select (Role) {
              case client:
-	       pinning_ticket ticket<0..2^16-1>; // no ticket on 1st connection
+    	       pinning_ticket ticket<0..2^16-1>; //omitted on 1st connection
 
              case server:
-               pinning_proof proof<0..2^8-1>; // no proof on 1st connection
-               pinning_ticket ticket<0..2^16-1>; // omitted on ramp down
+               pinning_proof proof<0..2^8-1>; //no proof on 1st connection
+               pinning_ticket ticket<0..2^16-1>; //omitted on ramp down
                uint32 lifetime;
        }
     } PinningTicketExtension;
@@ -259,7 +267,7 @@ ticket in the future. This period MUST be at least 604800 (one week).
 This section provides details on the cryptographic operations performed
 by the protocol peers.
 
-## Pinning Secret {#pinning_secret}
+## Pinning Secret {#pinning-secret}
 
 On each connection that includes the PinningTicket extension, both peers
 derive the the value pinning_secret from the shared Diffie Hellman secret. They compute:
@@ -269,7 +277,7 @@ derive the the value pinning_secret from the shared Diffie Hellman secret. They 
 using the notation of {{I-D.ietf-tls-tls13}}, sec. Key Schedule. This secret
 is used by the server to generate the new ticket that it returns to the client.
 
-## Pinning Ticket
+## Pinning Ticket {#pinning-ticket}
 The pinning ticket's format is not specified by this document, but it MUST be
 encrypted and integrity-protected using a long-term pinning-ticket protection key.
 The server MUST rotate the protection key periodically, and therefore the ticket
@@ -299,7 +307,7 @@ and the same hash is also used over the server's public key.
 
 The main motivation behind the current protocol is to enable identity
 pinning without the need for manual operations. Manual operations are susceptible
-to human error and in the case of certificate pinning, can easily result in
+to human error and in the case of public key pinning, can easily result in
 "server bricking": the server becoming inaccessible to some or all of its users.
 
 ## Protection Key Synchronization {#cluster}
@@ -344,9 +352,27 @@ but the server MUST still accept valid tickets that use the old, compromised key
 Clients who still hold old pinning tickets will remain vulnerable to MITM attacks,
 but those that connect to the correct server will immediately receive new tickets.
 
+## Disaster Recovery
+
+All web servers in production need to be backed up, so that they can be recovered if a
+disaster (including a malicious activity) ever wipes them out. Backup typically includes
+the certificate and its private key, which must be backed up securely. The pinning secret, including
+earlier versions that are still being accepted, must be backed up regularly. However
+since it is only used as an authentication second factor, it does not require the same level
+of confidentiality as the server's private key.
+
+Readers should note that {{RFC5077}} session resumption keys are more security sensitive, and
+should normally not be backed up but rather treated as ephemeral keys. Even when servers derive
+pinning secrets from resumption keys ({{pinning-secret}}), they MUST NOT back up resumption keys. 
+
+# Previous Work
+
+This section compares ticket pinning to two earlier proposals, HPKP and TACK.
+
 ## Comparison: HPKP Deployment {#hpkp}
 
-The current IETF standard for certificate pinning is the Public Key Pinning Extension
+The current IETF standard for pinning the identity of web servers
+is the Public Key Pinning Extension
 for HTTP, or HPKP {{RFC7469}}. Unfortunately HPKP has not seen wide deployment yet.
 This may simply be
 due to inertia, but we believe the main reason is the onerous manual certificate
@@ -385,7 +411,14 @@ To summarize:
 | Shortly before expiration but not earlier than the previous change + 1 month | New main certificate | New backup certificate
 | Regular operation: after rotation | New main certificate | New backup certificate
 
-## Comparison: TACK
+The above assumes that public keys are normally associated with certificates, that is, the certificate
+is issued shortly after the public key is generated. This is true for many enterprise deployment,
+where certificates are managed by certificate management applications or directly with the CA,
+and there is no facility
+for secure and resilient long-term storage of public (and private) keys.
+HPKP is easier to deploy securely where such facilities do exist.
+
+## Comparison: TACK {#tack}
 
 Compared with HPKP, TACK is a lot more similar to the current draft.
 It can even be argued that this document is a symmetric-cryptography variant of TACK.
@@ -414,7 +447,7 @@ period than other sites that expect users to visit on a daily basis.
 
 # Security Considerations
 
-[[Todo: add more threats]]
+This section reviews several security aspects related to the proposed extension.
 
 ## Trust on First Use (TOFU) and MITM Attacks
 
@@ -469,7 +502,13 @@ remove stored pins.
 
 ## Client Privacy
 
-[[TODO]]
+This protocol is designed so that an external attacker cannot correlate between different requests
+of a single client, provided the client requests and receives a fresh ticket upon each connection.
+
+On the other hand, the server to which the client is connecting can easily track the client.
+This may be an issue when the client expects to connect to the server (e.g., a mail server)
+with multiple identities. Implementations SHOULD allow the user to opt out of pinning, either
+in general or for particular servers.
 
 # IANA Considerations
 
@@ -495,6 +534,9 @@ I would like to thank Dave Garrett, Daniel Kahn Gillmor and Yoav Nir for their c
 ## draft-sheffer-tls-pinning-ticket-01
 
 - Corrected the notation for variable-sized vectors.
+- Added a section on disaster recovery and backup.
+- Added a section on privacy.
+- Clarified the assumptions behind the HPKP procedure in the comparison section.
 
 ## draft-sheffer-tls-pinning-ticket-00
 
