@@ -78,7 +78,7 @@ extant certificate authorities (CAs) before it can be used "for real", in enforc
 mode. It is noted that the relevant industry forum (CA/Browser Forum) is indeed pushing for such
 extensive adoption.
 TACK has some similarities to the current proposal, but work on it seems to have stalled.
-{{tack}} compares our porposal to TACK.
+{{tack}} compares our proposal to TACK.
 HPKP is a standard,
 but so far has proven hard to deploy (see {{hpkp}}).
 This proposal augments these mechanisms
@@ -219,7 +219,10 @@ See also {{ramp_down}} on ramping down support for this extension.
 
 ## Indexing the Pins {#indexing}
 
-Each pin is associated with a host name, protocol (TLS or DTLS) and port number. The host name MUST be
+Each pin is associated with a host name, protocol (TLS or DTLS) and port number.
+In other words, the pin for port TCP/443 may be different from that for DTLS or from
+the pin for port TCP/8443.
+The host name MUST be
 the value sent inside the Server Name Indication (SNI) extension.
 This definition is similar to
 a Web Origin {{RFC6454}}, but does not assume the existence of a URL.
@@ -428,11 +431,11 @@ That said, there are still a few significant differences:
 certificate is no longer required, and in fact TACK specifies it as a "MAY" requirement
 (Sec. 5.3).
 With ticket pinning, certificate validation by the client remains a MUST requirement, and the
-ticket acts only as a seccond factor. If the pinning secret is compromised, the server's
+ticket acts only as a second factor. If the pinning secret is compromised, the server's
 security is not immediately at risk.
 - Both TACK and the current draft are mostly orthogonal to the server certificate as far as
 their life cycle, and so both can be deployed with no manual steps.
-- TACK uses ECDSA to sign the sever's public key. This allows cooperating clients
+- TACK uses ECDSA to sign the server's public key. This allows cooperating clients
 to share server assertions between themselves. This is an optional TACK feature,
 one that cannot be done with pinning tickets.
 - TACK allows multiple servers to share its public keys. Such sharing is disallowed
@@ -537,6 +540,7 @@ I would like to thank Dave Garrett, Daniel Kahn Gillmor and Yoav Nir for their c
 - Added a section on disaster recovery and backup.
 - Added a section on privacy.
 - Clarified the assumptions behind the HPKP procedure in the comparison section.
+- Added a definition of pin indexing (origin).
 
 ## draft-sheffer-tls-pinning-ticket-00
 
