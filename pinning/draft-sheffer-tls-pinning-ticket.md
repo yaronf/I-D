@@ -146,10 +146,10 @@ server's first response, in the returned PinningTicket extension.
      Client                                               Server
 
      ClientHello
-       + ClientKeyShare
+       + key_share
        + PinningTicket         -------->
                                                      ServerHello
-                                                 ServerKeyShare*
+												     + key_share
 	                                       {EncryptedExtensions
                                                 + PinningTicket}
                                           {ServerConfiguration*}
@@ -423,7 +423,7 @@ HPKP is easier to deploy securely where such facilities do exist.
 
 ## Comparison: TACK {#tack}
 
-Compared with HPKP, TACK is a lot more similar to the current draft.
+Compared with HPKP, TACK {{I-D.perrin-tls-tack}} is a lot more similar to the current draft.
 It can even be argued that this document is a symmetric-cryptography variant of TACK.
 That said, there are still a few significant differences:
 
@@ -541,6 +541,7 @@ I would like to thank Dave Garrett, Daniel Kahn Gillmor and Yoav Nir for their c
 - Added a section on privacy.
 - Clarified the assumptions behind the HPKP procedure in the comparison section.
 - Added a definition of pin indexing (origin).
+- Adjusted to the latest TLS 1.3 notation.
 
 ## draft-sheffer-tls-pinning-ticket-00
 
