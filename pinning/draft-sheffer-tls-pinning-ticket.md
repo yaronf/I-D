@@ -149,8 +149,8 @@ server's first response, in the returned PinningTicket extension.
        + key_share
        + PinningTicket         -------->
                                                      ServerHello
-												     + key_share
-	                                       {EncryptedExtensions
+                                                     + key_share
+                                           {EncryptedExtensions
                                                 + PinningTicket}
                                           {ServerConfiguration*}
                                                   {Certificate*}
@@ -240,14 +240,14 @@ We follow the message notation of {{I-D.ietf-tls-tls13}}.
      opaque pinning_proof<0..2^8-1>;
 
      struct {
-         select (Role) {
-             case client:
-    	       pinning_ticket ticket<0..2^16-1>; //omitted on 1st connection
+       select (Role) {
+         case client:
+           pinning_ticket ticket<0..2^16-1>; //omitted on 1st connection
 
-             case server:
-               pinning_proof proof<0..2^8-1>; //no proof on 1st connection
-               pinning_ticket ticket<0..2^16-1>; //omitted on ramp down
-               uint32 lifetime;
+         case server:
+           pinning_proof proof<0..2^8-1>; //no proof on 1st connection
+           pinning_ticket ticket<0..2^16-1>; //omitted on ramp down
+           uint32 lifetime;
        }
     } PinningTicketExtension;
 
@@ -410,7 +410,7 @@ To summarize:
 |---
 | Period | Main server certificate | Backup pin | Secondary backup pin
 | Regular operation: before rotation | Old main certificate | Old backup certificate
-| >1 month before expiration of old certificates |	Old main certificate |	New main certificate |	New backup certificate
+| >1 month before expiration of old certificates |  Old main certificate |  New main certificate |  New backup certificate
 | Shortly before expiration but not earlier than the previous change + 1 month | New main certificate | New backup certificate
 | Regular operation: after rotation | New main certificate | New backup certificate
 
