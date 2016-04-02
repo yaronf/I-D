@@ -1,5 +1,41 @@
+---
+title: Requesting Comments: Enabling Readers to Annotate RFCs
+abbrev: RFC Annotations
+docname: draft-sheffer-ietf-rfc-annotations
+category: info
+updates: 
+obsoletes:
 
---- Abstract
+ipr: trust200902
+area: General
+workgroup:
+keyword: Internet-Draft
+
+stand_alone: yes
+pi:
+  rfcedstyle: yes
+  toc: no
+  tocindent: yes
+  sortrefs: yes
+  symrefs: yes
+  strict: yes
+  comments: yes
+  inline: yes
+  text-list-symbols: -o*+
+
+author:
+  -
+    ins: Y. Sheffer
+    name: Yaron Sheffer
+    organization: Intuit
+    email: yaronf.ietf@gmail.com
+
+normative:
+  RFC2119:
+
+informative:
+
+--- abstract
 
 RFCs were initially intended as, literally, requests for comments. Since then,
 they have turned into standards documents,
@@ -131,3 +167,11 @@ during the experiment or later.
 * Now open the sidebar to view existing public annotations.
 * Highlight some text and right-click it. You will need to sign up for an account
 to create your own annotations. 
+
+--- back
+
+# Document History
+
+## draft-sheffer-ietf-rfc-annotations-00
+
+Initial version.
