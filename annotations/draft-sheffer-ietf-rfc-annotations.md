@@ -1,7 +1,7 @@
 ---
-title: Requesting Comments: Enabling Readers to Annotate RFCs
+title: "Requesting Comments: Enabling Readers to Annotate RFCs"
 abbrev: RFC Annotations
-docname: draft-sheffer-ietf-rfc-annotations
+docname: draft-sheffer-ietf-rfc-annotations-latest
 category: info
 updates: 
 obsoletes:
@@ -32,6 +32,7 @@ author:
 
 normative:
   RFC2119:
+  RFC3933:
 
 informative:
 
