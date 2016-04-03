@@ -70,6 +70,11 @@ essentially the IETF's customers.
 We discuss the advantages of such a system and the risks
 associated with it.
 
+## Conventions used in this document
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
+interpreted as described in <xref target="RFC2119"/>.
+
 # Overview
 
 We propose to enable, for an initial period of 1 year, annotations on published RFCs.
