@@ -44,13 +44,15 @@ informative:
   RFC4794:
   Stats:
     author:
-      name: "Jari Arkko"
+      name: Jari Arkko
+      ins: J. Arkko
     title: Distribution of Processing Times
     target: "http://www.arkko.com/tools/lifecycle/wgdistr.html"
     date: "2012-12"
   Tao:
     author:
       name: Paul Hoffman
+      ins: P. Hoffman
     title: "The Tao of IETF: A Novice's Guide to the Internet Engineering Task Force"
     target: "http://www.ietf.org/tao.html"
     date: 2012
