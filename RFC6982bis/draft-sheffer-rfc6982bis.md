@@ -4,7 +4,7 @@ abbrev: Running Code
 docname: draft-sheffer-rfc6982bis-latest
 category: bcp
 updates:
-obsoletes: RFC6982
+obsoletes: 6982
 
 ipr: trust200902
 area: General
@@ -40,20 +40,14 @@ normative:
 
 informative:
   RFC1264:
-  RFC3933:
   RFC4794:
-  Stats:
-    author:
-      name: Jari Arkko
-      ins: J. Arkko
-    title: Distribution of Processing Times
-    target: "http://www.arkko.com/tools/lifecycle/wgdistr.html"
-    date: "2012-12"
+  RFC6982:
   Tao:
     author:
       name: Paul Hoffman
       ins: P. Hoffman
-    title: "The Tao of IETF: A Novice's Guide to the Internet Engineering Task Force"
+    title: >
+      "The Tao of IETF: A Novice's Guide to the Internet Engineering Task Force"
     target: "http://www.ietf.org/tao.html"
     date: 2012
 
@@ -67,12 +61,12 @@ informative:
    valuable experimentation and feedback that have made the implemented
    protocols more mature.
 
-   The process in this document is offered as an experiment.  Authors of
+   This process is not mandatory. Authors of
    Internet-Drafts are encouraged to consider using the process for
    their documents, and working groups are invited to think about
-   applying the process to all of their protocol specifications.  The
-   authors of this document intend to collate experiences with this
-   experiment and to report them to the community.
+   applying the process to all of their protocol specifications.
+   This document obsoletes RFC 6982, advancing it to a
+   Best Current Practice. 
 
 --- middle
 
@@ -122,22 +116,22 @@ informative:
    document for publication, e.g., the RFC errata process does not
    apply.
 
-   The process in this document is offered as an experiment (though not
-   as an [RFC3933] experiment; see {{experiment}}).  Authors of Internet-
+   This process is not mandatory.  Authors of Internet-
    Drafts are encouraged to consider using the process for their
    documents, and working groups are invited to think about applying the
    process to all of their protocol specifications.
 
-   The scope of the intended experiment is all Internet-Drafts (I-Ds)
+   The scope of this process is all Internet-Drafts (I-Ds)
    that contain implementable specifications, whether produced within
    IETF working groups or outside working groups but intended for IETF
    consensus.  I-Ds published on the Independent Stream are explicitly
-   out of scope.  It is expected that the greatest benefit in the
-   experiment will be seen with Standards Track documents developed
+   out of scope.  It is expected that the greatest benefit
+   will be seen with Standards Track documents developed
    within working groups.
 
-   The authors of this document intend to collate experiences with this
-   experiment and to report them to the community.
+   This process was initially proposed as an experiment in
+   [RFC6982]. That document is now obsoleted, and the
+   process advanced to Best Current Practice.
 
 # The "Implementation Status" Section
 
@@ -193,7 +187,8 @@ informative:
       This section records the status of known implementations of the
       protocol defined by this specification at the time of posting of
       this Internet-Draft, and is based on a proposal described in RFC
-      6982.  The description of implementations in this section is
+      [[RFC Editor: replace by RFC number]].
+      The description of implementations in this section is
       intended to assist the IETF in its decision processes in
       progressing drafts to RFCs.  Please note that the listing of any
       individual implementation here does not imply endorsement by the
@@ -203,7 +198,8 @@ informative:
       catalog of available implementations or their features.  Readers
       are advised to note that other implementations may exist.
 
-      According to RFC 6982, "this will allow reviewers and working
+      According to RFC [[RFC Editor: replace by RFC number]],
+      "this will allow reviewers and working
       groups to assign due consideration to documents that have the
       benefit of running code, which may serve as evidence of valuable
       experimentation and feedback that have made the implemented
@@ -212,7 +208,8 @@ informative:
 
    Authors are requested to add a note to the RFC Editor at the top of
    this section, advising the Editor to remove the entire section before
-   publication, as well as the reference to RFC 6982.
+   publication, as well as the reference to
+   RFC [[RFC Editor: replace by RFC number]].
 
 # Alternative Formats
 
@@ -285,9 +282,7 @@ informative:
    expected to prefer proposals that have "running code" associated with
    them, over others that do not.
 
-# Process Experiment {#experiment}
-
-   The current proposal is proposed as an experiment.  The inclusion of
+   The inclusion of
    Implementation Status sections in Internet-Drafts is not mandatory,
    but the authors of this document wish to encourage authors of other
    Internet-Drafts to try out this simple mechanism to discover whether
@@ -296,61 +291,15 @@ informative:
    the attention of their working group participants to Implementation
    Status sections where they exist.
 
-   Following a community discussion, it was concluded that [RFC3933] is
-   not an appropriate framework for this experiment, primarily because
-   no change is required to any existing process.
-
-## Duration {#duration}
-
-   Given the typical time to produce an RFC (see [Stats]), we propose a
-   duration of 18 months for the experiment.  Thus, 18 months after the
-   date of publication of this document as an RFC, the authors will
-   report on the experiment as described in the next section.
-
-   I-D authors are obviously free to include Implementation Status
-   sections in their documents even after the experiment has concluded.
-
-##  Summary Report
-
-   The authors will summarize the results of the experiment at the end
-   of the period assigned to the experiment (see {{duration}}).  If
-   nothing happens (no I-Ds or only a handful include an Implementation
-   Status section), an email to the IETF list will be sufficient.  This
-   would obviously constitute a failure to adopt the idea and the
-   authors will abandon the experiment.
-
-   If this idea is adopted by document authors, a summary I-D will be
-   written containing the statistics of such adoption, as well as
-   (necessarily subjective) reports by working group members, chairs,
-   and area directors who have used this mechanism.
-
-   The authors may then propose more wide-scale use of the process and
-   might suggest more formal adoption of the process by the IETF.
-
-## Success Criteria
-
-   The goal of this experiment is to improve the quality of IETF
-   specifications.  This is impossible to quantify, of course.  We
-   suggest that generally positive answers to the following questions
-   would indicate that the experiment was successful:
-
-   -  Did the working group make decisions that were more informed when
-      comparing multiple competing solutions for the same work item?
-
-   -  Did authors significantly modify proposed protocols based on
-      implementation experience?
-
-   -  Did disclosure of implementations encourage more interoperability
-      testing than previously?
-
-   -  Did non-authors review documents based on interactions with
-      running code and/or inspection of the code itself?
-
 # Security Considerations
 
    This is a process document; therefore, it does not have a direct
    effect on the security of any particular IETF protocol.  However,
    better-reviewed protocols are likely to also be more secure.
+
+# IANA Considerations
+
+This document specifies no IANA actions.
 
 # Acknowledgements
 
@@ -368,4 +317,4 @@ informative:
 
 ## draft-sheffer-rfc6982bis-00
 
-Initial version.
+Initial version. RFC 6982 as-is, without the experiment sections.
