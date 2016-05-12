@@ -1,7 +1,7 @@
 ---
-title: "Delegating ACME Certificates to a CDN" 
-abbrev: ACME Delegation
-docname: draft-sheffer-lurk-acme-delegation-latest
+title: "Delegating TLS Certificates to a CDN" 
+abbrev: TLS Certificate Delegation
+docname: draft-sheffer-lurk-cert-delegation-latest
 category: std
 updates: 
 obsoletes:
@@ -45,15 +45,15 @@ informative:
 An organization that owns web content often prefers to delegate hosting of this content
 to a Content Delivery Network (CDN). To serve HTTP content securely, it needs to be
 protected with TLS. This document proposes a way for the CDN
-to request constrained certificates so that it can serve web content under
-the content owner's name, without having the owner's
+to request constrained certificates so that it can serve web content on behalf
+of the content owner, without having the owner's
 long term certificate.
 
 --- middle
 
 # Introduction
 
-Content owners frquently prefer a Content Delivery Network (CDN)
+Content owners frequently prefer a Content Delivery Network (CDN)
 to host their content. CDNs typically have very large networks, and are designed
 to serve content to a global audience with a high aggregate bandwidth.
 
@@ -113,7 +113,7 @@ This section lists the REST APIs that the content owner needs to provide to the 
 ## Request a Certificate
 
 ~~~
-POST ./well-known/lurk/certificate/1234 HTTP/1.1
+POST /.well-known/lurk/certificate/1234 HTTP/1.1
 Content-Type: application/json
 
 {
@@ -146,7 +146,7 @@ the content owner periodically (see below), but not more often than once every 5
 ## Poll for a Certificate
 
 ~~~
-GET ./well-known/lurk/certificate/1234 HTTP/1.1
+GET /.well-known/lurk/certificate/1234 HTTP/1.1
 ~~~
 
 The server responds with one of:
@@ -179,6 +179,14 @@ Specifically, the certificate request SHOULD specify restrictive Key Usage.
 * The RECOMMENDED validity period for certificates provisioned using this
 mechanism is 3 days, and the certificate SHOULD be valid immediately when it is fetched.
 
+## Revocation
+
+When the content owner decides it no longer trusts the CDN, the content owner MUST:
+
+* Revoke any extant short-term certificates already handed to the CDN. This implies
+that all such certificates MUST be logged.
+* Immediately block the certificate issuance operations described above.
+
 ## Restricting CDNs to the Delegation Mechanism
 
 Currently there are no standard methods for the content owner to ensure that
@@ -195,11 +203,14 @@ configuration steps:
  universal deployment of CAA {{RFC6844}} by CAs, which is not the case yet.
  * Deploy ACME-specific methods to restrict issuance to a specific authorization
  key which is controlled by the content owner {{I-D.landau-acme-caa}}.
- 
+
+This solution is recommended in general, even if an alternative to the
+mechanism described here (e.g. {{I-D.cairns-tls-session-key-interface}}) is used.
+
 --- back
 
 # Document History
 
-## draft-sheffer-lurk-acme-delegation-00
+## draft-sheffer-lurk-cert-delegation-00
 
 Initial version.
