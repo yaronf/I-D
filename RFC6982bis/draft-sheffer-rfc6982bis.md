@@ -40,7 +40,9 @@ normative:
 
 informative:
   RFC1264:
+  RFC1369:
   RFC4794:
+  RFC5080:
   RFC6982:
   Tao:
     author:
@@ -132,6 +134,14 @@ informative:
    This process was initially proposed as an experiment in
    [RFC6982]. That document is now obsoleted, and the
    process advanced to Best Current Practice.
+
+Historically there have been other ways for experience based on protocol implementations
+to feed back into the IETF process. Many "implementation reports" have been published,
+in some cases several years after the protocol was
+originally published. Providing feedback to published protocols is a related goal,
+but different from the current document's
+focus. Two notable examples of published implementation reports
+are {{RFC1369}} and {{RFC5080}}.
 
 # The "Implementation Status" Section
 
@@ -297,15 +307,12 @@ informative:
    effect on the security of any particular IETF protocol.  However,
    better-reviewed protocols are likely to also be more secure.
 
-# IANA Considerations
-
-This document specifies no IANA actions.
-
 # Acknowledgements
 
    We would like to thank Stephen Farrell, who reawakened community
    interest in this topic.  Several reviewers provided important input,
-   including Loa Andersson, Dave Crocker, Ned Freed, Christer Holmberg,
+   including Loa Andersson, Dave Crocker, Ned Freed, Joel M. Halpern,
+   Christer Holmberg,
    Denis Ovsienko, and Curtis Villamizar.
 
    This document was originally prepared using the lyx2rfc tool, and we
@@ -314,6 +321,11 @@ This document specifies no IANA actions.
 --- back
 
 # Document History
+
+## draft-sheffer-rfc6982bis-01
+
+* Removed the IANA Considerations section.
+* Implemented GENAREA comments.
 
 ## draft-sheffer-rfc6982bis-00
 
