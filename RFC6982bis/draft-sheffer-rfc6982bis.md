@@ -118,8 +118,8 @@ informative:
    document for publication, e.g., the RFC errata process does not
    apply.
 
-   This process is not mandatory.  Authors of Internet-
-   Drafts are encouraged to consider using the process for their
+This process is not mandatory.  Authors of Internet-Drafts
+are encouraged to consider using the process for their
    documents, and working groups are invited to think about applying the
    process to all of their protocol specifications.
 
@@ -325,7 +325,7 @@ are {{RFC1369}} and {{RFC5080}}.
 ## draft-sheffer-rfc6982bis-01
 
 * Removed the IANA Considerations section.
-* Implemented GENAREA comments.
+* Implemented GENART comments.
 
 ## draft-sheffer-rfc6982bis-00
 
