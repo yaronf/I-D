@@ -3,7 +3,7 @@ title: TLS Server Identity Pinning with Tickets
 abbrev: Pinning Tickets
 docname: draft-sheffer-tls-pinning-ticket-latest
 category: std
-updates: 
+updates:
 obsoletes:
 
 ipr: trust200902
@@ -39,6 +39,7 @@ normative:
 informative:
   RFC6454:
   RFC6962:
+  RFC6982:
   RFC7258:
   RFC7469:
   RFC7507:
@@ -46,11 +47,18 @@ informative:
   Oreo:
     title: "Firm Grip Handshakes: A Tool for Bidirectional Vouching"
     date: 2012
-    author: 
+    author:
       - ins: O. Berkman
       - ins: B. Pinkas
       - ins: M. Yung
     seriesinfo: Cryptology and Network Security, pp. 142-157
+  Netcraft:
+    author:
+    -
+      name: Paul Mutton
+    title: "HTTP Public Key Pinning: You're doing it wrong!"
+    date: March 30, 2016
+    target: http://news.netcraft.com/archives/2016/03/30/http-public-key-pinning-youre-doing-it-wrong.html
 
 --- abstract
 
@@ -173,7 +181,7 @@ server's first response, in the returned PinningTicket extension.
 
 The server computes a pinning_secret value ({{pinning-secret}})
 in order to generate the ticket.
-When the connection setup is complete, the client computes 
+When the connection setup is complete, the client computes
 the same pinning\_secret value and saves it locally, together with the received
 ticket.
 
@@ -181,14 +189,14 @@ The client SHOULD cache the ticket and the pinning_secret for the lifetime recei
 the server. The client MUST forget these values
 at the end of this duration.
 
-The returned ticket is sent as a ServerHello protected extension, and MUST NOT be sent
+The returned ticket is sent as part of the ServerHello encrypted extensions, and MUST NOT be sent
 as part of a HelloRetryRequest.
 
 ## Subsequent Connections
 
 When the client initiates a connection to a server it has previously seen (see
 {{indexing}}
-on identifying servers and origins), it SHOULD send the pinning ticket for that server.
+on identifying servers), it SHOULD send the pinning ticket for that server.
 
 The server MUST extract the original pinning_secret from the ticket
 and MUST respond with a PinningTicket extension, which includes:
@@ -208,7 +216,7 @@ handshake_failure alert, and SHOULD log this failure.
 The client MUST verify the proof, and if it fails to do so,
 MUST issue a handshake\_failure alert
 and abort the connection (see also {{client_error}}). When the connection is successfully
-set up, the
+set up, i.e. after the Finished message is verified, the
 client SHOULD store the new ticket along with the corresponding pinning\_secret.
 
 Although this is an extension, if the client already has a ticket for a server,
@@ -241,11 +249,14 @@ We follow the message notation of {{I-D.ietf-tls-tls13}}.
 
      struct {
        select (Role) {
-         case client:
+       case client:
+	       uint16 ticket_len; //zero if no ticket
            pinning_ticket ticket<0..2^16-1>; //omitted on 1st connection
 
          case server:
+	       uint16 proof_len; //zero if no proof
            pinning_proof proof<0..2^8-1>; //no proof on 1st connection
+	       uint16 ticket_len; //zero if no ticket
            pinning_ticket ticket<0..2^16-1>; //omitted on ramp down
            uint32 lifetime;
        }
@@ -261,9 +272,13 @@ it is in possession of the secret that was used to generate it originally. The
 proof is further bound to the server's public key to prevent some MITM attacks.
 The extension MUST contain exactly 0 or 1 proofs.
 
+ticket\_len, proof\_len
+: the length in octet of the ticket or, respectively, the proof. The length values are each
+2 bytes, in network order.
+
 lifetime
 : the duration (in seconds) that the server commits to accept the newly offered
-ticket in the future. This period MUST be at least 604800 (one week).
+ticket in the future.
 
 # Cryptographic Operations {#crypto}
 
@@ -275,10 +290,12 @@ by the protocol peers.
 On each connection that includes the PinningTicket extension, both peers
 derive the the value pinning_secret from the shared Diffie Hellman secret. They compute:
 
-    pinning_secret = HKDF(xSS, xES, "pinning secret", L)
+    pinning_secret = HKDF(xSS + xES, "pinning secret", L)
 
 using the notation of {{I-D.ietf-tls-tls13}}, sec. Key Schedule. This secret
 is used by the server to generate the new ticket that it returns to the client.
+
+The length of the secret L is determined by the server, and MUST be between 16 and 63 octets, inclusive.
 
 ## Pinning Ticket {#pinning-ticket}
 The pinning ticket's format is not specified by this document, but it MUST be
@@ -293,18 +310,21 @@ the protection key MUST
 be synchronized between them. An easy way to do it is to derive it from the
 session-ticket protection key, which is already synchronized. For example:
 
-    pinning_protection_key = HKDF(0, resumption_protection_key,
+    pinning_protection_key = HKDF(resumption_protection_key,
                                   "pinning protection", L)
 
 ## Pinning Proof
 
 The proof sent by the server consists of this value:
 
-    proof = HMAC(original_pinning_secret, "pinning proof" + '\0' +
-                 client.random + server.random + Hash(server_public_key))
+    proof = HMAC(original_pinning_secret, "pinning proof" + crlen +
+	        client.random + srlen + server.random +
+	        Hash(server_public_key))
 
 where HMAC {{RFC2104}} uses the Hash algorithm for the handshake,
-and the same hash is also used over the server's public key.
+and the same hash is also used over the server's public key. The server\_public\_key value
+is the DER representation of the public key. The nonce lengths crlen and srlen
+are a single octet each.
 
 # Operational Considerations
 
@@ -324,6 +344,15 @@ cluster members, nothing more needs to be done.
 Moreover, synchronization does not need
 to be instantaneous, e.g. protection keys can be distributed a few minutes
 or hours in advance of their rollover.
+
+Misconfiguration can lead to the server's clock being off by a large amount of time. Therefore we recommend
+never to automatically delete protection keys, even when they are long expired.
+
+## Ticket Lifetime
+
+The lifetime of the ticket is a commitment by the server to retain the ticket's corresponding
+protection key for this duration, so that the server can prove to the client that it
+knows the secret embedded in the ticket. For production systems, the lifetime SHOULD be between 7 and 30 days.
 
 ## Certificate Renewal
 
@@ -352,7 +381,7 @@ disabled.
 
 If a server compromise is detected, the pinning secret MUST be rotated immediately,
 but the server MUST still accept valid tickets that use the old, compromised key.
-Clients who still hold old pinning tickets will remain vulnerable to MITM attacks,
+Clients that still hold old pinning tickets will remain vulnerable to MITM attacks,
 but those that connect to the correct server will immediately receive new tickets.
 
 ## Disaster Recovery
@@ -366,7 +395,7 @@ of confidentiality as the server's private key.
 
 Readers should note that {{RFC5077}} session resumption keys are more security sensitive, and
 should normally not be backed up but rather treated as ephemeral keys. Even when servers derive
-pinning secrets from resumption keys ({{pinning-secret}}), they MUST NOT back up resumption keys. 
+pinning secrets from resumption keys ({{pinning-secret}}), they MUST NOT back up resumption keys.
 
 # Previous Work
 
@@ -377,49 +406,63 @@ This section compares ticket pinning to two earlier proposals, HPKP and TACK.
 The current IETF standard for pinning the identity of web servers
 is the Public Key Pinning Extension
 for HTTP, or HPKP {{RFC7469}}. Unfortunately HPKP has not seen wide deployment yet.
+As of March 2016, the number of servers using HPKP was less than 3000 {{Netcraft}}.
 This may simply be
 due to inertia, but we believe the main reason is the onerous manual certificate
 management which is needed to implement HPKP for enterprise servers. The penalty
 for making mistakes (e.g. being too early or too late to deploy new pins) is
-often bricking the server for some clients.
+having the server become unusable for some of the clients.
 
 To demonstrate
-this point, we present an analysis of what it would take to deploy HPKP for
+this point, we present a list of the steps involved in deploying HPKP on
 a security-sensitive Web server.
 
-1. Pin only end-entity certificates. Pinning an intermediate certificate
-means that the enterprise is
-at risk if the CA makes sudden operational changes. Pinning the root certificate is useless:
-it still allows every "brand" (sub-CA) to issue a fake certificate for the servers.
-1. Make sure the default reminder period from the certificate management system is
-long, e.g. 3 months. This is assuming a pin period ("max age") of 1 month.
-1. Issue two certificates with the same validity period, the main and a backup one.
-1. Once we get the expiration reminder, issue two new certificates and install
-the new "main"
-certificate on servers. Change the HPKP header to send the old
-main certificate as the main pin (actually, what is sent is the certificate's SPKI),
-the new main certificate as the backup, and the new backup certificate as a secondary backup
-(in case the new main certificate gets compromised). This transition period must be at least
-one month, so as not to break clients who still pin to the old main certificate.
-1. Shortly before expiration, change the HPKP header again to send the new
-main certificate's SPKI as
-the main pin and the new backup certificate as the backup pin.
+1. Generate two public/private key-pairs on a computer that is not the Live server. The second one is
+the "backup1" key-pair.
 
-To summarize:
+    `openssl genrsa -out "example.com.key" 2048;`
 
-|---
-| Period | Main server certificate | Backup pin | Secondary backup pin
-| Regular operation: before rotation | Old main certificate | Old backup certificate
-| >1 month before expiration of old certificates |  Old main certificate |  New main certificate |  New backup certificate
-| Shortly before expiration but not earlier than the previous change + 1 month | New main certificate | New backup certificate
-| Regular operation: after rotation | New main certificate | New backup certificate
+    `openssl genrsa -out "example.com.backup1.key" 2048;`
 
-The above assumes that public keys are normally associated with certificates, that is, the certificate
-is issued shortly after the public key is generated. This is true for many enterprise deployment,
-where certificates are managed by certificate management applications or directly with the CA,
-and there is no facility
-for secure and resilient long-term storage of public (and private) keys.
-HPKP is easier to deploy securely where such facilities do exist.
+
+2. Generate hashes for both of the public keys. These will be used in the HPKP header:
+
+    `openssl rsa -in "example.com.key" -outform der -pubout | openssl dgst -sha256 -binary | openssl enc -base64`
+
+    `openssl rsa -in "example.com.backup1.key" -outform der -pubout | openssl dgst -sha256 -binary | openssl enc -base64`
+
+3. Generate a single CSR (Certificate Signing Request) for the first key-pair, where you
+include the domain name in the CN (Common Name) field:
+
+    `openssl req -new -subj "/C=GB/ST=Area/L=Town/O=Company/CN=example.com"
+            -key "example.com.key" -out "example.com.csr";`
+
+4. Send this CSR to the CA (Certificate Authority), and go though the dance to prove you own the domain.
+The CA will give you back a single certificate that will typically expire within a year or two.
+
+5. On the Live server, upload and setup the first key-pair (and its certificate).
+At this point you can add the "Public-Key-Pins" header, using the two hashes you created in step 2.
+
+    Note that only the first key-pair has been uploaded to the server so far.
+
+6. Store the second (backup1) key-pair somewhere safe, probably somewhere encrypted like a password manager.
+It won't expire, as it's just a key-pair, it just needs to be ready for when you need to get your next certificate.
+
+7. Time passes... probably just under a year (if waiting for a certificate to expire), or maybe sooner if you find
+that your server has been compromised and you need to replace the key-pair and certificate.
+
+8. Create a new CSR (Certificate Signing Request) using the "backup1" key-pair, and get a new certificate
+from your CA.
+
+9. Generate a new backup key-pair (backup2), get its hash, and store it in a safe place (again,
+not on the Live server).
+
+10. Replace your old certificate and old key-pair, and update the "Public-Key-Pins" header to remove
+the old hash, and add the new "backup2" key-pair.
+
+Note that in the above steps, both the certificate issuance as well as the storage of the backup key pair
+involve manual steps. Even with an automated CA that runs the ACME protocol, key backup would be a challenge
+to automate.
 
 ## Comparison: TACK {#tack}
 
@@ -437,7 +480,7 @@ security is not immediately at risk.
 their life cycle, and so both can be deployed with no manual steps.
 - TACK uses ECDSA to sign the server's public key. This allows cooperating clients
 to share server assertions between themselves. This is an optional TACK feature,
-one that cannot be done with pinning tickets.
+and one that cannot be done with pinning tickets.
 - TACK allows multiple servers to share its public keys. Such sharing is disallowed
 by the current document.
 - TACK does not allow the server to track a particular client, and so has better
@@ -447,6 +490,53 @@ to the time period since the pin was first observed, with a hard upper bound of 
 The current draft makes the lifetime explicit, which may be more flexible to deploy.
 For example, Web sites which are only visited rarely by users may opt for a longer
 period than other sites that expect users to visit on a daily basis.
+
+# Implementation Status
+
+[Note to RFC Editor: please remove this section before publication.]
+
+This section records the status of known implementations of the
+protocol defined by this specification at the time of posting of
+this Internet-Draft, and is based on a proposal described in [RFC6982].
+The description of implementations in this section is intended to assist the IETF
+in its decision processes in
+progressing drafts to RFCs.  Please note that the listing of any individual
+implementation here does not imply endorsement by the
+IETF.  Furthermore, no effort has been spent to verify the
+information presented here that was supplied by IETF contributors.
+This is not intended as, and must not be construed to be, a
+catalog of available implementations or their features.  Readers
+are advised to note that other implementations may exist.
+
+According to RFC 6982, "this will allow reviewers and working
+groups to assign due consideration to documents that have the
+benefit of running code, which may serve as evidence of valuable
+experimentation and feedback that have made the implemented
+protocols more mature.  It is up to the individual working groups
+to use this information as they see fit".
+
+## Mint Fork
+
+### Overview
+A fork of the Mint TLS 1.3 implementation, developed by Yaron Sheffer
+and available at https://github.com/yaronf/mint.
+
+### Description
+This is a fork of the TLS 1.3 implementation, and includes client and server code.
+In addition to the actual protocol, several utilities are provided allowing
+to manage protection keys on the server side, and pinning tickets on the client side.
+
+### Level of Maturity
+This is a prototype.
+
+### Coverage
+The entire protocol is implemented.
+
+### Licensing
+Mint itself and this fork are available under an MIT license.
+
+### Contact Information
+See author details below.
 
 # Security Considerations
 
@@ -473,7 +563,7 @@ the server with which it is initiating the connection.
 ## Pervasive Monitoring
 
 Some organizations, and even some countries perform pervasive monitoring on their
-constituents {{RFC7258}}. This often takes the form of SSL proxies. Because of
+constituents {{RFC7258}}. This often takes the form of always-active SSL proxies. Because of
 the TOFU property, this protocol does not provide any security in such cases.
 
 ## Server-Side Error Detection {#server_error}
@@ -483,7 +573,7 @@ tickets and therefore can be assumed to be victims of a MITM attack. Server oper
 can use such cases as indications of ongoing attacks, similarly to fake certificate
 attacks that took place in a few countries in the past.
 
-## Client Policy
+## Client Policy and SSL Proxies {#client_policy}
 
 Like it or not, some clients are normally deployed behind an SSL proxy.
 Similarly to {{RFC7469}}, it is acceptable to allow pinning to be disabled for some hosts
@@ -494,13 +584,14 @@ an empty PinningTicket extension from such hosts as a valid response.
 
 ## Client-Side Error Behavior {#client_error}
 
-When a client receives an incorrect or empty PinningTicket from a pinned server, it MUST
+When a client receives a malformed or empty PinningTicket extension from a pinned server, it MUST
 abort the handshake and MUST NOT retry with no PinningTicket in the request. Doing
 otherwise would expose the client to trivial fallback attacks, similar to
 those described in {{RFC7507}}.
 
 This rule can however have negative affects on clients that move from behind SSL proxies into
-the open Internet. Therefore, browser and library vendors MUST provide a documented way to
+the open Internet and vice versa, if the advice in {{client_policy}} is not followed.
+Therefore, we RECOMMEND that browser and library vendors provide a documented way to
 remove stored pins.
 
 ## Client Privacy
@@ -523,16 +614,26 @@ No registries are defined by this document.
 # Acknowledgements
 
 The original idea behind this proposal was published in {{Oreo}} by Moty Yung,
-Benny Pinkas 
+Benny Pinkas
 and Omer Berkman. The current protocol is but a
 distant relative of the original Oreo protocol, and any errors are the
 draft author's alone.
 
 I would like to thank Dave Garrett, Daniel Kahn Gillmor and Yoav Nir for their comments on this draft.
+Special thanks to Craig Francis for contributing the HPKP deployment script.
 
 --- back
 
 # Document History
+
+## draft-sheffer-tls-pinning-ticket-02
+
+- Added an Implementation Status section.
+- Added lengths into the extension structure.
+- Changed the computation of the pinning proof to be more robust.
+- Clarified requirements on the length of the pinning_secret.
+- Revamped the HPKP section to be more in line with current practices, and added recent
+statistics on HPKP deployment.
 
 ## draft-sheffer-tls-pinning-ticket-01
 
