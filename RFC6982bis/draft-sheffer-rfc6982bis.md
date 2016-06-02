@@ -162,8 +162,10 @@ are {{RFC1369}} and {{RFC5080}}.
       alpha, beta, production, widely used, etc.
 
    -  Coverage: which parts of the protocol specification are
-      implemented and which versions of the Internet-Draft were
-      implemented.
+	  implemented.
+
+   - Version compatibility: what version/versions of the Internet Draft
+	 are known to be implemented.
 
    -  Licensing: the terms under which the implementation can be used.
       For example: proprietary, royalty licensing, freely distributable
@@ -322,6 +324,10 @@ are {{RFC1369}} and {{RFC5080}}.
 --- back
 
 # Document History
+
+## draft-sheffer-rfc6982bis-03
+
+* Comment from Suresh re: I-D version compatibility.
 
 ## draft-sheffer-rfc6982bis-02
 
