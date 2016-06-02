@@ -111,12 +111,13 @@ informative:
 
    It is up to the individual working groups to use this information as
    they see fit, but one result might be the preferential treatment of
-   documents, resulting in them being processed more rapidly.  We
+   documents, resulting in them being processed more rapidly. We
    recommend that the Implementation Status section should be removed
    from Internet-Drafts before they are published as RFCs.  As a result,
    we do not envisage changes to this section after approval of the
-   document for publication, e.g., the RFC errata process does not
-   apply.
+   document for publication, while the document sits in the RFC-editor 
+   queue, e.g., the RFC errata process does not apply.
+
 
 This process is not mandatory.  Authors of Internet-Drafts
 are encouraged to consider using the process for their
@@ -152,8 +153,8 @@ are {{RFC1369}} and {{RFC5080}}.
 
    -  The organization responsible for the implementation, if any.
 
-   -  The implementation's name and/or a link to a web page describing
-      the implementation.
+   - The implementation's name and/or a link to a web page where the implementation
+	 or a description of it can be found.
 
    -  A brief general description.
 
@@ -171,9 +172,13 @@ are {{RFC1369}} and {{RFC5080}}.
       style), and other (specify).
 
    -  Implementation experience: any useful information the implementers
-      want to share with the community.
+	  want to share with the community.
+   
    -  Contact information: ideally a person's name and email address,
-      but possibly just a URL or mailing list.
+	  but possibly just a URL or mailing list.
+
+   - The date when information about this particular implementation was
+	 last updated.
 
    In addition, this section can contain information about the
    interoperability of any or all of the implementations, including
@@ -292,11 +297,7 @@ are {{RFC1369}} and {{RFC5080}}.
    expected to prefer proposals that have "running code" associated with
    them, over others that do not.
 
-   The inclusion of
-   Implementation Status sections in Internet-Drafts is not mandatory,
-   but the authors of this document wish to encourage authors of other
-   Internet-Drafts to try out this simple mechanism to discover whether
-   it is useful.  Working group chairs are invited to suggest this
+   Working group chairs are invited to suggest this
    mechanism to document editors in their working groups, and to draw
    the attention of their working group participants to Implementation
    Status sections where they exist.
@@ -321,6 +322,10 @@ are {{RFC1369}} and {{RFC5080}}.
 --- back
 
 # Document History
+
+## draft-sheffer-rfc6982bis-02
+
+* Implemented IESG review comments.
 
 ## draft-sheffer-rfc6982bis-01
 
