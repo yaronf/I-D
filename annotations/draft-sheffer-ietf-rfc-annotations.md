@@ -42,7 +42,7 @@ RFCs were initially intended as, literally, requests for comments. Since then,
 they have turned into standards documents,
 with a peculiar process to report errors and a highly
 onerous process to actually
-have the RFC modified. Non-IETF participants are typically unaware of any way to provide
+have the RFC modified/republished. Non-IETF participants are typically unaware of any way to provide
 feedback to published RFCs, other than direct email to the listed authors.
 This is very different from the way many web specifications are
 developed today and arguably leads to the value of published RFCs diminishing over time.
@@ -169,7 +169,7 @@ during the experiment or later.
 
 # Trying it for Yourself
 
-* Go to https://hypothes.is/ and paste a link, e.g. https://tools.ietf.org/html/rfc1149.
+* Go to https://hypothes.is/, paste a link, e.g. https://tools.ietf.org/html/rfc1149 and press Annotate.
 * Now open the sidebar to view existing public annotations.
 * Highlight some text and right-click it. You will need to sign up for an account
 to create your own annotations. 
