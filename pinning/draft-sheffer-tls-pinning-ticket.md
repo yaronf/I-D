@@ -323,7 +323,8 @@ The proof sent by the server consists of this value:
 
 where HMAC {{RFC2104}} uses the Hash algorithm for the handshake,
 and the same hash is also used over the server's public key. The server\_public\_key value
-is the DER representation of the public key. The nonce lengths crlen and srlen
+is the DER representation of the public key, specifically
+the SubjectPublicKeyInfo structure as-is. The nonce lengths crlen and srlen
 are a single octet each.
 
 # Operational Considerations
@@ -620,7 +621,8 @@ distant relative of the original Oreo protocol, and any errors are the
 draft author's alone.
 
 I would like to thank Dave Garrett, Daniel Kahn Gillmor and Yoav Nir for their comments on this draft.
-Special thanks to Craig Francis for contributing the HPKP deployment script.
+Special thanks to Craig Francis for contributing the HPKP deployment script, and to Ralph Holz
+for several fruitful discussions.
 
 --- back
 
