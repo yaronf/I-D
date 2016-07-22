@@ -5,7 +5,7 @@ The following applies to all Internet-Drafts contained in this directory or in a
 ## Status of Internet-Drafts
 
    Internet-Drafts are submitted in full conformance with the
-   provisions of BCP 78 and BCP 79.
+   provisions of [BCP 78](https://www.ietf.org/rfc/rfc3978.txt) and [BCP 79](https://www.ietf.org/rfc/rfc4879.txt).
 
    Internet-Drafts are working documents of the Internet Engineering
    Task Force (IETF).  Note that other groups may also distribute
