@@ -28,7 +28,12 @@ author:
     ins: Y. Sheffer
     name: Yaron Sheffer
     organization: Intuit
-    email: yaronf.ietf@gmail.com
+    email: "yaronf.ietf@gmail.com"
+  -
+    ins: D. Migault
+    name: Daniel Migault
+    organization: Ericsson
+    email: "mglt.ietf@gmail.com"
 
 normative:
   RFC2104:
@@ -39,10 +44,10 @@ normative:
 informative:
   RFC6454:
   RFC6962:
-  RFC6982:
   RFC7258:
   RFC7469:
   RFC7507:
+  RFC7942:
   I-D.perrin-tls-tack:
   Oreo:
     title: "Firm Grip Handshakes: A Tool for Bidirectional Vouching"
@@ -62,13 +67,22 @@ informative:
 
 --- abstract
 
-Fake public-key certificates are an ongoing problem for users of TLS. Several solutions
-have been proposed, but none is currently in wide use.
-This document proposes to extend TLS with opaque tickets, similar to those being
-used for TLS session resumption, as a way to pin the server's identity.
-That is, to ensure the client that it is connecting to the right server even
-in the presence of corrupt certificate authorities and fake certificates. The main advantage
-of this solution is that no manual management actions are required.
+Misissued public-key certificates can prevent TLS clients from appropriately 
+authenticating the TLS server. Several alternatives
+have been proposed to detect this situation and prevent a client from establishing 
+a TLS session with a TLS end point authenticated with an illegitimate 
+public-key certificate, but none is currently in wide use.
+
+This document proposes to extend TLS with opaque pinning tickets
+as a way to pin the server's identity. During an initial TLS session,
+the server provides an original encrypted pinning ticket.
+In subsequent TLS session establishment, upon receipt of the pinning ticket,
+the server proves its ability to decrypt the pinning ticket
+and thus the ownership if the pinning protection key.
+The client can now safely conclude that the TLS session is established
+with the same TLS server as the original TLS session.
+One of the important properties of this proposal is that
+no manual management actions are required.
 
 --- middle
 
@@ -87,34 +101,68 @@ mode. It is noted that the relevant industry forum (CA/Browser Forum) is indeed 
 extensive adoption.
 TACK has some similarities to the current proposal, but work on it seems to have stalled.
 {{tack}} compares our proposal to TACK.
-HPKP is a standard,
-but so far has proven hard to deploy (see {{hpkp}}).
-This proposal augments these mechanisms
-with a much easier to implement and deploy solution for server identity pinning, by
-reusing some of the mechanisms behind TLS session resumption.
 
-When a client first connects to a server, the server responds with a ticket and a
-committed lifetime. The ticket is modeled on the session resumption ticket, but is
-distinct from it. Specifically, the ticket acts as a "second factor" for proving
-the server's identity;
-the ticket does not authenticate the client. The
-committed lifetime indicates for how long the server promises to
+HPKP is an IETF standard, but so far has proven hard to deploy. HPKP cannot be completely 
+automated resulting in error-prone manual configuration. Such errors 
+could prevent the web server from being accessed by some clients. In addition, HPKP uses a HTTP 
+header which makes this solution HTTPS specific and not generic to TLS. On the other hand, the current 
+document provides a solution that can be entirely automated. {{hpkp}} compares 
+HPKP to the current draft in more detail.
+
+The ticket pinning proposal augments these mechanisms
+with a much easier to implement and deploy solution for server identity pinning, by
+reusing some of the ideas behind TLS session resumption.
+
+Ticket pinning is a second factor server authentication method
+and is not proposed as a substitute
+of the authentication method provided in the TLS key exchange. More specifically,
+the client only uses the pinning identity method after the TLS key exchange is successfully completed.
+In other words, the pinning identity method is only performed over an authenticated TLS session.
+
+Ticket pinning is a Trust On First Use (TOFU) mechanism, in that
+the first server authentication is only based on PKI certificate
+validation, but for any follow-on sessions, the client is further ensuring 
+the server's identity based on the server's ability
+to decrypt the ticket, in addition to normal PKI certificate authentication.
+
+During initial TLS session establishment, 
+the client requests a pinning ticket from the server.
+Upon receiving the request the server generates a pinning secret which is expected to be
+unpredictable for peers other than the client or the server.
+In our case, the pinning secret is generated from parameters exchanged during the TLS key exchange,
+so client and server can generate it locally and independently. The server constructs
+the pinning ticket with the necessary information to retrieve the pinning secret.
+The server then encrypts the ticket and returns the pinning ticket to the client with
+an associated pinning lifetime.
+
+The pinning lifetime value indicates for how long the server promises to
 retain the server-side ticket-encryption key, which allows it to complete
 the protocol exchange correctly and prove its identity. The committed lifetime is
-typically on the order of weeks or months. We follow the Trust On First Use (TOFU)
-model, in that the first server authentication is only based on PKI certificate
-validation, but for any follow-on sessions, the client is further ensuring the server's
-identity based on the server's ability to decrypt the ticket and complete the handshake
-correctly.
+typically on the order of weeks or months.
 
-This version of the draft only discusses TLS 1.3. We believe that the idea can also
+Once the key exchange is completed and the server is deemed authenticated,
+the client generates locally the pinning secret and caches the server's identifiers to
+index the pinning secret as well as the pinning ticket and its associated lifetime.
+
+When the client re-establishes a new TLS session with the server, it sends the pinning ticket
+to the server. Upon receiving it, the sever returns a proof of knowledge of the pinning secret.
+Once the key exchange is completed and the server has been authenticated, the client checks
+the pinning proof returned by the server with its pinning secret. It a match occurs,
+the client concludes that the server it is currently connected to and the server it was
+previously connected to both own the same pinning protection key and thus are the same server.
+
+This version of the draft only applies to TLS 1.3. We believe that the idea can also
 be back-fitted into earlier versions of the protocol.
 
 The main advantages of this protocol over earlier pinning solutions are:
 
 * The protocol is at the TLS level, and as a result is not restricted to HTTP at the
 application level.
-* Once a single parameter is configured (the ticket secret's lifetime), operation
+* The protocol is robust to server IP, CA, and public key changes.
+The server is characterized by the ownership of the pinning protection key,
+which is never provided to the client. Server configuration parameters such as the CA and
+the public key may change without affecting the pinning ticket protocol.
+* Once a single parameter is configured (the ticket's lifetime), operation
 is fully automated. The server administrator need not bother with the
 management of backup certificates or explicit pins.
 * For server clusters, we reuse the existing {{RFC5077}} infrastructure where
@@ -140,9 +188,20 @@ This protocol supports full TLS handshakes, as well as 0-RTT handshakes.
 Below we present it in the context of a full handshake, but behavior in 0-RTT
 handshakes should be identical.
 
-The preshared key (PSK) variant of TLS 1.3 is orthogonal to this protocol. A TLS session can
+The document presents some similarities with the ticket resumption mechanism described in {{RFC5077}}
+but addresses a different scope. More specifically, the pinning ticket does not carry any state
+associated with a TLS session and thus cannot be used for session resumption,
+or to authenticate the client.
+
+TLS 1.3 provides session resumption based on preshared key (PSK). 
+This is orthogonal to this protocol. With TLS 1.3, a TLS session can
 be established using PKI and a pinning ticket, and later resumed with PSK.
-The PSK handshake MUST NOT include the extension defined here.
+
+However, the protocol described in this document addresses
+the problem of misissued certificates. Thus, it is not expected to be used outside 
+a certificate-based TLS key exchange, 
+such as in PSK. As a result, PSK handshakes MUST NOT include the 
+extension defined here.
 
 ## Initial Connection
 
@@ -179,45 +238,72 @@ server's first response, in the returned PinningTicket extension.
             [] Indicates messages protected using keys
                derived from the master secret.
 
-The server computes a pinning_secret value ({{pinning-secret}})
-in order to generate the ticket.
-When the connection setup is complete, the client computes
-the same pinning\_secret value and saves it locally, together with the received
-ticket.
+If a client supports the pinning ticket extension and does
+not not have any pinning ticket associated with the server, 
+the exchange is considered as an initial connection. Other 
+reasons the client may not have a pinning ticket include 
+the client having flushed its pinning ticket store, or the 
+committed lifetime of the pinning ticket having expired.
 
-The client SHOULD cache the ticket and the pinning_secret for the lifetime received from
-the server. The client MUST forget these values
-at the end of this duration.
+Upon receipt of the PinningTicket extension, the server computes
+a pinning secret ({{pinning-secret}}), and sends the 
+pinning ticket ({{pinning-ticket}}) encrypted with 
+the pinning protection key ({{pinning-ticket-key}}). 
+The pinning ticket is associated with a lifetime value 
+by which the server assumes the responsibility
+of retaining the pinning protection key and being able to 
+decrypt incoming pinning tickets
+during the period indicated by the committed lifetime.
 
-The returned ticket is sent as part of the ServerHello encrypted extensions, and MUST NOT be sent
+Once the pinning ticket has been generated, the server returns the 
+pinning ticket and the committed lifetime in a PinningTicket extension
+embedded in the EncryptedExtensions message.
+We note that a PinningTicket
+extension MUST NOT be sent
 as part of a HelloRetryRequest.
+
+Upon receiving the pinning ticket, the client MUST NOT accept it until the key 
+exchange is completed and the server authenticated. If the key
+exchange is not completed successfully, the client MUST ignore
+the received pinning ticket. Otherwise, the client computes the pinning
+secret and SHOULD cache the pinning secret and the pinning ticket
+for the duration indicated by the pinning 
+ticket lifetime. The client can clean up the cached values at the end of the indicated lifetime.
 
 ## Subsequent Connections
 
 When the client initiates a connection to a server it has previously seen (see
 {{indexing}}
 on identifying servers), it SHOULD send the pinning ticket for that server.
+The pinning ticket, pinning secret and pinning ticket lifetime computed during
+the establishment of the previous TLS session are designated in this document as the "original"
+ones, to distinguish them from a new ticket that may be generated during the current session.
 
-The server MUST extract the original pinning_secret from the ticket
+The server MUST extract the original pinning\_secret value from the ticket
 and MUST respond with a PinningTicket extension, which includes:
 
 * A proof that the server can understand
 the ticket that was sent by the client; this proof also binds the pinning ticket to
-the server's (current) public key. The proof is MANDATORY if a ticket was sent by
+the server's (current) public key. The proof is MANDATORY if a pinning ticket was sent by
 the client.
 * A fresh pinning ticket. The main reason for refreshing the ticket on each connection
 is privacy: to avoid the ticket serving as a fixed client identifier. It is RECOMMENDED
 to include a fresh ticket with each response.
 
-If the server cannot validate the ticket, that might indicate an earlier MITM attack
+If the server cannot validate the received ticket, that might indicate an earlier MITM attack
 on this client. The server MUST then abort the connection with a
-handshake_failure alert, and SHOULD log this failure.
+handshake\_failure alert, and SHOULD log this failure.
 
 The client MUST verify the proof, and if it fails to do so,
 MUST issue a handshake\_failure alert
-and abort the connection (see also {{client_error}}). When the connection is successfully
+and abort the connection (see also {{client_error}}).
+It is important that the client does not attempt to "fall back" by omitting
+the PinningTicket extension.
+
+When the connection is successfully
 set up, i.e. after the Finished message is verified, the
-client SHOULD store the new ticket along with the corresponding pinning\_secret.
+client SHOULD store the new ticket along with the corresponding pinning\_secret,
+replacing the original ticket.
 
 Although this is an extension, if the client already has a ticket for a server,
 the client MUST interpret a missing PinningTicket extension in the
@@ -235,8 +321,12 @@ the value sent inside the Server Name Indication (SNI) extension.
 This definition is similar to
 a Web Origin {{RFC6454}}, but does not assume the existence of a URL.
 
-IP addresses are ephemeral and forbidden in SNI and therefore Pins MUST NOT be associated
-with IP addresses.
+The purpose of ticket pinning is to pin the server identity. As a result,
+any information orthogonal to the server's identity MUST NOT be considered in indexing.
+More particularly, IP addresses are ephemeral and forbidden in SNI and therefore pins MUST NOT
+be associated
+with IP addresses. Similarly, CA names or public keys associated with server
+MUST NOT be used for indexing.
 
 # Message Definitions
 
@@ -250,13 +340,10 @@ We follow the message notation of {{I-D.ietf-tls-tls13}}.
      struct {
        select (Role) {
        case client:
-	       uint16 ticket_len; //zero if no ticket
            pinning_ticket ticket<0..2^16-1>; //omitted on 1st connection
 
          case server:
-	       uint16 proof_len; //zero if no proof
            pinning_proof proof<0..2^8-1>; //no proof on 1st connection
-	       uint16 ticket_len; //zero if no ticket
            pinning_ticket ticket<0..2^16-1>; //omitted on ramp down
            uint32 lifetime;
        }
@@ -267,18 +354,13 @@ ticket
 to the client. The extension MUST contain exactly 0 or 1 tickets.
 
 proof
-: a demonstration by the server that it understands the ticket and therefore that
-it is in possession of the secret that was used to generate it originally. The
-proof is further bound to the server's public key to prevent some MITM attacks.
+: a demonstration by the server that it understands the received ticket and therefore that
+it is in possession of the secret that was used to generate it originally.
 The extension MUST contain exactly 0 or 1 proofs.
 
-ticket\_len, proof\_len
-: the length in octet of the ticket or, respectively, the proof. The length values are each
-2 bytes, in network order.
-
 lifetime
-: the duration (in seconds) that the server commits to accept the newly offered
-ticket in the future.
+: the duration (in seconds) that the server commits to accept offered
+tickets in the future.
 
 # Cryptographic Operations {#crypto}
 
@@ -287,50 +369,86 @@ by the protocol peers.
 
 ## Pinning Secret {#pinning-secret}
 
-On each connection that includes the PinningTicket extension, both peers
-derive the the value pinning_secret from the shared Diffie Hellman secret. They compute:
+The pinning secret is generated locally by the client and the server which means they
+must use the same inputs to generate it. This value must be generated before the 
+ServerHello message is sent, and must be unpredictable to any party
+other than the client and the server.
 
-    pinning_secret = HKDF(xSS + xES, "pinning secret", L)
+The pinning secret is derived
+using the Derive-Secret function provided by TLS 1.3, described in
+Section "Key Schedule" of {{I-D.ietf-tls-tls13}}.
 
-using the notation of {{I-D.ietf-tls-tls13}}, sec. Key Schedule. This secret
-is used by the server to generate the new ticket that it returns to the client.
-
-The length of the secret L is determined by the server, and MUST be between 16 and 63 octets, inclusive.
+	pinning secret = Derive-Secret(Handshake Secret, "pinning secret", 
+                 ClientHello...ServerHello)
 
 ## Pinning Ticket {#pinning-ticket}
-The pinning ticket's format is not specified by this document, but it MUST be
-encrypted and integrity-protected using a long-term pinning-ticket protection key.
-The server MUST rotate the protection key periodically, and therefore the ticket
-MUST contain a protection key ID or serial number.
-The ticket MUST allow the server to recover the pinning_secret value, and MAY
-include additional information.
+
+The pinning ticket contains the pinning secret. The pinning ticket
+is provided by the client to the server which decrypts it in order 
+to extract the pinning secret and responds with a pinning proof.
+As a result, the characteristics of the pinning ticket are:
+
+* Pinning tickets MUST be encrypted and integrity-protected 
+using strong cryptographic algorithms.
+* Pinning tickets MUST be protected with a long-term pinning protection key.
+* Pinning tickets MUST include a pinning protection key ID or serial number 
+as to enable the pinning protection key to be refreshed.
+* The pinning ticket MAY include other information, in addition to the pinning secret.
+
+The pinning ticket's format is not specified by this document, but we RECOMMEND
+a format similar to the one proposed by {{RFC5077}}.
+
+## Pinning Protection Key {#pinning-ticket-key}
+
+The pinning protection key is only used by the server and so remains 
+server implementation specific. {{RFC5077}} recommends 
+the use of two keys, but when using AEAD algorithms only a single key is required.
+
+When a single server terminates TLS for multiple virtual servers using the Server Name Indication (SNI)
+mechanism, we strongly RECOMMEND to use a separate protection key for each one of them, in order
+to allow migrating virtual servers between different servers while keeping pinning active.
 
 As noted in {{cluster}}, if the server is actually a cluster of machines,
 the protection key MUST
 be synchronized between them. An easy way to do it is to derive it from the
 session-ticket protection key, which is already synchronized. For example:
 
-    pinning_protection_key = HKDF(resumption_protection_key,
+    pinning_protection_key = HKDF-Expand(resumption_protection_key,
                                   "pinning protection", L)
 
 ## Pinning Proof
 
-The proof sent by the server consists of this value:
+The pinning proof is sent by the server to demonstrate that it has been able 
+to decrypt the pinning ticket and retrieve the pinning secret. The 
+proof must be unpredictable and must not be replayed. Similarly to 
+the pinning secret, the pinning proof is sent by the server in the 
+ServerHello message.
+In addition, it must not be possible for a MITM server with a fake certificate to obtain
+a pinning proof from the original server.
 
-    proof = HMAC(original_pinning_secret, "pinning proof" + crlen +
-	        client.random + srlen + server.random +
-	        Hash(server_public_key))
+In order to address these requirements, the pinning proof is bound 
+to the TLS session as well as the public key of the server:
 
-where HMAC {{RFC2104}} uses the Hash algorithm for the handshake,
-and the same hash is also used over the server's public key. The server\_public\_key value
+    proof = HMAC(original_pinning_secret, "pinning proof" +
+	             Handshake-Secret + Hash(server_public_key))
+
+where HMAC {{RFC2104}} uses the Hash algorithm that was negotiated in the handshake,
+and the same hash is also used over the server's public key. The original\_pinning\_secret value
+refers to the secret value extracted from the ticket sent by the client, to distinguish it from
+a new pinning secret value that is possibly computed in the current exchange.
+The server\_public\_key value
 is the DER representation of the public key, specifically
-the SubjectPublicKeyInfo structure as-is. The nonce lengths crlen and srlen
-are a single octet each.
+the SubjectPublicKeyInfo structure as-is.
 
 # Operational Considerations
 
 The main motivation behind the current protocol is to enable identity
-pinning without the need for manual operations. Manual operations are susceptible
+pinning without the need for manual operations. To achieve this goal operations described
+in identity pinning are only performed within the current TLS session, and there is no dependence
+on any TLS configuration parameters such as CA identity or public keys.
+As a result, configuration changes are unlikely to lead to 
+desynchronized state between the client and the server.
+Manual operations are susceptible
 to human error and in the case of public key pinning, can easily result in
 "server bricking": the server becoming inaccessible to some or all of its users.
 
@@ -346,7 +464,8 @@ Moreover, synchronization does not need
 to be instantaneous, e.g. protection keys can be distributed a few minutes
 or hours in advance of their rollover.
 
-Misconfiguration can lead to the server's clock being off by a large amount of time. Therefore we recommend
+Misconfiguration can lead to the server's clock being off by a large amount of time.
+Therefore we RECOMMEND
 never to automatically delete protection keys, even when they are long expired.
 
 ## Ticket Lifetime
@@ -361,11 +480,14 @@ The protocol ensures that the client will continue speaking to the correct serve
 even when the server's certificate is renewed. In this sense, we are not "pinning
 certificates" and the protocol should more precisely be called "server identity pinning".
 
+Note that this property is not impacted by the use of the server's public key in the pinning proof,
+because the scope of the public key used is only the current TLS session.
+
 ## Certificate Revocation
 
-The protocol is orthogonal to certificate validation, in the sense that, if the
+The protocol is orthogonal to certificate validation in the sense that, if the
 server's certificate has been revoked or is invalid for some other reason,
-the client MUST refuse to connect to it.
+the client MUST refuse to connect to it regardless of any ticket-related behavior.
 
 ## Disabling Pinning {#ramp_down}
 
@@ -380,10 +502,11 @@ disabled.
 
 ## Server Compromise
 
-If a server compromise is detected, the pinning secret MUST be rotated immediately,
+If a server compromise is detected, the pinning protection key MUST be rotated immediately,
 but the server MUST still accept valid tickets that use the old, compromised key.
 Clients that still hold old pinning tickets will remain vulnerable to MITM attacks,
-but those that connect to the correct server will immediately receive new tickets.
+but those that connect to the correct server will immediately receive new tickets
+protected with the newly generated pinning protection key.
 
 ## Disaster Recovery
 
@@ -494,11 +617,12 @@ period than other sites that expect users to visit on a daily basis.
 
 # Implementation Status
 
-[Note to RFC Editor: please remove this section before publication.]
+Note to RFC Editor: please remove this section before publication, including
+the reference to {{RFC7942}}.
 
 This section records the status of known implementations of the
 protocol defined by this specification at the time of posting of
-this Internet-Draft, and is based on a proposal described in [RFC6982].
+this Internet-Draft, and is based on a proposal described in [RFC7942].
 The description of implementations in this section is intended to assist the IETF
 in its decision processes in
 progressing drafts to RFCs.  Please note that the listing of any individual
@@ -509,7 +633,7 @@ This is not intended as, and must not be construed to be, a
 catalog of available implementations or their features.  Readers
 are advised to note that other implementations may exist.
 
-According to RFC 6982, "this will allow reviewers and working
+According to RFC 7942, "this will allow reviewers and working
 groups to assign due consideration to documents that have the
 benefit of running code, which may serve as evidence of valuable
 experimentation and feedback that have made the implemented
@@ -525,13 +649,16 @@ and available at https://github.com/yaronf/mint.
 ### Description
 This is a fork of the TLS 1.3 implementation, and includes client and server code.
 In addition to the actual protocol, several utilities are provided allowing
-to manage protection keys on the server side, and pinning tickets on the client side.
+to manage pinning protection keys on the server side, and pinning tickets on the client side.
 
 ### Level of Maturity
 This is a prototype.
 
 ### Coverage
 The entire protocol is implemented.
+
+### Version Compatibility
+The implementation is compatible with draft-sheffer-tls-pinning-ticket-02.
 
 ### Licensing
 Mint itself and this fork are available under an MIT license.
@@ -595,6 +722,14 @@ the open Internet and vice versa, if the advice in {{client_policy}} is not foll
 Therefore, we RECOMMEND that browser and library vendors provide a documented way to
 remove stored pins.
 
+## Stolen and Forged Tickets
+
+Stealing pinning tickets even in conjunction with other pinning parameters, such as the
+associated pinning secret, provides no benefit to the attacker since pinning tickets are
+used to secure the client rather than the server.
+Similarly, it is useless to forge a ticket for a particular
+sever.
+
 ## Client Privacy
 
 This protocol is designed so that an external attacker cannot correlate between different requests
@@ -604,6 +739,18 @@ On the other hand, the server to which the client is connecting can easily track
 This may be an issue when the client expects to connect to the server (e.g., a mail server)
 with multiple identities. Implementations SHOULD allow the user to opt out of pinning, either
 in general or for particular servers.
+
+## Ticket Protection Key Management
+
+While the ticket format is not mandated by this document, we RECOMMEND using authenticated
+encryption to protect it. Some of the algorithms commonly used for authenticated encryption,
+e.g. GCM, are highly vulnerable to nonce reuse, and this problem is magnified in a cluster setting.
+Therefore implementations that choose AES-128-GCM MUST adopt one of these two alternatives:
+
+* Partition the nonce namespace between cluster members and use monotonic counters on each member,
+e.g. by setting the nonce to the concatenation of the cluster member ID and an incremental counter.
+* Generate random nonces but avoid the so-called birthday bound, i.e. never generate more than
+2**64 encrypted tickets for the same ticket pinning protection Key.
 
 # IANA Considerations
 
@@ -618,9 +765,9 @@ The original idea behind this proposal was published in {{Oreo}} by Moty Yung,
 Benny Pinkas
 and Omer Berkman. The current protocol is but a
 distant relative of the original Oreo protocol, and any errors are the
-draft author's alone.
+draft authors' alone.
 
-I would like to thank Dave Garrett, Daniel Kahn Gillmor and Yoav Nir for their comments on this draft.
+We would like to thank Dave Garrett, Daniel Kahn Gillmor and Yoav Nir for their comments on this draft.
 Special thanks to Craig Francis for contributing the HPKP deployment script, and to Ralph Holz
 for several fruitful discussions.
 
@@ -628,12 +775,18 @@ for several fruitful discussions.
 
 # Document History
 
+## draft-sheffer-tls-pinning-ticket-03
+
+- Deleted redundant length fields in the extension's formal definition.
+- Modified cryptographic operations to align with the current state of TLS 1.3.
+- Numerous textual improvements.
+
 ## draft-sheffer-tls-pinning-ticket-02
 
 - Added an Implementation Status section.
 - Added lengths into the extension structure.
 - Changed the computation of the pinning proof to be more robust.
-- Clarified requirements on the length of the pinning_secret.
+- Clarified requirements on the length of the pinning\_secret.
 - Revamped the HPKP section to be more in line with current practices, and added recent
 statistics on HPKP deployment.
 
