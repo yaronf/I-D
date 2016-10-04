@@ -33,7 +33,7 @@ author:
     ins: D. Migault
     name: Daniel Migault
     organization: Ericsson
-    email: "mglt.ietf@gmail.com"
+    email: "daniel.migault@ericsson.com"
 
 normative:
   RFC2104:
@@ -145,7 +145,7 @@ the client generates locally the pinning secret and caches the server's identifi
 index the pinning secret as well as the pinning ticket and its associated lifetime.
 
 When the client re-establishes a new TLS session with the server, it sends the pinning ticket
-to the server. Upon receiving it, the sever returns a proof of knowledge of the pinning secret.
+to the server. Upon receiving it, the server returns a proof of knowledge of the pinning secret.
 Once the key exchange is completed and the server has been authenticated, the client checks
 the pinning proof returned by the server with its pinning secret. It a match occurs,
 the client concludes that the server it is currently connected to and the server it was
@@ -188,12 +188,13 @@ This protocol supports full TLS handshakes, as well as 0-RTT handshakes.
 Below we present it in the context of a full handshake, but behavior in 0-RTT
 handshakes should be identical.
 
-The document presents some similarities with the ticket resumption mechanism described in {{RFC5077}}
-but addresses a different scope. More specifically, the pinning ticket does not carry any state
+The document presents some similarities with the ticket resumption mechanism described in {{RFC5077}}.
+However the scope of this document differs from session resumption mechanisms implemented with
+{{RFC5077}} or with other mechanisms. Specifically, the pinning ticket does not carry any state
 associated with a TLS session and thus cannot be used for session resumption,
 or to authenticate the client.
 
-TLS 1.3 provides session resumption based on preshared key (PSK). 
+With TLS 1.3, session resumption is based on a preshared key (PSK). 
 This is orthogonal to this protocol. With TLS 1.3, a TLS session can
 be established using PKI and a pinning ticket, and later resumed with PSK.
 
@@ -239,7 +240,7 @@ server's first response, in the returned PinningTicket extension.
                derived from the master secret.
 
 If a client supports the pinning ticket extension and does
-not not have any pinning ticket associated with the server, 
+not have any pinning ticket associated with the server, 
 the exchange is considered as an initial connection. Other 
 reasons the client may not have a pinning ticket include 
 the client having flushed its pinning ticket store, or the 
@@ -268,7 +269,7 @@ exchange is not completed successfully, the client MUST ignore
 the received pinning ticket. Otherwise, the client computes the pinning
 secret and SHOULD cache the pinning secret and the pinning ticket
 for the duration indicated by the pinning 
-ticket lifetime. The client can clean up the cached values at the end of the indicated lifetime.
+ticket lifetime. The client SHOULD clean up the cached values at the end of the indicated lifetime.
 
 ## Subsequent Connections
 
@@ -326,7 +327,7 @@ any information orthogonal to the server's identity MUST NOT be considered in in
 More particularly, IP addresses are ephemeral and forbidden in SNI and therefore pins MUST NOT
 be associated
 with IP addresses. Similarly, CA names or public keys associated with server
-MUST NOT be used for indexing.
+MUST NOT be used for indexing as they may change over time.
 
 # Message Definitions
 
@@ -410,7 +411,8 @@ to allow migrating virtual servers between different servers while keeping pinni
 
 As noted in {{cluster}}, if the server is actually a cluster of machines,
 the protection key MUST
-be synchronized between them. An easy way to do it is to derive it from the
+be synchronized between them. When {{RFC5077}} is deployed, an easy way to do it is to derive
+the protection key from the
 session-ticket protection key, which is already synchronized. For example:
 
     pinning_protection_key = HKDF-Expand(resumption_protection_key,
