@@ -54,6 +54,32 @@ informative:
   I-D.iab-web-pki-problems:
   I-D.cairns-tls-session-key-interface:
   I-D.erb-lurk-rsalg:
+  Topalovic:
+    -: ta
+    target: http://www.w2spconf.com/2012/papers/w2sp12-final9.pdf
+    title: Towards Short-Lived Certificates
+    author:
+      -
+        ins: E. Topalovic
+        name: Emin Topalovic
+        org: Stanford University
+      -
+        ins: B. Saeta
+        name: Brennan Saeta
+        org: Stanford University
+      -
+        ins: L. Huang
+        name: Lin-Shung Huang
+        org: Carnegie Mellon University
+      -
+        ins: C. Jackson
+        name: Colling Jackson
+        org: Carnegie Mellon University
+      -
+        ins: D. Boneh
+        name: Dan Boneh
+        org: Stanford University
+    date: 2012
 
 --- abstract
 
@@ -73,9 +99,7 @@ A content provider, and Domain Name Owner (DNO), has agreements in place with on
 
 This document proposes a solution to the above problem that involves the use of short-term certificates with a DNO’s name on them, and a scheme for handling the naming delegation from the DNO to the CDN.  The generated short-term credentials are automatically renewed by an ACME Certification Authority (CA) and routinely rotated by the CDN on its edge cache servers.  The DNO can end the delegation at any time by simply instructing the CA to stop the automatic renewal and let the certificate expire shortly after.
 
-Using short-term certificates makes revocation cheap and effective [TODO REF] in case of key compromise or of termination of the delegation; seamless certificate issuance and renewal enable the level of workflow automation that is expected in todays’ cloud environments.  Also, compared to other keyless-TLS solutions ({{I-D.cairns-tls-session-key-interface}}, {{I-D.erb-lurk-rsalg}}), the proposed approach doesn’t suffer from scalability issues or increase in connection setup latency, while requiring virtually no changes to existing COTS caching software in order to work.
-
-(see section 3.2.1 of {{I-D.iab-web-pki-problems}}).
+Using short-term certificates makes revocation cheap and effective {{Topalovic}} {{I-D.iab-web-pki-problems}} in case of key compromise or of termination of the delegation; seamless certificate issuance and renewal enable the level of workflow automation that is expected in todays’ cloud environments.  Also, compared to other keyless-TLS solutions {{I-D.cairns-tls-session-key-interface}} {{I-D.erb-lurk-rsalg}}, the proposed approach doesn’t suffer from scalability issues or increase in connection setup latency, while requiring virtually no changes to existing COTS caching software in order to work.
 
 # Conventions used in this document
 
@@ -127,7 +151,47 @@ Concurrently, an OK result has been sent back to the CDN with an endpoint to pol
 The bootstrap phase ends when the DNO obtains the OK from the ACME CA and posts the certificate’s URL to the “completion endpoint” where the CDN can retrieve it.  The information that is passed on to the CDN at this stage also includes details about how much time before the certificate expires can the CDN expect the replacement to be ready.
 
 ~~~~~~~~~~
-TODO ASCII ART
+                     ...........................
+                     :                         :
+LURK                 :  LURK          ACME/STAR:              ACME/STAR
+Client               :  Server         Client  :               Server
+  |                  :    |               |    :                  |
+  |                  :    |               |   ACME registration   |
+  +-------.          :    |               |<--------------------->|
+  |       |          :    |               |   STAR capabilities   |
+  |   generate CSR   :    |               |    :                  |
+  |       |          :    |               |    :                  |
+  |<------'          :    |               |    :                  |
+  |                  :    |               |    :                  |
+  |     Request new  :    |               |    :                  |
+  +---------------------->|               |    :                  |
+  |     cert for CSR :    |               |    :                  |
+  |                  :    +-------.       |    :                  |
+  |                  :    |       |       |    :                  |
+  |                  :    |   Verify CSR  |    :                  |
+  |                  :    |       |       |    :                  |
+  |                  :    +<------'       |    :                  |
+  |      OK, poll at :    |               |    :                  |
+  |<----------------------+               |    :                  |
+  |    "completion URL"   |- - - - - - - >|    Application for    |
+  |                  :    |               +---------------------->|
+  |                  :    |               |    STAR certificate   |
+  |                  :    |               |    :                  |
+  |  GET "completion URL" |               |    :  Challenge       |
+  |<--------------------->|               |<--------------------->|
+  |   200, in progress    |               |    :  Response        |
+  |                  :    |               |    :                  |
+  |                  :    |               |  Finalize/Certificate |
+  |                  :    |               |<----------------------+
+  |  GET "completion URL" |< - - - - - - -|    :                  |
+  +---------------------->|               |    :                  |
+  |                  :    |               |    :                  |
+  |  200, certificate URL |               |    :                  |
+  |<----------------------+               |    :                  |
+  |   and other metadata  |               |    :                  |
+  |                  :    |               |    :                  |
+                     :                         :
+                     `.........................'
 ~~~~~~~~~~
 {: #figprotoboot title="Bootstrap"}
 
@@ -135,7 +199,7 @@ TODO ASCII ART
 ## Refresh
 {: #proto-auto-renewal}
 
-CA automatically re-issues the certificate (reusing the same CSR) before it expires and publishes it to the URL that the CDN has come to know at the end of the bootstrap phase.  The CDN downloads and installs it.  This process goes on until either:
+CA automatically re-issues the certificate (using the same CSR) before it expires and publishes it to the URL that the CDN has come to know at the end of the bootstrap phase.  The CDN downloads and installs it.  This process goes on until either:
 
 - DNO terminates the delegation, or
 - Automatic renewal expires.
@@ -166,5 +230,10 @@ TODO ASCII ART
 
 - CDN's client certificate key is first order security asset and MUST be protected.  Absent 2FA/MFA, an attacker that can compromise the key might be able to obtain certificates bearing DNO’s identity.
 - Consider collusion of two or more CDNs with contracts with the same DNO (?)
+- TODO merge Yaron's SecCons from draft-sheffer-lurk-cert-delegation
+
+# Acknowledgments
+
+This work is partially supported by the European Commission under Horizon 2020 grant agreement no. 688421 Measurement and Architecture for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 --- back
