@@ -152,7 +152,6 @@ The bootstrap phase ends when the DNO obtains the OK from the ACME CA and posts 
 
 ~~~~~~~~~~
                      ...........................
-                     :                         :
 LURK                 :  LURK          ACME/STAR:              ACME/STAR
 Client               :  Server         Client  :               Server
   |                  :    |               |    :                  |
@@ -183,14 +182,13 @@ Client               :  Server         Client  :               Server
   |                  :    |               |    :                  |
   |                  :    |               |  Finalize/Certificate |
   |                  :    |               |<----------------------+
-  |  GET "completion URL" |< - - - - - - -|    :                  |
+  |  GET "completion URL" |< - - - - - - -|    : + STAR Id        |
   +---------------------->|               |    :                  |
   |                  :    |               |    :                  |
   |  200, certificate URL |               |    :                  |
   |<----------------------+               |    :                  |
   |   and other metadata  |               |    :                  |
   |                  :    |               |    :                  |
-                     :                         :
                      `.........................'
 ~~~~~~~~~~
 {: #figprotoboot title="Bootstrap"}
@@ -205,7 +203,33 @@ CA automatically re-issues the certificate (using the same CSR) before it expire
 - Automatic renewal expires.
 
 ~~~~~~~~~~
-TODO ASCII ART
+        LURK                    ACME/STAR
+        Client                  Server
+          |     Retrieve cert     |                     [...]
+          |<--------------------->|                      |
+          |                       +------.              /
+          |                       |      |             /
+          |                       | Automatic renewal :
+          |                       |      |             \
+          |                       |<-----'              \
+          |     Retrieve cert     |                      |
+          |<--------------------->|                   72 hours
+          |                       |                      |
+          |                       +------.              /
+          |                       |      |             /
+          |                       | Automatic renewal :
+          |                       |      |             \
+          |                       |<-----'              \
+          |     Retrieve cert     |                      |
+          |<--------------------->|                   72 hours
+          |                       |                      |
+          |                       +------.              /
+          |                       |      |             /
+          |                       | Automatic renewal :
+          |                       |      |             \
+          |                       |<-----'              \
+          |                       |                      |
+          |         [...]         |                    [...]
 ~~~~~~~~~~
 {: #figprotorefresh title="Auto renewal"}
 
@@ -222,7 +246,26 @@ After CA receives & verifies the request, it shall:
 Note that it is not necessary to explicitly revoke the short-term certificate.
 
 ~~~~~~~~~~
-TODO ASCII ART
+   LURK                   ACME/STAR               ACME/STAR
+   Client                  Client                  Server
+     |                       |                       |
+     |                       |  Terminate STAR Id    |
+     |                       +---------------------->|
+     |                       |                       +-------.
+     |                       |                       |       |
+     |                       |                       |  End auto renewal  
+     |                       |                       |  Remove cert link
+     |                       |                       |  etc.
+     |                       |                       |       |
+     |                       |         Done          |<------'
+     |                       |<----------------------+
+     |                       |                       |
+     |                                               |
+     |                 Retrieve cert                 |
+     +---------------------------------------------->|
+     |                 Error: terminated             |
+     |<----------------------------------------------+
+     |                                               |
 ~~~~~~~~~~
 {: #figprototerm title="Termination"}
 
