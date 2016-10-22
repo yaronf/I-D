@@ -51,9 +51,11 @@ normative:
   I-D.ietf-acme-acme:
 
 informative:
+  RFC6844:
   I-D.iab-web-pki-problems:
   I-D.cairns-tls-session-key-interface:
   I-D.erb-lurk-rsalg:
+  I-D.landau-acme-caa:
   Topalovic:
     -: ta
     target: http://www.w2spconf.com/2012/papers/w2sp12-final9.pdf
@@ -97,7 +99,7 @@ It should be noted that these are in fact independent building blocks that could
 
 A content provider, and Domain Name Owner (DNO), has agreements in place with one or more Content Delivery Networks (CDN) that are contracted to serve its content over HTTPS.  The CDN terminates the HTTPS connection at one of its edge cache servers and needs to present its clients (browsers, set-top-boxes) a certificate whose name matches the authority of the URL that is requested, i.e. that of the DNO.  However, many DNOs balk at sharing their long-term private keys with another organization and, equally, CDN providers would rather not have to handle other parties' long-term secrets. This problem has been discussed at the IETF under the LURK (limited use of remote keys) title.
 
-This document proposes a solution to the above problem that involves the use of short-term certificates with a DNO's name on them, and a scheme for handling the naming delegation from the DNO to the CDN.  The generated short-term credentials are automatically renewed by an ACME Certification Authority (CA) and routinely rotated by the CDN on its edge cache servers.  The DNO can end the delegation at any time by simply instructing the CA to stop the automatic renewal and let the certificate expire shortly after.
+This document proposes a solution to the above problem that involves the use of short-term certificates with a DNO's name on them, and a scheme for handling the naming delegation from the DNO to the CDN.  The generated short-term credentials are automatically renewed by an ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and routinely rotated by the CDN on its edge cache servers.  The DNO can end the delegation at any time by simply instructing the CA to stop the automatic renewal and let the certificate expire shortly after.
 
 Using short-term certificates makes revocation cheap and effective {{Topalovic}} {{I-D.iab-web-pki-problems}} in case of key compromise or of termination of the delegation; seamless certificate issuance and renewal enable the level of workflow automation that is expected in today's cloud environments.  Also, compared to other keyless-TLS solutions {{I-D.cairns-tls-session-key-interface}} {{I-D.erb-lurk-rsalg}}, the proposed approach doesn't suffer from scalability issues or increase in connection setup latency, while requiring virtually no changes to existing COTS caching software used by the CDN.
 
@@ -275,7 +277,30 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
 
 - CDN's client certificate key is first order security asset and MUST be protected.  Absent 2FA/MFA, an attacker that can compromise the key might be able to obtain certificates bearing DNO's identity.
 - Consider collusion of two or more CDNs with contracts with the same DNO (?)
-- TODO merge Yaron's SecCons from draft-sheffer-lurk-cert-delegation
+
+## Restricting CDNs to the Delegation Mechanism
+
+Currently there are no standard methods for the DNO to ensure that
+the CDN cannot issue a certificate through mechanisms other than the one described here,
+for the URLs under the CDN's control. For example, regardless of the STAR solution, a rogue CDN employee
+can use the ACME protocol (or proprietary mechanisms used by various CAs) to create a fake certificate
+for the DNO's content.
+
+The best solution currently being worked on would consist of several related
+configuration steps:
+
+ * Make sure that the CDN cannot modify the DNS records for the domain.
+ Typically this would mean that the content owner establishes a CNAME resource record
+ from a subdomain into a CDN-managed domain.
+ * Restrict certificate issuance for the domain to specific CAs that comply
+ with ACME. This assumes
+ universal deployment of CAA {{RFC6844}} by CAs, which is not the case yet.
+ * Deploy ACME-specific methods to restrict issuance to a specific authorization
+ key which is controlled by the content owner {{I-D.landau-acme-caa}}, and/or to specific
+ ACME authorization methods.
+
+This solution is recommended in general, even if an alternative to the
+mechanism described here is used.
 
 # Acknowledgments
 
