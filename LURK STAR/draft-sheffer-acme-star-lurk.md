@@ -97,7 +97,7 @@ It should be noted that these are in fact independent building blocks that could
 
 # A Solution for the HTTPS CDN Use Case
 
-A content provider, and Domain Name Owner (DNO), has agreements in place with one or more Content Delivery Networks (CDN) that are contracted to serve its content over HTTPS.  The CDN terminates the HTTPS connection at one of its edge cache servers and needs to present its clients (browsers, set-top-boxes) a certificate whose name matches the authority of the URL that is requested, i.e. that of the DNO.  However, many DNOs balk at sharing their long-term private keys with another organization and, equally, CDN providers would rather not have to handle other parties' long-term secrets. This problem has been discussed at the IETF under the LURK (limited use of remote keys) title.
+A content provider, and Domain Name Owner (DeO), has agreements in place with one or more Content Delivery Networks (CDN) that are contracted to serve its content over HTTPS.  The CDN terminates the HTTPS connection at one of its edge cache servers and needs to present its clients (browsers, set-top-boxes) a certificate whose name matches the authority of the URL that is requested, i.e. that of the DNO.  However, many DNOs balk at sharing their long-term private keys with another organization and, equally, CDN providers would rather not have to handle other parties' long-term secrets. This problem has been discussed at the IETF under the LURK (limited use of remote keys) title.
 
 This document proposes a solution to the above problem that involves the use of short-term certificates with a DNO's name on them, and a scheme for handling the naming delegation from the DNO to the CDN.  The generated short-term credentials are automatically renewed by an ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and routinely rotated by the CDN on its edge cache servers.  The DNO can end the delegation at any time by simply instructing the CA to stop the automatic renewal and let the certificate expire shortly after.
 
@@ -111,7 +111,9 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 # Protocol Flow
 
-The following subsections describe the preconditions ({{proto-preconditions}}), and the three main phases of the protocol flow:
+The protocol flow can be split into two: a LURK interface, used by CDN and DNO to agree on the name delegation, and the ACME STAR interface, used by DNO to obtain the short-term and automatically renewed certificate from the CA, which is eventually consumed by the CDN.  The latter is also used to terminate the delegation, if so needed.
+
+The following subsections describe the preconditions ({{proto-preconditions}}), and the three main phases of the protocol:
 
 - Bootstrap: the CDN requests from the DNO the delegation of a specific name and in turn DNO asks an ACME CA to create the corresponding short-term and auto-renewed (STAR) certificate ({{proto-bootstrap}});
 - Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it to a public URL ({{proto-auto-renewal}});
@@ -124,7 +126,7 @@ The following subsections describe the preconditions ({{proto-preconditions}}), 
 
 The protocol assumes the following preconditions are met:
 
-- A mutually authenticated channel between CDN and DNO pre-exists.  All LURK exchanges between CDN and DNO are run over this channel, which provides the guarantee that the LURK requests are authentic [^1]{:tf: source="tf"}.
+- A mutually authenticated channel between CDN and DNO pre-exists.  This is called "LURK channel" and all LURK protocol exchanges between CDN and DNO are run over it.  It provides the guarantee that the LURK requests and responses are authentic [^1]{:tf: source="tf"}.
 - CDN and DNO have agreed on a "CSR template" to use, including at a minimum:
   - Subject name (e.g., "somesite.DNO.com"),
   - Validity (e.g., 24 to 72 hours),
@@ -141,7 +143,7 @@ The protocol assumes the following preconditions are met:
 ## Bootstrap
 {: #proto-bootstrap}
 
-CDN generates a key-pair, wraps it into a Certificate Signing Request (CSR) according to the agreed CSR template, and sends it to the DNO over the LURK interface.  The DNO uses the CDN identity provided on the LURK channel to look up the CSR template that applies to the requesting CDN and decides whether or not to accept the request.  (TBD: This is probably a case that would require a further authentication stage over the one provided by the mutual-authenticated LURK channel?)  Assuming everything is in order, it then "proxies" the CDN request to the ACME CA by means of the usual ACME application procedure. Specifically, DNO requests the CA a STAR certificate, i.e., one that:
+CDN (LURK client) generates a key-pair, wraps it into a Certificate Signing Request (CSR) according to the agreed CSR template, and sends it to the DNO (LURK server) over the pre-established LURK channel.  The DNO uses the CDN identity provided on the LURK channel to look up the CSR template that applies to the requesting CDN and decides whether or not to accept the request.  (TBD: This is probably a case that would require a further authentication stage over the one provided by the mutual-authenticated LURK channel?)  Assuming everything is in order, it then "forwards" the CDN request to the ACME CA by means of the usual ACME application procedure. Specifically, DNO, in its role as a ACME/STAR client, requests the CA a STAR certificate, i.e., one that:
 
 - Has a short validity (e.g., 24 to 72 hours);
 - Is automatically renewed by the CA for a certain period of time;
