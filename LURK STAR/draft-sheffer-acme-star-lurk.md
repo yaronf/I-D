@@ -105,9 +105,9 @@ Using short-term certificates makes revocation cheap and effective {{Topalovic}}
 
 # Conventions used in this document
 
-TODO: glossary: DNO.
-
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in {{RFC2119}}.
+
+TODO: glossary.
 
 # Protocol Flow
 
