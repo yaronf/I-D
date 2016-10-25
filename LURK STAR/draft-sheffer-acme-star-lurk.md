@@ -184,7 +184,7 @@ Client               :  Server         Client  :               Server
   |                  :    |               |    :                  |
   |  GET "completion URL" |               |    :  Challenge       |
   |<--------------------->|               |<--------------------->|
-  |   200, in progress    |               |    :  Response        |
+  |   202, in progress    |               |    :  Response        |
   |                  :    |               |    :                  |
   |                  :    |               |  Finalize/Certificate |
   |                  :    |               |<----------------------+
