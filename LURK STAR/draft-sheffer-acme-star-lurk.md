@@ -152,7 +152,7 @@ CDN (LURK client) generates a key-pair, wraps it into a Certificate Signing Requ
 Other than that, the ACME protocol flows as normal between DNO and CA, in particular DNO is responsible for satisfying the requested ACME challenges until the CA is willing to issue the requested certificate.
 The DNO is given back a unique identifier for the issued STAR certificate to be used in subsequent interaction with the CA (e.g., if the certificate needs to be terminated.)
 
-Concurrently, an OK result has been sent back to the CDN with an endpoint to poll for completion of the certificate generation process. 
+Concurrently, a 202 response has been sent back to the CDN with an endpoint to poll for completion of the certificate generation process. 
 
 The bootstrap phase ends when the DNO obtains the OK from the ACME CA and posts the certificate's URL to the "completion endpoint" where the CDN can retrieve it.  The information that is passed on to the CDN at this stage also includes details about how much time before the certificate expires can the CDN expect the replacement to be ready.
 
@@ -176,7 +176,7 @@ Client               :  Server         Client  :               Server
   |                  :    |   Verify CSR  |    :                  |
   |                  :    |       |       |    :                  |
   |                  :    +<------'       |    :                  |
-  |      OK, poll at :    |               |    :                  |
+  |   Accepted, poll at   |               |    :                  |
   |<----------------------+               |    :                  |
   |    "completion URL"   |- - - - - - - >|    Application for    |
   |                  :    |               +---------------------->|
