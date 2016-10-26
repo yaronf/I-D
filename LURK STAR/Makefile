@@ -7,7 +7,7 @@ rfcdiff ?= rfcdiff
 draft := draft-sheffer-acme-star-lurk
 current_ver := $(shell git tag | grep "$(draft)" | tail -1 | sed -e"s/.*-//")
 ifeq "${current_ver}" ""
-next_ver ?= 00
+next_ver ?= 01
 else
 next_ver ?= $(shell printf "%.2d" $$((1$(current_ver)-99)))
 endif

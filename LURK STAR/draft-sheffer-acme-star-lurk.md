@@ -2,7 +2,6 @@
 title: Use of Short-Term, Automatically-Renewed (STAR) Certificates to address the LURK problem
 abbrev: ACME STAR LURK
 docname: draft-sheffer-acme-star-lurk-latest
-date: 2016-10-25
 category: std
 
 ipr: trust200902
