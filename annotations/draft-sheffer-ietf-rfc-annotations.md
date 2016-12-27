@@ -94,17 +94,17 @@ long term.
 
 We foresee RFC annotations being used for a variety of purposes by RFC consumers, including:
 
- * Providing feedback on correctness and pointing out errors. This is a much easier
-process than submitting errata, and as such would likely yield a larger number of corrections.
- * Pointing out and even discussing implementation issues (annotation systems
-allow a user to "reply" to another user's comments).
- * Linking to other standards and to implementations.
- * Proposing ideas for and initiating discussion on "next generation" standards.
+* Providing feedback on correctness and pointing out errors. This is a much easier
+   process than submitting errata, and as such would likely yield a larger number of corrections.
+* Pointing out and even discussing implementation issues (annotation systems
+   allow a user to "reply" to another user's comments).
+* Linking to other standards and to implementations.
+* Proposing ideas for and initiating discussion on "next generation" standards.
 
 Other advantages are indirect:
 
- * Improving the appearance of RFCs, bringing them more in line with people's expectations of web documents.
- * Bringing in more people into the standards discussion, and eventually into the IETF.
+* Improving the appearance of RFCs, bringing them more in line with people's expectations of web documents.
+* Bringing in more people into the standards discussion, and eventually into the IETF.
 
 # Potential Risks
 
@@ -123,7 +123,8 @@ moderation to annotations, similarly to what we have now on the IETF discussion 
 
 ## IPR issues around annotations
 
-All public annotations made on Hypothesis are explicitly in the public domain.
+All public annotations made on Hypothesis are licensed under the Creative Commons CC0 license, which puts them explicitly in the public domain.
+
 See also the Hypothesis Terms
 of Service, https://hypothes.is/terms-of-service/. Note that Hypothesis itself
 is a non-profit organization.
@@ -141,10 +142,14 @@ Issue: can the GA cookie be disabled for particular URLs?
 
 All traffic between the user's browser and Hypothesis is SSL-protected.
 
+## Spam
+
+So far spam has not been a problem with Hypothesis annotations, because users need to demonstrate a valid email address. If it ever becomes a problem, a process can be worked out where IETF volunteers monitor new annotations for spam, and the Hypothesis team removes it within a reasonable time.
+
 ## Long-term retention of annotations
 
 If at the end of the experiment we choose to migrate to a different platform or to deploy
-a private copy of Hypothesis, we should be able to use their documented API to retrieve
+a private copy of Hypothesis, we will be able to use their documented API to retrieve
 any extant annotations and store them into the new system.
 
 ## What if we build it and nobody comes
@@ -160,6 +165,8 @@ on the "tools" site:
 <script async defer src="https://hypothes.is/embed.js"></script>
 ``
 
+A bit of additional code would be needed to display the IETF Note Well text if we choose to inform users that they implicitly agree to it.
+
 RFC authors and WG participants can be alerted whenever their documents are annotated
 using RSS and Atom feeds such as:
 https://hypothes.is/stream.rss?uri=https://tools.ietf.org/html/rfc1149.
@@ -172,11 +179,15 @@ during the experiment or later.
 * Go to https://hypothes.is/, paste a link, e.g. https://tools.ietf.org/html/rfc1149 and press Annotate.
 * Now open the sidebar to view existing public annotations.
 * Highlight some text and right-click it. You will need to sign up for an account
-to create your own annotations. 
+  to create your own annotations. 
 
 --- back
 
 # Document History
+
+## -01
+
+* Minor changes after meeting with the Hypothesis team.
 
 ## draft-sheffer-ietf-rfc-annotations-00
 
