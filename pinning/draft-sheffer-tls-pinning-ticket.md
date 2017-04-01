@@ -1,4 +1,4 @@
-﻿---
+---
 title: TLS Server Identity Pinning with Tickets
 abbrev: Pinning Tickets
 docname: draft-sheffer-tls-pinning-ticket-latest
@@ -147,9 +147,8 @@ index the pinning secret as well as the pinning ticket and its associated lifeti
 When the client re-establishes a new TLS session with the server, it sends the pinning ticket
 to the server. Upon receiving it, the server returns a proof of knowledge of the pinning secret.
 Once the key exchange is completed and the server has been authenticated, the client checks
-the pinning proof returned by the server with its pinning secret. It a match occurs,
-the client concludes that the server it is currently connected to and the server it was
-previously connected to both own the same pinning protection key and thus are the same server.
+the pinning proof returned by the server using the client's stored pinning secret. It a proof matches,
+the client can conclude that the server it is currently connecting to is in fact the correct server.
 
 This version of the draft only applies to TLS 1.3. We believe that the idea can also
 be back-fitted into earlier versions of the protocol.
@@ -157,19 +156,19 @@ be back-fitted into earlier versions of the protocol.
 The main advantages of this protocol over earlier pinning solutions are:
 
 * The protocol is at the TLS level, and as a result is not restricted to HTTP at the
-application level.
+  application level.
 * The protocol is robust to server IP, CA, and public key changes.
-The server is characterized by the ownership of the pinning protection key,
-which is never provided to the client. Server configuration parameters such as the CA and
-the public key may change without affecting the pinning ticket protocol.
+  The server is characterized by the ownership of the pinning protection key,
+  which is never provided to the client. Server configuration parameters such as the CA and
+  the public key may change without affecting the pinning ticket protocol.
 * Once a single parameter is configured (the ticket's lifetime), operation
-is fully automated. The server administrator need not bother with the
-management of backup certificates or explicit pins.
+  is fully automated. The server administrator need not bother with the
+  management of backup certificates or explicit pins.
 * For server clusters, we reuse the existing {{RFC5077}} infrastructure where
-it exists.
+  it exists.
 * Pinning errors, presumably resulting from MITM attacks, can be detected both by the
-client and the server. This allows for server-side detection of MITM attacks using
-large-scale analytics.
+  client and the server. This allows for server-side detection of MITM attacks using
+  large-scale analytics.
 
 A note on terminology: unlike other solutions in this space, we do not
 do "certificate pinning" (or "public key pinning"), since the protocol is oblivious to the server's
@@ -229,13 +228,13 @@ server's first response, in the returned PinningTicket extension.
      {CertificateVerify*}
      {Finished}                -------->
      [Application Data]        <------->      [Application Data]
-
+    
             *  Indicates optional or situation-dependent
                messages that are not always sent.
-
+    
             {} Indicates messages protected using keys
                derived from the ephemeral secret.
-
+    
             [] Indicates messages protected using keys
                derived from the master secret.
 
@@ -284,12 +283,12 @@ The server MUST extract the original pinning\_secret value from the ticket
 and MUST respond with a PinningTicket extension, which includes:
 
 * A proof that the server can understand
-the ticket that was sent by the client; this proof also binds the pinning ticket to
-the server's (current) public key. The proof is MANDATORY if a pinning ticket was sent by
-the client.
+  the ticket that was sent by the client; this proof also binds the pinning ticket to
+  the server's (current) public key. The proof is MANDATORY if a pinning ticket was sent by
+  the client.
 * A fresh pinning ticket. The main reason for refreshing the ticket on each connection
-is privacy: to avoid the ticket serving as a fixed client identifier. It is RECOMMENDED
-to include a fresh ticket with each response.
+  is privacy: to avoid the ticket serving as a fixed client identifier. It is RECOMMENDED
+  to include a fresh ticket with each response.
 
 If the server cannot validate the received ticket, that might indicate an earlier MITM attack
 on this client. The server MUST then abort the connection with a
@@ -342,7 +341,7 @@ We follow the message notation of {{I-D.ietf-tls-tls13}}.
        select (Role) {
        case client:
            pinning_ticket ticket<0..2^16-1>; //omitted on 1st connection
-
+    
          case server:
            pinning_proof proof<0..2^8-1>; //no proof on 1st connection
            pinning_ticket ticket<0..2^16-1>; //omitted on ramp down
@@ -372,7 +371,7 @@ by the protocol peers.
 
 The pinning secret is generated locally by the client and the server which means they
 must use the same inputs to generate it. This value must be generated before the 
-ServerHello message is sent, and must be unpredictable to any party
+ServerHello message is sent, as the server includes the corresponding pinning ticket in the ServerHello message. In addition, the pinning secret must be unpredictable to any party
 other than the client and the server.
 
 The pinning secret is derived
@@ -380,7 +379,7 @@ using the Derive-Secret function provided by TLS 1.3, described in
 Section "Key Schedule" of {{I-D.ietf-tls-tls13}}.
 
 	pinning secret = Derive-Secret(Handshake Secret, "pinning secret", 
-                 ClientHello...ServerHello)
+	             ClientHello...ServerHello)
 
 ## Pinning Ticket {#pinning-ticket}
 
@@ -390,10 +389,10 @@ to extract the pinning secret and responds with a pinning proof.
 As a result, the characteristics of the pinning ticket are:
 
 * Pinning tickets MUST be encrypted and integrity-protected 
-using strong cryptographic algorithms.
+  using strong cryptographic algorithms.
 * Pinning tickets MUST be protected with a long-term pinning protection key.
 * Pinning tickets MUST include a pinning protection key ID or serial number 
-as to enable the pinning protection key to be refreshed.
+  as to enable the pinning protection key to be refreshed.
 * The pinning ticket MAY include other information, in addition to the pinning secret.
 
 The pinning ticket's format is not specified by this document, but we RECOMMEND
@@ -432,7 +431,7 @@ In order to address these requirements, the pinning proof is bound
 to the TLS session as well as the public key of the server:
 
     proof = HMAC(original_pinning_secret, "pinning proof" +
-	             Handshake-Secret + Hash(server_public_key))
+                 Handshake-Secret + Hash(server_public_key))
 
 where HMAC {{RFC2104}} uses the Hash algorithm that was negotiated in the handshake,
 and the same hash is also used over the server's public key. The original\_pinning\_secret value
@@ -464,7 +463,7 @@ cluster members, nothing more needs to be done.
 
 Moreover, synchronization does not need
 to be instantaneous, e.g. protection keys can be distributed a few minutes
-or hours in advance of their rollover.
+or hours in advance of their rollover. In such scenarios, each cluster member MUST be able to accept tickets protected with a new version of the protection key, even while it is still using an old version to generate keys. This ensures that a client that receives a "new" ticket does not next hit a cluster member that still rejects this ticket.
 
 Misconfiguration can lead to the server's clock being off by a large amount of time.
 Therefore we RECOMMEND
@@ -495,9 +494,9 @@ the client MUST refuse to connect to it regardless of any ticket-related behavio
 
 A server implementing this protocol MUST have a "ramp down" mode of operation where:
 
-  * The server continues to accept valid pinning tickets and responds
-  correctly with a proof.
-  * The server does not send back a new pinning ticket.
+* The server continues to accept valid pinning tickets and responds
+    correctly with a proof.
+* The server does not send back a new pinning ticket.
 
 After a while no clients will hold valid tickets any more and the feature may be
 disabled.
@@ -509,6 +508,8 @@ but the server MUST still accept valid tickets that use the old, compromised key
 Clients that still hold old pinning tickets will remain vulnerable to MITM attacks,
 but those that connect to the correct server will immediately receive new tickets
 protected with the newly generated pinning protection key.
+
+The same procedure applies if the pinning protection key is compromised directly, e.g. if a backup copy is inadvertently made public.
 
 ## Disaster Recovery
 
@@ -544,7 +545,7 @@ this point, we present a list of the steps involved in deploying HPKP on
 a security-sensitive Web server.
 
 1. Generate two public/private key-pairs on a computer that is not the Live server. The second one is
-the "backup1" key-pair.
+   the "backup1" key-pair.
 
     `openssl genrsa -out "example.com.key" 2048;`
 
@@ -558,33 +559,33 @@ the "backup1" key-pair.
     `openssl rsa -in "example.com.backup1.key" -outform der -pubout | openssl dgst -sha256 -binary | openssl enc -base64`
 
 3. Generate a single CSR (Certificate Signing Request) for the first key-pair, where you
-include the domain name in the CN (Common Name) field:
+   include the domain name in the CN (Common Name) field:
 
     `openssl req -new -subj "/C=GB/ST=Area/L=Town/O=Company/CN=example.com"
             -key "example.com.key" -out "example.com.csr";`
 
 4. Send this CSR to the CA (Certificate Authority), and go though the dance to prove you own the domain.
-The CA will give you back a single certificate that will typically expire within a year or two.
+   The CA will give you back a single certificate that will typically expire within a year or two.
 
 5. On the Live server, upload and setup the first key-pair (and its certificate).
-At this point you can add the "Public-Key-Pins" header, using the two hashes you created in step 2.
+   At this point you can add the "Public-Key-Pins" header, using the two hashes you created in step 2.
 
     Note that only the first key-pair has been uploaded to the server so far.
 
 6. Store the second (backup1) key-pair somewhere safe, probably somewhere encrypted like a password manager.
-It won't expire, as it's just a key-pair, it just needs to be ready for when you need to get your next certificate.
+   It won't expire, as it's just a key-pair, it just needs to be ready for when you need to get your next certificate.
 
 7. Time passes... probably just under a year (if waiting for a certificate to expire), or maybe sooner if you find
-that your server has been compromised and you need to replace the key-pair and certificate.
+   that your server has been compromised and you need to replace the key-pair and certificate.
 
 8. Create a new CSR (Certificate Signing Request) using the "backup1" key-pair, and get a new certificate
-from your CA.
+   from your CA.
 
 9. Generate a new backup key-pair (backup2), get its hash, and store it in a safe place (again,
-not on the Live server).
+   not on the Live server).
 
 10. Replace your old certificate and old key-pair, and update the "Public-Key-Pins" header to remove
-the old hash, and add the new "backup2" key-pair.
+   the old hash, and add the new "backup2" key-pair.
 
 Note that in the above steps, both the certificate issuance as well as the storage of the backup key pair
 involve manual steps. Even with an automated CA that runs the ACME protocol, key backup would be a challenge
@@ -597,25 +598,25 @@ It can even be argued that this document is a symmetric-cryptography variant of 
 That said, there are still a few significant differences:
 
 - Probably the most important difference is that with TACK, validation of the server
-certificate is no longer required, and in fact TACK specifies it as a "MAY" requirement
-(Sec. 5.3).
-With ticket pinning, certificate validation by the client remains a MUST requirement, and the
-ticket acts only as a second factor. If the pinning secret is compromised, the server's
-security is not immediately at risk.
+  certificate is no longer required, and in fact TACK specifies it as a "MAY" requirement
+  (Sec. 5.3).
+  With ticket pinning, certificate validation by the client remains a MUST requirement, and the
+  ticket acts only as a second factor. If the pinning secret is compromised, the server's
+  security is not immediately at risk.
 - Both TACK and the current draft are mostly orthogonal to the server certificate as far as
-their life cycle, and so both can be deployed with no manual steps.
+  their life cycle, and so both can be deployed with no manual steps.
 - TACK uses ECDSA to sign the server's public key. This allows cooperating clients
-to share server assertions between themselves. This is an optional TACK feature,
-and one that cannot be done with pinning tickets.
+  to share server assertions between themselves. This is an optional TACK feature,
+  and one that cannot be done with pinning tickets.
 - TACK allows multiple servers to share its public keys. Such sharing is disallowed
-by the current document.
+  by the current document.
 - TACK does not allow the server to track a particular client, and so has better
-privacy properties than the current draft.
+  privacy properties than the current draft.
 - TACK has an interesting way to determine the pin's lifetime, setting it
-to the time period since the pin was first observed, with a hard upper bound of 30 days.
-The current draft makes the lifetime explicit, which may be more flexible to deploy.
-For example, Web sites which are only visited rarely by users may opt for a longer
-period than other sites that expect users to visit on a daily basis.
+  to the time period since the pin was first observed, with a hard upper bound of 30 days.
+  The current draft makes the lifetime explicit, which may be more flexible to deploy.
+  For example, Web sites which are only visited rarely by users may opt for a longer
+  period than other sites that expect users to visit on a daily basis.
 
 # Implementation Status
 
@@ -750,9 +751,9 @@ e.g. GCM, are highly vulnerable to nonce reuse, and this problem is magnified in
 Therefore implementations that choose AES-128-GCM MUST adopt one of these two alternatives:
 
 * Partition the nonce namespace between cluster members and use monotonic counters on each member,
-e.g. by setting the nonce to the concatenation of the cluster member ID and an incremental counter.
+  e.g. by setting the nonce to the concatenation of the cluster member ID and an incremental counter.
 * Generate random nonces but avoid the so-called birthday bound, i.e. never generate more than
-2**64 encrypted tickets for the same ticket pinning protection Key.
+  2**64 encrypted tickets for the same ticket pinning protection Key.
 
 # IANA Considerations
 
@@ -790,7 +791,7 @@ for several fruitful discussions.
 - Changed the computation of the pinning proof to be more robust.
 - Clarified requirements on the length of the pinning\_secret.
 - Revamped the HPKP section to be more in line with current practices, and added recent
-statistics on HPKP deployment.
+  statistics on HPKP deployment.
 
 ## draft-sheffer-tls-pinning-ticket-01
 
