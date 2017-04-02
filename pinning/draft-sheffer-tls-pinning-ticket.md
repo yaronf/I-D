@@ -67,10 +67,10 @@ informative:
 
 --- abstract
 
-Misissued public-key certificates can prevent TLS clients from appropriately 
+Misissued public-key certificates can prevent TLS clients from appropriately
 authenticating the TLS server. Several alternatives
-have been proposed to detect this situation and prevent a client from establishing 
-a TLS session with a TLS end point authenticated with an illegitimate 
+have been proposed to detect this situation and prevent a client from establishing
+a TLS session with a TLS end point authenticated with an illegitimate
 public-key certificate, but none is currently in wide use.
 
 This document proposes to extend TLS with opaque pinning tickets
@@ -102,11 +102,11 @@ extensive adoption.
 TACK has some similarities to the current proposal, but work on it seems to have stalled.
 {{tack}} compares our proposal to TACK.
 
-HPKP is an IETF standard, but so far has proven hard to deploy. HPKP cannot be completely 
-automated resulting in error-prone manual configuration. Such errors 
-could prevent the web server from being accessed by some clients. In addition, HPKP uses a HTTP 
-header which makes this solution HTTPS specific and not generic to TLS. On the other hand, the current 
-document provides a solution that can be entirely automated. {{hpkp}} compares 
+HPKP is an IETF standard, but so far has proven hard to deploy. HPKP cannot be completely
+automated resulting in error-prone manual configuration. Such errors
+could prevent the web server from being accessed by some clients. In addition, HPKP uses a HTTP
+header which makes this solution HTTPS specific and not generic to TLS. On the other hand, the current
+document provides a solution that can be entirely automated. {{hpkp}} compares
 HPKP to the current draft in more detail.
 
 The ticket pinning proposal augments these mechanisms
@@ -121,11 +121,11 @@ In other words, the pinning identity method is only performed over an authentica
 
 Ticket pinning is a Trust On First Use (TOFU) mechanism, in that
 the first server authentication is only based on PKI certificate
-validation, but for any follow-on sessions, the client is further ensuring 
+validation, but for any follow-on sessions, the client is further ensuring
 the server's identity based on the server's ability
 to decrypt the ticket, in addition to normal PKI certificate authentication.
 
-During initial TLS session establishment, 
+During initial TLS session establishment,
 the client requests a pinning ticket from the server.
 Upon receiving the request the server generates a pinning secret which is expected to be
 unpredictable for peers other than the client or the server.
@@ -193,14 +193,14 @@ However the scope of this document differs from session resumption mechanisms im
 associated with a TLS session and thus cannot be used for session resumption,
 or to authenticate the client.
 
-With TLS 1.3, session resumption is based on a preshared key (PSK). 
+With TLS 1.3, session resumption is based on a preshared key (PSK).
 This is orthogonal to this protocol. With TLS 1.3, a TLS session can
 be established using PKI and a pinning ticket, and later resumed with PSK.
 
 However, the protocol described in this document addresses
-the problem of misissued certificates. Thus, it is not expected to be used outside 
-a certificate-based TLS key exchange, 
-such as in PSK. As a result, PSK handshakes MUST NOT include the 
+the problem of misissued certificates. Thus, it is not expected to be used outside
+a certificate-based TLS key exchange,
+such as in PSK. As a result, PSK handshakes MUST NOT include the
 extension defined here.
 
 ## Initial Connection
@@ -228,46 +228,46 @@ server's first response, in the returned PinningTicket extension.
      {CertificateVerify*}
      {Finished}                -------->
      [Application Data]        <------->      [Application Data]
-    
+
             *  Indicates optional or situation-dependent
                messages that are not always sent.
-    
+
             {} Indicates messages protected using keys
                derived from the ephemeral secret.
-    
+
             [] Indicates messages protected using keys
                derived from the master secret.
 
 If a client supports the pinning ticket extension and does
-not have any pinning ticket associated with the server, 
-the exchange is considered as an initial connection. Other 
-reasons the client may not have a pinning ticket include 
-the client having flushed its pinning ticket store, or the 
+not have any pinning ticket associated with the server,
+the exchange is considered as an initial connection. Other
+reasons the client may not have a pinning ticket include
+the client having flushed its pinning ticket store, or the
 committed lifetime of the pinning ticket having expired.
 
 Upon receipt of the PinningTicket extension, the server computes
-a pinning secret ({{pinning-secret}}), and sends the 
-pinning ticket ({{pinning-ticket}}) encrypted with 
-the pinning protection key ({{pinning-ticket-key}}). 
-The pinning ticket is associated with a lifetime value 
+a pinning secret ({{pinning-secret}}), and sends the
+pinning ticket ({{pinning-ticket}}) encrypted with
+the pinning protection key ({{pinning-ticket-key}}).
+The pinning ticket is associated with a lifetime value
 by which the server assumes the responsibility
-of retaining the pinning protection key and being able to 
+of retaining the pinning protection key and being able to
 decrypt incoming pinning tickets
 during the period indicated by the committed lifetime.
 
-Once the pinning ticket has been generated, the server returns the 
+Once the pinning ticket has been generated, the server returns the
 pinning ticket and the committed lifetime in a PinningTicket extension
 embedded in the EncryptedExtensions message.
 We note that a PinningTicket
 extension MUST NOT be sent
 as part of a HelloRetryRequest.
 
-Upon receiving the pinning ticket, the client MUST NOT accept it until the key 
+Upon receiving the pinning ticket, the client MUST NOT accept it until the key
 exchange is completed and the server authenticated. If the key
 exchange is not completed successfully, the client MUST ignore
 the received pinning ticket. Otherwise, the client computes the pinning
 secret and SHOULD cache the pinning secret and the pinning ticket
-for the duration indicated by the pinning 
+for the duration indicated by the pinning
 ticket lifetime. The client SHOULD clean up the cached values at the end of the indicated lifetime.
 
 ## Subsequent Connections
@@ -341,7 +341,7 @@ We follow the message notation of {{I-D.ietf-tls-tls13}}.
        select (Role) {
        case client:
            pinning_ticket ticket<0..2^16-1>; //omitted on 1st connection
-    
+
          case server:
            pinning_proof proof<0..2^8-1>; //no proof on 1st connection
            pinning_ticket ticket<0..2^16-1>; //omitted on ramp down
@@ -370,7 +370,7 @@ by the protocol peers.
 ## Pinning Secret {#pinning-secret}
 
 The pinning secret is generated locally by the client and the server which means they
-must use the same inputs to generate it. This value must be generated before the 
+must use the same inputs to generate it. This value must be generated before the
 ServerHello message is sent, as the server includes the corresponding pinning ticket in the ServerHello message. In addition, the pinning secret must be unpredictable to any party
 other than the client and the server.
 
@@ -378,20 +378,20 @@ The pinning secret is derived
 using the Derive-Secret function provided by TLS 1.3, described in
 Section "Key Schedule" of {{I-D.ietf-tls-tls13}}.
 
-	pinning secret = Derive-Secret(Handshake Secret, "pinning secret", 
-	             ClientHello...ServerHello)
+    pinning secret = Derive-Secret(Handshake Secret, "pinning secret",
+             ClientHello...ServerHello)
 
 ## Pinning Ticket {#pinning-ticket}
 
 The pinning ticket contains the pinning secret. The pinning ticket
-is provided by the client to the server which decrypts it in order 
+is provided by the client to the server which decrypts it in order
 to extract the pinning secret and responds with a pinning proof.
 As a result, the characteristics of the pinning ticket are:
 
-* Pinning tickets MUST be encrypted and integrity-protected 
+* Pinning tickets MUST be encrypted and integrity-protected
   using strong cryptographic algorithms.
 * Pinning tickets MUST be protected with a long-term pinning protection key.
-* Pinning tickets MUST include a pinning protection key ID or serial number 
+* Pinning tickets MUST include a pinning protection key ID or serial number
   as to enable the pinning protection key to be refreshed.
 * The pinning ticket MAY include other information, in addition to the pinning secret.
 
@@ -400,8 +400,8 @@ a format similar to the one proposed by {{RFC5077}}.
 
 ## Pinning Protection Key {#pinning-ticket-key}
 
-The pinning protection key is only used by the server and so remains 
-server implementation specific. {{RFC5077}} recommends 
+The pinning protection key is only used by the server and so remains
+server implementation specific. {{RFC5077}} recommends
 the use of two keys, but when using AEAD algorithms only a single key is required.
 
 When a single server terminates TLS for multiple virtual servers using the Server Name Indication (SNI)
@@ -419,15 +419,15 @@ session-ticket protection key, which is already synchronized. For example:
 
 ## Pinning Proof
 
-The pinning proof is sent by the server to demonstrate that it has been able 
-to decrypt the pinning ticket and retrieve the pinning secret. The 
-proof must be unpredictable and must not be replayed. Similarly to 
-the pinning secret, the pinning proof is sent by the server in the 
+The pinning proof is sent by the server to demonstrate that it has been able
+to decrypt the pinning ticket and retrieve the pinning secret. The
+proof must be unpredictable and must not be replayed. Similarly to
+the pinning secret, the pinning proof is sent by the server in the
 ServerHello message.
 In addition, it must not be possible for a MITM server with a fake certificate to obtain
 a pinning proof from the original server.
 
-In order to address these requirements, the pinning proof is bound 
+In order to address these requirements, the pinning proof is bound
 to the TLS session as well as the public key of the server:
 
     proof = HMAC(original_pinning_secret, "pinning proof" +
@@ -447,7 +447,7 @@ The main motivation behind the current protocol is to enable identity
 pinning without the need for manual operations. To achieve this goal operations described
 in identity pinning are only performed within the current TLS session, and there is no dependence
 on any TLS configuration parameters such as CA identity or public keys.
-As a result, configuration changes are unlikely to lead to 
+As a result, configuration changes are unlikely to lead to
 desynchronized state between the client and the server.
 Manual operations are susceptible
 to human error and in the case of public key pinning, can easily result in
