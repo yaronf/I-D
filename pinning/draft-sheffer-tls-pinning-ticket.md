@@ -147,7 +147,7 @@ index the pinning secret as well as the pinning ticket and its associated lifeti
 When the client re-establishes a new TLS session with the server, it sends the pinning ticket
 to the server. Upon receiving it, the server returns a proof of knowledge of the pinning secret.
 Once the key exchange is completed and the server has been authenticated, the client checks
-the pinning proof returned by the server using the client's stored pinning secret. It a proof matches,
+the pinning proof returned by the server using the client's stored pinning secret. If the proof matches,
 the client can conclude that the server it is currently connecting to is in fact the correct server.
 
 This version of the draft only applies to TLS 1.3. We believe that the idea can also
