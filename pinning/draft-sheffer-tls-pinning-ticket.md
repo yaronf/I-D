@@ -778,6 +778,11 @@ for several fruitful discussions.
 
 # Document History
 
+## draft-sheffer-tls-pinning-ticket-04
+
+- Editorial changes.
+- Two-phase rotation of protection key.
+
 ## draft-sheffer-tls-pinning-ticket-03
 
 - Deleted redundant length fields in the extension's formal definition.
