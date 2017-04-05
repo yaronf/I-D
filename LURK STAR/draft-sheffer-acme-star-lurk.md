@@ -274,6 +274,120 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
 ~~~~~~~~~~
 {: #figprototerm title="Termination"}
 
+# REST API
+
+This section describes the protocol's details. We start with the LURK API between the LURK Client and the ACME proxy.
+Then we describe a few extensions to the ACME protocol running between the Proxy and the ACME Server.
+
+## LURK API
+
+This API allows the LURK Client to request a STAR certificate via the Proxy, using a previously agreed-upon CSR template.
+
+The API consists of a single resource, "registration". A new registration is created with a POST and then the
+specific registration is
+polled to obtain its details.
+
+### Creating a Registration
+
+To create a registration, use:
+
+    POST /lurk/registration
+    Host: example.com
+    Content-Type: application/json
+    {
+        "csr": "...", // CSR in PEM format
+        "lifetime": 365 // requested registration lifetime in days,
+		                // between 1 and 1095
+    }
+
+Upon success, returns the certificate distribution point and additional information:
+
+    HTTP/1.1 201 Created
+    Replay-Nonce: D8s4D2mLs8Vn-goWuPQeKA
+    Location: https://example.com/lurk/registration/567
+
+### Polling the Registration
+
+The returned Registration can be polled until the information is available from the ACME server.
+
+    GET /lurk/registration/567
+    Host: example.com
+
+While still polling the server, this returns:
+
+    HTTP/1.1 200 OK
+    Retry-After: 10 // in seconds; this is an optional header
+    {
+        "status": "pending"
+    }
+
+When the operation is completed, the Proxy returns:
+
+    HTTP/1.1 200 OK
+    {
+        "status": "valid", // or "failed"
+        "expires": "2018-09-09T14:09:00Z", // expiration of this response
+		                                   // and the Registration resource
+        "lifetime": 365, // lifetime of the registration in days,
+                         //  possibly less than requested
+        "certificates": "https://example-server.com/certificates/A251A3"
+    }
+
+The "expires" field applies to the registration resource itself, and may be as small as a few minutes.
+It is unrelated to the order's lifetime which is measured in days or longer.
+
+## ACME Extensions between Proxy and Server
+
+We propose to extend ACME by allowing recurrent orders.
+
+### Extending the Order Resource
+
+We propose to extend the Order resource with the following attributes:
+
+    {
+        "recurrent": true,
+        "recurrent-total-lifetime": 365, // requested lifetime of the
+		                                 // recurrent registration, in days
+	    "recurrent-certificate-validity": 7
+           // requested validity of each certificate, in days
+    }
+
+These attributes are included in a POST message when creating the order, as part of the "payload" encoded object.
+They are returned when the order has been created, possibly with adjusted values.
+
+### Canceling a Recurrent Order
+
+The main point of a recurrent order is that it can be cancelled by the domain name owner, with no need for certificate
+revocation. We use the DELETE message for that:
+
+    DELETE /acme/order/1 HTTP/1.1
+    Host: example-server.com
+
+Which returns:
+
+
+    HTTP/1.1 202 Deleted
+
+
+The server MUST NOT issue any additional certificates for this Order, beyond the certificate that is available for collection
+at the time of deletion.
+
+### Indicating Support of Recurrent Orders
+
+ACME supports sending arbitrary extensions when creating an Order, and as a result, there is no need to explicitly
+indicate support of this extension. The Proxy MUST verify that the "recurrent" attribute
+was understood. Since standard ACME does not allow to explicitly cancel a pending Order,
+an unhappy Proxy will probably let the Order
+expire instead of following through with the authorization process.
+
+## Fetching the Certificates
+
+The certificate is fetched from the certificate endpoint, as per {{I-D.ietf-acme-acme}}, Sec. 7.4.2 "Downloading the Certificate".
+The server MUST include an Expires header that indicates expiry of the specific certificate. When the certificate
+expires, the client MAY assume that a newer certificate is already in place.
+
+A certificate MUST be replaced by its successor at the latest 24 hours before its "Not After" time.
+
 # Security Considerations
 
 - CDN's client certificate key is first order security asset and MUST be protected.  Absent 2FA/MFA, an attacker that can compromise the key might be able to obtain certificates bearing DNO's identity.
