@@ -274,18 +274,17 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
 ~~~~~~~~~~
 {: #figprototerm title="Termination"}
 
-# REST API
+# Protocol Details
 
-This section describes the protocol's details. We start with the LURK API between the LURK Client and the ACME proxy.
-Then we describe a few extensions to the ACME protocol running between the Proxy and the ACME Server.
+This section describes the protocol's details. We start with the LURK API between the LURK Client and the ACME Proxy.
+Then we describe a few extensions to the ACME protocol running between the ACME Proxy and the ACME Server.
 
 ## LURK API
 
 This API allows the LURK Client to request a STAR certificate via the Proxy, using a previously agreed-upon CSR template.
 
-The API consists of a single resource, "registration". A new registration is created with a POST and then the
-specific registration is
-polled to obtain its details.
+The API consists of a single resource, "registration". A new Registration is created with a POST and then the
+Registration instance is polled to obtain its details.
 
 ### Creating a Registration
 
@@ -297,10 +296,10 @@ To create a registration, use:
     {
         "csr": "...", // CSR in PEM format
         "lifetime": 365 // requested registration lifetime in days,
-		                // between 1 and 1095
+                        // between 1 and 1095
     }
 
-Upon success, returns the certificate distribution point and additional information:
+Upon success, the call returns the new Registration resource. 
 
     HTTP/1.1 201 Created
     Replay-Nonce: D8s4D2mLs8Vn-goWuPQeKA
@@ -327,28 +326,29 @@ When the operation is completed, the Proxy returns:
     {
         "status": "valid", // or "failed"
         "expires": "2018-09-09T14:09:00Z", // expiration of this response
-		                                   // and the Registration resource
+                                           // and the Registration resource
         "lifetime": 365, // lifetime of the registration in days,
                          //  possibly less than requested
         "certificates": "https://example-server.com/certificates/A251A3"
     }
 
 The "expires" field applies to the registration resource itself, and may be as small as a few minutes.
-It is unrelated to the order's lifetime which is measured in days or longer.
+It is unrelated to the order's lifetime which is measured in days or longer. The "certificates" attribute
+contains a URL of the certificate pull endpoint, see {{fetching-certificates}}.
 
 ## ACME Extensions between Proxy and Server
 
-We propose to extend ACME by allowing recurrent orders.
+We propose to extend the ACME protocol slightly, by allowing recurrent orders.
 
 ### Extending the Order Resource
 
-We propose to extend the Order resource with the following attributes:
+The Order resource is extended with the following attributes:
 
     {
         "recurrent": true,
         "recurrent-total-lifetime": 365, // requested lifetime of the
-		                                 // recurrent registration, in days
-	    "recurrent-certificate-validity": 7
+                                         // recurrent registration, in days
+        "recurrent-certificate-validity": 7
            // requested validity of each certificate, in days
     }
 
@@ -357,7 +357,8 @@ They are returned when the order has been created, possibly with adjusted values
 
 ### Canceling a Recurrent Order
 
-The main point of a recurrent order is that it can be cancelled by the domain name owner, with no need for certificate
+An important property of the recurrent order is that it can be cancelled by the domain name owner,
+with no need for certificate
 revocation. We use the DELETE message for that:
 
     DELETE /acme/order/1 HTTP/1.1
@@ -376,13 +377,17 @@ at the time of deletion.
 
 ACME supports sending arbitrary extensions when creating an Order, and as a result, there is no need to explicitly
 indicate support of this extension. The Proxy MUST verify that the "recurrent" attribute
-was understood. Since standard ACME does not allow to explicitly cancel a pending Order,
+was understood, as indicated by the "recurrent" attribute included in the created Order.
+Since the standard ACME protocol does not allow to explicitly cancel a pending Order (the DELETE operation
+above is an extension),
 an unhappy Proxy will probably let the Order
 expire instead of following through with the authorization process.
 
 ## Fetching the Certificates
+{: #fetching-certificates}
 
-The certificate is fetched from the certificate endpoint, as per {{I-D.ietf-acme-acme}}, Sec. 7.4.2 "Downloading the Certificate".
+The certificate is fetched from the certificate endpoint, as per {{I-D.ietf-acme-acme}}, Sec. 7.4.2
+"Downloading the Certificate".
 The server MUST include an Expires header that indicates expiry of the specific certificate. When the certificate
 expires, the client MAY assume that a newer certificate is already in place.
 
