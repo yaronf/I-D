@@ -292,8 +292,9 @@ Registration instance is polled to obtain its details.
 To create a registration, use:
 
     POST /lurk/registration
-    Host: example.com
+    Host: acme-proxy.example.com
     Content-Type: application/json
+
     {
         "csr": "...", // CSR in PEM format
         "lifetime": 365 // requested registration lifetime in days,
@@ -310,29 +311,31 @@ Upon success, the call returns the new Registration resource.
 The returned Registration can be polled until the information is available from the ACME server.
 
     GET /lurk/registration/567
-    Host: example.com
+    Host: acme-proxy.example.com
 
-While still polling the server, this returns:
+In responding to poll requests while the validation is still in progress, the server MUST return a 200 (OK) response and MAY include a Retry-After header field to suggest a polling interval to the client.  The Retry-After value MUST be expressed in seconds.  If the Retry-After header is present, in order to avoid suprising interactions with heuristic expiration times, a max-age Cache-Control SHOULD also be present and set to a value slightly smaller than the Retry-After value.
 
     HTTP/1.1 200 OK
-    Retry-After: 10 // in seconds; this is an optional header
+    Retry-After: 10
+    Cache-Control: max-age=9
+
     {
         "status": "pending"
     }
 
-When the operation is completed, the Proxy returns:
+When the operation is successfully completed, the ACME Proxy returns:
 
     HTTP/1.1 200 OK
+    Expires: Sun, 09 Sep 2018 14:09:00 GMT
+
     {
         "status": "valid", // or "failed"
-        "expires": "2018-09-09T14:09:00Z", // expiration of this response
-                                           // and the Registration resource
         "lifetime": 365, // lifetime of the registration in days,
                          //  possibly less than requested
-        "certificates": "https://example-server.com/certificates/A251A3"
+        "certificates": "https://acme-server.com/certificates/A251A3"
     }
 
-The "expires" field applies to the registration resource itself, and may be as small as a few minutes.
+The Expires header applies to the registration resource itself, and may be as small as a few minutes.
 It is unrelated to the order's lifetime which is measured in days or longer. The "certificates" attribute
 contains a URL of the certificate pull endpoint, see {{fetching-certificates}}.
 
@@ -372,7 +375,7 @@ with no need for certificate
 revocation. We use the DELETE message for that:
 
     DELETE /acme/order/1 HTTP/1.1
-    Host: example-server.com
+    Host: acme-server.com
 
 Which returns:
 
