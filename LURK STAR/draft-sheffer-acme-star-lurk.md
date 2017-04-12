@@ -302,7 +302,6 @@ To create a registration, use:
 Upon success, the call returns the new Registration resource. 
 
     HTTP/1.1 201 Created
-    Replay-Nonce: D8s4D2mLs8Vn-goWuPQeKA
     Location: https://example.com/lurk/registration/567
 
 ### Polling the Registration
@@ -335,6 +334,16 @@ When the operation is completed, the Proxy returns:
 The "expires" field applies to the registration resource itself, and may be as small as a few minutes.
 It is unrelated to the order's lifetime which is measured in days or longer. The "certificates" attribute
 contains a URL of the certificate pull endpoint, see {{fetching-certificates}}.
+
+If the registration fails for any reason, the server returns a "200 OK" response, with the status as "failed"
+and a "reason" attribute containing a human readable error message.
+
+## Transport Security for the LURK Protocol Leg
+
+Traffic between the LURK Client and the ACME Proxy MUST be protected with HTTPS.
+For interoperability, all implementations
+MUST support HTTP Basic Authentication [RFC7617]. However some deployments MAY prefer mutually-
+authenticated HTTPS or two-legged OAUTH.
 
 ## ACME Extensions between Proxy and Server
 
