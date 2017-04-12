@@ -47,6 +47,7 @@ author:
 
 normative:
   RFC2119:
+  RFC7617:
   I-D.ietf-acme-acme:
 
 informative:
