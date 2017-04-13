@@ -292,7 +292,7 @@ Registration instance is polled to obtain its details.
 To create a registration, use:
 
     POST /lurk/registration
-    Host: acme-proxy.example.com
+    Host: acme-proxy.example.net
     Content-Type: application/json
 
     {
@@ -304,14 +304,14 @@ To create a registration, use:
 Upon success, the call returns the new Registration resource. 
 
     HTTP/1.1 201 Created
-    Location: https://example.com/lurk/registration/567
+    Location: https://acme-proxy.example.net/lurk/registration/567
 
 ### Polling the Registration
 
 The returned Registration can be polled until the information is available from the ACME server.
 
     GET /lurk/registration/567
-    Host: acme-proxy.example.com
+    Host: acme-proxy.example.net
 
 In responding to poll requests while the validation is still in progress, the server MUST return a 200 (OK) response and MAY include a Retry-After header field to suggest a polling interval to the client.  The Retry-After value MUST be expressed in seconds.  If the Retry-After header is present, in order to avoid suprising interactions with heuristic expiration times, a max-age Cache-Control SHOULD also be present and set to a value slightly smaller than the Retry-After value.
 
@@ -332,7 +332,7 @@ When the operation is successfully completed, the ACME Proxy returns:
         "status": "valid", // or "failed"
         "lifetime": 365, // lifetime of the registration in days,
                          //  possibly less than requested
-        "certificates": "https://acme-server.com/certificates/A251A3"
+        "certificates": "https://acme-server.example.org/certificates/A251A3"
     }
 
 The Expires header applies to the registration resource itself, and may be as small as a few minutes.
@@ -346,7 +346,7 @@ and a "reason" attribute containing a human readable error message.
 
 Traffic between the LURK Client and the ACME Proxy MUST be protected with HTTPS.
 For interoperability, all implementations
-MUST support HTTP Basic Authentication [RFC7617]. However some deployments MAY prefer mutually-
+MUST support HTTP Basic Authentication {{RFC7617}}. However some deployments MAY prefer mutually-
 authenticated HTTPS or two-legged OAUTH.
 
 ## ACME Extensions between Proxy and Server
@@ -375,7 +375,7 @@ with no need for certificate
 revocation. We use the DELETE message for that:
 
     DELETE /acme/order/1 HTTP/1.1
-    Host: acme-server.com
+    Host: acme-server.example.org
 
 Which returns:
 
