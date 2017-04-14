@@ -1,7 +1,7 @@
 ---
 title: JSON Web Token Best Current Practices
 abbrev: JWT BCP
-docname: draft-sheffer-oauth-jwt-bcp
+docname: draft-sheffer-oauth-jwt-bcp-latest
 category: bcp
 updates:
 obsoletes:
@@ -51,6 +51,7 @@ normative:
 
 informative:
   RFC6749:
+  RFC7517:
   Langkemper:
     author:
     -
@@ -82,6 +83,18 @@ informative:
     title: "OpenID Connect Core 1.0"
     date: November 8, 2014
     target: http://openid.net/specs/openid-connect-core-1_0.html
+
+  OAuth.Metadata:
+    author:
+    -
+      name: Michael B. Jones
+    -
+      name: Nat Sakimura
+    -
+      name: John Bradley
+    title: "OAuth 2.0 Authorization Server Metadata"
+    date: March 10, 2017
+    target: http://tools.ietf.org/html/draft-ietf-oauth-discovery-06
 
 --- abstract
 
@@ -194,7 +207,8 @@ For mitigations, see <xref target="validate-crypto"/>.
 Per [Sanso], several JOSE libraries fail to validate their inputs correctly
 when performing elliptic curve key agreement (the "ECDH-ES" algorithm).
 An attacker that is able to send JWEs of its choosing that use invalid curve points and
-observe the resulting cleartext can use this vulnerability to recover the recipient's private key.
+observe the cleartext outputs resulting from decryption with the invalid curve points
+can use this vulnerability to recover the recipient's private key.
 
 For mitigations, see <xref target="validate-inputs"/>.
 
@@ -257,6 +271,8 @@ That said, if a JWT is cryptographically protected by a transport layer, such as
 using cryptographically current algorithms, there may be no need to apply another layer of
 cryptographic protections to the JWT.
 In such cases, the use of the "none" algorithm can be perfectly acceptable.
+JWTs using "none" are often used in application contexts in which the content is optionally signed;
+then the URL-safe claims representation and processing can be the same in both the signed and unsigned cases.
 
 ## Validate All Cryptographic Operations ## {#validate-crypto}
 
@@ -281,6 +297,8 @@ or it must use underlying cryptographic libraries that do so (or both!).
 The Key Entropy and Random Values advice in Section 10.1 of [RFC7515] and
 the Password Considerations in Section 8.8 of [RFC7518]
 MUST be followed.
+In particular, human-memorizable passwords MUST NOT be directly used
+as the key to a keyed-MAC algorithm, such as "HS256".
 
 ## Use UTF-8 ## {#use-utf8}
 
@@ -294,6 +312,13 @@ When a JWT contains an "iss" (issuer) claim, the application MUST validate that 
 used for the cryptographic operations in the JWT belong to the issuer.
 If they do not, the application MUST reject the JWT.
 
+The means of determining the keys owned by an issuer is application-specific.
+As one example, OpenID Connect {{OpenID.Core}} issuer values are "https" URLs
+that reference a JSON metadata document that contains a "jwks_uri" value that is
+an "https" URL from which the issuer's keys are retrieved as a JWK Set {{RFC7517}}.
+This same mechanism is used by {{OAuth.Metadata}}.
+Other applications may use different means of binding keys to issuers.
+
 Similarly, when the JWT contains a "sub" (subject) claim, the application MUST validate that
 the subject value corresponds to a valid subject and/or issuer/subject pair at the application.
 This may include confirming that the issuer is trusted by the application.
@@ -301,7 +326,7 @@ If the issuer, subject, or the pair are invalid, the application MUST reject the
 
 ## Use and Validate Audience ## {#use-aud}
 
-If the same issuer can issue JWTs that can be used by more than one relying party or application,
+If the same issuer can issue JWTs that are intended for use by more than one relying party or application,
 the JWT MUST contain an "aud" (audience) claim that can be used to determine whether the JWT
 is being used by an intended party or was substituted by an attacker at an unintended party.
 Furthermore, the relying party or application MUST validate the audience value
@@ -331,13 +356,12 @@ Each application of JWTs defines a profile specifying the required and optional 
 and the validation rules associated with them.
 To prevent substitution of JWTs from one context into another, a number of strategies may be employed:
 
-* Use different "aud" values for different uses of JWTs within the same application.
-A straightforward way of doing this, for instance, is to have the audience be the URL of the endpoint
-at which that kind of JWT is to be used for Web-based applications.
 * Use different sets of required claims or different required claim values.
 Then the validation rules for one kind of JWT will reject those with different claims or values.
 * Use different keys for different kinds of JWTs.
 Then the keys used to validate one kind of JWT will fail to validate other kinds of JWTs.
+* Use different "aud" values for different uses of JWTs from the same issuer.
+Then audience validation will reject JWTs substituted into inappropriate contexts.
 
 Given the broad diversity of JWT usage and applications,
 the best combination of required claims, values, and key usages to differentiate among different kinds of JWTs
