@@ -1,5 +1,5 @@
 ---
-title: Use of Short-Term, Automatically-Renewed (STAR) Certificates to Delegate Authority
+title: Use of Short-Term, Automatically-Renewed (STAR) Certificates to Delegate Authority over Web Sites
 abbrev: ACME STAR
 docname: draft-sheffer-acme-star-latest
 category: std
@@ -56,6 +56,7 @@ informative:
   I-D.cairns-tls-session-key-interface:
   I-D.erb-lurk-rsalg:
   I-D.landau-acme-caa:
+  I-D.fieau-cdni-https-delegation:
   Topalovic:
     -: ta
     target: http://www.w2spconf.com/2012/papers/w2sp12-final9.pdf
@@ -85,23 +86,50 @@ informative:
 
 --- abstract
 
-This memo proposes two mechanisms that work in concert to address the LURK problem statement, allowing a third party (e.g., a content delivery network) to terminate TLS sessions on behalf of a domain name owner (e.g., a content provider).
+This memo proposes two mechanisms that work in concert to allow a
+third party (e.g., a content delivery network) to terminate TLS
+sessions on behalf of a domain name owner (e.g., a content provider).
 
 The proposed mechanisms are:
 
 1. An extension to the ACME protocol to enable the issuance of short-term and automatically renewed certificates, and
-2.  A protocol that allows a domain name owner to delegate to a third party control over a certificate that bears its own name.
+2. A protocol that allows a domain name owner to delegate to a third party control over a certificate that bears its own name.
 
-It should be noted that these are in fact independent building blocks that could be used separately to solve completely different problems.
+It should be noted that these are in fact independent building blocks
+that could be used separately  to solve completely different problems.
 --- middle
 
 # A Solution for the HTTPS CDN Use Case
 
-A content provider, and Domain Name Owner (DNO), has agreements in place with one or more Content Delivery Networks (CDN) that are contracted to serve its content over HTTPS.  The CDN terminates the HTTPS connection at one of its edge cache servers and needs to present its clients (browsers, set-top-boxes) a certificate whose name matches the authority of the URL that is requested, i.e. that of the DNO.  However, many DNOs balk at sharing their long-term private keys with another organization and, equally, CDN providers would rather not have to handle other parties' long-term secrets. This problem has been discussed at the IETF under the LURK (limited use of remote keys) title.
+A content provider that we refer to as a Domain Name Owner (DNO), has agreements in
+place with one or more Content Delivery Networks (CDN) that are
+contracted to serve its content over HTTPS. The CDN terminates the
+HTTPS connection at one of its edge cache servers and needs to present
+its clients (browsers, set-top-boxes) a certificate whose name matches
+the authority of the URL that is requested, i.e. that of the DNO.
+However, many DNOs balk at sharing their long-term private keys with
+another organization and, equally, CDN providers would rather not have
+to handle other parties' long-term secrets.  This problem has been
+discussed at the IETF under the LURK (limited use of remote keys) title.
 
-This document proposes a solution to the above problem that involves the use of short-term certificates with a DNO's name on them, and a scheme for handling the naming delegation from the DNO to the CDN.  The generated short-term credentials are automatically renewed by an ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and routinely rotated by the CDN on its edge cache servers.  The DNO can end the delegation at any time by simply instructing the CA to stop the automatic renewal and let the certificate expire shortly after.
+This document proposes a solution to the above problem that involves
+the use of short-term certificates with a DNO's name on them, and a
+scheme for handling the naming delegation from the DNO to the CDN.
+The generated short-term credentials are automatically renewed by an
+ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and routinely
+rotated by the CDN on its edge cache servers.  The DNO can end the
+delegation at any time by simply instructing the CA to stop the automatic renewal and let the certificate expire shortly after.
 
-Using short-term certificates makes revocation cheap and effective {{Topalovic}} {{I-D.iab-web-pki-problems}} in case of key compromise or of termination of the delegation; seamless certificate issuance and renewal enable the level of workflow automation that is expected in today's cloud environments.  Also, compared to other keyless-TLS solutions {{I-D.cairns-tls-session-key-interface}} {{I-D.erb-lurk-rsalg}}, the proposed approach doesn't suffer from scalability issues or increase in connection setup latency, while requiring virtually no changes to existing COTS caching software used by the CDN.
+Using short-term certificates makes revocation cheap and effective
+{{Topalovic}} {{I-D.iab-web-pki-problems}} in case of key compromise
+or of termination of the delegation; seamless certificate issuance and
+renewal enable the level of workflow automation that is expected in
+today's cloud environments.  Also, compared to other keyless-TLS
+solutions {{I-D.cairns-tls-session-key-interface}}
+{{I-D.erb-lurk-rsalg}}, the proposed approach doesn't suffer from
+scalability issues or increase in connection setup latency, while
+requiring virtually no changes to existing COTS caching software used
+by the CDN.
 
 # Conventions used in this document
 
@@ -111,7 +139,11 @@ TODO: glossary.
 
 # Protocol Flow
 
-The protocol flow can be split into two: a LURK interface, used by CDN and DNO to agree on the name delegation, and the ACME STAR interface, used by DNO to obtain the short-term and automatically renewed certificate from the CA, which is eventually consumed by the CDN.  The latter is also used to terminate the delegation, if so needed.
+The protocol flow can be split into two: a STAR interface, used by CDN
+and DNO to agree on the name delegation, and the extended ACME
+interface, used by DNO to obtain the short-term and automatically
+renewed certificate from the CA, which is eventually consumed by the
+CDN.  The latter is also used to terminate the delegation, if so needed.
 
 The following subsections describe the preconditions ({{proto-preconditions}}), and the three main phases of the protocol:
 
@@ -119,14 +151,12 @@ The following subsections describe the preconditions ({{proto-preconditions}}), 
 - Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it to a public URL ({{proto-auto-renewal}});
 - Termination: the DNO (indirectly) stops name delegation by explicitly requesting the ACME CA to discontinue the automatic renewal of the certificate ({{proto-termination}}).
 
-
-
 ## Preconditions
 {: #proto-preconditions}
 
 The protocol assumes the following preconditions are met:
 
-- A mutually authenticated channel between CDN and DNO pre-exists.  This is called "LURK channel" and all LURK protocol exchanges between CDN and DNO are run over it.  It provides the guarantee that the LURK requests and responses are authentic [^1]{:tf: source="tf"}.
+- A mutually authenticated channel between CDN and DNO pre-exists.  This is called "STAR channel" and all STAR protocol exchanges between CDN and DNO are run over it.  It provides the guarantee that requests and responses are authentic [^1]{:tf: source="tf"}.
 - CDN and DNO have agreed on a "CSR template" to use, including at a minimum:
   - Subject name (e.g., "somesite.DNO.com"),
   - Validity (e.g., 24 to 72 hours),
@@ -137,29 +167,48 @@ The protocol assumes the following preconditions are met:
   The CDN is required to use this template for every CSR created under the same delegation.
 - DNO has registered through the ACME interface exposed by the Certificate Authority (CA) using the usual ACME registration procedure. The DNO shall, at the registration stage, query the ACME server for the supported STAR capabilities – for example: the minimum validity period of the issued certificate, the maximum duration of the automatic renewal process (either as a maximum number of renewal events, or as its maximum absolute life-span).
 
-[^1]: Note that, under this assumption, the key used to authenticate the CDN to the DNO becomes a critical asset for the security of the proposed protocol, and that certain interactions (e.g., CSR submission) might require a stronger authentication mechanism.  For example, stacking a further authentication factor on top of CDN's LURK key would allow to distinguish an attacker that has only managed to successfully attack the CDN's LURK key from the legitimate CDN.
+[^1]: Note that, under this assumption, the key used to authenticate the CDN to the DNO becomes a critical asset for the security of the proposed protocol, and that certain interactions (e.g., CSR submission) might require a stronger authentication mechanism.  For example, stacking a further authentication factor on top of CDN's STAR key would allow to distinguish an attacker that has only managed to successfully attack the CDN's STAR key from the legitimate CDN.
 
 
 ## Bootstrap
 {: #proto-bootstrap}
 
-CDN (LURK client) generates a key-pair, wraps it into a Certificate Signing Request (CSR) according to the agreed CSR template, and sends it to the DNO (LURK server) over the pre-established LURK channel.  The DNO uses the CDN identity provided on the LURK channel to look up the CSR template that applies to the requesting CDN and decides whether or not to accept the request.  (TBD: This is probably a case that would require a further authentication stage over the one provided by the mutual-authenticated LURK channel?)  Assuming everything is in order, it then "forwards" the CDN request to the ACME CA by means of the usual ACME application procedure. Specifically, DNO, in its role as a ACME/STAR client, requests the CA a STAR certificate, i.e., one that:
+CDN (STAR Client) generates a key-pair, wraps it into a Certificate
+Signing Request (CSR) according to the agreed CSR template, and sends
+it to the DNO (STAR Proxy) over the pre-established STAR channel.  The
+DNO uses the CDN identity provided on the STAR channel to look up the
+CSR template that applies to the requesting CDN and decides whether or
+not to accept the request.  (TBD: This is probably a case that would
+require a further authentication stage over the one provided by the
+mutual-authenticated STAR channel?)  Assuming everything is in order,
+it then "forwards" the CDN request to the ACME CA by means of the
+usual ACME application procedure. Specifically, DNO, in its role as an
+ACME client, requests the CA a STAR certificate, i.e., one that:
 
 - Has a short validity (e.g., 24 to 72 hours);
 - Is automatically renewed by the CA for a certain period of time;
 - Is downloadable from a (highly available) public link without requiring any special authorisation.
 
-Other than that, the ACME protocol flows as normal between DNO and CA, in particular DNO is responsible for satisfying the requested ACME challenges until the CA is willing to issue the requested certificate.
-The DNO is given back a unique identifier for the issued STAR certificate to be used in subsequent interaction with the CA (e.g., if the certificate needs to be terminated.)
+Other than that, the ACME protocol flows as normal between DNO and CA,
+in particular DNO is responsible for satisfying the requested ACME
+challenges until the CA is willing to issue the requested certificate.
+The DNO is given back a unique identifier for the issued STAR
+certificate to be used in subsequent interaction with the CA (e.g., if
+the certificate needs to be terminated.)
 
-Concurrently, a 202 response has been sent back to the CDN with an endpoint to poll for completion of the certificate generation process. 
+Concurrently, a 202 response has been sent back to the CDN with an
+endpoint to  poll for completion of the certificate generation process. 
 
-The bootstrap phase ends when the DNO obtains the OK from the ACME CA and posts the certificate's URL to the "completion endpoint" where the CDN can retrieve it.  The information that is passed on to the CDN at this stage also includes details about how much time before the certificate expires can the CDN expect the replacement to be ready.
+The bootstrap phase ends when the DNO obtains the OK from the ACME CA
+and posts the certificate's URL to the "completion endpoint" where the
+CDN can retrieve it.  The information that is passed on to the CDN at
+this stage also includes details about how much time before the
+certificate expires can the CDN expect the replacement to be ready.
 
 ~~~~~~~~~~
                      ...........................
-LURK                 :  LURK          ACME/STAR:              ACME/STAR
-Client               :  Server         Client  :               Server
+STAR                 :  STAR           ACME    :              ACME/STAR
+Client               :  Proxy          Client  :               Server
   |                  :    |               |    :                  |
   |                  :    |               |   ACME registration   |
   +-------.          :    |               |<--------------------->|
@@ -209,7 +258,7 @@ The CA automatically re-issues the certificate (using the same CSR) before it ex
 - Automatic renewal expires.
 
 ~~~~~~~~~~
-        LURK                    ACME/STAR
+        STAR                    ACME/STAR
         Client                  Server
           |     Retrieve cert     |                     [...]
           |<--------------------->|                      |
@@ -246,14 +295,14 @@ The CA automatically re-issues the certificate (using the same CSR) before it ex
 DNO requests termination of the STAR certificate by including the previously obtained identifier in a STAR certificate termination request to the ACME interface.
 After CA receives and verifies the request, it shall:
 
-- Cancel the automatic renewal process for the LURK certificate;
+- Cancel the automatic renewal process for the STAR certificate;
 - Change the certificate publication resource to return an error indicating the termination of the delegation to external clients, including the CDN;
 
 Note that it is not necessary to explicitly revoke the short-term certificate.
 
 ~~~~~~~~~~
-   LURK                   ACME/STAR               ACME/STAR
-   Client                  Client                  Server
+   STAR                    STAR                   ACME/STAR
+   Client                  Proxy                  Server
      |                       |                       |
      |                       |  Terminate STAR Id    |
      |                       +---------------------->|
@@ -277,12 +326,13 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
 
 # Protocol Details
 
-This section describes the protocol's details. We start with the LURK API between the LURK Client and the ACME Proxy.
-Then we describe a few extensions to the ACME protocol running between the ACME Proxy and the ACME Server.
+This section describes the protocol's details. We start with the STAR API between the STAR Client and the STAR Proxy.
+Then we describe a few extensions to the ACME protocol running between the STAR Proxy and the ACME Server.
 
-## LURK API
+## STAR API
 
-This API allows the LURK Client to request a STAR certificate via the Proxy, using a previously agreed-upon CSR template.
+This API allows the STAR Client to request a STAR certificate via the
+STAR Proxy, using a previously agreed-upon CSR template.
 
 The API consists of a single resource, "registration". A new Registration is created with a POST and then the
 Registration instance is polled to obtain its details.
@@ -291,8 +341,8 @@ Registration instance is polled to obtain its details.
 
 To create a registration, use:
 
-    POST /lurk/registration
-    Host: acme-proxy.example.net
+    POST /star/registration
+    Host: star-proxy.example.net
     Content-Type: application/json
 
     {
@@ -304,14 +354,14 @@ To create a registration, use:
 Upon success, the call returns the new Registration resource. 
 
     HTTP/1.1 201 Created
-    Location: https://acme-proxy.example.net/lurk/registration/567
+    Location: https://star-proxy.example.net/star/registration/567
 
 ### Polling the Registration
 
 The returned Registration can be polled until the information is available from the ACME server.
 
-    GET /lurk/registration/567
-    Host: acme-proxy.example.net
+    GET /star/registration/567
+    Host: star-proxy.example.net
 
 In responding to poll requests while the validation is still in progress, the server MUST return a 200 (OK) response and MAY include a Retry-After header field to suggest a polling interval to the client.  The Retry-After value MUST be expressed in seconds.  If the Retry-After header is present, in order to avoid suprising interactions with heuristic expiration times, a max-age Cache-Control SHOULD also be present and set to a value slightly smaller than the Retry-After value.
 
@@ -332,7 +382,7 @@ When the operation is successfully completed, the ACME Proxy returns:
         "status": "valid", // or "failed"
         "lifetime": 365, // lifetime of the registration in days,
                          //  possibly less than requested
-        "certificates": "https://acme-server.example.org/certificates/A251A3"
+        "certificates": "https://acme-server.example.org/certificates/A51A3"
     }
 
 The Expires header applies to the registration resource itself, and may be as small as a few minutes.
@@ -342,9 +392,9 @@ contains a URL of the certificate pull endpoint, see {{fetching-certificates}}.
 If the registration fails for any reason, the server returns a "200 OK" response, with the status as "failed"
 and a "reason" attribute containing a human readable error message.
 
-## Transport Security for the LURK Protocol Leg
+## Transport Security for the STAR Protocol Leg
 
-Traffic between the LURK Client and the ACME Proxy MUST be protected with HTTPS.
+Traffic between the STAR Client and the STAR Proxy MUST be protected with HTTPS.
 For interoperability, all implementations
 MUST support HTTP Basic Authentication {{RFC7617}}. However some deployments MAY prefer mutually-
 authenticated HTTPS or two-legged OAUTH.
@@ -406,6 +456,36 @@ expires, the client MAY assume that a newer certificate is already in place.
 
 A certificate MUST be replaced by its successor at the latest 24 hours before its "Not After" time.
 
+# CDNI Use Cases
+
+Members of the IETF CDNI (Content Delivery Network Interconnection) working group are interested in delegating
+authority over web content to CDNs. Their requirements are described
+in a draft {{I-D.fieau-cdni-https-delegation}} that compares
+several solutions. This section discusses two particular requirements
+in the context of the STAR protocol.
+
+## Multiple Parallel Delegates
+
+In some cases the DNO would like to delegate authority over a web site
+to multiple CDNs. This could happen if the DNO has agreements in place
+with different regional CDNs for different geographical regions. STAR
+enables this use case naturally, since each CDN can authenticate
+separately to the DNO specifying its CSR, and the DNO is free to allow
+or deny each certificate request according to its own policy.
+
+## Chained Delegation
+
+In other cases, a content owner (DNO) delegates some domains to a
+large CDN (CDN1), which in turn delegates to a smaller regional
+CDN, CDN2. The DNO has a contractual relationship with CDN1, and CDN1
+has a similar relationship with CDN2. However DNO may not even know
+about CDN2.
+
+The STAR protocol does not prevent this use case, although there is
+no special support for it. CDN1 can forward requests from CDN2 to DNO,
+and forward responses back to CDN2. Whether such proxying is allowed
+is governed by policy and contracts between the parties.
+
 # Security Considerations
 
 - CDN's client certificate key is first order security asset and MUST be protected.  Absent 2FA/MFA, an attacker that can compromise the key might be able to obtain certificates bearing DNO's identity.
@@ -440,3 +520,17 @@ mechanism described here is used.
 This work is partially supported by the European Commission under Horizon 2020 grant agreement no. 688421 Measurement and Architecture for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 --- back
+
+# Document History
+
+[[Note to RFC Editor: please remove before publication.]]
+
+## draft-sheffer-acme-star-00
+
+- Renamed draft to prevent confusion with other work in this space.
+- Added an initial STAR protocol: a REST API.
+- Discussion of CDNI use cases.
+
+## draft-sheffer-acme-star-lurk-00
+
+- Initial version.
