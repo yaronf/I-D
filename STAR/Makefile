@@ -4,7 +4,7 @@ kramdown-rfc2629 ?= kramdown-rfc2629
 idnits ?= idnits
 rfcdiff ?= rfcdiff
 
-draft := draft-sheffer-acme-star-lurk
+draft := draft-sheffer-acme-star
 current_ver := $(shell git tag | grep "$(draft)" | tail -1 | sed -e"s/.*-//")
 ifeq "${current_ver}" ""
 next_ver ?= 01
