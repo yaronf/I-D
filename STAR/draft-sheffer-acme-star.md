@@ -187,7 +187,7 @@ ACME client, requests the CA a STAR certificate, i.e., one that:
 
 - Has a short validity (e.g., 24 to 72 hours);
 - Is automatically renewed by the CA for a certain period of time;
-- Is downloadable from a (highly available) public link without requiring any special authorisation.
+- Is downloadable from a (highly available) public link without requiring any special authorization.
 
 Other than that, the ACME protocol flows as normal between DNO and CA,
 in particular DNO is responsible for satisfying the requested ACME
@@ -207,8 +207,8 @@ certificate expires can the CDN expect the replacement to be ready.
 
 ~~~~~~~~~~
                      ...........................
-STAR                 :  STAR           ACME    :              ACME/STAR
-Client               :  Proxy          Client  :               Server
+STAR                 :  STAR Proxy /           :              ACME/STAR
+Client               :           ACME Client   :               Server
   |                  :    |               |    :                  |
   |                  :    |               |   ACME registration   |
   +-------.          :    |               |<--------------------->|
@@ -363,7 +363,7 @@ The returned Registration can be polled until the information is available from 
     GET /star/registration/567
     Host: star-proxy.example.net
 
-In responding to poll requests while the validation is still in progress, the server MUST return a 200 (OK) response and MAY include a Retry-After header field to suggest a polling interval to the client.  The Retry-After value MUST be expressed in seconds.  If the Retry-After header is present, in order to avoid suprising interactions with heuristic expiration times, a max-age Cache-Control SHOULD also be present and set to a value slightly smaller than the Retry-After value.
+In responding to poll requests while the validation is still in progress, the server MUST return a 200 (OK) response and MAY include a Retry-After header field to suggest a polling interval to the client.  The Retry-After value MUST be expressed in seconds.  If the Retry-After header is present, in order to avoid surprising interactions with heuristic expiration times, a max-age Cache-Control SHOULD also be present and set to a value slightly smaller than the Retry-After value.
 
     HTTP/1.1 200 OK
     Retry-After: 10
