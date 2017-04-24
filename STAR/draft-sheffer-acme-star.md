@@ -109,7 +109,7 @@ It should be noted that these are in fact independent building blocks
 that can be used separately to solve completely different problems.
 --- middle
 
-# A Solution for the HTTPS CDN Use Case
+# Introduction: A Solution for the HTTPS CDN Use Case
 
 A content provider (referred to in this document as Domain Name Owner,
 DNO) has agreements in
@@ -444,7 +444,7 @@ authenticated HTTPS or two-legged OAUTH.
 
 ## ACME Extensions between Proxy and Server
 
-This protocol slightly extends the ACME protocol, to allow for recurrent orders.
+This protocol extends the ACME protocol, to allow for recurrent orders.
 
 ### Extending the Order Resource
 
@@ -584,7 +584,8 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 ## draft-sheffer-acme-star-01
 
-- Copyediting.
+- A terminology section.
+- Some cleanup.
 
 ## draft-sheffer-acme-star-00
 
