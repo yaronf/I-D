@@ -33,7 +33,7 @@ author:
     ins: D. Lopez
     name: Diego Lopez
     organization: Telefonica I+D
-    email: diego@telefonica.es
+    email: diego.r.lopez@telefonica.com 
  -
     ins: O. Gonzalez de Dios
     name: Oscar Gonzalez de Dios
@@ -103,7 +103,7 @@ The proposed mechanisms are:
 1. An extension to the ACME protocol to enable the issuance of
 short-term  and automatically renewed certificates, and
 2. A protocol that allows a domain name owner to delegate to a third
-party control over a certificate that bears its own name.
+party control over a certificate that bears one or more names in that domain.
 
 It should be noted that these are in fact independent building blocks
 that can be used separately to solve completely different problems.
@@ -143,10 +143,26 @@ scalability issues or increase in connection setup latency, while
 requiring virtually no changes to existing COTS caching software used
 by the CDN.
 
+## Cloud Use Case
+
+A similar use case is that of cloud infrastructure components, such as load balancers
+and Web Application Firewalls (WAF). These components are typically provisioned with
+the DNO's certificate, and similarly to the CDN use case, many organizations
+would prefer to manage the private key only on their own cloud-based or
+on-premise hosts, often on Hardware Security Modules (HSMs).
+
+Here again, the STAR solution allows the DNO to delegate authority
+over the domain to the cloud provider, with the ability to revoke
+this authority at any time.
+
 ## Terminology
 
 DNO
 : Domain Name Owner, the owner of a domain that needs to be delegated.
+
+NDC
+: Name Delegation Consumer, the entity to which the domain name is delegated for a limited
+time. This is often a CDN (in fact, readers may note the similarity of the two acronyms).
 
 CDN
 : Content Delivery Network, a widely distributed network
@@ -169,35 +185,51 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 # Protocol Flow
 
-The protocol flow can be split into two: a STAR interface, used by CDN
+The protocol flow can be split into two: a STAR interface, used by NDC
 and DNO to agree on the name delegation, and the extended ACME
 interface, used by DNO to obtain the short-term and automatically
 renewed certificate from the CA, which is eventually consumed by the
-CDN.  The latter is also used to terminate the delegation, if so needed.
+NDC.  The latter is also used to terminate the delegation, if so needed.
 
 The following subsections describe the preconditions
 ({{proto-preconditions}}), and the three main phases of the protocol:
 
-- Bootstrap: the CDN requests from the DNO the delegation of a specific name and in turn DNO asks an ACME CA to create the corresponding short-term and auto-renewed (STAR) certificate ({{proto-bootstrap}});
+- Bootstrap: the NDC requests from the DNO the delegation of a specific name and in turn DNO asks an ACME CA to create the corresponding short-term and auto-renewed (STAR) certificate ({{proto-bootstrap}});
 - Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it to a public URL ({{proto-auto-renewal}});
 - Termination: the DNO (indirectly) stops name delegation by explicitly requesting the ACME CA to discontinue the automatic renewal of the certificate ({{proto-termination}}).
 
+This diagram presents the entities involved in the protocol and their interactions during the different phases.
 
+~~~~~~~~~~~
+                                 +-----------------+
+                                 |    STAR Proxy   |
+                                 |      (DNO)      |
+                       Bootstrap +-----------------+ Bootstrap
+                     +---------->+  STAR  |  ACME  +-----------+
+                     |           | Server | Client | Terminate |
+                     |           +--------+--------+           |
+                     |                                         v
+                 +--------+                                +--------+
+                 |  STAR  |            Refresh             |  ACME  |
+                 | Client +------------------------------->| Server |
+                 | (NDC)  |                                |  (CA)  |
+                 +--------+                                +--------+
+~~~~~~~~~~~~
 
 ## Preconditions
 {: #proto-preconditions}
 
 The protocol assumes the following preconditions are met:
 
-- A mutually authenticated channel between CDN and DNO pre-exists.  This is called "STAR channel" and all STAR protocol exchanges between CDN and DNO are run over it.  It provides the guarantee that requests and responses are authentic.
-- CDN and DNO have agreed on a "CSR template" to use, including at a minimum:
+- A mutually authenticated channel between NDC and DNO pre-exists.  This is called "STAR channel" and all STAR protocol exchanges between NDC and DNO are run over it.  It provides the guarantee that requests and responses are authentic.
+- NDC and DNO have agreed on a "CSR template" to use, including at a minimum:
   - Subject name (e.g., "somesite.example.com"),
   - Validity (e.g., 24 to 72 hours),
   - Requested algorithms,
   - Key length,
   - Key usage.
 
-  The CDN is required to use this template for every CSR created under the same delegation.
+  The NDC is required to use this template for every CSR created under the same delegation.
 - DNO has registered through the ACME interface exposed by the
 Certificate Authority (CA) using the usual ACME registration
 procedure. In ACME terms, the DNO has an Account on the server
@@ -206,13 +238,13 @@ and is ready to issue Orders.
 ## Bootstrap
 {: #proto-bootstrap}
 
-The CDN (STAR Client) generates a key-pair, wraps it into a Certificate
+The NDC (STAR Client) generates a key-pair, wraps it into a Certificate
 Signing Request (CSR) according to the agreed upon CSR template, and sends
 it to the DNO (STAR Proxy) over the pre-established STAR channel.  The
-DNO uses the CDN identity provided on the STAR channel to look up the
-CSR template that applies to the requesting CDN and decides whether or
+DNO uses the NDC identity provided on the STAR channel to look up the
+CSR template that applies to the requesting NDC and decides whether or
 not to accept the request. Assuming everything is in order,
-it then "forwards" the CDN request to the ACME CA by means of the
+it then "forwards" the NDC request to the ACME CA by means of the
 usual ACME application procedure. Specifically, the DNO, in its role as an
 ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 
@@ -227,12 +259,12 @@ Per normal ACME processing, the DNO is given back an Order ID for the issued STA
 certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
-Concurrently, a response is sent back to the CDN with an
+Concurrently, a response is sent back to the NDC with an
 endpoint to  poll for completion of the certificate generation process. 
 
 The bootstrap phase ends when the DNO obtains the OK from the ACME CA
 and posts the certificate's URL to the "completion endpoint" where the
-CDN can retrieve it.
+NDC can retrieve it.
 
 ~~~~~~~~~~
                      ...........................
@@ -281,8 +313,8 @@ Client               :           ACME Client   :               Server
 {: #proto-auto-renewal}
 
 The CA automatically re-issues the certificate (using the same CSR)
-before it expires and publishes it to the URL that the CDN has come to
-know at the end of the bootstrap phase.  The CDN downloads and
+before it expires and publishes it to the URL that the NDC has come to
+know at the end of the bootstrap phase.  The NDC downloads and
 installs it. This process goes on until either:
 
 - DNO terminates the delegation, or
@@ -330,7 +362,7 @@ After the CA receives and verifies the request, it shall:
 
 - Cancel the automatic renewal process for the STAR certificate;
 - Change the certificate publication resource to return an error
-indicating the termination of the delegation to external clients, including the CDN.
+indicating the termination of the delegation to external clients, including the NDC.
 
 Note that it is not necessary to explicitly revoke the short-term certificate.
 
@@ -338,7 +370,7 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
    STAR                    STAR                   ACME/STAR
    Client                  Proxy                  Server
      |                       |                       |
-     |                       |  Terminate STAR Id    |
+     |                       |  Terminate Order ID   |
      |                       +---------------------->|
      |                       |                       +-------.
      |                       |                       |       |
@@ -428,18 +460,31 @@ When the operation is successfully completed, the ACME Proxy returns:
         "certificates": "https://acme-server.example.org/certificates/A51A3"
     }
 
-The Expires header applies to the Registration resource itself, and may be as small as a few minutes.
-It is unrelated to the Order's lifetime which is measured in days or longer. The "certificates" attribute
+The Expires header applies to the Registration resource itself, and may be as
+small as a few minutes.
+It is unrelated to the Order's lifetime which is measured in days or longer.
+The "certificates" attribute
 contains a URL of the certificate pull endpoint, see {{fetching-certificates}}.
 
-If the registration fails for any reason, the server returns a "200 OK" response, with the status as "failed"
+If the registration fails for any reason, the server returns a "200 OK"
+response, with the status as "failed"
 and a "reason" attribute containing a human readable error message.
+
+## ACME Authorization
+
+The DNO MUST restrict the authorizations it requests
+from the ACME server to only those that cannot be
+spoofed by a malicious DNC. In most cases the DNC
+will have strong control of HTTP content under the
+delegated domain, and therefore HTTPS-based authorization
+MUST NOT be used. See also {{restricting-cdns}}.
 
 ## Transport Security for the STAR Protocol Leg
 
 Traffic between the STAR Client and the STAR Proxy MUST be protected with HTTPS.
 For interoperability, all implementations
-MUST support HTTP Basic Authentication {{RFC7617}}. However some deployments MAY prefer mutually-
+MUST support HTTP Basic Authentication {{RFC7617}}. However some deployments
+MAY prefer mutually-
 authenticated HTTPS or two-legged OAUTH.
 
 ## ACME Extensions between Proxy and Server
@@ -530,6 +575,12 @@ no special support for it. CDN1 can forward requests from CDN2 to DNO,
 and forward responses back to CDN2. Whether such proxying is allowed
 is governed by policy and contracts between the parties.
 
+# Operational Considerations
+
+## Certificate Transparency (CT) Logs
+
+TBD: larger logs and how to deal with them.
+
 # Security Considerations
 
 ## STAR Protocol Authentication
@@ -538,12 +589,13 @@ The STAR protocol allows its client to obtain certificates bearing the
 DNO's identity. Therefore strong client authentication is
 mandatory.
 
-When multiple CDNs may connect to the same DNO, the STAR protocol's
+When multiple NDCs may connect to the same DNO, the STAR protocol's
 authentication must allow the DNO to distinguish between different
-CDNs. Among other benefits, this allows to DNO to cancel a STAR
+NDCs. Among other benefits, this allows to DNO to cancel a STAR
 registration for one of its clients instead of all of them.
 
 ## Restricting CDNs to the Delegation Mechanism
+{: #restricting-cdns}
 
 Currently there are no standard methods for the DNO to ensure that
 the CDN cannot issue a certificate through mechanisms other than the one described here,
@@ -581,6 +633,12 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-sheffer-acme-star-02
+
+- Using a more generic term for the delegation client, NDC.
+- Added an additional use case: public cloud services.
+- More detail on ACME authorization.
 
 ## draft-sheffer-acme-star-01
 
