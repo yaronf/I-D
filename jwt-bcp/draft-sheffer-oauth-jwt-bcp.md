@@ -354,21 +354,32 @@ Specifications that define JWT applications SHOULD define a unique "typ" value.
 
 Each application of JWTs defines a profile specifying the required and optional JWT claims
 and the validation rules associated with them.
+If more than one kind of JWT can be issued by the same issuer,
+the validation rules for those JWTs MUST be written such that they are mutually exclusive,
+rejecting JWTs of the wrong kind.
 To prevent substitution of JWTs from one context into another, a number of strategies may be employed:
 
 * Use different sets of required claims or different required claim values.
 Then the validation rules for one kind of JWT will reject those with different claims or values.
+* Use different sets of required header parameters or different required header parameter values.
+Then the validation rules for one kind of JWT will reject those with different header parameters or values.
 * Use different keys for different kinds of JWTs.
 Then the keys used to validate one kind of JWT will fail to validate other kinds of JWTs.
 * Use different "aud" values for different uses of JWTs from the same issuer.
 Then audience validation will reject JWTs substituted into inappropriate contexts.
+* Use different issuers for different kinds of JWTs.
+Then the distinct "iss" values can be used to segregate the different kinds of JWTs.
 
 Given the broad diversity of JWT usage and applications,
-the best combination of required claims, values, and key usages to differentiate among different kinds of JWTs
+the best combination of required claims, values, header parameters, key usages, and issuers
+to differentiate among different kinds of JWTs
 will, in general, be application specific.
-If more than one kind of JWT can be issued by the same issuer,
-the validation rules for those JWTs MUST be written such that they are mutually exclusive,
-rejecting JWTs of the wrong kind.
+
+NOTE:  A goal of this BCP is to recommend specific best practices for new applications of JWTs to apply.
+The strategies listed above are some of the options available to these applications.
+The authors request input from the OAuth working group and other interested parties
+on which of these strategies or which combinations should be considered to be best practices in which contexts.
+Descriptions of other practical strategies not listed above are also solicited.
 
 # IANA Considerations
 
