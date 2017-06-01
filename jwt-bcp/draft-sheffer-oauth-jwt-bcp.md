@@ -334,6 +334,12 @@ and if the audience value is not associated with the recipient, it MUST reject t
 
 ## Use Mutually Exclusive Validation Rules for Different Kinds of JWTs ## {#preventing-confusion}
 
+NOTE:  A goal of this BCP is to recommend specific best practices for new applications of JWTs to apply.
+The strategies listed below are some of the options available to these applications.
+The authors request input from the OAuth working group and other interested parties
+on which of these strategies or which combinations should be considered to be best practices in which contexts.
+Descriptions of other practical strategies not listed below are also solicited.
+
 <!-- I disagree with this text for several reasons.  For one, this probably won't work for existing applications.
      It requires inventing a multiplicity of new MIME types that make semantic distinctions
      when there are no actual syntactic distinctions (what MIME types are meant for).
@@ -374,12 +380,6 @@ Given the broad diversity of JWT usage and applications,
 the best combination of required claims, values, header parameters, key usages, and issuers
 to differentiate among different kinds of JWTs
 will, in general, be application specific.
-
-NOTE:  A goal of this BCP is to recommend specific best practices for new applications of JWTs to apply.
-The strategies listed above are some of the options available to these applications.
-The authors request input from the OAuth working group and other interested parties
-on which of these strategies or which combinations should be considered to be best practices in which contexts.
-Descriptions of other practical strategies not listed above are also solicited.
 
 # IANA Considerations
 
