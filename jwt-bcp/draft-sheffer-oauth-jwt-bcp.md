@@ -121,7 +121,7 @@ and OAuth 2.0 {{RFC6749}} access tokens and refresh tokens, the details of which
 
 Since the JWT specification was published, there have been several widely published
 attacks on implementations and deployments.
-Such attacks are the result of underspecified security mechanisms, as well as incomplete
+Such attacks are the result of under-specified security mechanisms, as well as incomplete
 implementations and incorrect usage by applications.
 
 The goal of this document is to facilitate secure implementation and deployment of JWTs.
@@ -173,7 +173,8 @@ This, in conjunction with design flaws in some libraries and applications, have 
 
 * The algorithm can be changed to "none" by an attacker, and some libraries would trust
 this value and "validate" the JWT without checking any signature.
-* A "RS256" (RSA, 2048 bit) can be changed into "HS256" (HMAC, SHA-256), and some libraries
+* An "RS256" (RSA, 2048 bit) parameter value can be changed into
+"HS256" (HMAC, SHA-256), and some libraries
 would try to validate the signature using HMAC-SHA256 and using the RSA public key as the
 HMAC shared secret.
 
@@ -190,8 +191,8 @@ For mitigations, see <xref target="key-entropy"/>.
 ## Multiplicity of JSON encodings
 
 Many practitioners are not aware that JSON {{RFC7159}} allows several different character
-encodings: UTF-8, UTF-16 and UTF-32. As a result, the JWT might be misunderstood
-by its recipient.
+encodings: UTF-8, UTF-16 and UTF-32. As a result, the JWT might be
+misinterpreted by its recipient.
 
 For mitigations, see <xref target="use-utf8"/>.
 
@@ -226,7 +227,7 @@ For mitigations, see <xref target="validate-iss-sub"/> and <xref target="use-aud
 As JWTs are being used by more and more different protocols, it becomes increasingly
 important to prevent cases of JWT tokens that have been issued for one purpose
 being subverted and used for another.
-This is actually also a kind of substitution attack.
+Note that this is a specific type of substitution attacks.
 
 <!-- I don't think this text really adds value.  I've left it in a comment for now.
      It is actually describing possible mitigations, not problems, but mitigations that don't work.
@@ -244,6 +245,9 @@ For mitigations, see <xref target="validate-iss-sub"/>, <xref target="use-aud"/>
 <xref target="preventing-confusion"/>.
 
 # Best Practices # {#BP}
+
+The best practices listed below should be applied by practitioners
+to mitigate the threats listed in the preceding section.
 
 ## Perform Algorithm Verification ## {#algorithm-verification}
 
@@ -267,7 +271,7 @@ This set will vary over time as new algorithms are introduced
 and existing algorithms are deprecated due to discovered cryptographic weaknesses.
 Applications must therefore be designed to enable cryptographic agility.
 
-That said, if a JWT is cryptographically protected by a transport layer, such as TLS,
+That said, if a JWT is cryptographically protected by a transport layer, such as TLS
 using cryptographically current algorithms, there may be no need to apply another layer of
 cryptographic protections to the JWT.
 In such cases, the use of the "none" algorithm can be perfectly acceptable.
@@ -298,7 +302,7 @@ The Key Entropy and Random Values advice in Section 10.1 of [RFC7515] and
 the Password Considerations in Section 8.8 of [RFC7518]
 MUST be followed.
 In particular, human-memorizable passwords MUST NOT be directly used
-as the key to a keyed-MAC algorithm, such as "HS256".
+as the key to a keyed-MAC algorithm such as "HS256".
 
 ## Use UTF-8 ## {#use-utf8}
 
@@ -334,7 +338,7 @@ and if the audience value is not associated with the recipient, it MUST reject t
 
 ## Use Mutually Exclusive Validation Rules for Different Kinds of JWTs ## {#preventing-confusion}
 
-NOTE:  A goal of this BCP is to recommend specific best practices for new applications of JWTs to apply.
+NOTE:  A goal of this BCP is to recommend specific best practices for applications of JWTs to apply.
 The strategies listed below are some of the options available to these applications.
 The authors request input from the OAuth working group and other interested parties
 on which of these strategies or which combinations should be considered to be best practices in which contexts.
