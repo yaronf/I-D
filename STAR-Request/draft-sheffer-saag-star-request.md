@@ -40,6 +40,11 @@ author:
     organization: Telefonica I+D
     email: oscar.gonzalezdedios@telefonica.com
  -
+    ins: A. Pastor Perales
+    name: Antonio Agustin Pastor Perales
+    organization: Telefonica I+D
+    email: antonio.pastorperales@telefonica.com
+ -
     ins: T. Fossati
     name: Thomas Fossati
     organization: Nokia
