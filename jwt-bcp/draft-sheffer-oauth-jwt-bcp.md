@@ -84,17 +84,7 @@ informative:
     date: November 8, 2014
     target: http://openid.net/specs/openid-connect-core-1_0.html
 
-  OAuth.Metadata:
-    author:
-    -
-      name: Michael B. Jones
-    -
-      name: Nat Sakimura
-    -
-      name: John Bradley
-    title: "OAuth 2.0 Authorization Server Metadata"
-    date: March 10, 2017
-    target: http://tools.ietf.org/html/draft-ietf-oauth-discovery-06
+  I-D.ietf-oauth-discovery:
 
 --- abstract
 
@@ -320,7 +310,7 @@ The means of determining the keys owned by an issuer is application-specific.
 As one example, OpenID Connect {{OpenID.Core}} issuer values are "https" URLs
 that reference a JSON metadata document that contains a "jwks_uri" value that is
 an "https" URL from which the issuer's keys are retrieved as a JWK Set {{RFC7517}}.
-This same mechanism is used by {{OAuth.Metadata}}.
+This same mechanism is used by {{I-D.ietf-oauth-discovery}}.
 Other applications may use different means of binding keys to issuers.
 
 Similarly, when the JWT contains a "sub" (subject) claim, the application MUST validate that
