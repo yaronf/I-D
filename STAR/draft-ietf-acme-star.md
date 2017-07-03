@@ -1,7 +1,7 @@
 ---
 title: Use of Short-Term, Automatically-Renewed (STAR) Certificates to Delegate Authority over Web Sites
 abbrev: ACME STAR
-docname: draft-sheffer-acme-star-latest
+docname: draft-ietf-acme-star-latest
 category: std
 
 ipr: trust200902
@@ -104,6 +104,11 @@ certificates to another party, while retaining the capability to
 cancel this delegation at any time with no need to rely on certificate
 revocation mechanisms.
 
+[RFC Editor: please remove before publication]
+
+While the draft is being developed, the editor's version can be found at
+https://github.com/yaronf/I-D/tree/master/STAR.
+
 --- middle
 
 # Introduction: A Solution for the HTTPS CDN Use Case
@@ -141,7 +146,7 @@ requiring virtually no changes to existing COTS caching software used
 by the CDN.
 
 This document describes the ACME extension. A companion document
-[[I-D.sheffer-saag-star-request]] describes how the CDN can
+[I-D.sheffer-acme-star-request] describes how the CDN can
 request the DNO to initiate the protocol with the ACME server.
 
 ## Cloud Use Case
@@ -200,7 +205,7 @@ NDC.  The latter is also used to terminate the delegation, if so needed.
 
 Communication between
 the NDC and the DNO (the STAR interface) is out of scope of this document.
-It may take the form described in [[I-D.sheffer-saag-star-request]], some
+It may take the form described in [I-D.sheffer-acme-star-request], some
 other online protocol, or may even be through manual generation of the CSR.
 
 The following subsections describe the three main phases of the protocol:
@@ -452,8 +457,9 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 [[Note to RFC Editor: please remove before publication.]]
 
-## draft-sheffer-acme-star-03
+## draft-ietf-acme-star-00
 
+- Initial working group version.
 - Removed the STAR interface, the protocol between NDC and DNO. What remains is only
 the extended ACME protocol.
 
