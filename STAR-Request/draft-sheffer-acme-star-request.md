@@ -54,7 +54,7 @@ normative:
   RFC2119:
   RFC7617:
   I-D.ietf-acme-acme:
-  I-D.sheffer-acme-star:
+  I-D.ietf-acme-star:
 
 informative:
   I-D.fieau-cdni-https-delegation:
@@ -76,10 +76,10 @@ having to rely on certificate revocation mechanisms.
 
 # Introduction
 
-This document is a companion document to [I-D.ietf-acme-star]. To avoid
+This document is a companion document to {{I-D.ietf-acme-star}}. To avoid
 duplication, we give here a barebones description of the motivation for this solution.
 For more details and further use cases, please refer to the
-introductory sections of [I-D.ietf-acme-star].
+introductory sections of {{I-D.ietf-acme-star}}.
 
 A content provider (referred to in this document as Domain Name Owner,
 DNO) has agreements in
@@ -96,7 +96,7 @@ to handle other parties' long-term secrets.
 This document describes a protocol where the DNO and the NDC agree on
 a CSR template and the NDC
 generates a CSR for a private key that it holds. The DNO then uses the
-ACME protocol (as extended in [I-D.ietf-acme-star] to issue the
+ACME protocol (as extended in {{I-D.ietf-acme-star}} to issue the
 STAR certificate.
 
 The generated short-term certificate is automatically renewed by an
@@ -139,7 +139,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 
 This section presents the protocol flow. For completeness, we include
 the STAR Interface proposed in this draft, as well as the extended
-ACME protocol as described in [I-D.ietf-acme-star].
+ACME protocol as described in {{I-D.ietf-acme-star}}.
 
 ## Preconditions
 {: #proto-preconditions}
@@ -463,6 +463,10 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-sheffer-acme-star-request-01
+
+- Correct reference to WG draft.
 
 ## draft-sheffer-acme-star-request-00
 
