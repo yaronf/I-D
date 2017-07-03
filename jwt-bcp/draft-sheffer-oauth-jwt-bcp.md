@@ -238,22 +238,12 @@ For mitigations, see <xref target="validate-iss-sub"/> and <xref target="use-aud
 
 ## Cross-JWT Confusion
 
-As JWTs are being used by more and more different protocols, it becomes increasingly
+As JWTs are being used by more different protocols in diverse application areas, it becomes increasingly
 important to prevent cases of JWT tokens that have been issued for one purpose
 being subverted and used for another.
-Note that this is a specific type of substitution attacks.
-
-<!-- I don't think this text really adds value.  I've left it in a comment for now.
-     It is actually describing possible mitigations, not problems, but mitigations that don't work.
-     That's why I think we should delete it.
-Unfortunately the JWT specification does not include one standardized attribute
-that can be used to distinguish between different applications. The "critical"
-attribute of [RFC7515] only points to critical headers (attributes), and therefore cannot
-be used as a distinguishing value.
-Neither can the "typ" attribute be used, since it is defined as
-a Media Type, and in fact the highly generic values "JOSE" [RFC7515] or "JWT" [RFC7519]
-are valid. 
--->
+Note that this is a specific type of substitution attack.
+If the JWT could be used in an application context in which it could be confused with other kinds of JWTs,
+then mitigations MUST be employed to prevent these substitution attacks.
 
 For mitigations, see <xref target="validate-iss-sub"/>, <xref target="use-aud"/>,
 <xref target="use-typ"/>, and <xref target="preventing-confusion"/>.
@@ -352,8 +342,8 @@ and if the audience value is not associated with the recipient, it MUST reject t
 
 ## Use Explicit Typing ## {#use-typ}
 
-If the JWT could be used in an application context in which it could be confused with other kinds of JWTs,
-this can be prevented by having all the kinds of JWTs that could otherwise potentially be confused
+Confusion of one kind of JWT for another
+can be prevented by having all the kinds of JWTs that could otherwise potentially be confused
 include an explicit JWT type value and include checking the type value in their validation rules.
 Explicit JWT typing is accomplished by using the "typ" header parameter.
 For instance, the {{SecEvent}} specification uses the "application/secevent+jwt" media type
