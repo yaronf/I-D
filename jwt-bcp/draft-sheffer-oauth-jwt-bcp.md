@@ -85,20 +85,7 @@ informative:
     target: http://openid.net/specs/openid-connect-core-1_0.html
 
   I-D.ietf-oauth-discovery:
-
-  SecEvent:
-    author:
-    -
-      name: Phil Hunt
-    -
-      name: William Denniss
-    -
-      name: Morteza Ansari
-    -
-      name: Michael B. Jones
-    title: "Security Event Token (SET)"
-    date: June 30, 2017
-    target: https://tools.ietf.org/html/draft-ietf-secevent-token-02
+  I-D.ietf-secevent-token:
 
 --- abstract
 
@@ -336,7 +323,7 @@ Confusion of one kind of JWT for another
 can be prevented by having all the kinds of JWTs that could otherwise potentially be confused
 include an explicit JWT type value and include checking the type value in their validation rules.
 Explicit JWT typing is accomplished by using the "typ" header parameter.
-For instance, the {{SecEvent}} specification uses the "application/secevent+jwt" media type
+For instance, the {{I-D.ietf-secevent-token}} specification uses the "application/secevent+jwt" media type
 to perform explicit typing of Security Event Tokens (SETs).
 
 Per the definition of "typ" in Section 4.1.9 of [RFC7515],
