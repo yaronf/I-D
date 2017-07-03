@@ -96,6 +96,20 @@ informative:
     date: March 10, 2017
     target: http://tools.ietf.org/html/draft-ietf-oauth-discovery-06
 
+  SecEvent:
+    author:
+    -
+      name: Phil Hunt
+    -
+      name: William Denniss
+    -
+      name: Morteza Ansari
+    -
+      name: Michael B. Jones
+    title: "Security Event Token (SET)"
+    date: June 30, 2017
+    target: https://tools.ietf.org/html/draft-ietf-secevent-token-02
+
 --- abstract
 
 JSON Web Tokens, also known as JWTs {{RFC7519}}, are URL-safe JSON-based security tokens
@@ -224,25 +238,15 @@ For mitigations, see <xref target="validate-iss-sub"/> and <xref target="use-aud
 
 ## Cross-JWT Confusion
 
-As JWTs are being used by more and more different protocols, it becomes increasingly
+As JWTs are being used by more different protocols in diverse application areas, it becomes increasingly
 important to prevent cases of JWT tokens that have been issued for one purpose
 being subverted and used for another.
-Note that this is a specific type of substitution attacks.
+Note that this is a specific type of substitution attack.
+If the JWT could be used in an application context in which it could be confused with other kinds of JWTs,
+then mitigations MUST be employed to prevent these substitution attacks.
 
-<!-- I don't think this text really adds value.  I've left it in a comment for now.
-     It is actually describing possible mitigations, not problems, but mitigations that don't work.
-     That's why I think we should delete it.
-Unfortunately the JWT specification does not include one standardized attribute
-that can be used to distinguish between different applications. The "critical"
-attribute of [RFC7515] only points to critical headers (attributes), and therefore cannot
-be used as a distinguishing value.
-Neither can the "typ" attribute be used, since it is defined as
-a Media Type, and in fact the highly generic values "JOSE" [RFC7515] or "JWT" [RFC7519]
-are valid. 
--->
-
-For mitigations, see <xref target="validate-iss-sub"/>, <xref target="use-aud"/>, and
-<xref target="preventing-confusion"/>.
+For mitigations, see <xref target="validate-iss-sub"/>, <xref target="use-aud"/>,
+<xref target="use-typ"/>, and <xref target="preventing-confusion"/>.
 
 # Best Practices # {#BP}
 
@@ -336,31 +340,27 @@ is being used by an intended party or was substituted by an attacker at an unint
 Furthermore, the relying party or application MUST validate the audience value
 and if the audience value is not associated with the recipient, it MUST reject the JWT.
 
+## Use Explicit Typing ## {#use-typ}
+
+Confusion of one kind of JWT for another
+can be prevented by having all the kinds of JWTs that could otherwise potentially be confused
+include an explicit JWT type value and include checking the type value in their validation rules.
+Explicit JWT typing is accomplished by using the "typ" header parameter.
+For instance, the {{SecEvent}} specification uses the "application/secevent+jwt" media type
+to perform explicit typing of Security Event Tokens (SETs).
+
+Per the definition of "typ" in Section 4.1.9 of [RFC7515],
+it is RECOMMENDED that the "application/" prefix be omitted from the "typ" value.
+Therefore, for example, the "typ" value used to explicitly include a type for a SET
+SHOULD be "secevent+jwt".
+When explicit typing is employed for a JWT, it is RECOMMENDED that a media type name of the format
+"application/example+jwt" be used, where "example" is replaced by the identifier for the specific kind of JWT.
+
+Note that the use of explicit typing may not achieve disambiguation from existing kinds of JWTs,
+as the validation rules for existing kinds JWTs often do not use the "typ" header parameter value.
+Explicit typing is RECOMMENDED for new uses of JWTs.
+
 ## Use Mutually Exclusive Validation Rules for Different Kinds of JWTs ## {#preventing-confusion}
-
-NOTE:  A goal of this BCP is to recommend specific best practices for applications of JWTs to apply.
-The strategies listed below are some of the options available to these applications.
-The authors request input from the OAuth working group and other interested parties
-on which of these strategies or which combinations should be considered to be best practices in which contexts.
-Descriptions of other practical strategies not listed below are also solicited.
-
-<!-- I disagree with this text for several reasons.  For one, this probably won't work for existing applications.
-     It requires inventing a multiplicity of new MIME types that make semantic distinctions
-     when there are no actual syntactic distinctions (what MIME types are meant for).
-     And there are existing mechanisms described below that will already achieve this goal,
-     without inventing a new one in this BCP.
-Libraries MUST allow callers to specify the "typ" header parameter of each JWT, both when
-creating a JWT and when parsing and validating it.
-Applications SHOULD use this value to distinguish between different uses, to
-ensure that a signed statement cannot be misinterpreted. For example, a single organization
-may sign JWTs with different "typ" values:
-
-* "JWT+id" for identity tokens.
-* "JWT+set+risc" for RISC events.
-* "JWT+set+oidc-logout" for OID Connect Logout events.
-
-Specifications that define JWT applications SHOULD define a unique "typ" value.
--->
 
 Each application of JWTs defines a profile specifying the required and optional JWT claims
 and the validation rules associated with them.
@@ -369,6 +369,8 @@ the validation rules for those JWTs MUST be written such that they are mutually 
 rejecting JWTs of the wrong kind.
 To prevent substitution of JWTs from one context into another, a number of strategies may be employed:
 
+* Use explicit typing for different kinds of JWTs.
+Then the distinct "typ" values can be used to differentiate between the different kinds of JWTs.
 * Use different sets of required claims or different required claim values.
 Then the validation rules for one kind of JWT will reject those with different claims or values.
 * Use different sets of required header parameters or different required header parameter values.
@@ -381,7 +383,7 @@ Then audience validation will reject JWTs substituted into inappropriate context
 Then the distinct "iss" values can be used to segregate the different kinds of JWTs.
 
 Given the broad diversity of JWT usage and applications,
-the best combination of required claims, values, header parameters, key usages, and issuers
+the best combination of types, required claims, values, header parameters, key usages, and issuers
 to differentiate among different kinds of JWTs
 will, in general, be application specific.
 
@@ -393,12 +395,17 @@ This document requires no IANA actions.
 
 Thanks to Antonio Sanso for bringing the "ECDH-ES" invalid point attack to the attention
 of JWE and JWT implementers.
+Thanks to Nat Sakimura for advocating the use of explicit typing.
 
 --- back
 
 # Document History
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
+
+## draft-sheffer-oauth-jwt-bcp-01
+
+- Added explicit typing.
 
 ## draft-sheffer-oauth-jwt-bcp-00
 
