@@ -1,7 +1,7 @@
 ---
 title: JSON Web Token Best Current Practices
 abbrev: JWT BCP
-docname: draft-sheffer-oauth-jwt-bcp-latest
+docname: draft-ietf-oauth-jwt-bcp-latest
 category: bcp
 updates:
 obsoletes:
@@ -379,6 +379,10 @@ Thanks to Nat Sakimura for advocating the use of explicit typing.
 # Document History
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
+
+## draft-ietf-oauth-jwt-bcp-00
+
+- Initial WG draft. No change from the latest individual version.
 
 ## draft-sheffer-oauth-jwt-bcp-01
 

@@ -3,7 +3,7 @@ kramdown-rfc2629 ?= kramdown-rfc2629
 idnits ?= idnits
 rfcdiff ?= rfcdiff
 
-draft := draft-sheffer-oauth-jwt-bcp
+draft := draft-ietf-oauth-jwt-bcp
 current_ver := $(shell git tag | grep "$(draft)" | tail -1 | sed -e"s/.*-//")
 ifeq "${current_ver}" ""
 next_ver ?= 00
