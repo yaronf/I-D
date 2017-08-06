@@ -52,11 +52,12 @@ author:
 
 normative:
   RFC2119:
+  RFC2616:
+  RFC3339:
   I-D.ietf-acme-acme:
 
 informative:
   RFC6844:
-  I-D.iab-web-pki-problems:
   I-D.cairns-tls-session-key-interface:
   I-D.erb-lurk-rsalg:
   I-D.ietf-acme-caa:
@@ -111,10 +112,40 @@ https://github.com/yaronf/I-D/tree/master/STAR.
 
 --- middle
 
-# Introduction: A Solution for the HTTPS CDN Use Case
+# Introduction
 
-A content provider (referred to in this document as Domain Name Owner,
-DNO) has agreements in
+A certificate owner (refered to in this document as DNO, Domain Name Owner)
+wishes to delagete the use of its certificate to another entity for a period of time.
+The delegate is typically a different organization, and we will refer to it as NDC,
+Name Delegation Client. The content provider wishes to retain the option
+of terminating the delegation if something should go wrong.
+
+This document proposes a solution to the above problem that involves
+the use of short-term certificates with a DNO's name on them, and a
+scheme for handling the naming delegation from the DNO to the NDC.
+The generated short-term credentials are automatically renewed by an
+ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and routinely
+rotated by the NDC.  The DNO can end the
+delegation at any time by simply instructing the CA to stop the
+automatic renewal and letting the certificate expire shortly thereafter.
+
+Using short-term certificates makes revocation cheap and effective
+{{Topalovic}} in case of key compromise
+or of termination of the delegation; seamless certificate issuance and
+renewal enable the level of workflow automation that is expected in
+today's cloud environments.  Also, compared to other keyless-TLS
+solutions {{I-D.cairns-tls-session-key-interface}}
+{{I-D.erb-lurk-rsalg}}, the proposed approach doesn't suffer from
+scalability issues or increase in connection setup latency.
+
+This document describes an extension to the ACME protocol between the DNO and the CA.
+A companion document
+[I-D.sheffer-acme-star-request] describes how the NDC can
+request the DNO to initiate the protocol with the ACME server.
+
+## The HTTPS CDN Use Case
+
+A content provider (the Domain Name Owner or DNO) has agreements in
 place with one or more Content Delivery Networks (CDNs) that are
 contracted to serve its content over HTTPS. The CDN terminates the
 HTTPS connection at one of its edge cache servers and needs to present
@@ -125,29 +156,9 @@ another organization and, equally, CDN providers would rather not have
 to handle other parties' long-term secrets.  This problem has been
 discussed at the IETF under the LURK (limited use of remote keys) title.
 
-This document proposes a solution to the above problem that involves
-the use of short-term certificates with a DNO's name on them, and a
-scheme for handling the naming delegation from the DNO to the CDN.
-The generated short-term credentials are automatically renewed by an
-ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and routinely
-rotated by the CDN on its edge cache servers.  The DNO can end the
-delegation at any time by simply instructing the CA to stop the
-automatic renewal and let the certificate expire shortly thereafter.
-
-Using short-term certificates makes revocation cheap and effective
-{{Topalovic}} {{I-D.iab-web-pki-problems}} in case of key compromise
-or of termination of the delegation; seamless certificate issuance and
-renewal enable the level of workflow automation that is expected in
-today's cloud environments.  Also, compared to other keyless-TLS
-solutions {{I-D.cairns-tls-session-key-interface}}
-{{I-D.erb-lurk-rsalg}}, the proposed approach doesn't suffer from
-scalability issues or increase in connection setup latency, while
-requiring virtually no changes to existing COTS caching software used
-by the CDN.
-
-This document describes the ACME extension. A companion document
-[I-D.sheffer-acme-star-request] describes how the CDN can
-request the DNO to initiate the protocol with the ACME server.
+The solution described here enables the CDN edge nodes to regularly download a valid certificate
+delegated by the DNO. The DNO may stop this issuance when it no longer wishes
+to delegate its identity to the CDN.
 
 ## Cloud Use Case
 
@@ -167,8 +178,9 @@ DNO
 : Domain Name Owner, the owner of a domain that needs to be delegated.
 
 NDC
-: Name Delegation Consumer, the entity to which the domain name is delegated for a limited
-time. This is often a CDN (in fact, readers may note the similarity of the two acronyms).
+: Name Delegation Client, the entity to which the domain name is delegated for a limited
+time. In the CDN use case of this solution, the Client is the CDN
+(in fact, readers may note the similarity of the two acronyms).
 
 CDN
 : Content Delivery Network, a widely distributed network
@@ -212,8 +224,10 @@ The following subsections describe the three main phases of the protocol:
 
 - Bootstrap: the DNO asks an ACME CA to create a corresponding short-term and auto-renewed (STAR) certificate,
 possibly on a request from an NDC which is out of scope for this document;
-- Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it to a public URL ({{proto-auto-renewal}});
-- Termination: the DNO (indirectly) stops name delegation by explicitly requesting the ACME CA to discontinue the automatic renewal of the certificate ({{proto-termination}}).
+- Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it
+to a public URL ({{proto-auto-renewal}});
+- Termination: the DNO (indirectly) stops name delegation by explicitly requesting the ACME CA
+to discontinue the automatic renewal of the certificate ({{proto-termination}}).
 
 This diagram presents the entities involved in the protocol and their interactions during the different phases.
 
@@ -339,8 +353,6 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
 This section describes the protocol's details, namely the extensions
 to the ACME protocol required to issue STAR certificates.
 
-
-
 ## ACME Extensions between Proxy and Server
 
 This protocol extends the ACME protocol, to allow for recurrent orders.
@@ -351,33 +363,53 @@ The Order resource is extended with the following attributes:
 
     {
         "recurrent": true,
-        "recurrent-total-lifetime": 365, // requested lifetime of the
-                                         // recurrent registration, in days
-        "recurrent-certificate-validity": 7
-           // requested validity of each certificate, in days
+        "recurrent-start-date": "2016-01-01T00:00:00Z",
+        "recurrent-end-date": "2017-01-01T00:00:00Z",
+        "recurrent-certificate-validity": 604800
     }
+
+- recurrent: MUST be "true" for STAR certificates.
+- recurrent-start-date: the earlist date of validity of the first certificate issued, in [RFC3339] format.
+This attribute is optional. When ommitted, the start date is as soon as authorization is complete.
+- recurrent-end-date: the latest date of validity of the last certificate issued, in [RFC3339] format.
+- recurrent-certificate-validity: the maximum validity period of each STAR certificate,
+an integer that denotes a number of seconds.
 
 These attributes are included in a POST message when creating the order, as part of the "payload" encoded object.
 They are returned when the order has been created, and the ACME server
 MAY adjust them at will, according to its local policy.
 
+ACME defines the following values for the Order resource's status: "invalid", "pending", "processing", "valid".
+In the case of recurrent orders, the status MUST be "valid" as long as STAR certificates are being issued.
+We add a new status value, "canceled", see below.
+
 ### Canceling a Recurrent Order
 
-An important property of the recurrent Order is that it can be cancelled by the domain name owner,
+An important property of the recurrent Order is that it can be canceled by the domain name owner,
 with no need for certificate
-revocation. We use the DELETE message to cancel the Order:
+revocation. To cancel the Order, the ACME client sends a POST:
 
-    DELETE /acme/order/1 HTTP/1.1
+    POST /acme/order/1 HTTP/1.1
     Host: acme-server.example.org
+    Content-Type: application/jose+json
 
-Which returns:
+    {
+     "protected": base64url({
+       "alg": "ES256",
+       "kid": "https://example.com/acme/acct/1",
+       "nonce": "5XJ1L3lEkMG7tR6pA00clA",
+       "url": "https://example.com/acme/order/1"
+     }),
+     "payload": base64url({
+       "status": "canceled"
+     }),
+     "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
+    }
 
-
-    HTTP/1.1 202 Deleted
-
-
-The server MUST NOT issue any additional certificates for this Order, beyond the certificate that is available for collection
-at the time of deletion.
+The server MUST NOT issue any additional certificates for this Order,
+beyond the certificate that is available for collection
+at the time of deletion. Immediately when the Order is canceled,
+the server MAY respond with "404 Not Found" to any requests to the certificate endpoint.
 
 ## Indicating Support of Recurrent Orders
 
@@ -403,8 +435,34 @@ MUST NOT be used. See also {{restricting-cdns}}.
 
 The certificate is fetched from the certificate endpoint, as per {{I-D.ietf-acme-acme}}, Sec. 7.4.2
 "Downloading the Certificate".
-The server MUST include an Expires header that indicates expiry of the specific certificate. When the certificate
-expires, the client MAY assume that a newer certificate is already in place.
+
+
+~~~
+   GET /acme/cert/asdf HTTP/1.1
+   Host: acme-server.example.org
+   Accept: application/pkix-cert
+
+   HTTP/1.1 200 OK
+   Content-Type: application/pem-certificate-chain
+   Link: <https://example.com/acme/some-directory>;rel="index"
+   Not-Before: Mon, 1 Feb 2016 00:00:00 GMT
+   Not-After: Mon, 8 Feb 2016 00:00:00 GMT
+
+   -----BEGIN CERTIFICATE-----
+   [End-entity certificate contents]
+   -----END CERTIFICATE-----
+   -----BEGIN CERTIFICATE-----
+   [Issuer certificate contents]
+   -----END CERTIFICATE-----
+   -----BEGIN CERTIFICATE-----
+   [Other certificate contents]
+   -----END CERTIFICATE-----
+~~~
+
+The Server SHOULD include the "Not-Before" and "Not-After" headers. When they exist, they MUST be equal
+to the respective fields inside the certificate. Their format is "HTTP-date", [RFC2616] Sec. 3.3.1.
+Their purpose is to enable client implementations that
+do not parse the certificate.
 
 A certificate MUST be replaced by its successor at the latest halfway through its lifetime (the period between
 its notBefore and notAfter times).
@@ -456,6 +514,12 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-01
+
+- Generalized the introduction, separating out the specifics of CDNs.
+- Using a POST to ensure cancelation is authenticated.
+- First and last date of recurrent cert, as absolute dates. Validity of certs in seconds. 
 
 ## draft-ietf-acme-star-00
 
