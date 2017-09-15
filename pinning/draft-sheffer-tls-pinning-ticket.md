@@ -102,11 +102,20 @@ extensive adoption.
 TACK has some similarities to the current proposal, but work on it seems to have stalled.
 {{tack}} compares our proposal to TACK.
 
-HPKP is an IETF standard, but so far has proven hard to deploy. HPKP cannot be completely
+HPKP is an IETF standard, but so far has proven hard to deploy. HPKP pins (fixes) a public
+key, one of the public keys listed in the certificate chain.
+As a result, HPKP needs to be coordinated with the certificate management process.
+Certificate management impacts HPKP and thus increases the probability of HPKP failures.
+This risk is made even higher given the fact that, even though work has been done at the ACME WG
+to automate certificate management, in many or even most cases, certificates are still managed
+manually.
+As a result, HPKP
+cannot be completely
 automated resulting in error-prone manual configuration. Such errors
 could prevent the web server from being accessed by some clients. In addition, HPKP uses a HTTP
 header which makes this solution HTTPS specific and not generic to TLS. On the other hand, the current
-document provides a solution that can be entirely automated. {{hpkp}} compares
+document provides a solution that is independent of the server's certificate
+management and that can be entirely and easily automated. {{hpkp}} compares
 HPKP to the current draft in more detail.
 
 The ticket pinning proposal augments these mechanisms
@@ -118,6 +127,8 @@ and is not proposed as a substitute
 of the authentication method provided in the TLS key exchange. More specifically,
 the client only uses the pinning identity method after the TLS key exchange is successfully completed.
 In other words, the pinning identity method is only performed over an authenticated TLS session.
+Note that Ticket Pinning does not pin certificate information and as such should be considered
+a "real" independent second factor authentication.
 
 Ticket pinning is a Trust On First Use (TOFU) mechanism, in that
 the first server authentication is only based on PKI certificate
@@ -168,11 +179,16 @@ The main advantages of this protocol over earlier pinning solutions are:
   it exists.
 * Pinning errors, presumably resulting from MITM attacks, can be detected both by the
   client and the server. This allows for server-side detection of MITM attacks using
-  large-scale analytics.
+  large-scale analytics, and with no need to rely on clients to explicitly report
+  the error.
 
 A note on terminology: unlike other solutions in this space, we do not
 do "certificate pinning" (or "public key pinning"), since the protocol is oblivious to the server's
 certificate. We prefer the term "server identity pinning" for this new solution.
+In out solution, the server proves its identity by generating a proof that
+it can read and decrypt an encrypted ticket. As a result, the identity proof
+relies on proof of ownership of the pinning protection key. However, this key is never
+exchanged with the client or known by it, and so cannot itself be pinned.
 
 ## Conventions used in this document
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
@@ -191,7 +207,8 @@ The document presents some similarities with the ticket resumption mechanism des
 However the scope of this document differs from session resumption mechanisms implemented with
 {{RFC5077}} or with other mechanisms. Specifically, the pinning ticket does not carry any state
 associated with a TLS session and thus cannot be used for session resumption,
-or to authenticate the client.
+or to authenticate the client. Instead, the pinning ticket only contains the Pinning Secret
+used to generate the proof.
 
 With TLS 1.3, session resumption is based on a preshared key (PSK).
 This is orthogonal to this protocol. With TLS 1.3, a TLS session can
@@ -214,14 +231,14 @@ server's first response, in the returned PinningTicket extension.
 
      ClientHello
        + key_share
+       + signature_algorithms*
        + PinningTicket         -------->
                                                      ServerHello
                                                      + key_share
                                            {EncryptedExtensions
                                                 + PinningTicket}
-                                          {ServerConfiguration*}
-                                                  {Certificate*}
                                            {CertificateRequest*}
+                                                  {Certificate*}
                                             {CertificateVerify*}
                                <--------              {Finished}
      {Certificate*}
@@ -284,7 +301,8 @@ and MUST respond with a PinningTicket extension, which includes:
 
 * A proof that the server can understand
   the ticket that was sent by the client; this proof also binds the pinning ticket to
-  the server's (current) public key. The proof is MANDATORY if a pinning ticket was sent by
+  the server's (current) public key, as well as the ongoing TLS session.
+  The proof is MANDATORY if a pinning ticket was sent by
   the client.
 * A fresh pinning ticket. The main reason for refreshing the ticket on each connection
   is privacy: to avoid the ticket serving as a fixed client identifier. It is RECOMMENDED
@@ -410,7 +428,8 @@ to allow migrating virtual servers between different servers while keeping pinni
 
 As noted in {{cluster}}, if the server is actually a cluster of machines,
 the protection key MUST
-be synchronized between them. When {{RFC5077}} is deployed, an easy way to do it is to derive
+be synchronized between all the nodes that accept TLS connections to the same server name.
+When {{RFC5077}} is deployed, an easy way to do it is to derive
 the protection key from the
 session-ticket protection key, which is already synchronized. For example:
 
@@ -473,7 +492,7 @@ never to automatically delete protection keys, even when they are long expired.
 
 The lifetime of the ticket is a commitment by the server to retain the ticket's corresponding
 protection key for this duration, so that the server can prove to the client that it
-knows the secret embedded in the ticket. For production systems, the lifetime SHOULD be between 7 and 30 days.
+knows the secret embedded in the ticket. For production systems, the lifetime SHOULD be between 7 and 31 days.
 
 ## Certificate Renewal
 
@@ -499,7 +518,13 @@ A server implementing this protocol MUST have a "ramp down" mode of operation wh
 * The server does not send back a new pinning ticket.
 
 After a while no clients will hold valid tickets any more and the feature may be
-disabled.
+disabled. Note that clients that do not receive a new pinning ticket do not remove
+the original ticket. Instead, the client keeps on using the ticket until its lifetime
+expires.
+
+Issuing a new pinning ticket with a shorter lifetime would only delay the ramp down
+process, as the shorter lifetime can only affect clients that actually initiated a new
+connection. Other clients would still see the original lifetime for their pinning tickets.
 
 ## Server Compromise
 
@@ -528,14 +553,63 @@ pinning secrets from resumption keys ({{pinning-secret}}), they MUST NOT back up
 
 This section compares ticket pinning to two earlier proposals, HPKP and TACK.
 
-## Comparison: HPKP Deployment {#hpkp}
+## Comparison: HPKP {#hpkp}
 
 The current IETF standard for pinning the identity of web servers
 is the Public Key Pinning Extension
-for HTTP, or HPKP {{RFC7469}}. Unfortunately HPKP has not seen wide deployment yet.
+for HTTP, or HPKP {{RFC7469}}.
+
+The main differences between HPKP and the current document are the
+following:
+
+   -  HPKP limits its scope to HTTPS, while the current document
+      considers all application above TLS.
+
+   -  HPKP pins the public key of the server (or another public key along the certificate chain)
+   and as such is highly dependent
+      on the management of certificates.  Such dependency increases the
+      potential error surface, especially as certificate
+      management is not yet largely automated.  The current proposal, on
+      the other hand is independent of certificate management.
+
+   -  HPKP pins public keys which are public and used for the standard
+      TLS authentication.  Identity pinning relies on the ownership of
+      the pinning key which is not disclosed to the public and not
+      involved in the standard TLS authentication.  As a result,
+      identity pinning is a completely independent second factor
+      authentication mechanism.
+
+   -  HPKP relies on a backup key to recover the mis-issuance of a key.
+      We believe such backup mechanisms add excessive complexity and cost. 
+      Reliability of the current mechanism is primarily based on its
+      being highly automated.
+
+   -  HPKP relies on the client to report errors to the report-uri.
+      The current document not need any out-of band mechanism, and the
+      server is informed automatically. This provides an easier and
+      more reliable health monitoring.
+
+On the other hand, HPKP shares the following aspects with identity pinning:
+
+   -  Both mechanisms provide hard failure.  With HPKP only the client
+      is aware of the failure, while with the current proposal both
+      client and server are informed of the failure.  This provides room
+      for further mechanisms to automatically recover such failures.
+
+   -  Both mechanisms are subject to a server compromise in which users are provided with 
+   an invalid ticket (e.g. a random one) or HTTP Header, with a very
+      long lifetime. For identity pinning, this lifetime cannot be longer than 31 days.
+      In both cases, clients will not be able to
+      reconnect the server during this lifetime.  With the current
+      proposal, an attacker needs to compromise the TLS layer, while
+      with HPKP, the attacker needs to compromise the HTTP server.
+      Arguably, the TLS-level compromise is typically more difficult for the attacker.
+
+Unfortunately HPKP has not seen wide deployment yet.
 As of March 2016, the number of servers using HPKP was less than 3000 {{Netcraft}}.
 This may simply be
-due to inertia, but we believe the main reason is the onerous manual certificate
+due to inertia, but we believe the main reason is the interactions between HPKP and
+manual certificate
 management which is needed to implement HPKP for enterprise servers. The penalty
 for making mistakes (e.g. being too early or too late to deploy new pins) is
 having the server become unusable for some of the clients.
@@ -755,6 +829,15 @@ Therefore implementations that choose AES-128-GCM MUST adopt one of these two al
 * Generate random nonces but avoid the so-called birthday bound, i.e. never generate more than
   2**64 encrypted tickets for the same ticket pinning protection Key.
 
+An alternative design which has been attributed to Karthik Bhargavan is as follows.
+Start with a 128-bit master key "K_master" and then for each encryption,
+generate a 256-bit random nonce and compute:
+
+    K = HKDF(K_master, Nonce || "key")
+    N = HKDF(K_master, Nonce || "nonce")
+
+And use these values to encrypt the ticket, AES-GCM(K, N, \<data\>).
+
 # IANA Considerations
 
 IANA is requested to allocate a TicketPinning extension value in the
@@ -770,13 +853,18 @@ and Omer Berkman. The current protocol is but a
 distant relative of the original Oreo protocol, and any errors are the
 draft authors' alone.
 
-We would like to thank Dave Garrett, Daniel Kahn Gillmor and Yoav Nir for their comments on this draft.
+We would like to thank Dave Garrett, Daniel Kahn Gillmor, Eric Rescorla and Yoav Nir
+for their comments on this draft.
 Special thanks to Craig Francis for contributing the HPKP deployment script, and to Ralph Holz
 for several fruitful discussions.
 
 --- back
 
 # Document History
+
+## draft-sheffer-tls-pinning-ticket-05
+
+- Multiple comments from Eric Rescorla.
 
 ## draft-sheffer-tls-pinning-ticket-04
 
