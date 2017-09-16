@@ -58,6 +58,8 @@ normative:
 
 informative:
   RFC6844:
+  RFC7942:
+  I-D.sheffer-acme-star-request:
   I-D.cairns-tls-session-key-interface:
   I-D.erb-lurk-rsalg:
   I-D.ietf-acme-caa:
@@ -114,8 +116,8 @@ https://github.com/yaronf/I-D/tree/master/STAR.
 
 # Introduction
 
-A certificate owner (refered to in this document as DNO, Domain Name Owner)
-wishes to delagete the use of its certificate to another entity for a period of time.
+A certificate owner (referred to in this document as DNO, Domain Name Owner)
+wishes to delegate the use of its certificate to another entity for a period of time.
 The delegate is typically a different organization, and we will refer to it as NDC,
 Name Delegation Client. The content provider wishes to retain the option
 of terminating the delegation if something should go wrong.
@@ -369,8 +371,8 @@ The Order resource is extended with the following attributes:
     }
 
 - recurrent: MUST be "true" for STAR certificates.
-- recurrent-start-date: the earlist date of validity of the first certificate issued, in [RFC3339] format.
-This attribute is optional. When ommitted, the start date is as soon as authorization is complete.
+- recurrent-start-date: the earliest date of validity of the first certificate issued, in [RFC3339] format.
+This attribute is optional. When omitted, the start date is as soon as authorization is complete.
 - recurrent-end-date: the latest date of validity of the last certificate issued, in [RFC3339] format.
 - recurrent-certificate-validity: the maximum validity period of each STAR certificate,
 an integer that denotes a number of seconds.
@@ -472,6 +474,109 @@ its notBefore and notAfter times).
 ## Certificate Transparency (CT) Logs
 
 TBD: larger logs and how to deal with them.
+
+# Implementation Status
+
+Note to RFC Editor: please remove this section before publication,
+including the reference to {{RFC7942}}.
+
+This section records the status of known implementations of the
+protocol defined by this specification at the time of posting of
+this Internet-Draft, and is based on a proposal described in
+{{RFC7942}}.  The description of implementations in this section is
+intended to assist the IETF in its decision processes in
+progressing drafts to RFCs.  Please note that the listing of any
+individual implementation here does not imply endorsement by the
+IETF.  Furthermore, no effort has been spent to verify the
+information presented here that was supplied by IETF contributors.
+This is not intended as, and must not be construed to be, a
+catalog of available implementations or their features.  Readers
+are advised to note that other implementations may exist.
+
+According to {{RFC7942}}, "this will allow reviewers and working
+groups to assign due consideration to documents that have the
+benefit of running code, which may serve as evidence of valuable
+experimentation and feedback that have made the implemented
+protocols more mature.  It is up to the individual working groups
+to use this information as they see fit".
+
+## Overview
+
+The implementation is constructed around 3 elements: Client STAR for NDC,
+Proxy STAR for DNO and Server ACME for CA. The communication between
+them is over an IP network and the HTTPS protocol.
+
+The software of the implementation is available at: https://github.com/mami-project/lurk
+
+The following subsections offer a basic description, detailed information
+is available in https://github.com/mami-project/lurk/blob/master/proxySTAR_v1/README.md
+
+### ACME Server with STAR extension
+
+This is a fork of the Let's Encrypt Boulder project that implements an ACME compliant CA.
+It includes modifications to extend the ACME protocol as it is specified in this draft,
+to support recurrent orders and cancelling orders. 
+
+The implementation understands the new "recurrent" attributes as part of the Certificate
+issuance in the POST request for a new resource.
+An additional process "renewalManager.go" has been included in parallel that reads
+the details of each recurrent request, automatically produces a "cron" Linux based task
+that issues the recurrent certificates, until the lifetime ends or the order is cancelled.
+This process is also in charge of maintaining a fixed URI to enable the NDC to download certificates,
+unlike Boulder's regular process of producing a unique URI per certificate.
+
+### Proxy STAR
+
+The Proxy STAR, has a double role as ACME client and STAR Server. The former is a fork of the EFF
+Certbot project that implements an ACME compliant client with the STAR extension.
+The latter is a basic HTTP REST API server.
+
+The proxy STAR understands the basic API request with a server. The current implementation
+of the API is defined in draft-sheffer-acme-star-request-00. Registration or order cancellation
+triggers the modified Certbot client that requests, or cancels, the recurrent generation
+of certificates using the STAR extension over ACME protocol.
+The URI with the location of the recurrent certificate is delivered to the STAR client as a response.
+
+## Level of Maturity
+
+This is a prototype. 
+
+## Coverage
+
+Client STAR is not included in this implementation, but done by direct HTTP request with any open HTTP REST API tool.
+This is expected to be covered as part of {{I-D.sheffer-acme-star-request}} implementation.
+
+This implementation completely covers Proxy STAR and Server ACME with STAR extension 
+
+## Version Compatibility
+
+The implementation is compatible with version draft-ietf-acme-star-00. 
+The implementation is based on the Boulder and Certbot code release from 7-Aug-2017.
+
+## Licensing
+This implementation inherits the Boulder license (Mozilla Public License 2.0)
+and Certbot license (Apache License Version 2.0 ).
+
+## Implementation experience
+
+To prove the concept all the implementation has been done with a self-signed CA,
+to avoid impact on real domains. To be able to do it we use the FAKE_DNS property
+of Boulder and static /etc/hosts entries with domains names.
+Nonetheless this implementation should run with real domains. 
+
+Most of the implementation has been made to avoid deep changes inside of Boulder
+or Certbot, for example, the recurrent certificates issuance by the CA is based
+on an external process that auto-configures the standard Linux "cron" daemon in the ACME CA server. 
+
+The reference setup recommended is one physical host with 3 virtual machines,
+one for each of the 3 components (client, proxy and server) and the connectivity based on host bridge.
+
+No security is enabled (iptables default policies are "accept" and all rules removed)
+in this implementation to simplify and test the protocol. 
+
+## Contact Information
+
+See author details below.
 
 # Security Considerations
 
