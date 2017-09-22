@@ -58,12 +58,8 @@ normative:
   RFC7807:
 
 informative:
-  RFC6844:
   RFC7942:
   I-D.sheffer-acme-star-request:
-  I-D.cairns-tls-session-key-interface:
-  I-D.erb-lurk-rsalg:
-  I-D.ietf-acme-caa:
   Topalovic:
     -: ta
     target: http://www.w2spconf.com/2012/papers/w2sp12-final9.pdf
@@ -277,7 +273,7 @@ The Order resource is extended with the following attributes:
     }
 
 - recurrent: MUST be "true" for STAR certificates.
-- recurrent-start-date: the earlist date of validity of the first certificate issued, in {{RFC3339}} format.
+- recurrent-start-date: the earliest date of validity of the first certificate issued, in {{RFC3339}} format.
 This attribute is optional. When omitted, the start date is as soon as authorization is complete.
 - recurrent-end-date: the latest date of validity of the last certificate issued, in {{RFC3339}} format.
 - recurrent-certificate-validity: the maximum validity period of each STAR certificate,
@@ -411,7 +407,7 @@ The implementation understands the new "recurrent" attributes as part of the Cer
 issuance in the POST request for a new resource.
 An additional process "renewalManager.go" has been included in parallel that reads
 the details of each recurrent request, automatically produces a "cron" Linux based task
-that issues the recurrent certificates, until the lifetime ends or the order is cancelled.
+that issues the recurrent certificates, until the lifetime ends or the order is canceled.
 This process is also in charge of maintaining a fixed URI to enable the NDC to download certificates,
 unlike Boulder's regular process of producing a unique URI per certificate.
 
@@ -476,8 +472,7 @@ This document adds the following entry to the ACME Error Type registry:
 
 | Type | Description | Reference |
 |------|-------------|-----------|
-| recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent order has been explicitly cancelled by the DNO | RFC XXXX |
-|  |  |  |
+| recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent order has been explicitly canceled by the DNO | RFC XXXX |
 | recurrentOrderExpired | The short-term certificate is no longer available because the recurrent order has expired | RFC XXXX |
 
 ## New ACME Order Object Fields
@@ -487,11 +482,8 @@ This document adds the following entries to the ACME Order Object Fields registr
 | Field Name | Field Type | Configurable | Reference |
 |------------|------------|--------------|-----------|
 | recurrent | string | true | RFC XXXX |
-| | | | |
 | recurrent-start-date | string | true | RFC XXXX |
-| | | | |
 | recurrent-end-date | string | true | RFC XXXX |
-| | | | |
 | recurrent-certificate-validity | string | true | RFC XXXX |
 
 # Security Considerations
