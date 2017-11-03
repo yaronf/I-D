@@ -60,6 +60,7 @@ normative:
 informative:
   RFC7942:
   I-D.sheffer-acme-star-request:
+  I-D.nir-saag-star:
   Topalovic:
     -: ta
     target: http://www.w2spconf.com/2012/papers/w2sp12-final9.pdf
@@ -106,6 +107,8 @@ If done this way, the process would involve frequent interactions between the re
 
 This document presents an extension of the ACME protocol that optimizes this process by making short-term certificates first class objects in the ACME ecosystem.
 Once the order for a string of short-term certificates is accepted, the CA is responsible for publishing the next certificate at an agreed upon URL before the previous one expires.  The DNO can terminate the automatic renewal before the natural deadline, if needed - e.g., on key compromise.
+
+For a more generic treatment of STAR certificates, readers are referred to {{I-D.nir-saag-star}}.
 
 ### Name Delegation Use Case
 
@@ -468,6 +471,8 @@ See author details below.
 
 # IANA Considerations
 
+[[RFC Editor: please replace XXXX below by the RFC number.]]
+
 ## New ACME Error Types
 
 This document adds the following entry to the ACME Error Type registry:
@@ -508,10 +513,11 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 - Generalized the introduction, separating out the specifics of CDNs.
 - Clean out LURK-specific text.
-- Using a POST to ensure cancelation is authenticated.
+- Using a POST to ensure cancellation is authenticated.
 - First and last date of recurrent cert, as absolute dates. Validity of certs in seconds. 
 - Use RFC7807 "Problem Details" in error responses.
 - Add IANA considerations.
+- Changed the document's title.
 
 ## draft-ietf-acme-star-00
 
