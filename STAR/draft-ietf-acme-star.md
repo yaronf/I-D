@@ -1,5 +1,5 @@
 ---
-title: Use of Short-Term, Automatically-Renewed (STAR) Certificates to Delegate Authority over Web Sites
+title: Support for Short-Term, Automatically-Renewed (STAR) Certificates in Automated Certificate Management Environment (ACME)
 abbrev: ACME STAR
 docname: draft-ietf-acme-star-latest
 category: std
@@ -105,14 +105,16 @@ However, if the DNO wishes to obtain a string of short-term certificates origina
 If done this way, the process would involve frequent interactions between the registration function of the ACME Certification Authority (CA) and the user's backing infrastructure (e.g.: DNS, web servers), therefore making the issuance of short-term certificates exceedingly dependent on the reliability of both.
 
 This document presents an extension of the ACME protocol that optimizes this process by making short-term certificates first class objects in the ACME ecosystem.
-Once the order for a string of short-term certificates is accepted, the CA is responsible to publish the next certificate at an agreed upon URL before the previous one expires.  The DNO can terminate the automatic renewal before the natural deadline, if needed - e.g., on key compromise.
+Once the order for a string of short-term certificates is accepted, the CA is responsible for publishing the next certificate at an agreed upon URL before the previous one expires.  The DNO can terminate the automatic renewal before the natural deadline, if needed - e.g., on key compromise.
+
+### Name Delegation Use Case
 
 The proposed mechanism can be used as a building block of an efficient name-delegation protocol, for example one that exists between a CDN or a cloud provider and its users {{I-D.sheffer-acme-star-request}}, in a way that makes the delegator (i.e., the DNO) in full control of the delegation by simply instructing the CA to stop the automatic renewal and letting the currently active certificate expire shortly thereafter.
 
 ## Terminology
 
 DNO
-: Domain Name Owner, the owner of a domain
+: Domain Name Owner, the owner of a domain.
 
 STAR
 : Short-Term, Automatically Renewed X.509 certificates.
@@ -128,7 +130,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 The following subsections describe the three main phases of the protocol:
 
-- Bootstrap: the DNO asks an ACME CA to create a corresponding short-term and auto-renewed (STAR) certificate;
+- Bootstrap: the DNO asks an ACME CA to create a short-term and automatically-renewed (STAR) certificate ({{proto-bootstrap}});
 - Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it
 to a public URL ({{proto-auto-renewal}});
 - Termination: the DNO requests the ACME CA
@@ -161,8 +163,8 @@ ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 - Is automatically renewed by the CA for a certain period of time;
 - Is downloadable from a (highly available) public link without requiring any special authorization.
 
-Other than that, the ACME protocol flows as normal between DNO and CA,
-in particular DNO is responsible for satisfying the requested ACME
+Other than that, the ACME protocol flows as normal between DNO and CA.
+In particular, DNO is responsible for satisfying the requested ACME
 challenges until the CA is willing to issue the requested certificate.
 Per normal ACME processing, the DNO is given back an Order ID for the issued STAR
 certificate to be used in subsequent interaction with the CA (e.g., if
@@ -173,10 +175,9 @@ The bootstrap phase ends when the DNO obtains the OK from the ACME CA.
 ## Refresh
 {: #proto-auto-renewal}
 
-The CA automatically re-issues the certificate (using the same CSR)
-before it expires and publishes it to the URL that was returned to the DNO at the end of the bootstrap phase.
-The certificate user, which could be either the DNO itself or a delegated third party, as described in {{I-D.sheffer-acme-star-request}}, downloads and
-installs it. This process goes on until either:
+The CA automatically re-issues the certificate using the same CSR (and therefore the same name and public key) before it expires and publishes it to the URL that was returned to the DNO at the end of the bootstrap phase.  The certificate user, which could be either the DNO itself or a delegated third party, as described in {{I-D.sheffer-acme-star-request}}, obtains the certificate and uses it.
+
+The refresh process ({{figprotorefresh}}) goes on until either:
 
 - DNO terminates the delegation, or
 - Automatic renewal expires.
@@ -185,14 +186,14 @@ installs it. This process goes on until either:
      Certificate              ACME/STAR
         User                    Server
           |     Retrieve cert     |                     [...]
-          |<--------------------->|                      |
+          |---------------------->|                      |
           |                       +------.              /
           |                       |      |             /
           |                       | Automatic renewal :
           |                       |      |             \
           |                       |<-----'              \
           |     Retrieve cert     |                      |
-          |<--------------------->|                   72 hours
+          |---------------------->|                   72 hours
           |                       |                      |
           |                       +------.              /
           |                       |      |             /
@@ -200,7 +201,7 @@ installs it. This process goes on until either:
           |                       |      |             \
           |                       |<-----'              \
           |     Retrieve cert     |                      |
-          |<--------------------->|                   72 hours
+          |---------------------->|                   72 hours
           |                       |                      |
           |                       +------.              /
           |                       |      |             /
@@ -254,7 +255,7 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
 # Protocol Details
 {: #protocol-details}
 
-This section describes the protocol's details, namely the extensions
+This section describes the protocol details, namely the extensions
 to the ACME protocol required to issue STAR certificates.
 
 ## ACME Extensions
@@ -349,7 +350,8 @@ The Server SHOULD include the "Not-Before" and "Not-After" headers. When they ex
 to the respective fields inside the certificate. Their format is "HTTP-date" as defined in Section 7.1.1.2 of {{RFC7231}}.
 Their purpose is to enable client implementations that do not parse the certificate.
 
-A certificate MUST be replaced by its successor at the latest halfway through its lifetime (the period between its notBefore and notAfter times).
+To improve robustness, the next certificate MUST be made available by the ACME CA at the latest halfway through the lifetime of the currently active certificate.
+It is worth noting that this has an implication in case of cancellation: in fact, from the time the next certificate is made available, the cancellation is not completely effective until the latter also expires.
 
 The server MUST NOT issue any additional certificates for this Order beyond its recurrent-end-date.
 
