@@ -317,10 +317,13 @@ revocation. To cancel the Order, the ACME client sends a POST:
 
 The server MUST NOT issue any additional certificates for this Order, beyond the certificate that is available for collection at the time of deletion.  Immediately after the Order is canceled, the server SHOULD respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
 
-## Indicating Support of Recurrent Orders
+## Capability Discovery
 
-ACME supports sending arbitrary extensions when creating an Order, and as a result, there is no need to explicitly indicate support of this extension. The DNO MUST verify that the "recurrent" attribute was understood, as indicated by the "recurrent" attribute included by the CA in the created Order.
-Since the standard ACME protocol does not allow to explicitly cancel a pending Order (the POST operation in {{protocol-details-canceling}} is an extension), a DNO that encounters an non-supporting server will probably let the Order expire instead of following through with the authorization process.
+In order to support the discovery of STAR capabilities, The directory object of an ACME STAR server MUST contain the following attributes inside the "meta" field:
+
+- star-capable: boolean indicating STAR support.  An ACME STAR server MUST set this key to true.
+- star-min-cert-validity: minimum acceptable value for recurrent-certificate-validity, in seconds.
+- star-max-renewal: maximum delta between recurrent-end-date and recurrent-start-date, in seconds.
 
 ## Fetching the Certificates
 {: #fetching-certificates}
@@ -508,6 +511,10 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-02
+
+- Discovery of STAR capabilities via the directory object
 
 ## draft-ietf-acme-star-01
 
