@@ -328,6 +328,27 @@ In order to support the discovery of STAR capabilities, The directory object of 
 - star-min-cert-validity: minimum acceptable value for recurrent-certificate-validity, in seconds.
 - star-max-renewal: maximum delta between recurrent-end-date and recurrent-start-date, in seconds.
 
+Example directory object advertising STAR support with one day star-min-cert-validity and one year star-max-renewal:
+
+~~~
+  {
+     "new-nonce": "https://example.com/acme/new-nonce",
+     "new-account": "https://example.com/acme/new-account",
+     "new-order": "https://example.com/acme/new-order",
+     "new-authz": "https://example.com/acme/new-authz",
+     "revoke-cert": "https://example.com/acme/revoke-cert",
+     "key-change": "https://example.com/acme/key-change",
+     "meta": {
+       "terms-of-service": "https://example.com/acme/terms/2017-5-30",
+       "website": "https://www.example.com/",
+       "caa-identities": ["example.com"],
+       "star-capable": true,
+       "star-min-cert-validity": 86400,
+       "star-max-renewal":  31536000
+     }
+  }
+~~~
+
 ## Fetching the Certificates
 {: #fetching-certificates}
 
