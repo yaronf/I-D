@@ -102,28 +102,31 @@ https://github.com/yaronf/I-D/tree/master/STAR.
 # Introduction
 
 The ACME protocol {{I-D.ietf-acme-acme}} automates the process of issuing a certificate to a Domain Name Owner (DNO).
-However, if the DNO wishes to obtain a string of short-term certificates originating from the same private key (see {{Topalovic}} for the rationale), she must go through the whole ACME protocol each time a new short-term certificate is needed - e.g., every 2-3 days.
-If done this way, the process would involve frequent interactions between the registration function of the ACME Certification Authority (CA) and the user's backing infrastructure (e.g.: DNS, web servers), therefore making the issuance of short-term certificates exceedingly dependent on the reliability of both.
+Further ACME extensions [TODO-GENERIC-TOKEN] generalize the type of identifiers that an ACME server can issue certificates for.
+Since the protocol defined in this document is agnostic as to the specific identifier type, we will use Identifier Owner (IO) instead of the more specific term DNO.
+
+If the IO wishes to obtain a string of short-term certificates originating from the same private key (see {{Topalovic}} for the rationale), she must go through the whole ACME protocol each time a new short-term certificate is needed - e.g., every 2-3 days.
+If done this way, the process would involve frequent interactions between the registration function of the ACME Certification Authority (CA) and the identity provider infrastructure (e.g.: DNS, web servers), therefore making the issuance of short-term certificates exceedingly dependent on the reliability of both.
 
 This document presents an extension of the ACME protocol that optimizes this process by making short-term certificates first class objects in the ACME ecosystem.
-Once the order for a string of short-term certificates is accepted, the CA is responsible for publishing the next certificate at an agreed upon URL before the previous one expires.  The DNO can terminate the automatic renewal before the natural deadline, if needed - e.g., on key compromise.
+Once the order for a string of short-term certificates is accepted, the CA is responsible for publishing the next certificate at an agreed upon URL before the previous one expires.  The IO can terminate the automatic renewal before the natural deadline, if needed - e.g., on key compromise.
 
 For a more generic treatment of STAR certificates, readers are referred to {{I-D.nir-saag-star}}.
 
 ### Name Delegation Use Case
 
-The proposed mechanism can be used as a building block of an efficient name-delegation protocol, for example one that exists between a CDN or a cloud provider and its users {{I-D.sheffer-acme-star-request}}, in a way that makes the delegator (i.e., the DNO) in full control of the delegation by simply instructing the CA to stop the automatic renewal and letting the currently active certificate expire shortly thereafter.
+The proposed mechanism can be used as a building block of an efficient name-delegation protocol, for example one that exists between a CDN or a cloud provider and its users {{I-D.sheffer-acme-star-request}}, in a way that makes the delegator (i.e., the IO) in full control of the delegation by simply instructing the CA to stop the automatic renewal and letting the currently active certificate expire shortly thereafter.
 
 ## Terminology
 
-DNO
-: Domain Name Owner, the owner of a domain.
+IO
+: Identifier Owner, the owner of an identifier, e.g. a domain name.
 
 STAR
 : Short-Term, Automatically Renewed X.509 certificates.
 
 NDC
-: Name Delegation Client, an entity to which the domain name owned by the DNO is delegated for a limited time. This might be a CDN edge cache, a cloud provider's load balancer or Web Application Firewall (WAF).
+: Name Delegation Client, an entity to which the identifier owned by the IO is delegated for a limited time. This might be a CDN edge cache, a cloud provider's load balancer or Web Application Firewall (WAF).
 
 ## Conventions used in this document
 
@@ -133,10 +136,10 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 The following subsections describe the three main phases of the protocol:
 
-- Bootstrap: the DNO asks an ACME CA to create a short-term and automatically-renewed (STAR) certificate ({{proto-bootstrap}});
+- Bootstrap: the IO asks an ACME CA to create a short-term and automatically-renewed (STAR) certificate ({{proto-bootstrap}});
 - Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it
 to a public URL ({{proto-auto-renewal}});
-- Termination: the DNO requests the ACME CA
+- Termination: the IO requests the ACME CA
 to discontinue the automatic renewal of the certificate ({{proto-termination}}).
 
 This diagram presents the entities that are (or may be) involved in the protocol and their interactions during the different phases.
@@ -145,44 +148,44 @@ This diagram presents the entities that are (or may be) involved in the protocol
                          Refresh
           . . . . . . . . . . . . . . . . . . . .  
       . '                                         ` v
-   .-----.        Bootstrap / Terminate         .---------.
-   | DNO |------------------------------------->| ACME CA |
-   `-----'                                      `---------'
+   .----.        Bootstrap / Terminate         .---------.
+   | IO |------------------------------------->| ACME CA |
+   `----'                                      `---------'
       ^                  .- - -.                    ^
        ` . . . . . . . . : NDC : . . . . . . . . . '
             Request      `- - -'    Refresh
             Delegation
 ~~~
 
-Note that there might be a distinct NDC entity (e.g., a CDN edge cache) that uses a separate channel to request the DNO to set up a name delegation.  The protocol described in {{I-D.sheffer-acme-star-request}} might be used for this purpose.
+Note that there might be a distinct NDC entity (e.g., a CDN edge cache) that uses a separate channel to request the IO to set up a name delegation.  The protocol described in {{I-D.sheffer-acme-star-request}} might be used for this purpose.
 
 ## Bootstrap
 {: #proto-bootstrap}
 
-The DNO, in its role as an
+The IO, in its role as an
 ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 
 - Has a short validity (e.g., 24 to 72 hours);
 - Is automatically renewed by the CA for a certain period of time;
 - Is downloadable from a (highly available) public link without requiring any special authorization.
 
-Other than that, the ACME protocol flows as normal between DNO and CA.
-In particular, DNO is responsible for satisfying the requested ACME
+Other than that, the ACME protocol flows as normal between IO and CA.
+In particular, IO is responsible for satisfying the requested ACME
 challenges until the CA is willing to issue the requested certificate.
-Per normal ACME processing, the DNO is given back an Order ID for the issued STAR
+Per normal ACME processing, the IO is given back an Order ID for the issued STAR
 certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
-The bootstrap phase ends when the DNO obtains the OK from the ACME CA.
+The bootstrap phase ends when the IO obtains the OK from the ACME CA.
 
 ## Refresh
 {: #proto-auto-renewal}
 
-The CA automatically re-issues the certificate using the same CSR (and therefore the same name and public key) before it expires and publishes it to the URL that was returned to the DNO at the end of the bootstrap phase.  The certificate user, which could be either the DNO itself or a delegated third party, as described in {{I-D.sheffer-acme-star-request}}, obtains the certificate and uses it.
+The CA automatically re-issues the certificate using the same CSR (and therefore the same name and public key) before it expires and publishes it to the URL that was returned to the IO at the end of the bootstrap phase.  The certificate user, which could be either the IO itself or a delegated third party, as described in {{I-D.sheffer-acme-star-request}}, obtains the certificate and uses it.
 
 The refresh process ({{figprotorefresh}}) goes on until either:
 
-- DNO terminates the delegation, or
+- IO terminates the delegation, or
 - Automatic renewal expires.
 
 ~~~~~~~~~~
@@ -220,7 +223,7 @@ The refresh process ({{figprotorefresh}}) goes on until either:
 ## Termination
 {: #proto-termination}
 
-The DNO may request early termination of the STAR certificate by including
+The IO may request early termination of the STAR certificate by including
 the Order ID in a certificate termination request to the ACME
 interface, defined below.
 After the CA receives and verifies the request, it shall:
@@ -294,7 +297,7 @@ We add a new status value, "canceled", see below.
 ### Canceling a Recurrent Order
 {: #protocol-details-canceling}
 
-An important property of the recurrent Order is that it can be canceled by the DNO,
+An important property of the recurrent Order is that it can be canceled by the IO,
 with no need for certificate
 revocation. To cancel the Order, the ACME client sends a POST:
 
@@ -397,7 +400,7 @@ to use this information as they see fit".
 ## Overview
 
 The implementation is constructed around 3 elements: Client STAR for NDC,
-Proxy STAR for DNO and Server ACME for CA. The communication between
+Proxy STAR for IO and Server ACME for CA. The communication between
 them is over an IP network and the HTTPS protocol.
 
 The software of the implementation is available at: https://github.com/mami-project/lurk
@@ -482,7 +485,7 @@ This document adds the following entry to the ACME Error Type registry:
 
 | Type | Description | Reference |
 |------|-------------|-----------|
-| recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent order has been explicitly canceled by the DNO | RFC XXXX |
+| recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent order has been explicitly canceled by the IO | RFC XXXX |
 | recurrentOrderExpired | The short-term certificate is no longer available because the recurrent order has expired | RFC XXXX |
 
 ## New ACME Order Object Fields
@@ -506,6 +509,11 @@ This work is partially supported by the European Commission under
 Horizon 2020 grant agreement no. 688421 Measurement and Architecture
 for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
+Thanks to
+Jon Peterson and
+Martin Thomson
+for helpful comments and discussions that have shaped this document.
+
 --- back
 
 # Document History
@@ -515,6 +523,7 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 ## draft-ietf-acme-star-02
 
 - Discovery of STAR capabilities via the directory object
+- Move from Domain Name Owner (DNO) to Identifier Owner (IO)
 
 ## draft-ietf-acme-star-01
 
