@@ -61,6 +61,48 @@ informative:
   RFC7942:
   I-D.sheffer-acme-star-request:
   I-D.nir-saag-star:
+  Acer:
+    -: ta
+    target: https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/46359.pdf
+    title: "Where the Wild Warnings Are: Root Causes of Chrome HTTPS Certificate Errors"
+    author:
+      -
+        ins: M. E. Acer
+        name: Mustafa Emre Acer
+        org: Google
+      -
+        ins: E. Stark
+        name: Emily Stark
+        org: Google
+      -
+        ins: A. P. Felt
+        name: Adrienne Porter Felt
+        org: Google
+      -
+        ins: S. Fahl
+        name: Sascha Fahl
+        org: Leibniz University Hannover
+      -
+        ins: R. Bhargava
+        name: Radhika Bhargava
+        org: Purdue University
+      -
+        ins: B. Dev
+        name: Bhanu Dev
+        org: International Institute of Information Technology Hyderabad
+      -
+        ins: M. Braithwaite
+        name: Matt Braithwaite
+        org: Google
+      -
+        ins: R. Sleevi
+        name: Ryan Sleevi
+        org: Google
+      -
+        ins: P. Tabriz
+        name: Parisa Tabriz
+        org: Google
+    date: 2017
   Topalovic:
     -: ta
     target: http://www.w2spconf.com/2012/papers/w2sp12-final9.pdf
@@ -388,9 +430,24 @@ Immediately after the Order expires, the server SHOULD respond with 403 (Forbidd
 
 # Operational Considerations
 
+## Define "short"
+
+TBD
+
+- Short is a relative concept: defining a cut-off point in this document would be arbitrary.  The lifetime of a STAR certificate is defined by the requirements for revocation on a case by case basis.
+
+## Clock Skew
+
+TBD
+
+- tweaking notBefore (maybe reference {{I-D.nir-saag-star}})
+- Browser use case: to select the lower bound for short-term (5-7 days) see Section 7.1 of {{Acer}}.
+
 ## Certificate Transparency (CT) Logs
 
-TBD: larger logs and how to deal with them.
+TBD
+
+- Browser use case only: STAR increase in CT log ingestion rate (quantify).  How to deal with it is not part of this document.
 
 # Implementation Status
 
