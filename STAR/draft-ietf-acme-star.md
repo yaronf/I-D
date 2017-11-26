@@ -215,10 +215,8 @@ ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 - Is downloadable from a (highly available) public link without requiring any special authorization.
 
 Other than that, the ACME protocol flows as usual between IdO and CA.
-In particular, IdO is responsible for satisfying the requested ACME
-challenges until the CA is willing to issue the requested certificate.
-Per normal ACME processing, the IdO is given back an Order ID for the issued STAR
-certificate to be used in subsequent interaction with the CA (e.g., if
+In particular, IdO is responsible for satisfying the requested ACME challenges until the CA is willing to issue the requested certificate.
+Per normal ACME processing, the IdO is given back an order URL for the issued STAR certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
 The bootstrap phase ends when the IdO obtains the OK from the ACME CA.
@@ -282,7 +280,7 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
    Certificate                                     ACME/STAR
    User                    IdO                     Server
    |                       |                       |
-   |                       |  Terminate Order ID   |
+   |                       |  Terminate order      |
    |                       +---------------------->|
    |                       |                       +-------.
    |                       |                       |       |
@@ -314,7 +312,7 @@ This protocol extends the ACME protocol, to allow for recurrent orders.
 
 ### Extending the Order Resource
 
-The Order resource is extended with the following attributes:
+The order resource is extended with the following attributes:
 
 ~~~
   {
@@ -336,13 +334,13 @@ They are returned when the order has been created, and the ACME server MAY adjus
 
 The optional notBefore and notAfter fields MUST NOT be present in a STAR order.
 
-ACME defines the following values for the Order resource's status: "invalid", "pending", "processing", "valid".
+ACME defines the following values for the order resource's status: "invalid", "pending", "processing", "valid".
 In the case of recurrent orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
 
 ### Canceling a Recurrent Order
 {: #protocol-details-canceling}
 
-An important property of the recurrent Order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the Order, the ACME client sends a POST to the order URL:
+An important property of the recurrent order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the order, the ACME client sends a POST to the order URL:
 
 ~~~
   POST /acme/order/1 HTTP/1.1
@@ -363,12 +361,14 @@ An important property of the recurrent Order is that it can be canceled by the I
   }
 ~~~
 
-The server MUST NOT issue any additional certificates for this Order, beyond the certificate that is available for collection at the time of deletion.
+The server MUST NOT issue any additional certificates for this order, beyond the certificate that is available for collection at the time of deletion.
 
-Immediately after the Order is canceled, the server:
+Immediately after the order is canceled, the server:
 
-- SHOULD update the status of the order resource to "canceled";
+- MUST update the status of the order resource to "canceled" and MUST set an appropriate "expires" date;
 - SHOULD respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
+
+Issuing a cancelation for an order that is not in "valid" state has undefined semantics.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancelationInvalid".
 
 ## Capability Discovery
 {: #capability-discovery}
@@ -434,9 +434,9 @@ Their purpose is to enable client implementations that do not parse the certific
 To improve robustness, the next certificate MUST be made available by the ACME CA at the latest halfway through the lifetime of the currently active certificate.
 It is worth noting that this has an implication in case of cancellation: in fact, from the time the next certificate is made available, the cancellation is not completely effective until the latter also expires.
 
-The server MUST NOT issue any additional certificates for this Order beyond its recurrent-end-date.
+The server MUST NOT issue any additional certificates for this order beyond its recurrent-end-date.
 
-Immediately after the Order expires, the server SHOULD respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
+Immediately after the order expires, the server SHOULD respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
 
 # Operational Considerations
 
@@ -574,6 +574,7 @@ This document adds the following entry to the ACME Error Type registry:
 |------|-------------|-----------|
 | recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent order has been explicitly canceled by the IdO | RFC XXXX |
 | recurrentOrderExpired | The short-term certificate is no longer available because the recurrent order has expired | RFC XXXX |
+| recurrentCancelationInvalid | A request to cancel a recurrent order that is not in state "valid" has been received | RFC XXXX |
 
 ## New ACME Order Object Fields
 
