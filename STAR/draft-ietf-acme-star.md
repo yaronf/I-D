@@ -63,8 +63,10 @@ informative:
   I-D.nir-saag-star:
   Acer:
     -: ta
-    target: https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/46359.pdf
+    target: https://acmccs.github.io/papers/p1407-acerA.pdf
     title: "Where the Wild Warnings Are: Root Causes of Chrome HTTPS Certificate Errors"
+    seriesinfo:
+      DOI: 10.1145/3133956.3134007
     author:
       -
         ins: M. E. Acer
