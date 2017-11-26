@@ -620,7 +620,9 @@ for helpful comments and discussions that have shaped this document.
 ## draft-ietf-acme-star-02
 
 - Discovery of STAR capabilities via the directory object
-- Move from Domain Name Owner (DNO) to Identifier Owner (IdO)
+- Use the more generic term Identifier Owner (IdO) instead of Domain Name Owner (DNO)
+- More precision about what goes in the order
+- Detail server side behaviour on cancelation
 
 ## draft-ietf-acme-star-01
 
