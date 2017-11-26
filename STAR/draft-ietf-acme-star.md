@@ -120,7 +120,10 @@ The proposed mechanism can be used as a building block of an efficient name-dele
 ## Terminology
 
 IO
-: Identifier Owner, the owner of an identifier, e.g. a domain name.
+: Identifier Owner, the owner of an identifier, e.g.: a domain name, a telephone number.
+
+DNO
+: Domain Name Owner, a type of IO where the identifier is a domain name.
 
 STAR
 : Short-Term, Automatically Renewed X.509 certificates.
