@@ -147,7 +147,7 @@ https://github.com/yaronf/I-D/tree/master/STAR.
 
 The ACME protocol {{I-D.ietf-acme-acme}} automates the process of issuing a certificate to a Domain Name Owner (DNO).
 Further ACME extensions [TODO-GENERIC-TOKEN] generalize the type of identifiers that an ACME server can issue certificates for.
-Since the protocol defined in this document is agnostic as to the specific identifier type, we will use Identifier Owner (IdO) instead of the more specific term DNO.
+Since the protocol defined in this document is agnostic as to the specific identifier type, we will use the term Identifier Owner (IdO) instead of the more specific DNO.
 
 If the IdO wishes to obtain a string of short-term certificates originating from the same private key (see {{Topalovic}} for the rationale), she must go through the whole ACME protocol each time a new short-term certificate is needed - e.g., every 2-3 days.
 If done this way, the process would involve frequent interactions between the registration function of the ACME Certification Authority (CA) and the identity provider infrastructure (e.g.: DNS, web servers), therefore making the issuance of short-term certificates exceedingly dependent on the reliability of both.
@@ -167,7 +167,7 @@ IdO
 : Identifier Owner, the owner of an identifier, e.g.: a domain name, a telephone number.
 
 DNO
-: Domain Name Owner, a type of IdO where the identifier is a domain name.
+: Domain Name Owner, a type of IdO whose identifier is a domain name.
 
 STAR
 : Short-Term, Automatically Renewed X.509 certificates.
@@ -210,7 +210,7 @@ Note that there might be a distinct NDC entity (e.g., a CDN edge cache) that use
 The IdO, in its role as an
 ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 
-- Has a short validity (e.g., 24 to 72 hours) - Note that the exact definition of "short" depends on the use case;
+- Has a short validity, e.g., 24 to 72 hours. Note that the exact definition of "short" depends on the use case;
 - Is automatically renewed by the CA for a certain period of time;
 - Is downloadable from a (highly available) public link without requiring any special authorization.
 
@@ -366,7 +366,7 @@ The server MUST NOT issue any additional certificates for this order, beyond the
 Immediately after the order is canceled, the server:
 
 - MUST update the status of the order resource to "canceled" and MUST set an appropriate "expires" date;
-- SHOULD respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
+- MUST respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
 
 Issuing a cancelation for an order that is not in "valid" state has undefined semantics.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancelationInvalid".
 
@@ -436,7 +436,7 @@ It is worth noting that this has an implication in case of cancellation: in fact
 
 The server MUST NOT issue any additional certificates for this order beyond its recurrent-end-date.
 
-Immediately after the order expires, the server SHOULD respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
+Immediately after the order expires, the server MUST respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
 
 # Operational Considerations
 
