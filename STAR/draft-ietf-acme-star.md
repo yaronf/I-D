@@ -273,7 +273,8 @@ After the CA receives and verifies the request, it shall:
 
 - Cancel the automatic renewal process for the STAR certificate;
 - Change the certificate publication resource to return an error
-indicating the termination of the delegation to any external client.
+indicating the termination of the delegation to any external client;
+- Change the status of the order to "canceled".
 
 Note that it is not necessary to explicitly revoke the short-term certificate.
 
@@ -333,8 +334,10 @@ This attribute is optional. When omitted, the start date is as soon as authoriza
 These attributes are included in a POST message when creating the order, as part of the "payload" encoded object.
 They are returned when the order has been created, and the ACME server MAY adjust them at will, according to its local policy (see also {{capability-discovery}}).
 
+The optional notBefore and notAfter fields MUST NOT be present in a STAR order.
+
 ACME defines the following values for the Order resource's status: "invalid", "pending", "processing", "valid".
-In the case of recurrent orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value, "canceled".
+In the case of recurrent orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
 
 ### Canceling a Recurrent Order
 {: #protocol-details-canceling}
@@ -360,7 +363,12 @@ An important property of the recurrent Order is that it can be canceled by the I
   }
 ~~~
 
-The server MUST NOT issue any additional certificates for this Order, beyond the certificate that is available for collection at the time of deletion.  Immediately after the Order is canceled, the server SHOULD respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
+The server MUST NOT issue any additional certificates for this Order, beyond the certificate that is available for collection at the time of deletion.
+
+Immediately after the Order is canceled, the server:
+
+- SHOULD update the status of the order resource to "canceled";
+- SHOULD respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
 
 ## Capability Discovery
 {: #capability-discovery}
