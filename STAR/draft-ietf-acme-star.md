@@ -280,7 +280,7 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
    Certificate                                     ACME/STAR
    User                    IdO                     Server
    |                       |                       |
-   |                       |  Terminate order      |
+   |                       |    Terminate order    |
    |                       +---------------------->|
    |                       |                       +-------.
    |                       |                       |       |
