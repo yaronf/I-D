@@ -115,7 +115,7 @@ For a more generic treatment of STAR certificates, readers are referred to {{I-D
 
 ### Name Delegation Use Case
 
-The proposed mechanism can be used as a building block of an efficient name-delegation protocol, for example one that exists between a CDN or a cloud provider and its users {{I-D.sheffer-acme-star-request}}, in a way that makes the delegator (i.e., the IO) in full control of the delegation by simply instructing the CA to stop the automatic renewal and letting the currently active certificate expire shortly thereafter.
+The proposed mechanism can be used as a building block of an efficient name-delegation protocol, for example one that exists between a CDN or a cloud provider and its customers {{I-D.sheffer-acme-star-request}}.  At any time, the service customer (i.e., the IO) can terminate the delegation by simply instructing the CA to stop the automatic renewal and letting the currently active certificate expire shortly thereafter.
 
 ## Terminology
 
@@ -129,7 +129,7 @@ STAR
 : Short-Term, Automatically Renewed X.509 certificates.
 
 NDC
-: Name Delegation Client, an entity to which the identifier owned by the IO is delegated for a limited time. This might be a CDN edge cache, a cloud provider's load balancer or Web Application Firewall (WAF).
+: Name Delegation Client, an entity to which the identifier owned by the IO is delegated for a limited time. Examples include a CDN edge cache, a cloud provider's load balancer or Web Application Firewall (WAF).
 
 ## Conventions used in this document
 
@@ -160,7 +160,7 @@ This diagram presents the entities that are (or may be) involved in the protocol
             Delegation
 ~~~
 
-Note that there might be a distinct NDC entity (e.g., a CDN edge cache) that uses a separate channel to request the IO to set up a name delegation.  The protocol described in {{I-D.sheffer-acme-star-request}} might be used for this purpose.
+Note that there might be a distinct NDC entity (e.g., a CDN edge cache) that uses a separate channel to request the IO to set up a name delegation.  The protocol described in {{I-D.sheffer-acme-star-request}} may be used for this purpose.
 
 ## Bootstrap
 {: #proto-bootstrap}
@@ -172,7 +172,7 @@ ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 - Is automatically renewed by the CA for a certain period of time;
 - Is downloadable from a (highly available) public link without requiring any special authorization.
 
-Other than that, the ACME protocol flows as normal between IO and CA.
+Other than that, the ACME protocol flows as usual between IO and CA.
 In particular, IO is responsible for satisfying the requested ACME
 challenges until the CA is willing to issue the requested certificate.
 Per normal ACME processing, the IO is given back an Order ID for the issued STAR
