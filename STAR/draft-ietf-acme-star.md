@@ -149,7 +149,7 @@ The ACME protocol {{I-D.ietf-acme-acme}} automates the process of issuing a cert
 Further ACME extensions [TODO-GENERIC-TOKEN] generalize the type of identifiers that an ACME server can issue certificates for.
 Since the protocol defined in this document is agnostic as to the specific identifier type, we will use the term Identifier Owner (IdO) instead of the more specific DNO.
 
-If the IdO wishes to obtain a string of short-term certificates originating from the same private key (see {{Topalovic}} for the rationale), she must go through the whole ACME protocol each time a new short-term certificate is needed - e.g., every 2-3 days.
+If the IdO wishes to obtain a string of short-term certificates originating from the same private key (see {{Topalovic}} about why using short-lived certificates might be preferable to explicit revocation), she must go through the whole ACME protocol each time a new short-term certificate is needed - e.g., every 2-3 days.
 If done this way, the process would involve frequent interactions between the registration function of the ACME Certification Authority (CA) and the identity provider infrastructure (e.g.: DNS, web servers), therefore making the issuance of short-term certificates exceedingly dependent on the reliability of both.
 
 This document presents an extension of the ACME protocol that optimizes this process by making short-term certificates first class objects in the ACME ecosystem.
