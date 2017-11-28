@@ -219,7 +219,7 @@ In particular, IdO is responsible for satisfying the requested ACME challenges u
 Per normal ACME processing, the IdO is given back an order URL for the issued STAR certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
-The bootstrap phase ends when the IdO obtains the OK from the ACME CA.
+The bootstrap phase ends when the IdO obtains a confirmation from the ACME CA that includes a certificate endpoint.
 
 ## Refresh
 {: #proto-auto-renewal}
@@ -266,12 +266,11 @@ The refresh process ({{figprotorefresh}}) goes on until either:
 ## Termination
 {: #proto-termination}
 
-The IdO may request early termination of the STAR certificate by POSTing a termination request to the order URL, as described in {{protocol-details-canceling}}.
+The IdO may request early termination of the STAR certificate by sending a cancellation request to the order resource, as described in {{protocol-details-canceling}}.
 After the CA receives and verifies the request, it shall:
 
 - Cancel the automatic renewal process for the STAR certificate;
-- Change the certificate publication resource to return an error
-indicating the termination of the delegation to any external client;
+- Change the certificate publication resource to return an error indicating the termination of the issuance;
 - Change the status of the order to "canceled".
 
 Note that it is not necessary to explicitly revoke the short-term certificate.
@@ -375,7 +374,7 @@ Issuing a cancelation for an order that is not in "valid" state has undefined se
 
 In order to support the discovery of STAR capabilities, The directory object of an ACME STAR server MUST contain the following attributes inside the "meta" field:
 
-- star-capable: boolean flag indicating STAR support.  An ACME STAR server MUST set this key to true.
+- star-enabled: boolean flag indicating STAR support.  An ACME STAR server MUST set this key to true.
 - star-min-cert-validity: minimum acceptable value for recurrent-certificate-validity, in seconds.
 - star-max-renewal: maximum delta between recurrent-end-date and recurrent-start-date, in seconds.
 
@@ -393,7 +392,7 @@ Example directory object advertising STAR support with one day star-min-cert-val
        "terms-of-service": "https://example.com/acme/terms/2017-5-30",
        "website": "https://www.example.com/",
        "caa-identities": ["example.com"],
-       "star-capable": true,
+       "star-enabled": true,
        "star-min-cert-validity": 86400,
        "star-max-renewal":  31536000
      }
@@ -568,7 +567,7 @@ See author details below.
 
 ## New ACME Error Types
 
-This document adds the following entry to the ACME Error Type registry:
+This document adds the following entries to the ACME Error Type registry:
 
 | Type | Description | Reference |
 |------|-------------|-----------|
