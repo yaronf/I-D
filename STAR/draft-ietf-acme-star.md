@@ -134,7 +134,7 @@ informative:
 
 --- abstract
 
-Public-key certificates need to be revoked whan they are compromised, that is, when the associated private key is exposed
+Public-key certificates need to be revoked when they are compromised, that is, when the associated private key is exposed
 to an attacker. However the revocation process is often unreliable. An alternative to revocation is issuing a sequence
 of certificates, each with a short validity period, and terminating this sequence upon compromise.
 This memo proposes an ACME extension to enable the issuance of short-term and automatically renewed (STAR) certificates.
@@ -498,7 +498,7 @@ them is over an IP network and the HTTPS protocol.
 The software of the implementation is available at: https://github.com/mami-project/lurk
 
 The following subsections offer a basic description, detailed information
-is available in https://github.com/mami-project/lurk/blob/master/proxySTAR_v1/README.md
+is available in https://github.com/mami-project/lurk/blob/master/proxySTAR_v2/README.md
 
 ### ACME Server with STAR extension
 
@@ -521,7 +521,7 @@ Certbot project that implements an ACME compliant client with the STAR extension
 The latter is a basic HTTP REST API server.
 
 The STAR Proxy understands the basic API request with a server. The current implementation
-of the API is defined in draft-sheffer-acme-star-request-00. Registration or order cancellation
+of the API is defined in draft-ietf-acme-star-01. Registration or order cancellation
 triggers the modified Certbot client that requests, or cancels, the recurrent generation
 of certificates using the STAR extension over ACME protocol.
 The URI with the location of the recurrent certificate is delivered to the STAR client as a response.
@@ -539,7 +539,7 @@ This implementation completely covers STAR Proxy and ACME Server with STAR exten
 
 ## Version Compatibility
 
-The implementation is compatible with version draft-ietf-acme-star-00. 
+The implementation is compatible with version draft-ietf-acme-star-01. 
 The implementation is based on the Boulder and Certbot code release from 7-Aug-2017.
 
 ## Licensing
@@ -609,9 +609,9 @@ STAR adds a new attack vector that increases the threat of denial of
     service attacks, caused by the change to the CA's behavior. Each STAR
     request amplifies the resource demands upon the CA, where one order
     produces not one, but potentially dozens or hundreds of certificates,
-    depending on the “recurrent-certificate-validity” parameter. An attacker
+    depending on the "recurrent-certificate-validity" parameter. An attacker
     can use this property to aggressively reduce the
-    "recurrent-certificate-validity” (e.g. 1 sec.) jointly with other ACME
+    "recurrent-certificate-validity" (e.g. 1 sec.) jointly with other ACME
     attack vectors identified in Sec. 10 of {{I-D.ietf-acme-acme}}. Other collateral impact is
     related to the certificate endpoint resource where the client can
     retrieve the certificates periodically. If this resource is external to
@@ -623,7 +623,7 @@ Mitigation recommendations from ACME still apply, but some of them need
     request, by the nature of the recurrent behavior cannot solve the
     above problem. The CA server needs complementary mitigation and
     specifically, it SHOULD enforce a minimum value on
-    “recurrent-certificate-validity”. Alternatively, the CA can set an
+    "recurrent-certificate-validity". Alternatively, the CA can set an
     internal certificate generation processes rate limit.
 
 ## Additional Considerations TBD
