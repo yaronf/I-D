@@ -145,9 +145,9 @@ https://github.com/yaronf/I-D/tree/master/STAR.
 
 # Introduction
 
-The ACME protocol {{I-D.ietf-acme-acme}} automates the process of issuing a certificate to a Domain Name Owner (DNO).
-Further ACME extensions [TODO-GENERIC-TOKEN] generalize the type of identifiers that an ACME server can issue certificates for.
-Since the protocol defined in this document is agnostic as to the specific identifier type, we will use the term Identifier Owner (IdO) instead of the more specific DNO.
+The ACME protocol {{I-D.ietf-acme-acme}} automates the process of issuing a certificate to a named entity
+(an Identity Owner or IdO). Typically, but not always, the identity is a domain name and we may refer to the entity
+as a Domain Name Owner (DNO).
 
 If the IdO wishes to obtain a string of short-term certificates originating from the same private key (see {{Topalovic}} about why using short-lived certificates might be preferable to explicit revocation), she must go through the whole ACME protocol each time a new short-term certificate is needed - e.g., every 2-3 days.
 If done this way, the process would involve frequent interactions between the registration function of the ACME Certification Authority (CA) and the identity provider infrastructure (e.g.: DNS, web servers), therefore making the issuance of short-term certificates exceedingly dependent on the reliability of both.
@@ -360,21 +360,24 @@ An important property of the recurrent order is that it can be canceled by the I
   }
 ~~~
 
-The server MUST NOT issue any additional certificates for this order, beyond the certificate that is available for collection at the time of deletion.
+The server MUST NOT issue any additional certificates for this order,
+beyond the certificate that is available for collection at the time of deletion.
 
 Immediately after the order is canceled, the server:
 
 - MUST update the status of the order resource to "canceled" and MUST set an appropriate "expires" date;
-- MUST respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
+- MUST respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide
+additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
 
-Issuing a cancelation for an order that is not in "valid" state has undefined semantics.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancelationInvalid".
+Issuing a cancellation for an order that is not in "valid" state has undefined semantics.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
 
 ## Capability Discovery
 {: #capability-discovery}
 
 In order to support the discovery of STAR capabilities, The directory object of an ACME STAR server MUST contain the following attributes inside the "meta" field:
 
-- star-enabled: boolean flag indicating STAR support.  An ACME STAR server MUST set this key to true.
+- star-enabled: boolean flag indicating STAR support.  An ACME STAR server MUST include this key, and MUST set it to true
+if the feature is enabled.
 - star-min-cert-validity: minimum acceptable value for recurrent-certificate-validity, in seconds.
 - star-max-renewal: maximum delta between recurrent-end-date and recurrent-start-date, in seconds.
 
@@ -485,8 +488,8 @@ to use this information as they see fit".
 
 ## Overview
 
-The implementation is constructed around 3 elements: Client STAR for NDC,
-Proxy STAR for IdO and Server ACME for CA. The communication between
+The implementation is constructed around 3 elements: STAR Client for NDC,
+STAR Proxy for IdO and ACME Server for CA. The communication between
 them is over an IP network and the HTTPS protocol.
 
 The software of the implementation is available at: https://github.com/mami-project/lurk
@@ -508,13 +511,13 @@ that issues the recurrent certificates, until the lifetime ends or the order is 
 This process is also in charge of maintaining a fixed URI to enable the NDC to download certificates,
 unlike Boulder's regular process of producing a unique URI per certificate.
 
-### Proxy STAR
+### STAR Proxy
 
-The Proxy STAR, has a double role as ACME client and STAR Server. The former is a fork of the EFF
+The STAR Proxy has a double role as ACME client and STAR Server. The former is a fork of the EFF
 Certbot project that implements an ACME compliant client with the STAR extension.
 The latter is a basic HTTP REST API server.
 
-The proxy STAR understands the basic API request with a server. The current implementation
+The STAR Proxy understands the basic API request with a server. The current implementation
 of the API is defined in draft-sheffer-acme-star-request-00. Registration or order cancellation
 triggers the modified Certbot client that requests, or cancels, the recurrent generation
 of certificates using the STAR extension over ACME protocol.
@@ -526,10 +529,10 @@ This is a prototype.
 
 ## Coverage
 
-Client STAR is not included in this implementation, but done by direct HTTP request with any open HTTP REST API tool.
-This is expected to be covered as part of {{I-D.sheffer-acme-star-request}} implementation.
+A STAR Client is not included in this implementation, but done by direct HTTP request with any open HTTP REST API tool.
+This is expected to be covered as part of the {{I-D.sheffer-acme-star-request}} implementation.
 
-This implementation completely covers Proxy STAR and Server ACME with STAR extension 
+This implementation completely covers STAR Proxy and ACME Server with STAR extension 
 
 ## Version Compatibility
 
@@ -554,7 +557,7 @@ on an external process that auto-configures the standard Linux "cron" daemon in 
 The reference setup recommended is one physical host with 3 virtual machines,
 one for each of the 3 components (client, proxy and server) and the connectivity based on host bridge.
 
-No security is enabled (iptables default policies are "accept" and all rules removed)
+Network security is not enabled (iptables default policies are "accept" and all rules removed)
 in this implementation to simplify and test the protocol. 
 
 ## Contact Information
@@ -573,7 +576,7 @@ This document adds the following entries to the ACME Error Type registry:
 |------|-------------|-----------|
 | recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent order has been explicitly canceled by the IdO | RFC XXXX |
 | recurrentOrderExpired | The short-term certificate is no longer available because the recurrent order has expired | RFC XXXX |
-| recurrentCancelationInvalid | A request to cancel a recurrent order that is not in state "valid" has been received | RFC XXXX |
+| recurrentCancellationInvalid | A request to cancel a recurrent order that is not in state "valid" has been received | RFC XXXX |
 
 ## New ACME Order Object Fields
 
@@ -621,7 +624,7 @@ for helpful comments and discussions that have shaped this document.
 - Discovery of STAR capabilities via the directory object
 - Use the more generic term Identifier Owner (IdO) instead of Domain Name Owner (DNO)
 - More precision about what goes in the order
-- Detail server side behaviour on cancelation
+- Detail server side behavior on cancellation
 
 ## draft-ietf-acme-star-01
 
