@@ -134,7 +134,10 @@ informative:
 
 --- abstract
 
-This memo proposes an ACME extension to enable the issuance of short-term and automatically renewed certificates.
+Public-key certificates need to be revoked whan they are compromised, that is, when the associated private key is exposed
+to an attacker. However the revocation process is often unreliable. An alternative to revocation is issuing a sequence
+of certificates, each with a short validity period, and terminating this sequence upon compromise.
+This memo proposes an ACME extension to enable the issuance of short-term and automatically renewed (STAR) certificates.
 
 [RFC Editor: please remove before publication]
 
@@ -600,7 +603,30 @@ The "Message Headers" registry should be updated with the following additional v
 
 # Security Considerations
 
-TBD
+## Denial of Service Considerations
+
+STAR adds a new attack vector that increases the threat of denial of
+    service attacks, caused by the change to the CA's behavior. Each STAR
+    request amplifies the resource demands upon the CA, where one order
+    produces not one, but potentially dozens or hundreds of certificates,
+    depending on the “recurrent-certificate-validity” parameter. An attacker
+    can use this property to aggressively reduce the
+    "recurrent-certificate-validity” (e.g. 1 sec.) jointly with other ACME
+    attack vectors identified in Sec. 10 of {{I-D.ietf-acme-acme}}. Other collateral impact is
+    related to the certificate endpoint resource where the client can
+    retrieve the certificates periodically. If this resource is external to
+    the CA (e.g. a hosted web server), the previous attack will be reflected to
+    that resource.
+
+Mitigation recommendations from ACME still apply, but some of them need
+    to be adjusted. For example, applying rate limiting to the initial
+    request, by the nature of the recurrent behavior cannot solve the
+    above problem. The CA server needs complementary mitigation and
+    specifically, it SHOULD enforce a minimum value on
+    “recurrent-certificate-validity”. Alternatively, the CA can set an
+    internal certificate generation processes rate limit.
+
+## Additional Considerations TBD
 
 # Acknowledgments
 
