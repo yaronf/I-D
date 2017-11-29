@@ -498,7 +498,7 @@ them is over an IP network and the HTTPS protocol.
 The software of the implementation is available at: https://github.com/mami-project/lurk
 
 The following subsections offer a basic description, detailed information
-is available in https://github.com/mami-project/lurk/blob/master/proxySTAR_v1/README.md
+is available in https://github.com/mami-project/lurk/blob/master/proxySTAR_v2/README.md
 
 ### ACME Server with STAR extension
 
@@ -521,7 +521,7 @@ Certbot project that implements an ACME compliant client with the STAR extension
 The latter is a basic HTTP REST API server.
 
 The STAR Proxy understands the basic API request with a server. The current implementation
-of the API is defined in draft-sheffer-acme-star-request-00. Registration or order cancellation
+of the API is defined in draft-ietf-acme-star-01. Registration or order cancellation
 triggers the modified Certbot client that requests, or cancels, the recurrent generation
 of certificates using the STAR extension over ACME protocol.
 The URI with the location of the recurrent certificate is delivered to the STAR client as a response.
@@ -539,7 +539,7 @@ This implementation completely covers STAR Proxy and ACME Server with STAR exten
 
 ## Version Compatibility
 
-The implementation is compatible with version draft-ietf-acme-star-00. 
+The implementation is compatible with version draft-ietf-acme-star-01. 
 The implementation is based on the Boulder and Certbot code release from 7-Aug-2017.
 
 ## Licensing
