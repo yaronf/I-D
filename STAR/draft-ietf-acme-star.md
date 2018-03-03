@@ -58,9 +58,37 @@ normative:
   RFC7807:
 
 informative:
+  RFC6962:
   RFC7942:
+  RFC7633:
   I-D.sheffer-acme-star-request:
   I-D.nir-saag-star:
+  Stark:
+    -: ta
+    target: http://crypto.stanford.edu/~dabo/pubs/abstracts/ssl-prefetch.html
+    title: "The case for prefetching and prevalidating TLS server certificates"
+    author:
+      -
+        ins: E. Stark
+        name: Emily Stark
+        org: Google
+      -
+        ins: L. Huang
+        name: Lin-Shung Huang
+        org: Carnegie Mellon University
+      -
+        ins: D. Israni
+        name: Dinesh Israni
+        org: Carnegie Mellon University
+      -
+        ins: C. Jackson
+        name: Collin Jackson
+        org: Carnegie Mellon University
+      -
+        ins: D. Boneh
+        name: Dan Boneh
+        org: Stanford University
+    date: 2012
   Acer:
     -: ta
     target: https://acmccs.github.io/papers/p1407-acerA.pdf
@@ -445,24 +473,24 @@ Immediately after the order expires, the server MUST respond with 403 (Forbidden
 
 # Operational Considerations
 
-## Define "short"
+## Short Term and the Impact of Skewed Clocks
+{: #operational-cons-clocks }
 
-TBD
+"Short Term" is a relative concept, therefore trying to define a cut-off point that works in all cases would be a useless exercise.  In practice, the expected lifetime of a STAR certificate will be counted in minutes, hours or days, depending on different factors: the underlying requirements for revocation, how much clock synchronization is expected among relying parties and the issuing CA, etc.
 
-- Short is a relative concept: defining a cut-off point in this document would be arbitrary.  The lifetime of a STAR certificate is defined by the requirements for revocation on a case by case basis.
+Nevertheless, this section attempts at providing reasonable suggestions for the Web use case, informed by current operational and research experience.
 
-## Clock Skew
+Acer et al. {{Acer}} find that one of the main causes of "HTTPS error" warnings in browers is misconfigured client clocks.  In particular, they observe that roughly 95% of the "severe" clock skews - the 6.7% of clock-related breakage reports which account for clients that are more than 24 hours behind - happen to be within 6-7 days.
 
-TBD
+In order to avoid these spurious warnings about a not (yet) valid server certificate, it is RECOMMENDED that site owners pre-date their Web facing certificates by 5 to 7 days.  The exact number depends on the percentage of the "clock-skewed" population that the site owner expects to protect - 5 days cover 97.3%, 7 days cover 99.6%.  Note that exact choice is also likely to depend on the kind of clients that is prevalent for a given site or app - for example, Android and Mac OS clients are known to behave better than Windows clients.  These considerations are clearly out of scope of the present document.
 
-- tweaking notBefore (maybe reference {{I-D.nir-saag-star}})
-- Browser use case: to select the lower bound for short-term (5-7 days) see Section 7.1 of {{Acer}}.
+In terms of security, STAR certificates and certificates with OCSP must-staple {{RFC7633}} can be considered roughly equivalent if the STAR certificate's and the OCSP response's lifetimes are the same.  Given OCSP responses can be cached on average for 4 days {{Stark}}, it is RECOMMENDED that a STAR certificate that is used on the Web has an "effective" lifetime (excluding any pre-dating to account for clock skews) no longer than 4 days.
 
-## Certificate Transparency (CT) Logs
+## Impact on Certificate Transparency (CT) Logs
 
-TBD
+Provided that the recommendations in {{operational-cons-clocks}} are followed, the increase in Certificate Transparency (CT) {{RFC6962}} log ingestion should be one order of magnitude in the worst case compared to the current state.
 
-- Browser use case only: STAR increase in CT log ingestion rate (quantify).  How to deal with it is not part of this document.
+The input received from most members of the CT community when the issue was raised was that this should not represent a problem for the CT architecture.
 
 # Implementation Status
 
@@ -644,6 +672,12 @@ for helpful comments and discussions that have shaped this document.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-03
+
+- Clock skew considerations
+- Recommendations for "short" in the Web use case
+- CT log considerations
 
 ## draft-ietf-acme-star-02
 
