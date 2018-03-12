@@ -890,6 +890,10 @@ for several fruitful discussions.
 
 # Document History
 
+## draft-sheffer-tls-pinning-ticket-06
+
+- IANA Considerations in preparation for Experimental publication.
+
 ## draft-sheffer-tls-pinning-ticket-05
 
 - Multiple comments from Eric Rescorla.
