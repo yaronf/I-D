@@ -867,7 +867,7 @@ in the range 0-254. A value of 26 would address this requirement.
 The TicketPinning Extension Name is expected to be ticket\_pinning.
 
 The TicketPinning Extension Recommended value should be set to "No" with
-the publication of the current document as "Experiemental".
+the publication of the current document as "Experimental".
 
 The TicketPinning Extension TLS.13 column should be set to CH, SH to
 indicate that the TicketPinning Extension is present in ClientHello and
