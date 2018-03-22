@@ -333,6 +333,10 @@ SHOULD be "secevent+jwt".
 When explicit typing is employed for a JWT, it is RECOMMENDED that a media type name of the format
 "application/example+jwt" be used, where "example" is replaced by the identifier for the specific kind of JWT.
 
+When applying explicit typing to a Nested JWT, the "typ" header parameter containing the explicit type value
+MUST be present in the inner JWT of the Nested JWT (the JWT whose payload is the JWT Claims Set).
+The same "typ" header parameter value MAY be present in the outer JWT as well, to explicitly type the entire Nested JWT.
+
 Note that the use of explicit typing may not achieve disambiguation from existing kinds of JWTs,
 as the validation rules for existing kinds JWTs often do not use the "typ" header parameter value.
 Explicit typing is RECOMMENDED for new uses of JWTs.
