@@ -384,6 +384,10 @@ Thanks to Nat Sakimura for advocating the use of explicit typing.
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
 
+## draft-ietf-oauth-jwt-bcp-01
+
+- Feedback from Brian Campbell.
+
 ## draft-ietf-oauth-jwt-bcp-00
 
 - Initial WG draft. No change from the latest individual version.
