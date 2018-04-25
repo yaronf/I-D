@@ -43,6 +43,7 @@ author:
 
 normative:
   RFC2119:
+  RFC6979:
   RFC7159:
   RFC7515:
   RFC7516:
@@ -59,6 +60,24 @@ informative:
     title: "Attacking JWT Authentication"
     date: September 28, 2016
     target: https://www.sjoerdlangkemper.nl/2016/09/28/attacking-jwt-authentication/
+
+  nist-sp-800-56a-r3:
+    author:
+    -
+      name: Elaine Barker
+    -
+      name: Lily Chen
+    -
+      name: Sharon Keller
+    -
+      name: Allen Roginsky
+    -
+      name: Apostol Vassilev
+    -
+      name: Richard Davis
+    title: "Recommendation for Pair-Wise Key Establishment Schemes Using Discrete Logarithm Cryptography, Draft NIST Special Publication 800-56A Revision 3"
+    date: August 2017
+    target: https://csrc.nist.gov/CSRC/media/Publications/sp/800-56a/rev-3/draft/documents/sp800-56ar3-draft.pdf
 
   Sanso:
     author:
@@ -259,6 +278,12 @@ In such cases, the use of the "none" algorithm can be perfectly acceptable.
 JWTs using "none" are often used in application contexts in which the content is optionally signed;
 then the URL-safe claims representation and processing can be the same in both the signed and unsigned cases.
 
+Applications SHOULD follow these algorithm-specific recommendations:
+
+- Avoid all RSA-PKCS1 v1.5 encryption algorithms, preferring RSA-OAEP.
+- When using ECDSA signatures, applications SHOULD prefer to implement deterministic
+ECDSA, as defined in [RFC6979], in order to avoid issues with nonce reuse.
+
 ## Validate All Cryptographic Operations ## {#validate-crypto}
 
 All cryptographic operations used in the JWT MUST be validated and the entire JWT MUST be rejected
@@ -277,6 +302,11 @@ or other invalid points.
 Either the JWS/JWE library itself must validate these inputs before using them
 or it must use underlying cryptographic libraries that do so (or both!).
 
+ECDH-ES ephemeral public key (epk) inputs should be validated according to the recipient's
+chosen elliptic curve. For NIST prime-order curves P-256, P-384 and P-521, validation MUST
+be performed according to Section 5.6.2.3.4 "ECC Partial Public-Key Validation Routine" of
+NIST Special Publication 800-56A revision 3 [nist-sp-800-56a-r3].
+
 ## Ensure Cryptographic Keys have Sufficient Entropy {#key-entropy}
 
 The Key Entropy and Random Values advice in Section 10.1 of [RFC7515] and
@@ -284,6 +314,13 @@ the Password Considerations in Section 8.8 of [RFC7518]
 MUST be followed.
 In particular, human-memorizable passwords MUST NOT be directly used
 as the key to a keyed-MAC algorithm such as "HS256".
+
+## Avoid Length-Dependent Encryption Inputs
+
+Many encryption algorithms leak information about the length of the plaintext, and the amount of
+leakage varies depending on the algorithm and mode of operation. Sensitive information, such as passwords,
+SHOULD be padded before it is encrypted. It is RECOMMENDED to avoid any compression of data before encryption
+since such compression often reveals information about the plaintext.
 
 ## Use UTF-8 ## {#use-utf8}
 
@@ -316,6 +353,13 @@ the JWT MUST contain an "aud" (audience) claim that can be used to determine whe
 is being used by an intended party or was substituted by an attacker at an unintended party.
 Furthermore, the relying party or application MUST validate the audience value
 and if the audience value is not associated with the recipient, it MUST reject the JWT.
+
+## Do Not Trust Received Claims
+
+The "kid" (key ID) header is used by the relying application to perform key lookup. Applications
+should ensure that this does not create SQL or LDAP injection vulnerabilities.
+
+Similarly, blindly following a "jku" (JWK Set URL) header could result in server-side request forgery attacks.
 
 ## Use Explicit Typing ## {#use-typ}
 
@@ -376,13 +420,18 @@ This document requires no IANA actions.
 
 Thanks to Antonio Sanso for bringing the "ECDH-ES" invalid point attack to the attention
 of JWE and JWT implementers.
-Thanks to Nat Sakimura for advocating the use of explicit typing.
+Thanks to Nat Sakimura for advocating the use of explicit typing. Thanks to Neil Madden for his
+numerous comments.
 
 --- back
 
 # Document History
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
+
+## draft-ietf-oauth-jwt-bcp-02
+
+- Feedback from Neil Madden.
 
 ## draft-ietf-oauth-jwt-bcp-01
 
