@@ -281,8 +281,13 @@ then the URL-safe claims representation and processing can be the same in both t
 Applications SHOULD follow these algorithm-specific recommendations:
 
 - Avoid all RSA-PKCS1 v1.5 encryption algorithms, preferring RSA-OAEP.
-- When using ECDSA signatures, applications SHOULD prefer to implement deterministic
-ECDSA, as defined in [RFC6979], in order to avoid issues with nonce reuse.
+- ECDSA signatures require a unique random value for every message that is signed.
+If even just a few bits of the random value are predictable across multiple messages then
+the security of the signature scheme may be compromised. In the worst case,
+the private key may be recoverable by an attacker. To counter these attacks,
+JWT libraries SHOULD implement ECDSA using the deterministic approach defined in [RFC6979].
+This approach is completely compatible with existing ECDSA verifiers and so can be implemented
+without new algorithm identifiers being required.
 
 ## Validate All Cryptographic Operations ## {#validate-crypto}
 
@@ -303,7 +308,7 @@ Either the JWS/JWE library itself must validate these inputs before using them
 or it must use underlying cryptographic libraries that do so (or both!).
 
 ECDH-ES ephemeral public key (epk) inputs should be validated according to the recipient's
-chosen elliptic curve. For NIST prime-order curves P-256, P-384 and P-521, validation MUST
+chosen elliptic curve. For the NIST prime-order curves P-256, P-384 and P-521, validation MUST
 be performed according to Section 5.6.2.3.4 "ECC Partial Public-Key Validation Routine" of
 NIST Special Publication 800-56A revision 3 [nist-sp-800-56a-r3].
 
@@ -317,9 +322,9 @@ as the key to a keyed-MAC algorithm such as "HS256".
 
 ## Avoid Length-Dependent Encryption Inputs
 
-Many encryption algorithms leak information about the length of the plaintext, and the amount of
-leakage varies depending on the algorithm and mode of operation. Sensitive information, such as passwords,
-SHOULD be padded before it is encrypted. It is RECOMMENDED to avoid any compression of data before encryption
+Many encryption algorithms leak information about the length of the plaintext, with a varying amount of
+leakage depending on the algorithm and mode of operation. Sensitive information, such as passwords,
+SHOULD be padded before being encrypted. It is RECOMMENDED to avoid any compression of data before encryption
 since such compression often reveals information about the plaintext.
 
 ## Use UTF-8 ## {#use-utf8}
@@ -359,7 +364,8 @@ and if the audience value is not associated with the recipient, it MUST reject t
 The "kid" (key ID) header is used by the relying application to perform key lookup. Applications
 should ensure that this does not create SQL or LDAP injection vulnerabilities.
 
-Similarly, blindly following a "jku" (JWK Set URL) header could result in server-side request forgery attacks.
+Similarly, blindly following a "jku" (JWK set URL) header which may contain an arbitrary URL,
+could result in server-side request forgery (SSRF) attacks.
 
 ## Use Explicit Typing ## {#use-typ}
 
