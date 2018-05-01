@@ -44,7 +44,7 @@ author:
 normative:
   RFC2119:
   RFC6979:
-  RFC7159:
+  RFC8259:
   RFC7515:
   RFC7516:
   RFC7518:
@@ -108,7 +108,7 @@ informative:
 
 --- abstract
 
-JSON Web Tokens, also known as JWTs {{RFC7519}}, are URL-safe JSON-based security tokens
+JSON Web Tokens, also known as JWTs, are URL-safe JSON-based security tokens
 that contain a set of claims that can be signed and/or encrypted.
 JWTs are being widely used and deployed as a simple security token format
 in numerous protocols and applications, both in the area of digital identity,
@@ -200,8 +200,9 @@ For mitigations, see <xref target="key-entropy"/>.
 
 ## Multiplicity of JSON encodings
 
-Many practitioners are not aware that JSON {{RFC7159}} allows several different character
-encodings: UTF-8, UTF-16 and UTF-32. As a result, the JWT might be
+Previous versions of the JSON format {{RFC8259}} allowed several different character
+encodings: UTF-8, UTF-16 and UTF-32. This is not the case anymore, with the latest
+standard only allowing UTF-8. However older implementations may result in the JWT being
 misinterpreted by its recipient.
 
 For mitigations, see <xref target="use-utf8"/>.
@@ -330,8 +331,9 @@ since such compression often reveals information about the plaintext.
 ## Use UTF-8 ## {#use-utf8}
 
 [RFC7515], [RFC7516], and [RFC7519] all specify that UTF-8 be used for encoding and decoding JSON
-used in Header Parameters and JWT Claims Sets.
-Implementations and applications MUST do this, and not use other Unicode encodings for these purposes.
+used in Header Parameters and JWT Claims Sets. This is also in line with the latest JSON specification [RFC8259].
+Implementations and applications MUST do this, and not use or admit the use of
+other Unicode encodings for these purposes.
 
 ## Validate Issuer and Subject ## {#validate-iss-sub}
 
@@ -357,7 +359,8 @@ If the same issuer can issue JWTs that are intended for use by more than one rel
 the JWT MUST contain an "aud" (audience) claim that can be used to determine whether the JWT
 is being used by an intended party or was substituted by an attacker at an unintended party.
 Furthermore, the relying party or application MUST validate the audience value
-and if the audience value is not associated with the recipient, it MUST reject the JWT.
+and if the audience value is not present or not associated with the recipient,
+it MUST reject the JWT.
 
 ## Do Not Trust Received Claims
 
@@ -418,6 +421,10 @@ the best combination of types, required claims, values, header parameters, key u
 to differentiate among different kinds of JWTs
 will, in general, be application specific.
 
+# Security Considerations
+
+This entire document is about security considerations when implementing and deploying JSON Web Tokens.
+
 # IANA Considerations
 
 This document requires no IANA actions.
@@ -427,7 +434,7 @@ This document requires no IANA actions.
 Thanks to Antonio Sanso for bringing the "ECDH-ES" invalid point attack to the attention
 of JWE and JWT implementers.
 Thanks to Nat Sakimura for advocating the use of explicit typing. Thanks to Neil Madden for his
-numerous comments.
+numerous comments, and to Carsten Bormann for his review.
 
 --- back
 
@@ -437,7 +444,7 @@ numerous comments.
 
 ## draft-ietf-oauth-jwt-bcp-02
 
-- Feedback from Neil Madden.
+- Feedback from Neil Madden and Carsten Bormann.
 
 ## draft-ietf-oauth-jwt-bcp-01
 
