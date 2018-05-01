@@ -79,6 +79,20 @@ informative:
     date: August 2017
     target: https://csrc.nist.gov/CSRC/media/Publications/sp/800-56a/rev-3/draft/documents/sp800-56ar3-draft.pdf
 
+  Valenta:
+    author:
+    -
+      name: Luke Valenta
+    -
+      name: Nick Sullivan
+    -
+      name: Antonio Sanso
+    -
+      name: Nadia Heninger
+    title: "In search of CurveSwap: Measuring elliptic curve implementations in the wild"
+    date: March 29, 2018
+    target: https://ia.cr/2018/298
+
   Sanso:
     author:
     -
@@ -304,7 +318,7 @@ using the keys and algorithms supplied by the application.
 
 Some cryptographic operations, such as Elliptic Curve Diffie-Hellman key agreement
 ("ECDH-ES") take inputs that may contain invalid values, such as points not on the specified elliptic curve
-or other invalid points.
+or other invalid points (see e.g. {{Valenta}}, Sec. 7.1).
 Either the JWS/JWE library itself must validate these inputs before using them
 or it must use underlying cryptographic libraries that do so (or both!).
 
