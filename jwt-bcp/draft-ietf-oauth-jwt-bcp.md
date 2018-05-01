@@ -364,7 +364,7 @@ and if the audience value is not associated with the recipient, it MUST reject t
 The "kid" (key ID) header is used by the relying application to perform key lookup. Applications
 should ensure that this does not create SQL or LDAP injection vulnerabilities.
 
-Similarly, blindly following a "jku" (JWK set URL) header which may contain an arbitrary URL,
+Similarly, blindly following a "jku" (JWK set URL) header, which may contain an arbitrary URL,
 could result in server-side request forgery (SSRF) attacks.
 
 ## Use Explicit Typing ## {#use-typ}
