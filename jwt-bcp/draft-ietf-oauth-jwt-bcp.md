@@ -458,7 +458,7 @@ numerous comments, and to Carsten Bormann for his review.
 
 ## draft-ietf-oauth-jwt-bcp-02
 
-- Feedback from Neil Madden and Carsten Bormann.
+- Implemented WGLC feedback.
 
 ## draft-ietf-oauth-jwt-bcp-01
 
