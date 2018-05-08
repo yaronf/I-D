@@ -76,8 +76,8 @@ informative:
     -
       name: Richard Davis
     title: "Recommendation for Pair-Wise Key Establishment Schemes Using Discrete Logarithm Cryptography, Draft NIST Special Publication 800-56A Revision 3"
-    date: August 2017
-    target: https://csrc.nist.gov/CSRC/media/Publications/sp/800-56a/rev-3/draft/documents/sp800-56ar3-draft.pdf
+    date: April 2018
+    target: https://doi.org/10.6028/NIST.SP.800-56Ar3
 
   Valenta:
     author:
