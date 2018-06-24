@@ -2,7 +2,7 @@
 title: TLS Server Identity Pinning with Tickets
 abbrev: Pinning Tickets
 docname: draft-sheffer-tls-pinning-ticket-latest
-category: std
+category: exp
 updates:
 obsoletes:
 
@@ -36,12 +36,14 @@ author:
     email: "daniel.migault@ericsson.com"
 
 normative:
-  RFC2104:
   RFC2119:
   I-D.ietf-tls-tls13:
   RFC5077:
+  RFC8126:
+  I-D.ietf-tls-iana-registry-updates:
 
 informative:
+  RFC2104:
   RFC6454:
   RFC6962:
   RFC7258:
@@ -64,6 +66,12 @@ informative:
     title: "HTTP Public Key Pinning: You're doing it wrong!"
     date: March 30, 2016
     target: http://news.netcraft.com/archives/2016/03/30/http-public-key-pinning-youre-doing-it-wrong.html
+  TLS-EXT:
+    title: "TLS Extension Type Value"
+    date: 2018
+    author:
+      - ins: IANA
+    target: https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#tls-extensiontype-values-1
 
 --- abstract
 
@@ -843,7 +851,27 @@ And use these values to encrypt the ticket, AES-GCM(K, N, \<data\>).
 IANA is requested to allocate a TicketPinning extension value in the
 TLS ExtensionType Registry.
 
-No registries are defined by this document.
+{{I-D.ietf-tls-iana-registry-updates}} defines the procedure and
+requirements and the necessary information for the IANA to update the
+"TLS ExtensionType Values" registry {{TLS-EXT}}.
+
+According to {{I-D.ietf-tls-iana-registry-updates}} the update of the
+"TLS ExtensionType Values" registry is "Specification Required"
+{{RFC8126}} which is fulfilled by the current document, when it is published as an
+RFC.
+
+The TicketPinning Extension is not limited to Private use and as such
+the TicketPinning Extension Value is expected to have its first byte
+in the range 0-254. A value of 26 would address this requirement.
+
+The TicketPinning Extension Name is expected to be ticket\_pinning.
+
+The TicketPinning Extension Recommended value should be set to "No" with
+the publication of the current document as "Experimental".
+
+The TicketPinning Extension TLS.13 column should be set to CH, SH to
+indicate that the TicketPinning Extension is present in ClientHello and
+ServerHello messages.
 
 # Acknowledgements
 
@@ -861,6 +889,10 @@ for several fruitful discussions.
 --- back
 
 # Document History
+
+## draft-sheffer-tls-pinning-ticket-06
+
+- IANA Considerations in preparation for Experimental publication.
 
 ## draft-sheffer-tls-pinning-ticket-05
 

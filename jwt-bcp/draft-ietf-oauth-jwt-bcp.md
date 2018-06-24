@@ -43,7 +43,8 @@ author:
 
 normative:
   RFC2119:
-  RFC7159:
+  RFC6979:
+  RFC8259:
   RFC7515:
   RFC7516:
   RFC7518:
@@ -59,6 +60,38 @@ informative:
     title: "Attacking JWT Authentication"
     date: September 28, 2016
     target: https://www.sjoerdlangkemper.nl/2016/09/28/attacking-jwt-authentication/
+
+  nist-sp-800-56a-r3:
+    author:
+    -
+      name: Elaine Barker
+    -
+      name: Lily Chen
+    -
+      name: Sharon Keller
+    -
+      name: Allen Roginsky
+    -
+      name: Apostol Vassilev
+    -
+      name: Richard Davis
+    title: "Recommendation for Pair-Wise Key Establishment Schemes Using Discrete Logarithm Cryptography, Draft NIST Special Publication 800-56A Revision 3"
+    date: April 2018
+    target: https://doi.org/10.6028/NIST.SP.800-56Ar3
+
+  Valenta:
+    author:
+    -
+      name: Luke Valenta
+    -
+      name: Nick Sullivan
+    -
+      name: Antonio Sanso
+    -
+      name: Nadia Heninger
+    title: "In search of CurveSwap: Measuring elliptic curve implementations in the wild"
+    date: March 29, 2018
+    target: https://ia.cr/2018/298
 
   Sanso:
     author:
@@ -89,7 +122,7 @@ informative:
 
 --- abstract
 
-JSON Web Tokens, also known as JWTs {{RFC7519}}, are URL-safe JSON-based security tokens
+JSON Web Tokens, also known as JWTs, are URL-safe JSON-based security tokens
 that contain a set of claims that can be signed and/or encrypted.
 JWTs are being widely used and deployed as a simple security token format
 in numerous protocols and applications, both in the area of digital identity,
@@ -181,8 +214,9 @@ For mitigations, see <xref target="key-entropy"/>.
 
 ## Multiplicity of JSON encodings
 
-Many practitioners are not aware that JSON {{RFC7159}} allows several different character
-encodings: UTF-8, UTF-16 and UTF-32. As a result, the JWT might be
+Previous versions of the JSON format {{RFC8259}} allowed several different character
+encodings: UTF-8, UTF-16 and UTF-32. This is not the case anymore, with the latest
+standard only allowing UTF-8. However older implementations may result in the JWT being
 misinterpreted by its recipient.
 
 For mitigations, see <xref target="use-utf8"/>.
@@ -259,6 +293,17 @@ In such cases, the use of the "none" algorithm can be perfectly acceptable.
 JWTs using "none" are often used in application contexts in which the content is optionally signed;
 then the URL-safe claims representation and processing can be the same in both the signed and unsigned cases.
 
+Applications SHOULD follow these algorithm-specific recommendations:
+
+- Avoid all RSA-PKCS1 v1.5 encryption algorithms, preferring RSA-OAEP.
+- ECDSA signatures require a unique random value for every message that is signed.
+If even just a few bits of the random value are predictable across multiple messages then
+the security of the signature scheme may be compromised. In the worst case,
+the private key may be recoverable by an attacker. To counter these attacks,
+JWT libraries SHOULD implement ECDSA using the deterministic approach defined in [RFC6979].
+This approach is completely compatible with existing ECDSA verifiers and so can be implemented
+without new algorithm identifiers being required.
+
 ## Validate All Cryptographic Operations ## {#validate-crypto}
 
 All cryptographic operations used in the JWT MUST be validated and the entire JWT MUST be rejected
@@ -273,9 +318,14 @@ using the keys and algorithms supplied by the application.
 
 Some cryptographic operations, such as Elliptic Curve Diffie-Hellman key agreement
 ("ECDH-ES") take inputs that may contain invalid values, such as points not on the specified elliptic curve
-or other invalid points.
+or other invalid points (see e.g. {{Valenta}}, Sec. 7.1).
 Either the JWS/JWE library itself must validate these inputs before using them
 or it must use underlying cryptographic libraries that do so (or both!).
+
+ECDH-ES ephemeral public key (epk) inputs should be validated according to the recipient's
+chosen elliptic curve. For the NIST prime-order curves P-256, P-384 and P-521, validation MUST
+be performed according to Section 5.6.2.3.4 "ECC Partial Public-Key Validation Routine" of
+NIST Special Publication 800-56A revision 3 [nist-sp-800-56a-r3].
 
 ## Ensure Cryptographic Keys have Sufficient Entropy {#key-entropy}
 
@@ -285,11 +335,19 @@ MUST be followed.
 In particular, human-memorizable passwords MUST NOT be directly used
 as the key to a keyed-MAC algorithm such as "HS256".
 
+## Avoid Length-Dependent Encryption Inputs
+
+Many encryption algorithms leak information about the length of the plaintext, with a varying amount of
+leakage depending on the algorithm and mode of operation. Sensitive information, such as passwords,
+SHOULD be padded before being encrypted. It is RECOMMENDED to avoid any compression of data before encryption
+since such compression often reveals information about the plaintext.
+
 ## Use UTF-8 ## {#use-utf8}
 
 [RFC7515], [RFC7516], and [RFC7519] all specify that UTF-8 be used for encoding and decoding JSON
-used in Header Parameters and JWT Claims Sets.
-Implementations and applications MUST do this, and not use other Unicode encodings for these purposes.
+used in Header Parameters and JWT Claims Sets. This is also in line with the latest JSON specification [RFC8259].
+Implementations and applications MUST do this, and not use or admit the use of
+other Unicode encodings for these purposes.
 
 ## Validate Issuer and Subject ## {#validate-iss-sub}
 
@@ -315,7 +373,16 @@ If the same issuer can issue JWTs that are intended for use by more than one rel
 the JWT MUST contain an "aud" (audience) claim that can be used to determine whether the JWT
 is being used by an intended party or was substituted by an attacker at an unintended party.
 Furthermore, the relying party or application MUST validate the audience value
-and if the audience value is not associated with the recipient, it MUST reject the JWT.
+and if the audience value is not present or not associated with the recipient,
+it MUST reject the JWT.
+
+## Do Not Trust Received Claims
+
+The "kid" (key ID) header is used by the relying application to perform key lookup. Applications
+should ensure that this does not create SQL or LDAP injection vulnerabilities.
+
+Similarly, blindly following a "jku" (JWK set URL) header, which may contain an arbitrary URL,
+could result in server-side request forgery (SSRF) attacks.
 
 ## Use Explicit Typing ## {#use-typ}
 
@@ -332,6 +399,10 @@ Therefore, for example, the "typ" value used to explicitly include a type for a 
 SHOULD be "secevent+jwt".
 When explicit typing is employed for a JWT, it is RECOMMENDED that a media type name of the format
 "application/example+jwt" be used, where "example" is replaced by the identifier for the specific kind of JWT.
+
+When applying explicit typing to a Nested JWT, the "typ" header parameter containing the explicit type value
+MUST be present in the inner JWT of the Nested JWT (the JWT whose payload is the JWT Claims Set).
+The same "typ" header parameter value MAY be present in the outer JWT as well, to explicitly type the entire Nested JWT.
 
 Note that the use of explicit typing may not achieve disambiguation from existing kinds of JWTs,
 as the validation rules for existing kinds JWTs often do not use the "typ" header parameter value.
@@ -364,6 +435,10 @@ the best combination of types, required claims, values, header parameters, key u
 to differentiate among different kinds of JWTs
 will, in general, be application specific.
 
+# Security Considerations
+
+This entire document is about security considerations when implementing and deploying JSON Web Tokens.
+
 # IANA Considerations
 
 This document requires no IANA actions.
@@ -371,14 +446,27 @@ This document requires no IANA actions.
 # Acknowledgements
 
 Thanks to Antonio Sanso for bringing the "ECDH-ES" invalid point attack to the attention
-of JWE and JWT implementers.
-Thanks to Nat Sakimura for advocating the use of explicit typing.
+of JWE and JWT implementers. Tim McLean published the RSA/HMAC confusion attack.
+Thanks to Nat Sakimura for advocating the use of explicit typing. Thanks to Neil Madden for his
+numerous comments, and to Carsten Bormann and Brian Campbell for their reviews.
 
 --- back
 
 # Document History
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
+
+## draft-ietf-oauth-jwt-bcp-03
+
+- Acknowledgements.
+
+## draft-ietf-oauth-jwt-bcp-02
+
+- Implemented WGLC feedback.
+
+## draft-ietf-oauth-jwt-bcp-01
+
+- Feedback from Brian Campbell.
 
 ## draft-ietf-oauth-jwt-bcp-00
 

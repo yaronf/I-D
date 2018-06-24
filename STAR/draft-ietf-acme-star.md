@@ -478,7 +478,7 @@ Immediately after the order expires, the server MUST respond with 403 (Forbidden
 
 "Short Term" is a relative concept, therefore trying to define a cut-off point that works in all cases would be a useless exercise.  In practice, the expected lifetime of a STAR certificate will be counted in minutes, hours or days, depending on different factors: the underlying requirements for revocation, how much clock synchronization is expected among relying parties and the issuing CA, etc.
 
-Nevertheless, this section attempts at providing reasonable suggestions for the Web use case, informed by current operational and research experience.
+Nevertheless, this section attempts to provide reasonable suggestions for the Web use case, informed by current operational and research experience.
 
 Acer et al. {{Acer}} find that one of the main causes of "HTTPS error" warnings in browers is misconfigured client clocks.  In particular, they observe that roughly 95% of the "severe" clock skews - the 6.7% of clock-related breakage reports which account for clients that are more than 24 hours behind - happen to be within 6-7 days.
 
