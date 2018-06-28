@@ -83,8 +83,8 @@ duplication, we give here a barebones description of the motivation for this sol
 For more details and further use cases, please refer to the
 introductory sections of {{I-D.ietf-acme-star}}.
 
-A content provider (referred to in this document as Domain Name Owner,
-DNO) has agreements in
+A content provider (referred to in this document as Domain Name Owner, DNO, or
+more generally as Identity Owner, IdO) has agreements in
 place with one or more Content Delivery Networks (CDNs) that are
 contracted to serve its content over HTTPS. The CDN terminates the
 HTTPS connection at one of its edge cache servers and needs to present
@@ -95,22 +95,25 @@ another organization and, equally, delegates (henceforth referred to
 as NDC, Name Delegation Consumer) would rather not have
 to handle other parties' long-term secrets.
 
-This document describes a protocol where the DNO and the NDC agree on
+This document describes a protocol where the IdO and the NDC agree on
 a CSR template and the NDC
-generates a CSR for a private key that it holds. The DNO then uses the
+generates a CSR for a private key that it holds. The IdO then uses the
 ACME protocol (as extended in {{I-D.ietf-acme-star}} to issue the
 STAR certificate.
 
 The generated short-term certificate is automatically renewed by an
 ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and routinely
-fetched into the NDC and used for HTTPS connections. The DNO can end the
+fetched into the NDC and used for HTTPS connections. The IdO can end the
 delegation at any time by simply instructing the CA to stop the
 automatic renewal and letting the certificate expire shortly thereafter.
 
 ## Terminology
 
+IdO
+: Identity Owner, the owner of an identity (e.g., a domain name) that needs to be delegated.
+
 DNO
-: Domain Name Owner, the owner of a domain that needs to be delegated.
+: A specific kind of IdO whose identity is a domain name
 
 NDC
 : Name Delegation Consumer, the entity to which the domain name is delegated for a limited
@@ -148,20 +151,20 @@ ACME protocol as described in {{I-D.ietf-acme-star}}.
 
 The protocol assumes the following preconditions are met:
 
-- A mutually authenticated channel between NDC and DNO pre-exists.
+- A mutually authenticated channel between NDC and IdO pre-exists.
 This is called "STAR channel" and all STAR protocol exchanges between
-NDC and DNO are run over it.  It provides the guarantee that requests
+NDC and IdO are run over it.  It provides the guarantee that requests
 and responses are authentic.
-- NDC and DNO have agreed on a "CSR template" to use, including at a minimum:
+- NDC and IdO have agreed on a "CSR template" to use, including at a minimum:
   - Subject name (e.g., "somesite.example.com"),
   - Requested algorithms,
   - Key length,
   - Key usage.
 
   The NDC is required to use this template for every CSR created under the same delegation.
-- DNO has registered through the ACME interface exposed by the
+- IdO has registered through the ACME interface exposed by the
 Certificate Authority (CA) using the usual ACME registration
-procedure. In ACME terms, the DNO has an Account on the server
+procedure. In ACME terms, the IdO has an Account on the server
 and is ready to issue Orders.
 
 ## Bootstrap
@@ -169,29 +172,29 @@ and is ready to issue Orders.
 
 The NDC (STAR Client) generates a key-pair, wraps it into a Certificate
 Signing Request (CSR) according to the agreed upon CSR template, and sends
-it to the DNO (STAR Proxy) over the pre-established STAR channel.  The
-DNO uses the NDC identity provided on the STAR channel to look up the
+it to the IdO (STAR Proxy) over the pre-established STAR channel.  The
+IdO uses the NDC identity provided on the STAR channel to look up the
 CSR template that applies to the requesting NDC and decides whether or
 not to accept the request. Assuming everything is in order,
 it then "forwards" the NDC request to the ACME CA by means of the
-usual ACME application procedure. Specifically, the DNO, in its role as an
+usual ACME application procedure. Specifically, the IdO, in its role as an
 ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 
 - Has a short validity (e.g., 24 to 72 hours);
 - Is automatically renewed by the CA for a certain period of time;
 - Is downloadable from a (highly available) public link without requiring any special authorization.
 
-Other than that, the ACME protocol flows as normal between DNO and CA,
-in particular DNO is responsible for satisfying the requested ACME
+Other than that, the ACME protocol flows as normal between IdO and CA,
+in particular IdO is responsible for satisfying the requested ACME
 challenges until the CA is willing to issue the requested certificate.
-Per normal ACME processing, the DNO is given back an Order ID for the issued STAR
+Per normal ACME processing, the IdO is given back an Order ID for the issued STAR
 certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
 Concurrently, a response is sent back to the NDC with an
 endpoint to  poll for completion of the certificate generation process.
 
-The bootstrap phase ends when the DNO obtains the OK from the ACME CA
+The bootstrap phase ends when the IdO obtains the OK from the ACME CA
 and posts the certificate's URL to the "completion endpoint" where the
 NDC can retrieve it.
 
@@ -246,7 +249,7 @@ before it expires and publishes it to the URL that the NDC has come to
 know at the end of the bootstrap phase.  The NDC downloads and
 installs it. This process goes on until either:
 
-- DNO terminates the delegation, or
+- IdO terminates the delegation, or
 - Automatic renewal expires.
 
 ~~~~~~~~~~
@@ -284,7 +287,7 @@ installs it. This process goes on until either:
 ## Termination
 {: #proto-termination}
 
-The DNO may request early termination of the STAR certificate by including
+The IdO may request early termination of the STAR certificate by including
 the Order ID in a certificate termination request to the ACME
 interface, defined below.
 After the CA receives and verifies the request, it shall:
@@ -327,7 +330,7 @@ API between the STAR Client and the STAR Proxy.
 
 ## STAR API
 
-This API allows a DNO (STAR Proxy) to control the long-term delegation of one of its names to an authorized third-party (STAR Client).
+This API allows a IdO (STAR Proxy) to control the long-term delegation of one of its names to an authorized third-party (STAR Client).
 
 ### Creating a Delegation Request
 
@@ -475,13 +478,13 @@ is governed by policy and contracts between the parties.
 ## STAR Protocol Authentication
 
 The STAR protocol allows its client to obtain certificates bearing the
-DNO's identity. Therefore strong client authentication is
+IdO's identity. Therefore strong client authentication is
 mandatory.
 
-When multiple NDCs may connect to the same DNO, the STAR protocol's
-authentication MUST allow the DNO to distinguish between different
-NDCs, and the DNO MUST associate different Registration objects to
-different clients. Among other benefits, this allows the DNO to cancel a STAR
+When multiple NDCs may connect to the same IdO, the STAR protocol's
+authentication MUST allow the IdO to distinguish between different
+NDCs, and the IdO MUST associate different Registration objects to
+different clients. Among other benefits, this allows the IdO to cancel a STAR
 registration for one of its clients instead of all of them.
 
 # Acknowledgments
