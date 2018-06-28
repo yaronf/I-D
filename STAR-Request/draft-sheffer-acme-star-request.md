@@ -33,7 +33,7 @@ author:
     ins: D. Lopez
     name: Diego Lopez
     organization: Telefonica I+D
-    email: diego.r.lopez@telefonica.com 
+    email: diego.r.lopez@telefonica.com
  -
     ins: O. Gonzalez de Dios
     name: Oscar Gonzalez de Dios
@@ -52,7 +52,9 @@ author:
 
 normative:
   RFC2119:
+  RFC2986:
   RFC7617:
+  RFC7807:
   I-D.ietf-acme-acme:
   I-D.ietf-acme-star:
 
@@ -187,7 +189,7 @@ certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
 Concurrently, a response is sent back to the NDC with an
-endpoint to  poll for completion of the certificate generation process. 
+endpoint to  poll for completion of the certificate generation process.
 
 The bootstrap phase ends when the DNO obtains the OK from the ACME CA
 and posts the certificate's URL to the "completion endpoint" where the
@@ -301,7 +303,7 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
      |                       +---------------------->|
      |                       |                       +-------.
      |                       |                       |       |
-     |                       |                       |  End auto renewal  
+     |                       |                       |  End auto renewal
      |                       |                       |  Remove cert link
      |                       |                       |  etc.
      |                       |                       |       |
@@ -325,79 +327,109 @@ API between the STAR Client and the STAR Proxy.
 
 ## STAR API
 
-This API allows the STAR Client to request a STAR certificate via the
-STAR Proxy, using a previously agreed-upon CSR template.
+This API allows a DNO (STAR Proxy) to control the long-term delegation of one of its names to an authorized third-party (STAR Client).
 
-The API consists of a single resource, "registration". A new
-Registration is created with a POST request, and the
-Registration instance is polled to obtain its details.
+### Creating a Delegation Request
 
-### Creating a Registration
+To create a new delegation request, the client wraps the following parameters in a POST to the '/star/delegation' path:
 
-To create a registration, use:
+- csr (required, string):
+A CSR encoding the parameters for the certificate being requested {{RFC2986}}.  The CSR is sent in the base64url-encoded version of the DER format.  (Note: Because this field uses base64url, and does not include headers, it is different from PEM.)
 
-    POST /star/registration
+- duration (optional, integer):
+How long the delegation should last (in seconds).  If not specified, a local default applies.
+
+- certificate-lifetime (optional, integer):
+How long each short-term certificate should last (in seconds).  If not specified, a local default applies.
+
+Note that the STAR Proxy MAY treat both "duration" and "certificate-lifetime" as hints, and MAY update any of them due to local policy decisions or as a result of the interaction with the ACME server.
+
+~~~
+    POST /star/delegation
     Host: star-proxy.example.net
     Content-Type: application/json
 
     {
-        "csr": "...",    // CSR in PEM format
-        "lifetime": 365, // requested registration lifetime in days,
-                         // between 1 and 1095
-        "validity": 7    // requested certificate validity in days
+        "csr": "jcRf4uXra7FGYW5ZMewvV...rhlnznwy8YbpMGqwidEXfE",
+        "duration": 31536000,
+        "certificate-lifetime": 604800
     }
+~~~
 
-The STAR Proxy MAY treat both "lifetime" and "validity" periods as hints.
-Upon success, the call returns the new Registration resource. 
+On success, the service returns a 201 Created status with the URL of the newly generated delegation order in the Location header field.  The current state of the delegation order is returned in the body of the response in JSON format:
 
+~~~
     HTTP/1.1 201 Created
-    Location: https://star-proxy.example.net/star/registration/567
+    Content-Type: application/json
+    Location: http://example.net/star/delegation/567
 
-### Polling the Registration
+    {
+        "id": "567",
+        "certificate-lifetime": 604800,
+        "duration": 31536000,
+        "status": "new"
+    }
+~~~
 
-The returned Registration can be polled until the information is available from the ACME server.
+If an error occurs, an error response (4XX or 5XX) is generated with an appropriate problem detail {{RFC7807}} body, e.g.:
 
-    GET /star/registration/567
+~~~
+    HTTP/1.1 400 Bad Request
+    Content-Type: application/problem+json
+
+    {
+       "type": "https://example.net/validation-error",
+       "title": "Your request parameters didn't validate.",
+       "invalid-params": [ {
+                             "name": "csr",
+                             "reason": "missing mandatory parameter"
+                           } ]
+    }
+~~~
+
+### Polling the Delegation Request
+
+The returned delegation order URL can be polled until the dialog between the STAR Proxy and the ACME server is complete (i.e., the "status" attribute changes from "new" or "pending" to one of "failed" or "success"):
+
+~~~
+    GET /star/delegation/567
     Host: star-proxy.example.net
+~~~
 
-In responding to poll requests while the validation is still in
-progress, the server MUST return a 200 (OK) response and MAY include a
-Retry-After header field to suggest a polling interval to the client.
-The Retry-After value MUST be expressed in seconds.  If the
-Retry-After header is present, in order to avoid surprising
-interactions with heuristic expiration times, a max-age Cache-Control
-SHOULD also be present and set to a value slightly smaller than the Retry-After value.
+In responding to poll requests while the validation is still in progress, the server MUST return a 200 (OK) response and MAY include a Retry-After header field to suggest a polling interval to the client.  The Retry-After value MUST be expressed in seconds.  If the Retry-After header is present, in order to avoid surprising interactions with heuristic expiration times, a max-age Cache-Control
+SHOULD also be present and set to a value slightly smaller than the Retry-After value:
 
+~~~
     HTTP/1.1 200 OK
+    Content-Type: application/json
     Retry-After: 10
     Cache-Control: max-age=9
 
     {
+        "id": "5",
+        "certificate-lifetime": 604800,
+        "creation-date": "2017-11-12T01:38:09Z",
+        "duration": 31536000,
         "status": "pending"
     }
+~~~
 
 When the operation is successfully completed, the ACME Proxy returns:
 
+~~~
     HTTP/1.1 200 OK
-    Expires: Sun, 09 Sep 2018 14:09:00 GMT
 
     {
-        "status": "valid", // or "failed"
-        "lifetime": 365, // lifetime of the registration in days,
-                         //  possibly less than requested
-        "certificates": "https://acme-server.example.org/certificates/A51A3"
+        "status": "success", // or "failed"
+        "lifetime": 365,     // lifetime of the registration in days,
+                             // possibly less than requested
+        "certificates": "https://ca.example.org/certificates/A51A3"
     }
+~~~
 
-The Expires header applies to the Registration resource itself, and may be as
-small as a few minutes.
-It is unrelated to the Order's lifetime which is measured in days or longer.
-The "certificates" attribute
-contains a URL of the certificate pull endpoint, received from the
-ACME Server.
+The "certificates" attribute contains a URL of the certificate pull endpoint, received from the ACME Server.
 
-If the registration fails for any reason, the server returns a "200 OK"
-response, with the status as "failed"
-and a "reason" attribute containing a human readable error message.
+If the registration fails for any reason, the server returns a "200 OK" response, with the status as "failed" and a "reason" attribute containing a human readable error message.
 
 ## Transport Security for the STAR Protocol
 
