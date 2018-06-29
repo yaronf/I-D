@@ -33,7 +33,7 @@ author:
     ins: D. Lopez
     name: Diego Lopez
     organization: Telefonica I+D
-    email: diego.r.lopez@telefonica.com 
+    email: diego.r.lopez@telefonica.com
  -
     ins: O. Gonzalez de Dios
     name: Oscar Gonzalez de Dios
@@ -52,7 +52,9 @@ author:
 
 normative:
   RFC2119:
+  RFC2986:
   RFC7617:
+  RFC7807:
   I-D.ietf-acme-acme:
   I-D.ietf-acme-star:
 
@@ -81,8 +83,8 @@ duplication, we give here a barebones description of the motivation for this sol
 For more details and further use cases, please refer to the
 introductory sections of {{I-D.ietf-acme-star}}.
 
-A content provider (referred to in this document as Domain Name Owner,
-DNO) has agreements in
+A content provider (referred to in this document as Domain Name Owner, DNO, or
+more generally as Identity Owner, IdO) has agreements in
 place with one or more Content Delivery Networks (CDNs) that are
 contracted to serve its content over HTTPS. The CDN terminates the
 HTTPS connection at one of its edge cache servers and needs to present
@@ -93,22 +95,25 @@ another organization and, equally, delegates (henceforth referred to
 as NDC, Name Delegation Consumer) would rather not have
 to handle other parties' long-term secrets.
 
-This document describes a protocol where the DNO and the NDC agree on
+This document describes a protocol where the IdO and the NDC agree on
 a CSR template and the NDC
-generates a CSR for a private key that it holds. The DNO then uses the
+generates a CSR for a private key that it holds. The IdO then uses the
 ACME protocol (as extended in {{I-D.ietf-acme-star}} to issue the
 STAR certificate.
 
 The generated short-term certificate is automatically renewed by an
 ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and routinely
-fetched into the NDC and used for HTTPS connections. The DNO can end the
+fetched into the NDC and used for HTTPS connections. The IdO can end the
 delegation at any time by simply instructing the CA to stop the
 automatic renewal and letting the certificate expire shortly thereafter.
 
 ## Terminology
 
+IdO
+: Identity Owner, the owner of an identity (e.g., a domain name) that needs to be delegated.
+
 DNO
-: Domain Name Owner, the owner of a domain that needs to be delegated.
+: A specific kind of IdO whose identity is a domain name
 
 NDC
 : Name Delegation Consumer, the entity to which the domain name is delegated for a limited
@@ -146,20 +151,20 @@ ACME protocol as described in {{I-D.ietf-acme-star}}.
 
 The protocol assumes the following preconditions are met:
 
-- A mutually authenticated channel between NDC and DNO pre-exists.
+- A mutually authenticated channel between NDC and IdO pre-exists.
 This is called "STAR channel" and all STAR protocol exchanges between
-NDC and DNO are run over it.  It provides the guarantee that requests
+NDC and IdO are run over it.  It provides the guarantee that requests
 and responses are authentic.
-- NDC and DNO have agreed on a "CSR template" to use, including at a minimum:
+- NDC and IdO have agreed on a "CSR template" to use, including at a minimum:
   - Subject name (e.g., "somesite.example.com"),
   - Requested algorithms,
   - Key length,
   - Key usage.
 
   The NDC is required to use this template for every CSR created under the same delegation.
-- DNO has registered through the ACME interface exposed by the
+- IdO has registered through the ACME interface exposed by the
 Certificate Authority (CA) using the usual ACME registration
-procedure. In ACME terms, the DNO has an Account on the server
+procedure. In ACME terms, the IdO has an Account on the server
 and is ready to issue Orders.
 
 ## Bootstrap
@@ -167,29 +172,29 @@ and is ready to issue Orders.
 
 The NDC (STAR Client) generates a key-pair, wraps it into a Certificate
 Signing Request (CSR) according to the agreed upon CSR template, and sends
-it to the DNO (STAR Proxy) over the pre-established STAR channel.  The
-DNO uses the NDC identity provided on the STAR channel to look up the
+it to the IdO (STAR Proxy) over the pre-established STAR channel.  The
+IdO uses the NDC identity provided on the STAR channel to look up the
 CSR template that applies to the requesting NDC and decides whether or
 not to accept the request. Assuming everything is in order,
 it then "forwards" the NDC request to the ACME CA by means of the
-usual ACME application procedure. Specifically, the DNO, in its role as an
+usual ACME application procedure. Specifically, the IdO, in its role as an
 ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 
 - Has a short validity (e.g., 24 to 72 hours);
 - Is automatically renewed by the CA for a certain period of time;
 - Is downloadable from a (highly available) public link without requiring any special authorization.
 
-Other than that, the ACME protocol flows as normal between DNO and CA,
-in particular DNO is responsible for satisfying the requested ACME
+Other than that, the ACME protocol flows as normal between IdO and CA,
+in particular IdO is responsible for satisfying the requested ACME
 challenges until the CA is willing to issue the requested certificate.
-Per normal ACME processing, the DNO is given back an Order ID for the issued STAR
+Per normal ACME processing, the IdO is given back an Order ID for the issued STAR
 certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
 Concurrently, a response is sent back to the NDC with an
-endpoint to  poll for completion of the certificate generation process. 
+endpoint to  poll for completion of the certificate generation process.
 
-The bootstrap phase ends when the DNO obtains the OK from the ACME CA
+The bootstrap phase ends when the IdO obtains the OK from the ACME CA
 and posts the certificate's URL to the "completion endpoint" where the
 NDC can retrieve it.
 
@@ -244,7 +249,7 @@ before it expires and publishes it to the URL that the NDC has come to
 know at the end of the bootstrap phase.  The NDC downloads and
 installs it. This process goes on until either:
 
-- DNO terminates the delegation, or
+- IdO terminates the delegation, or
 - Automatic renewal expires.
 
 ~~~~~~~~~~
@@ -282,7 +287,7 @@ installs it. This process goes on until either:
 ## Termination
 {: #proto-termination}
 
-The DNO may request early termination of the STAR certificate by including
+The IdO may request early termination of the STAR certificate by including
 the Order ID in a certificate termination request to the ACME
 interface, defined below.
 After the CA receives and verifies the request, it shall:
@@ -301,7 +306,7 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
      |                       +---------------------->|
      |                       |                       +-------.
      |                       |                       |       |
-     |                       |                       |  End auto renewal  
+     |                       |                       |  End auto renewal
      |                       |                       |  Remove cert link
      |                       |                       |  etc.
      |                       |                       |       |
@@ -325,79 +330,109 @@ API between the STAR Client and the STAR Proxy.
 
 ## STAR API
 
-This API allows the STAR Client to request a STAR certificate via the
-STAR Proxy, using a previously agreed-upon CSR template.
+This API allows a IdO (STAR Proxy) to control the long-term delegation of one of its names to an authorized third-party (STAR Client).
 
-The API consists of a single resource, "registration". A new
-Registration is created with a POST request, and the
-Registration instance is polled to obtain its details.
+### Creating a Delegation Request
 
-### Creating a Registration
+To create a new delegation request, the client wraps the following parameters in a POST to the '/star/delegation' path:
 
-To create a registration, use:
+- csr (required, string):
+A CSR encoding the parameters for the certificate being requested {{RFC2986}}.  The CSR is sent in the base64url-encoded version of the DER format.  (Note: Because this field uses base64url, and does not include headers, it is different from PEM.)
 
-    POST /star/registration
+- duration (optional, integer):
+How long the delegation should last (in seconds).  If not specified, a local default applies.
+
+- certificate-lifetime (optional, integer):
+How long each short-term certificate should last (in seconds).  If not specified, a local default applies.
+
+Note that the STAR Proxy MAY treat both "duration" and "certificate-lifetime" as hints, and MAY update any of them due to local policy decisions or as a result of the interaction with the ACME server.
+
+~~~
+    POST /star/delegation
     Host: star-proxy.example.net
     Content-Type: application/json
 
     {
-        "csr": "...",    // CSR in PEM format
-        "lifetime": 365, // requested registration lifetime in days,
-                         // between 1 and 1095
-        "validity": 7    // requested certificate validity in days
+        "csr": "jcRf4uXra7FGYW5ZMewvV...rhlnznwy8YbpMGqwidEXfE",
+        "duration": 31536000,
+        "certificate-lifetime": 604800
     }
+~~~
 
-The STAR Proxy MAY treat both "lifetime" and "validity" periods as hints.
-Upon success, the call returns the new Registration resource. 
+On success, the service returns a 201 Created status with the URL of the newly generated delegation order in the Location header field.  The current state of the delegation order is returned in the body of the response in JSON format:
 
+~~~
     HTTP/1.1 201 Created
-    Location: https://star-proxy.example.net/star/registration/567
+    Content-Type: application/json
+    Location: http://example.net/star/delegation/567
 
-### Polling the Registration
+    {
+        "id": "567",
+        "certificate-lifetime": 604800,
+        "duration": 31536000,
+        "status": "new"
+    }
+~~~
 
-The returned Registration can be polled until the information is available from the ACME server.
+If an error occurs, an error response (4XX or 5XX) is generated with an appropriate problem detail {{RFC7807}} body, e.g.:
 
-    GET /star/registration/567
+~~~
+    HTTP/1.1 400 Bad Request
+    Content-Type: application/problem+json
+
+    {
+       "type": "https://example.net/validation-error",
+       "title": "Your request parameters didn't validate.",
+       "invalid-params": [ {
+                             "name": "csr",
+                             "reason": "missing mandatory parameter"
+                           } ]
+    }
+~~~
+
+### Polling the Delegation Request
+
+The returned delegation order URL can be polled until the dialog between the STAR Proxy and the ACME server is complete (i.e., the "status" attribute changes from "new" or "pending" to one of "failed" or "success"):
+
+~~~
+    GET /star/delegation/567
     Host: star-proxy.example.net
+~~~
 
-In responding to poll requests while the validation is still in
-progress, the server MUST return a 200 (OK) response and MAY include a
-Retry-After header field to suggest a polling interval to the client.
-The Retry-After value MUST be expressed in seconds.  If the
-Retry-After header is present, in order to avoid surprising
-interactions with heuristic expiration times, a max-age Cache-Control
-SHOULD also be present and set to a value slightly smaller than the Retry-After value.
+In responding to poll requests while the validation is still in progress, the server MUST return a 200 (OK) response and MAY include a Retry-After header field to suggest a polling interval to the client.  The Retry-After value MUST be expressed in seconds.  If the Retry-After header is present, in order to avoid surprising interactions with heuristic expiration times, a max-age Cache-Control
+SHOULD also be present and set to a value slightly smaller than the Retry-After value:
 
+~~~
     HTTP/1.1 200 OK
+    Content-Type: application/json
     Retry-After: 10
     Cache-Control: max-age=9
 
     {
+        "id": "5",
+        "certificate-lifetime": 604800,
+        "creation-date": "2017-11-12T01:38:09Z",
+        "duration": 31536000,
         "status": "pending"
     }
+~~~
 
 When the operation is successfully completed, the ACME Proxy returns:
 
+~~~
     HTTP/1.1 200 OK
-    Expires: Sun, 09 Sep 2018 14:09:00 GMT
 
     {
-        "status": "valid", // or "failed"
-        "lifetime": 365, // lifetime of the registration in days,
-                         //  possibly less than requested
-        "certificates": "https://acme-server.example.org/certificates/A51A3"
+        "status": "success", // or "failed"
+        "lifetime": 365,     // lifetime of the registration in days,
+                             // possibly less than requested
+        "certificates": "https://ca.example.org/certificates/A51A3"
     }
+~~~
 
-The Expires header applies to the Registration resource itself, and may be as
-small as a few minutes.
-It is unrelated to the Order's lifetime which is measured in days or longer.
-The "certificates" attribute
-contains a URL of the certificate pull endpoint, received from the
-ACME Server.
+The "certificates" attribute contains a URL of the certificate pull endpoint, received from the ACME Server.
 
-If the registration fails for any reason, the server returns a "200 OK"
-response, with the status as "failed"
-and a "reason" attribute containing a human readable error message.
+If the registration fails for any reason, the server returns a "200 OK" response, with the status as "failed" and a "reason" attribute containing a human readable error message.
 
 ## Transport Security for the STAR Protocol
 
@@ -443,13 +478,13 @@ is governed by policy and contracts between the parties.
 ## STAR Protocol Authentication
 
 The STAR protocol allows its client to obtain certificates bearing the
-DNO's identity. Therefore strong client authentication is
+IdO's identity. Therefore strong client authentication is
 mandatory.
 
-When multiple NDCs may connect to the same DNO, the STAR protocol's
-authentication MUST allow the DNO to distinguish between different
-NDCs, and the DNO MUST associate different Registration objects to
-different clients. Among other benefits, this allows the DNO to cancel a STAR
+When multiple NDCs may connect to the same IdO, the STAR protocol's
+authentication MUST allow the IdO to distinguish between different
+NDCs, and the IdO MUST associate different Registration objects to
+different clients. Among other benefits, this allows the IdO to cancel a STAR
 registration for one of its clients instead of all of them.
 
 # Acknowledgments
