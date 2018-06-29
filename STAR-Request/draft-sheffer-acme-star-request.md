@@ -79,7 +79,7 @@ having to rely on certificate revocation mechanisms.
 # Introduction
 
 This document is a companion document to {{I-D.ietf-acme-star}}. To avoid
-duplication, we give here a barebones description of the motivation for this solution.
+duplication, we give here a bare-bones description of the motivation for this solution.
 For more details and further use cases, please refer to the
 introductory sections of {{I-D.ietf-acme-star}}.
 
@@ -98,11 +98,11 @@ to handle other parties' long-term secrets.
 This document describes a protocol where the IdO and the NDC agree on
 a CSR template and the NDC
 generates a CSR for a private key that it holds. The IdO then uses the
-ACME protocol (as extended in {{I-D.ietf-acme-star}} to issue the
+ACME protocol (as extended in {{I-D.ietf-acme-star}}) to issue the
 STAR certificate.
 
 The generated short-term certificate is automatically renewed by an
-ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and routinely
+ACME Certification Authority (CA) {{I-D.ietf-acme-acme}} and periodically
 fetched into the NDC and used for HTTPS connections. The IdO can end the
 delegation at any time by simply instructing the CA to stop the
 automatic renewal and letting the certificate expire shortly thereafter.
@@ -113,7 +113,7 @@ IdO
 : Identity Owner, the owner of an identity (e.g., a domain name) that needs to be delegated.
 
 DNO
-: A specific kind of IdO whose identity is a domain name
+: Domain Name Owner, a specific kind of IdO whose identity is a domain name.
 
 NDC
 : Name Delegation Consumer, the entity to which the domain name is delegated for a limited
@@ -322,6 +322,9 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
 ~~~~~~~~~~
 {: #figprototerm title="Termination"}
 
+No facility is provided for the NDC to directly initiate the termination
+of a STAR certificate. 
+
 # Protocol Details
 {: #protocol-details}
 
@@ -330,7 +333,7 @@ API between the STAR Client and the STAR Proxy.
 
 ## STAR API
 
-This API allows a IdO (STAR Proxy) to control the long-term delegation of one of its names to an authorized third-party (STAR Client).
+This API allows an IdO (STAR Proxy) to control the long-term delegation of one of its names to an authorized third-party (STAR Client).
 
 ### Creating a Delegation Request
 
@@ -439,8 +442,7 @@ If the registration fails for any reason, the server returns a "200 OK" response
 Traffic between the STAR Client and the STAR Proxy MUST be protected with HTTPS.
 For interoperability, all implementations
 MUST support HTTP Basic Authentication {{RFC7617}}. However some deployments
-MAY prefer mutually-
-authenticated HTTPS or two-legged OAUTH.
+MAY prefer mutually-authenticated HTTPS or two-legged OAUTH.
 
 # CDNI Use Cases
 
@@ -498,6 +500,11 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-sheffer-acme-star-request-02
+
+- Clarifications and minor changes based on implementation experience.
+- More detail on error cases.
 
 ## draft-sheffer-acme-star-request-01
 
