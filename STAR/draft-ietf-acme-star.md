@@ -163,9 +163,11 @@ informative:
 --- abstract
 
 Public-key certificates need to be revoked when they are compromised, that is, when the associated private key is exposed
-to an attacker. However the revocation process is often unreliable. An alternative to revocation is issuing a sequence
+to an unauthorized entity.
+However the revocation process is often unreliable. An alternative to revocation is issuing a sequence
 of certificates, each with a short validity period, and terminating this sequence upon compromise.
-This memo proposes an ACME extension to enable the issuance of short-term and automatically renewed (STAR) certificates.
+This memo proposes an ACME extension to enable the issuance of short-term and automatically renewed (STAR)
+X.509 certificates.
 
 [RFC Editor: please remove before publication]
 
@@ -201,14 +203,14 @@ DNO
 : Domain Name Owner, a type of IdO whose identifier is a domain name.
 
 STAR
-: Short-Term, Automatically Renewed X.509 certificates.
+: Short-Term and Automatically Renewed X.509 certificates.
 
 NDC
 : Name Delegation Client, an entity to which the identifier owned by the IdO is delegated for a limited time. Examples include a CDN edge cache, a cloud provider's load balancer or Web Application Firewall (WAF).
 
 ## Conventions used in this document
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in {{RFC2119}}.
+{::boilerplate bcp14}
 
 # Protocol Flow
 
@@ -322,9 +324,9 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
    |                       |<----------------------+
    |                       |                       |
    |                                               |
-   |                 Retrieve cert                 |
+   |              Retrieve cert                    |
    +---------------------------------------------->|
-   |                 Error: terminated             |
+   |              Error: recurrentOrderCanceled    |
    |<----------------------------------------------+
    |                                               |
 ~~~~~~~~~~
@@ -353,11 +355,13 @@ The order resource is extended with the following attributes:
   }
 ~~~
 
-- recurrent: MUST be true for STAR certificates.
-- recurrent-start-date: the earliest date of validity of the first certificate issued, in {{RFC3339}} format.
-This attribute is optional. When omitted, the start date is as soon as authorization is complete.
-- recurrent-end-date: the latest date of validity of the last certificate issued, in {{RFC3339}} format.
-- recurrent-certificate-validity: the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.
+- recurrent (required, boolean): MUST be true for STAR certificates.
+- recurrent-start-date (optional, string): the earliest date of validity of the first certificate issued,
+in {{RFC3339}} format.
+When omitted, the start date is as soon as authorization is complete.
+- recurrent-end-date (required, string): the latest date of validity of the last certificate issued,
+in {{RFC3339}} format.
+- recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.
 
 These attributes are included in a POST message when creating the order, as part of the "payload" encoded object.
 They are returned when the order has been created, and the ACME server MAY adjust them at will, according to its local policy (see also {{capability-discovery}}).
@@ -407,10 +411,11 @@ Issuing a cancellation for an order that is not in "valid" state has undefined s
 
 In order to support the discovery of STAR capabilities, The directory object of an ACME STAR server MUST contain the following attributes inside the "meta" field:
 
-- star-enabled: boolean flag indicating STAR support.  An ACME STAR server MUST include this key, and MUST set it to true
+- star-enabled (required, boolean): indicates STAR support.
+An ACME STAR server MUST include this key, and MUST set it to true
 if the feature is enabled.
-- star-min-cert-validity: minimum acceptable value for recurrent-certificate-validity, in seconds.
-- star-max-renewal: maximum delta between recurrent-end-date and recurrent-start-date, in seconds.
+- star-min-cert-validity (required, integer): minimum acceptable value for recurrent-certificate-validity, in seconds.
+- star-max-renewal (required, integer): maximum delta between recurrent-end-date and recurrent-start-date, in seconds.
 
 Example directory object advertising STAR support with one day star-min-cert-validity and one year star-max-renewal:
 
@@ -663,7 +668,8 @@ Horizon 2020 grant agreement no. 688421 Measurement and Architecture
 for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 Thanks to
-Jon Peterson and
+Jon Peterson,
+Sean Turner and
 Martin Thomson
 for helpful comments and discussions that have shaped this document.
 
@@ -672,6 +678,10 @@ for helpful comments and discussions that have shaped this document.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-04
+
+- WG last call comments by Sean Turner.
 
 ## draft-ietf-acme-star-03
 
