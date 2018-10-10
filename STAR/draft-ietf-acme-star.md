@@ -213,7 +213,7 @@ STAR
 The following subsections describe the three main phases of the protocol:
 
 - Bootstrap: the IdO asks an ACME CA to create a short-term and automatically-renewed (STAR) certificate ({{proto-bootstrap}});
-- Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it to a public URL ({{proto-auto-renewal}});
+- Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it to the certificate URL ({{proto-auto-renewal}});
 - Termination: the IdO requests the ACME CA to discontinue the automatic renewal of the certificate ({{proto-termination}}).
 
 ## Bootstrap
@@ -505,7 +505,7 @@ to use this information as they see fit".
 
 ## Overview
 
-The implementation is constructed around 3 elements: STAR Client for NDC,
+The implementation is constructed around 3 elements: STAR Client for the Name Delegation Client (NDC),
 STAR Proxy for IdO and ACME Server for CA. The communication between
 them is over an IP network and the HTTPS protocol.
 
