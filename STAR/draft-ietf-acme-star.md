@@ -179,8 +179,7 @@ https://github.com/yaronf/I-D/tree/master/STAR.
 # Introduction
 
 The ACME protocol {{I-D.ietf-acme-acme}} automates the process of issuing a certificate to a named entity
-(an Identity Owner or IdO). Typically, but not always, the identity is a domain name and we may refer to the entity
-as a Domain Name Owner (DNO).
+(an Identifier Owner or IdO). Typically, but not always, the identifier is a domain name.
 
 If the IdO wishes to obtain a string of short-term certificates originating from the same private key (see {{Topalovic}} about why using short-lived certificates might be preferable to explicit revocation), she must go through the whole ACME protocol each time a new short-term certificate is needed - e.g., every 2-3 days.
 If done this way, the process would involve frequent interactions between the registration function of the ACME Certification Authority (CA) and the identity provider infrastructure (e.g.: DNS, web servers), therefore making the issuance of short-term certificates exceedingly dependent on the reliability of both.
@@ -193,20 +192,17 @@ For a more generic treatment of STAR certificates, readers are referred to {{I-D
 ### Name Delegation Use Case
 
 The proposed mechanism can be used as a building block of an efficient name-delegation protocol, for example one that exists between a CDN or a cloud provider and its customers {{I-D.sheffer-acme-star-request}}.  At any time, the service customer (i.e., the IdO) can terminate the delegation by simply instructing the CA to stop the automatic renewal and letting the currently active certificate expire shortly thereafter.
+Note that in this case the delegated entity needs to access the auto-renewed
+certificate without being in possession of the ACME account key that was used
+for initiating the STAR issuance.
 
 ## Terminology
 
 IdO
 : Identifier Owner, the owner of an identifier, e.g.: a domain name, a telephone number.
 
-DNO
-: Domain Name Owner, a type of IdO whose identifier is a domain name.
-
 STAR
 : Short-Term and Automatically Renewed X.509 certificates.
-
-NDC
-: Name Delegation Client, an entity to which the identifier owned by the IdO is delegated for a limited time. Examples include a CDN edge cache, a cloud provider's load balancer or Web Application Firewall (WAF).
 
 ## Conventions used in this document
 
@@ -219,23 +215,6 @@ The following subsections describe the three main phases of the protocol:
 - Bootstrap: the IdO asks an ACME CA to create a short-term and automatically-renewed (STAR) certificate ({{proto-bootstrap}});
 - Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it to a public URL ({{proto-auto-renewal}});
 - Termination: the IdO requests the ACME CA to discontinue the automatic renewal of the certificate ({{proto-termination}}).
-
-This diagram presents the entities that are (or may be) involved in the protocol and their interactions during the different phases.
-
-~~~
-                         Refresh
-          . . . . . . . . . . . . . . . . . . . .  
-      . '                                         ` v
-   .-----.        Bootstrap / Terminate         .---------.
-   | IdO |------------------------------------->| ACME CA |
-   `-----'                                      `---------'
-      ^                  .- - -.                    ^
-       ` . . . . . . . . : NDC : . . . . . . . . . '
-            Request      `- - -'    Refresh
-            Delegation
-~~~
-
-Note that there might be a distinct NDC entity (e.g., a CDN edge cache) that uses a separate channel to request the IdO to set up a name delegation.  The protocol described in {{I-D.sheffer-acme-star-request}} may be used for this purpose.
 
 ## Bootstrap
 {: #proto-bootstrap}
@@ -367,8 +346,10 @@ These attributes are included in a POST message when creating the order, as part
 They are returned when the order has been created, and the ACME server MAY adjust them at will, according to its local policy (see also {{capability-discovery}}).
 
 The optional notBefore and notAfter fields MUST NOT be present in a STAR order.
+If they are included, the server MUST return an error with status code 400 "Bad
+Request" and type "malformedRequest".
 
-ACME defines the following values for the order resource's status: "invalid", "pending", "processing", "valid".
+ACME defines the following values for the order resource's status: "pending", "ready", "processing", "valid", and "invalid".
 In the case of recurrent orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
 
 ### Canceling a Recurrent Order
@@ -658,8 +639,6 @@ Mitigation recommendations from ACME still apply, but some of them need
     specifically, it SHOULD enforce a minimum value on
     "recurrent-certificate-validity". Alternatively, the CA can set an
     internal certificate generation processes rate limit.
-
-## Additional Considerations TBD
 
 # Acknowledgments
 
