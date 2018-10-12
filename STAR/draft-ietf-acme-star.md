@@ -224,7 +224,7 @@ ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 
 - Has a short validity, e.g., 24 to 72 hours. Note that the exact definition of "short" depends on the use case;
 - Is automatically renewed by the CA for a certain period of time;
-- Is downloadable from a (highly available) public link without requiring any special authorization.
+- Is downloadable from a (highly available) location.
 
 Other than that, the ACME protocol flows as usual between IdO and CA.
 In particular, IdO is responsible for satisfying the requested ACME challenges until the CA is willing to issue the requested certificate.
@@ -236,7 +236,12 @@ The bootstrap phase ends when the IdO obtains a confirmation from the ACME CA th
 ## Refresh
 {: #proto-auto-renewal}
 
-The CA automatically re-issues the certificate using the same CSR (and therefore the same identifier and public key) before it expires and publishes it to the URL that was returned to the IdO at the end of the bootstrap phase.  The certificate user, which could be either the IdO itself or a delegated third party, as described in {{I-D.sheffer-acme-star-request}}, obtains the certificate and uses it.
+The CA automatically re-issues the certificate using the same CSR (and
+therefore the same identifier and public key) before it expires and publishes
+it to the URL that was returned to the IdO at the end of the bootstrap phase.
+The certificate user, which could be either the IdO itself or a delegated third
+party, as described in {{I-D.sheffer-acme-star-request}}, obtains the
+certificate ({{fetching-certificates}}) and uses it.
 
 The refresh process ({{figprotorefresh}}) goes on until either:
 
@@ -424,7 +429,12 @@ Example directory object advertising STAR support with one day star-min-cert-val
 ## Fetching the Certificates
 {: #fetching-certificates}
 
-The certificate is fetched from the certificate endpoint, as per {{I-D.ietf-acme-acme}}, Section 7.4.2.
+The certificate is fetched from the certificate endpoint as per
+{{I-D.ietf-acme-acme}} Section 7.4.2, unless client and server have
+successfully negotiated the "unauthenticated GET" option described in
+{{certificate-get-nego}}.  In such case, the client can simply issue a GET to
+the certificate resource without authenticating herself to the server as
+illustrated in the following example:
 
 ~~~
   GET /acme/cert/asdf HTTP/1.1
@@ -459,6 +469,34 @@ The server MUST NOT issue any additional certificates for this order beyond its 
 
 Immediately after the order expires, the server MUST respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
 
+## Negotiate unauthenticated GET
+{: #certificate-get-nego }
+
+In order to enable the name delegation workflow defined in
+{{I-D.sheffer-acme-star-request}} as well as to increase the reliability of the
+STAR ecosystem (see {{dependability}} for details), this document defines a
+mechanism that allows a server to advertise support for accessing certificate
+resources via unauthenticated GET (instead of, or in addition to, POST-as-GET),
+and a client to enable this service with per-Order granularity.
+
+Specifically, a server states its availability to grant unauthenticated access
+to a client's Order certificate(s) by setting the star-allow-certificate-get
+key to true in the meta field of the Directory object:
+
+- star-allow-certificate-get (optional, boolean): If this field is present and
+  set to true, the server allows GET requests to certificate URLs.
+
+A client states her will to access the issued certificate(s) via
+unauthenticated GET by adding a recurrent-certificate-get key to her Order and
+setting it to true.
+
+- recurrent-certificate-get (optional, boolean): If this field is present and
+  set to true, the client requests the server to allow unauthenticated GET to
+  the certificate(s) associated with this Order.
+
+If the server accepts the request, it MUST reflect the key in the Order.  If it
+doesn't, it SHOULD return an error response.
+
 # Operational Considerations
 
 ## Short Term and the Impact of Skewed Clocks
@@ -479,6 +517,17 @@ In terms of security, STAR certificates and certificates with OCSP must-staple {
 Provided that the recommendations in {{operational-cons-clocks}} are followed, the increase in Certificate Transparency (CT) {{RFC6962}} log ingestion should be one order of magnitude in the worst case compared to the current state.
 
 The input received from most members of the CT community when the issue was raised was that this should not represent a problem for the CT architecture.
+
+## Dependability
+{: #dependability}
+
+When using authenticated POST-as-GET, the HTTPS endpoint from where the STAR
+cert is fetched can't be easily replicated by an on-path HTTP cache.  Reducing
+the caching properties of the protocol makes STAR clients increasingly
+dependant on the ACME server availability.  This might be problematic given the
+relatively high rate of client-server interactions in a STAR ecosystem.
+Clients and servers should consider using the mechanism described in
+{{certificate-get-nego}} to mitigate the risk.
 
 # Implementation Status
 
@@ -663,7 +712,9 @@ for helpful comments and discussions that have shaped this document.
 
 ## draft-ietf-acme-star-04
 
-- WG last call comments by Sean Turner.
+- WG last call comments by Sean Turner
+- revokeCert interface handling
+- Allow negotiating plain-GET for certs
 
 ## draft-ietf-acme-star-03
 
