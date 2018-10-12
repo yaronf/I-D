@@ -387,6 +387,8 @@ additional information using a problem document {{RFC7807}} with type "urn:ietf:
 
 Issuing a cancellation for an order that is not in "valid" state has undefined semantics.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
 
+Explicit certificate revocation using the revokeCert interface (Section 7.6 of {{I-D.ietf-acme-acme}}) is not supported for STAR certificates.  A server receiving a revocation request for a STAR certificate MUST return an error response with status code 403 (Forbidden) and type "urn:ietf:params:acme:error:recurrentRevocationNotSupported".
+
 ## Capability Discovery
 {: #capability-discovery}
 
@@ -594,6 +596,7 @@ This document adds the following entries to the ACME Error Type registry:
 | recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent order has been explicitly canceled by the IdO | RFC XXXX |
 | recurrentOrderExpired | The short-term certificate is no longer available because the recurrent order has expired | RFC XXXX |
 | recurrentCancellationInvalid | A request to cancel a recurrent order that is not in state "valid" has been received | RFC XXXX |
+| recurrentRevocationNotSupported | A request to revoke a recurrent order has been received | RFC XXXX |
 
 ## New ACME Order Object Fields
 
