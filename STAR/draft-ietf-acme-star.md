@@ -429,11 +429,11 @@ Example directory object advertising STAR support with one day star-min-cert-val
 ## Fetching the Certificates
 {: #fetching-certificates}
 
-The certificate is fetched from the certificate endpoint as per
-{{I-D.ietf-acme-acme}} Section 7.4.2, unless client and server have
+The certificate is fetched from the certificate endpoint with POST-as-GET as
+per {{I-D.ietf-acme-acme}} Section 7.4.2, unless client and server have
 successfully negotiated the "unauthenticated GET" option described in
 {{certificate-get-nego}}.  In such case, the client can simply issue a GET to
-the certificate resource without authenticating herself to the server as
+the certificate resource without authenticating itself to the server as
 illustrated in the following example:
 
 ~~~
@@ -486,7 +486,7 @@ key to true in the meta field of the Directory object:
 - star-allow-certificate-get (optional, boolean): If this field is present and
   set to true, the server allows GET requests to certificate URLs.
 
-A client states her will to access the issued certificate(s) via
+A client states its will to access the issued certificate(s) via
 unauthenticated GET by adding a recurrent-certificate-get key to her Order and
 setting it to true.
 
@@ -494,8 +494,7 @@ setting it to true.
   set to true, the client requests the server to allow unauthenticated GET to
   the certificate(s) associated with this Order.
 
-If the server accepts the request, it MUST reflect the key in the Order.  If it
-doesn't, it SHOULD return an error response.
+If the server accepts the request, it MUST reflect the key in the Order.
 
 # Operational Considerations
 
