@@ -468,7 +468,7 @@ Immediately after the order expires, the server MUST respond with 403 (Forbidden
 
 Nevertheless, this section attempts to provide reasonable suggestions for the Web use case, informed by current operational and research experience.
 
-Acer et al. {{Acer}} find that one of the main causes of "HTTPS error" warnings in browers is misconfigured client clocks.  In particular, they observe that roughly 95% of the "severe" clock skews - the 6.7% of clock-related breakage reports which account for clients that are more than 24 hours behind - happen to be within 6-7 days.
+Acer et al. {{Acer}} find that one of the main causes of "HTTPS error" warnings in browsers is misconfigured client clocks.  In particular, they observe that roughly 95% of the "severe" clock skews - the 6.7% of clock-related breakage reports which account for clients that are more than 24 hours behind - happen to be within 6-7 days.
 
 In order to avoid these spurious warnings about a not (yet) valid server certificate, it is RECOMMENDED that site owners pre-date their Web facing certificates by 5 to 7 days.  The exact number depends on the percentage of the "clock-skewed" population that the site owner expects to protect - 5 days cover 97.3%, 7 days cover 99.6%.  Note that exact choice is also likely to depend on the kind of clients that is prevalent for a given site or app - for example, Android and Mac OS clients are known to behave better than Windows clients.  These considerations are clearly out of scope of the present document.
 
