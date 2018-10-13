@@ -59,15 +59,15 @@ informative:
 
 --- abstract
 
-This memo proposes a profile of the ACME protocol that allows a domain name owner to delegate to a third party access to a certificate that bears one or more names in that domain.  A primary use case is that of a CDN (the third party) terminating TLS sessions on behalf of a content provider (the domain name owner).  The presented mechanism allows the domain name owner to retain control over the delegation and revoke it at any time by cancelling the associated STAR certificate renewal with the ACME CA.  Another key property of this mechanism is it does not require any modification to the deployed TLS ecosystem.
+This memo proposes a profile of the ACME protocol that allows the owner of an identifier (e.g., a domain name) to delegate to a third party access to a certificate associated with said identifier.  A primary use case is that of a CDN (the third party) terminating TLS sessions on behalf of a content provider (the owner of a domain name).  The presented mechanism allows the owner of the identifier to retain control over the delegation and revoke it at any time by cancelling the associated STAR certificate renewal with the ACME CA.  Another key property of this mechanism is it does not require any modification to the deployed TLS ecosystem.
 
 --- middle
 
 # Introduction
 
-This document is a companion document to {{I-D.ietf-acme-star}}.  To avoid duplication, we give here a barebones description of the motivation for this solution.  For more details and further use cases, please refer to the introductory sections of {{I-D.ietf-acme-star}}.
+This document is a companion document to {{I-D.ietf-acme-star}}.  To avoid duplication, we give here a bare-bones description of the motivation for this solution.  For more details and further use cases, please refer to the introductory sections of {{I-D.ietf-acme-star}}.
 
-An Identity Owner (IdO), that we can associate in the primary use case to a content provider (referred as well as Domain Name Owner, DNO), has agreements in place with one or more NDC (Name Delegation Consumer) to use and attest its identity. In the primary use case, we consider a CDN provider contracted to serve the IdO content over HTTPS.  The CDN terminates the HTTPS connection at one of its edge cache servers and needs to present its clients (browsers, mobile apps, set-top-boxes) a certificate whose name matches the authority of the URL that is requested, i.e., that of the IdO.  Evidently, many IdOs balk at sharing their long-term private keys with another organization and, equally, delegates would rather not have to handle other parties' long-term secrets.
+An Identifier Owner (IdO), that we can associate in the primary use case to a content provider (referred as well as Domain Name Owner, DNO), has agreements in place with one or more NDC (Name Delegation Consumer) to use and attest its identity.  In the primary use case, we consider a CDN provider contracted to serve the IdO content over HTTPS.  The CDN terminates the HTTPS connection at one of its edge cache servers and needs to present its clients (browsers, mobile apps, set-top-boxes) a certificate whose name matches the authority of the URL that is requested, i.e., that of the IdO.  Understandably, most IdOs balk at sharing their long-term private keys with another organization and, equally, delegates would rather not have to handle other parties' long-term secrets.
 
 This document describes a profile of the ACME protocol that allows the NDC to request the IdO, acting as a profiled ACME server, a certificate for a delegated identity - i.e., one belonging to the IdO.  The IdO then uses the ACME protocol (with the extensions described in {{I-D.ietf-acme-star}}) to request issuance of a STAR certificate for the same delegated identity.  The generated short-term certificate is automatically renewed by the ACME Certification Authority (CA) {{I-D.ietf-acme-acme}}, routinely fetched by the NDC and used to terminate HTTPS connections in lieu of the IdO.  The IdO can end the delegation at any time by simply instructing the CA to stop the automatic renewal and letting the certificate expire shortly thereafter.
 
@@ -76,33 +76,29 @@ In case the delegated identity is a domain name, this document also provides a w
 ## Terminology
 
 IdO
-: Identity Owner, the owner of an identity (e.g., a domain name) that needs to be delegated.
+: Identifier Owner, the owner of an identifier (e.g., a domain name) that needs to be delegated.
 
 DNO
 : A specific kind of IdO whose identity is a domain name
 
 NDC
-: Name Delegation Consumer, the entity to which the domain name is delegated for a limited
-time. This is a CDN in the primary use case (in fact, readers may note the similarity of the two acronyms).
+: Name Delegation Consumer, the entity to which the domain name is delegated for a limited time.  This is a CDN in the primary use case (in fact, readers may note the symmetry of the two acronyms).
 
 CDN
-: Content Delivery Network, a widely distributed network
-that serves the domain's web content to a wide audience at
-high performance.
+: Content Delivery Network, a widely distributed network that serves the domain's web content to a wide audience at high performance.
 
 STAR
 : Short-Term, Automatically Renewed X.509 certificates.
 
 ACME
-: The IETF Automated Certificate Management Environment, a certificate
-management protocol.
+: The IETF Automated Certificate Management Environment, a certificate management protocol.
 
 CA
 : A Certificate Authority that implements the ACME protocol.
 
 ## Conventions used in this document
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all capitals, as shown here.
+{::boilerplate bcp14}
 
 # Protocol Flow
 
@@ -169,23 +165,23 @@ The Order object created by the NDC:
 
 ~~~
    POST /acme/new-order HTTP/1.1
-   Host: dno.example.com
+   Host: acme.dno.example
    Content-Type: application/jose+json
 
    {
      "protected": base64url({
        "alg": "ES256",
-       "kid": "https://example.com/acme/acct/1",
+       "kid": "https://acme.dno.example/acme/acct/evOfKhNU60wg",
        "nonce": "5XJ1L3lEkMG7tR6pA00clA",
-       "url": "https://dno.example.com/acme/new-order"
+       "url": "https://acme.dno.example/acme/new-order"
      }),
      "payload": base64url({
        "identifiers": [
          {
            "type": "dns",
-           "value": "abc.ndc.dno.example.com",
+           "value": "abc.ndc.dno.example",
            "delegated": true,
-           "cname": "abc.ndc.example.net"
+           "cname": "abc.ndc.example"
          }
        ],
      }),
@@ -207,15 +203,15 @@ The Order object that is created on the IdO:
      "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.dno.example.com",
+        "value": "abc.ndc.dno.example",
         "delegated": true,
-        "cname": "abc.ndc.example.net"
+        "cname": "abc.ndc.example"
       }
      ],
 
      "authorizations": [],
 
-     "finalize": "https://dno.example.com/acme/order/asdf/finalize"
+     "finalize": "https://acme.dno.example/acme/order/TOlocE8rfgo/finalize"
    }
 ~~~
 
@@ -224,10 +220,9 @@ The IdO SHOULD copy any "recurrent-*" field from the NDC request into the relate
 When the validation of the identifiers has been successfully completed and the certificate has been issued by the CA, the IdO:
 
 - MUST move its Order resource status to "valid";
-- MUST NOT add a "certificate" field;
-- MUST add a new "linked-order" key with the URL of the corresponding STAR Order.
+- MUST copy the "certificate" field from the STAR Order;
 
-The latter includes the renewal timers needed by the NDC to inform its certificate reload logics.
+The latter indirectly includes (via the NotBefore and NotAfter HTTP headers) the renewal timers needed by the NDC to inform its certificate reload logics.
 
 ~~~
    {
@@ -237,17 +232,17 @@ The latter includes the renewal timers needed by the NDC to inform its certifica
      "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.dno.example.com",
+        "value": "abc.ndc.dno.example",
         "delegated": true,
-        "cname": "abc.ndc.example.net"
+        "cname": "abc.ndc.example"
       }
      ],
 
      "authorizations": [],
 
-     "finalize": "https://dno.example.com/acme/order/asdf/finalize",
+     "finalize": "https://acme.dno.example/acme/order/TOlocE8rfgo/finalize",
 
-     "linked-order": "https://ca.example.org/acme/order/zxcv"
+     "certificate": "https://acme.ca.example/acme/order/yTyr23sSDg9"
    }
 ~~~
 
@@ -255,19 +250,17 @@ Note that at this point in the flow, the IdO can add the CNAME records to its zo
 
 ### Order Object on the IdO-CA side
 
-The Order from the IdO to the ACME CA SHOULD strip the "cname" attribute from the twin Order from the NDC ({{sec-profile-ndc-to-ido}}), and MUST contain the necessary STAR extensions.
+The Order from the IdO to the ACME CA SHOULD strip the "cname" attribute from the twin Order from the NDC ({{sec-profile-ndc-to-ido}}), and MUST contain the necessary STAR extensions.  In addition, in order to allow the NDC to download the certificate using the unauthenticated GET, it MUST contain the recurrent-certificate-get attribute and set its value to true.
 
 ### Capability Discovery
 
 In order to help a client discovering support for this profile, the directory object of an ACME server MUST contain the following attribute inside the "meta" field:
 
-- star-delegation-enabled: boolean flag indicating support for the profile specified in this memo.  An ACME server that supports this delegation profile MUST include this key, and MUST set it to true if the workflow is supported.
+- star-delegation-enabled: boolean flag indicating support for the profile specified in this memo.  An ACME server that supports this delegation profile MUST include this key, and MUST set it to true.
 
 ### On Cancelation 
 
-It is worth noting that cancelation of the ACME STAR certificate is a prerogative of the IdO.  The NDC does not own the relevant account key on the ACME CA, therefore it can't issue a cancelation request for the STAR cert.  Potentially, since it holds the STAR cert private key, it could request the revocation of a single STAR certificate.
-
-[[TBD.1: how the ACME STAR CA behaves in response to a revocation request for a STAR cert must be specified in the ACME STAR document.]] 
+It is worth noting that cancelation of the ACME STAR certificate is a prerogative of the IdO.  The NDC does not own the relevant account key on the ACME CA, therefore it can't issue a cancelation request for the STAR cert.  Potentially, since it holds the STAR cert private key, it could request the revocation of a single STAR certificate.  However, STAR explicitly disables the revokeCert interface.
 
 [[TBD.2: On key compromise, how does the NDC signal the IdO the need of cancelation?]]
 
