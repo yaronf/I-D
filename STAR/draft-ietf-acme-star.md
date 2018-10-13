@@ -363,16 +363,16 @@ In the case of recurrent orders, the status MUST be "valid" as long as STAR cert
 An important property of the recurrent order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the order, the ACME client sends a POST to the order URL:
 
 ~~~
-  POST /acme/order/1 HTTP/1.1
-  Host: acme-server.example.org
+  POST /acme/order/TOlocE8rfgo HTTP/1.1
+  Host: example.org
   Content-Type: application/jose+json
 
   {
     "protected": base64url({
       "alg": "ES256",
-      "kid": "https://example.com/acme/acct/1",
+      "kid": "https://example.com/acme/acct/evOfKhNU60wg",
       "nonce": "5XJ1L3lEkMG7tR6pA00clA",
-      "url": "https://example.com/acme/order/1"
+      "url": "https://example.com/acme/order/TOlocE8rfgo"
     }),
     "payload": base64url({
       "status": "canceled"
@@ -437,9 +437,9 @@ the certificate resource without authenticating itself to the server as
 illustrated in the following example:
 
 ~~~
-  GET /acme/cert/asdf HTTP/1.1
-  Host: acme-server.example.org
-  Accept: application/pkix-cert
+  GET /acme/cert/mAt3xBGaobw HTTP/1.1
+  Host: example.org
+  Accept: application/pem-certificate-chain
 
   HTTP/1.1 200 OK
   Content-Type: application/pem-certificate-chain
