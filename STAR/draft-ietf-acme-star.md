@@ -213,7 +213,7 @@ STAR
 The following subsections describe the three main phases of the protocol:
 
 - Bootstrap: the IdO asks an ACME CA to create a short-term and automatically-renewed (STAR) certificate ({{proto-bootstrap}});
-- Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it to the certificate URL ({{proto-auto-renewal}});
+- Auto-renewal: the ACME CA periodically re-issues the short-term certificate and posts it to the star-certificate URL ({{proto-auto-renewal}});
 - Termination: the IdO requests the ACME CA to discontinue the automatic renewal of the certificate ({{proto-termination}}).
 
 ## Bootstrap
@@ -231,7 +231,7 @@ In particular, IdO is responsible for satisfying the requested ACME challenges u
 Per normal ACME processing, the IdO is given back an order URL for the issued STAR certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
-The bootstrap phase ends when the IdO obtains a confirmation from the ACME CA that includes a certificate endpoint.
+The bootstrap phase ends when the IdO obtains a confirmation from the ACME CA that includes a star-certificate endpoint.
 
 ## Refresh
 {: #proto-auto-renewal}
@@ -283,12 +283,12 @@ The refresh process ({{figprotorefresh}}) goes on until either:
 ## Termination
 {: #proto-termination}
 
-The IdO may request early termination of the STAR certificate by sending a cancellation request to the order resource, as described in {{protocol-details-canceling}}.
+The IdO may request early termination of the STAR certificate by sending a cancellation request to the Order resource, as described in {{protocol-details-canceling}}.
 After the CA receives and verifies the request, it shall:
 
 - Cancel the automatic renewal process for the STAR certificate;
 - Change the certificate publication resource to return an error indicating the termination of the issuance;
-- Change the status of the order to "canceled".
+- Change the status of the Order to "canceled".
 
 Note that it is not necessary to explicitly revoke the short-term certificate.
 
@@ -296,7 +296,7 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
    Certificate                                     ACME/STAR
    User                    IdO                     Server
    |                       |                       |
-   |                       |    Terminate order    |
+   |                       |    Terminate Order    |
    |                       +---------------------->|
    |                       |                       +-------.
    |                       |                       |       |
@@ -324,11 +324,11 @@ to the ACME protocol required to issue STAR certificates.
 
 ## ACME Extensions
 
-This protocol extends the ACME protocol, to allow for recurrent orders.
+This protocol extends the ACME protocol, to allow for recurrent Orders.
 
 ### Extending the Order Resource
 
-The order resource is extended with the following attributes:
+The Order resource is extended with the following attributes:
 
 ~~~
   {
@@ -347,20 +347,24 @@ When omitted, the start date is as soon as authorization is complete.
 in {{RFC3339}} format.
 - recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.
 
-These attributes are included in a POST message when creating the order, as part of the "payload" encoded object.
-They are returned when the order has been created, and the ACME server MAY adjust them at will, according to its local policy (see also {{capability-discovery}}).
+These attributes are included in a POST message when creating the Order, as part of the "payload" encoded object.
+They are returned when the Order has been created, and the ACME server MAY adjust them at will, according to its local policy (see also {{capability-discovery}}).
 
-The optional notBefore and notAfter fields MUST NOT be present in a STAR order.
+The optional notBefore and notAfter fields MUST NOT be present in a STAR Order.
 If they are included, the server MUST return an error with status code 400 "Bad
 Request" and type "malformedRequest".
 
-ACME defines the following values for the order resource's status: "pending", "ready", "processing", "valid", and "invalid".
-In the case of recurrent orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
+ACME defines the following values for the Order resource's status: "pending", "ready", "processing", "valid", and "invalid".
+In the case of recurrent Orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
+
+A STAR certificate is by definition a mutable resource.  Instead of overloading the semantic of the "certificate" key, this document defines a new key "star-certificate" to be used instead of "certificate".
+
+- star-certificate (optional, string):  A URL for the (rolling) STAR certificate that has been issued in response to this Order.
 
 ### Canceling a Recurrent Order
 {: #protocol-details-canceling}
 
-An important property of the recurrent order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the order, the ACME client sends a POST to the order URL:
+An important property of the recurrent Order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the Order, the ACME client sends a POST to the Order URL:
 
 ~~~
   POST /acme/order/TOlocE8rfgo HTTP/1.1
@@ -387,7 +391,7 @@ beyond the certificate that is available for collection at the time of deletion.
 Immediately after the order is canceled, the server:
 
 - MUST update the status of the order resource to "canceled" and MUST set an appropriate "expires" date;
-- MUST respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide
+- MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide
 additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
 
 Issuing a cancellation for an order that is not in "valid" state has undefined semantics.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
@@ -429,11 +433,11 @@ Example directory object advertising STAR support with one day star-min-cert-val
 ## Fetching the Certificates
 {: #fetching-certificates}
 
-The certificate is fetched from the certificate endpoint with POST-as-GET as
-per {{I-D.ietf-acme-acme}} Section 7.4.2, unless client and server have
+The certificate is fetched from the star-certificate endpoint with POST-as-GET
+as per {{I-D.ietf-acme-acme}} Section 7.4.2, unless client and server have
 successfully negotiated the "unauthenticated GET" option described in
 {{certificate-get-nego}}.  In such case, the client can simply issue a GET to
-the certificate resource without authenticating itself to the server as
+the star-certificate resource without authenticating itself to the server as
 illustrated in the following example:
 
 ~~~
@@ -467,7 +471,7 @@ It is worth noting that this has an implication in case of cancellation: in fact
 
 The server MUST NOT issue any additional certificates for this order beyond its recurrent-end-date.
 
-Immediately after the order expires, the server MUST respond with 403 (Forbidden) to any requests to the certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
+Immediately after the order expires, the server MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
 
 ## Negotiate unauthenticated GET
 {: #certificate-get-nego }
@@ -475,24 +479,25 @@ Immediately after the order expires, the server MUST respond with 403 (Forbidden
 In order to enable the name delegation workflow defined in
 {{I-D.sheffer-acme-star-request}} as well as to increase the reliability of the
 STAR ecosystem (see {{dependability}} for details), this document defines a
-mechanism that allows a server to advertise support for accessing certificate
-resources via unauthenticated GET (instead of, or in addition to, POST-as-GET),
-and a client to enable this service with per-Order granularity.
+mechanism that allows a server to advertise support for accessing
+star-certificate resources via unauthenticated GET (instead of, or in addition
+to, POST-as-GET), and a client to enable this service with per-Order
+granularity.
 
 Specifically, a server states its availability to grant unauthenticated access
-to a client's Order certificate(s) by setting the star-allow-certificate-get
+to a client's Order star-certificate by setting the star-allow-certificate-get
 key to true in the meta field of the Directory object:
 
 - star-allow-certificate-get (optional, boolean): If this field is present and
-  set to true, the server allows GET requests to certificate URLs.
+  set to true, the server allows GET requests to star-certificate URLs.
 
-A client states its will to access the issued certificate(s) via
+A client states its will to access the issued star-certificate via
 unauthenticated GET by adding a recurrent-certificate-get key to her Order and
 setting it to true.
 
 - recurrent-certificate-get (optional, boolean): If this field is present and
   set to true, the client requests the server to allow unauthenticated GET to
-  the certificate(s) associated with this Order.
+  the star-certificate associated with this Order.
 
 If the server accepts the request, it MUST reflect the key in the Order.
 
@@ -521,8 +526,8 @@ The input received from most members of the CT community when the issue was rais
 {: #dependability}
 
 When using authenticated POST-as-GET, the HTTPS endpoint from where the STAR
-cert is fetched can't be easily replicated by an on-path HTTP cache.  Reducing
-the caching properties of the protocol makes STAR clients increasingly
+certificate is fetched can't be easily replicated by an on-path HTTP cache.
+Reducing the caching properties of the protocol makes STAR clients increasingly
 dependant on the ACME server availability.  This might be problematic given the
 relatively high rate of client-server interactions in a STAR ecosystem.
 Clients and servers should consider using the mechanism described in
@@ -714,6 +719,7 @@ for helpful comments and discussions that have shaped this document.
 - WG last call comments by Sean Turner
 - revokeCert interface handling
 - Allow negotiating plain-GET for certs
+- In STAR Orders, use star-certificate instead of certificate
 
 ## draft-ietf-acme-star-03
 
