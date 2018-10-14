@@ -493,7 +493,7 @@ key to true in the meta field of the Directory object:
   set to true, the server allows GET requests to star-certificate URLs.
 
 A client states its will to access the issued star-certificate via
-unauthenticated GET by adding a recurrent-certificate-get key to her Order and
+unauthenticated GET by adding a recurrent-certificate-get key to its Order and
 setting it to true.
 
 - recurrent-certificate-get (optional, boolean): If this field is present and
@@ -641,7 +641,7 @@ See author details below.
 
 [[RFC Editor: please replace XXXX below by the RFC number.]]
 
-## New ACME Error Types
+## New Error Types
 
 This document adds the following entries to the ACME Error Type registry:
 
@@ -652,7 +652,7 @@ This document adds the following entries to the ACME Error Type registry:
 | recurrentCancellationInvalid | A request to cancel a recurrent order that is not in state "valid" has been received | RFC XXXX |
 | recurrentRevocationNotSupported | A request to revoke a recurrent order has been received | RFC XXXX |
 
-## New ACME Order Object Fields
+## New fields in Order Objects
 
 This document adds the following entries to the ACME Order Object Fields registry:
 
@@ -662,6 +662,16 @@ This document adds the following entries to the ACME Order Object Fields registr
 | recurrent-start-date | string | true | RFC XXXX |
 | recurrent-end-date | string | true | RFC XXXX |
 | recurrent-certificate-validity | string | true | RFC XXXX |
+| recurrent-certificate-get | boolean | true | RFC XXXX |
+| star-certificate | string | false | RFC XXXX |
+
+## New fields in the "meta" Object within a Directory Object
+
+This document adds the following entries to the ACME Directory Metadata Fields:
+
+| Field Name | Field Type | Reference |
+|------------|------------|-----------|
+| star-allow-certificate-get | boolean | RFC XXXX |
 
 ## Not-Before and Not-After HTTP Headers
 
