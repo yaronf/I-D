@@ -193,6 +193,11 @@ CA is ruled by ACME STAR {{!I-D.ietf-acme-star}}.
 ~~~
 {: #fig-endtoend title="End to end flow"}
 
+Note that the NDC can send the CSR to the IdO immediately after the Order has
+been acknowledged.  The IdO must buffer the CSR until the Validation phase
+completes successfully.  The IdO MUST verify the CSR according to the CSR
+template that is shared with the requesting NDC.
+
 ## Delegated Identity Profile
 {: #sec-profile}
 
@@ -226,9 +231,9 @@ The Order object created by the NDC:
        "identifiers": [
          {
            "type": "dns",
-           "value": "abc.ndc.dno.example",
+           "value": "abc.ndc.dno.example.",
            "delegated": true,
-           "cname": "abc.ndc.example"
+           "cname": "abc.ndc.example."
          }
        ],
      }),
@@ -239,7 +244,7 @@ The Order object created by the NDC:
 The Order object that is created on the IdO:
 
 - MUST start in the "ready" state;
-- MUST contain an empty "authorizations" field;
+- MUST contain an "authorizations" field with zero elements;
 - MUST NOT contain the "notBefore" and "notAfter" fields.
 
 ~~~
@@ -250,9 +255,9 @@ The Order object that is created on the IdO:
      "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.dno.example",
+        "value": "abc.ndc.dno.example.",
         "delegated": true,
-        "cname": "abc.ndc.example"
+        "cname": "abc.ndc.example."
       }
      ],
 
@@ -282,9 +287,9 @@ the renewal timers needed by the NDC to inform its certificate reload logics.
      "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.dno.example",
+        "value": "abc.ndc.dno.example.",
         "delegated": true,
-        "cname": "abc.ndc.example"
+        "cname": "abc.ndc.example."
       }
      ],
 
@@ -297,7 +302,11 @@ the renewal timers needed by the NDC to inform its certificate reload logics.
 ~~~
 
 Note that at this point in the flow, the IdO can add the CNAME records to its
-zone.
+zone:
+
+~~~
+   abc.ndc.dno.example. CNAME abc.ndc.example.
+~~~
 
 ### Order Object on the IdO-CA side
 
