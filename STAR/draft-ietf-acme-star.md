@@ -345,7 +345,7 @@ in {{RFC3339}} format.
 When omitted, the start date is as soon as authorization is complete.
 - recurrent-end-date (required, string): the latest date of validity of the last certificate issued,
 in {{RFC3339}} format.
-- recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.
+- recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.  This is a nominal value which doesn't include any inflation due to pre-dating.  The client can use this value as a hint to configure its polling timer.
 
 These attributes are included in a POST message when creating the Order, as part of the "payload" encoded object.
 They are returned when the Order has been created, and the ACME server MAY adjust them at will, according to its local policy (see also {{capability-discovery}}).
