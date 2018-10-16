@@ -322,7 +322,13 @@ the renewal timers needed by the NDC to inform its certificate reload logics.
    }
 ~~~
 
-Note that at this point in the flow, the IdO can add the CNAME records to its
+If an "identifier" object of type "dns" was included,
+the IdO MUST validate the specified CNAME at this point in the flow.
+The NDC and IdO may have
+a pre-established list of valid CNAME values, or at the very least, the IdO verifies that the CNAME value
+is a valid DNS name.
+
+Following this validation, the IdO can add the CNAME records to its
 zone:
 
 ~~~
