@@ -529,7 +529,7 @@ The input received from most members of the CT community when the issue was rais
 When using authenticated POST-as-GET, the HTTPS endpoint from where the STAR
 certificate is fetched can't be easily replicated by an on-path HTTP cache.
 Reducing the caching properties of the protocol makes STAR clients increasingly
-dependant on the ACME server availability.  This might be problematic given the
+dependent on the ACME server availability.  This might be problematic given the
 relatively high rate of client-server interactions in a STAR ecosystem.
 Clients and servers should consider using the mechanism described in
 {{certificate-get-nego}} to mitigate the risk.
