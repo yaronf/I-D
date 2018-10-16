@@ -103,7 +103,7 @@ IdO
   name) that needs to be delegated.
 
 DNO
-: Domain Name Owner, a specific kind of IdO whose identity is a
+: Domain Name Owner, a specific kind of IdO whose identifier is a
   domain name
 
 NDC
@@ -159,11 +159,33 @@ CA.
 
 ## Overview
 
-The high level end to end flow is described in {{fig-endtoend}}.
-
 The interaction between the NDC and the IdO is governed by the profiled ACME
 workflow detailed in {{sec-profile}}.  The interaction between the IdO and the
 CA is ruled by ACME STAR {{!I-D.ietf-acme-star}}.
+
+The outline of the combined protocol is as follow ({{fig-endtoend}}):
+
+- NDC sends an Order for the delegated identifier to IdO;
+- IdO creates an Order resource in state "ready" with a "finalize" URL;
+- NDC immediately sends a finalize request (which includes the CSR) to the IdO;
+- IdO verifies the CSR according to the agreed CSR template;
+- If the CSR verification fails, the Order is moved to an "invalid" state and
+  everything stops;
+- If the CSR verification is successful, IdO moves the Order to state
+  "processing", and sends an Order' (using its own account) for the delegated
+  identifier to the ACME STAR CA;
+- If the ACME STAR protocol fails, Order' moves to "invalid" and the same state
+  is reflected in the NDC Order;
+- If the ACME STAR run is successful (i.e., Order' is "valid"), IdO copies the
+  "star-certificate" URL from Order' to Order and moves its state "valid".
+
+The NDC can now download, install and use the certificate bearing the name
+delegated by the IdO.
+
+Note that, because the identity validation is suppressed, the NDC sends the
+finalize request, including the CSR, to the IdO immediately after the Order has
+been acknowledged.  The IdO must buffer a (valid) CSR until the Validation
+phase completes successfully.
 
 ~~~
      NDC                      IdO                   CA
@@ -171,18 +193,22 @@ CA is ruled by ACME STAR {{!I-D.ietf-acme-star}}.
 
      Order
      Signature ------->
+
+     [ No identity validation ]
+
+     CSR
+     Signature ------->
+
                                  Order'
                                  Signature ------->
                                            <------- Required
-     [ No identity validation ]                     Authorizations
+                                                    Authorizations
 
                                  Responses
                                  Signature ------->
 
                                  <~~~~~~~~Validation~~~~~~~~>
 
-     CSR
-     Signature ------->
 
                                  CSR
                                  Signature ------->
@@ -226,9 +252,9 @@ The Order object created by the NDC:
        "identifiers": [
          {
            "type": "dns",
-           "value": "abc.ndc.dno.example",
+           "value": "abc.ndc.dno.example.",
            "delegated": true,
-           "cname": "abc.ndc.example"
+           "cname": "abc.ndc.example."
          }
        ],
      }),
@@ -239,7 +265,7 @@ The Order object created by the NDC:
 The Order object that is created on the IdO:
 
 - MUST start in the "ready" state;
-- MUST contain an empty "authorizations" field;
+- MUST contain an "authorizations" array with zero elements;
 - MUST NOT contain the "notBefore" and "notAfter" fields.
 
 ~~~
@@ -250,9 +276,9 @@ The Order object that is created on the IdO:
      "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.dno.example",
+        "value": "abc.ndc.dno.example.",
         "delegated": true,
-        "cname": "abc.ndc.example"
+        "cname": "abc.ndc.example."
       }
      ],
 
@@ -282,9 +308,9 @@ the renewal timers needed by the NDC to inform its certificate reload logics.
      "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.dno.example",
+        "value": "abc.ndc.dno.example.",
         "delegated": true,
-        "cname": "abc.ndc.example"
+        "cname": "abc.ndc.example."
       }
      ],
 
@@ -297,12 +323,16 @@ the renewal timers needed by the NDC to inform its certificate reload logics.
 ~~~
 
 Note that at this point in the flow, the IdO can add the CNAME records to its
-zone.
+zone:
+
+~~~
+   abc.ndc.dno.example. CNAME abc.ndc.example.
+~~~
 
 ### Order Object on the IdO-CA side
 
 When sending the Order to the ACME CA, the IdO SHOULD strip the "cname"
-attribute sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST and add
+attribute sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST add
 the necessary STAR extensions to the Order.  In addition, to allow the NDC
 downloading the certificate using unauthenticated GET, the IdO MUST add the
 recurrent-certificate-get attribute and set it to true.
