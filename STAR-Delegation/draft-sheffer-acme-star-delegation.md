@@ -85,7 +85,7 @@ certificate for a delegated identity - i.e., one belonging to the IdO.  The IdO
 then uses the ACME protocol (with the extensions described in
 {{!I-D.ietf-acme-star}}) to request issuance of a STAR certificate for the same
 delegated identity.  The generated short-term certificate is automatically
-renewed by the ACME Certification Authority (CA), routinely fetched by the NDC
+renewed by the ACME Certification Authority (CA), periodically fetched by the NDC
 and used to terminate HTTPS connections in lieu of the IdO.  The IdO can end
 the delegation at any time by simply instructing the CA to stop the automatic
 renewal and letting the certificate expire shortly thereafter.
@@ -298,7 +298,7 @@ certificate has been issued by the CA, the IdO:
 - MUST copy the "star-certificate" field from the STAR Order;
 
 The latter indirectly includes (via the NotBefore and NotAfter HTTP headers)
-the renewal timers needed by the NDC to inform its certificate reload logics.
+the renewal timers needed by the NDC to inform its certificate reload logic.
 
 ~~~
    {
@@ -325,8 +325,8 @@ the renewal timers needed by the NDC to inform its certificate reload logics.
 If an "identifier" object of type "dns" was included,
 the IdO MUST validate the specified CNAME at this point in the flow.
 The NDC and IdO may have
-a pre-established list of valid CNAME values, or at the very least, the IdO verifies that the CNAME value
-is a valid DNS name.
+a pre-established list of valid CNAME values. At the minimum, the IdO MUST verify that
+both DNS names are syntactically valid.
 
 Following this validation, the IdO can add the CNAME records to its
 zone:
@@ -337,15 +337,15 @@ zone:
 
 ### Order Object on the IdO-CA side
 
-When sending the Order to the ACME CA, the IdO SHOULD strip the "cname"
+When sending the Order to the ACME CA, the IdO SHOULD strip the "identifiers"
 attribute sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST add
 the necessary STAR extensions to the Order.  In addition, to allow the NDC
-downloading the certificate using unauthenticated GET, the IdO MUST add the
+to download the certificate using unauthenticated GET, the IdO MUST add the
 recurrent-certificate-get attribute and set it to true.
 
 ### Capability Discovery
 
-In order to help a client discovering support for this profile, the directory
+In order to help a client to discover support for this profile, the directory
 object of an ACME server MUST contain the following attribute inside the "meta"
 field:
 
@@ -400,6 +400,26 @@ mechanism by which the uCDN can advertise:
 - The namespace that is made available to the dCDN to mint its delegated names;
 - The policy for creating the key material (allowed algorithms, minimum key
   lengths, key usage, etc.) that the dCDN needs to satisfy.
+
+# IANA Considerations
+
+[[RFC Editor: please replace XXXX below by the RFC number.]]
+
+## New fields in Order Objects
+
+This document adds the following entries to the ACME Order Object Fields registry:
+
+| Field Name | Field Type | Configurable | Reference |
+|------------|------------|--------------|-----------|
+| identifiers | object | true | RFC XXXX |
+
+## New fields in the "meta" Object within a Directory Object
+
+This document adds the following entries to the ACME Directory Metadata Fields:
+
+| Field Name | Field Type | Reference |
+|------------|------------|-----------|
+| star-delegation-enabled | boolean | RCF XXXX |
 
 # Security Considerations
 
