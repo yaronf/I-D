@@ -236,8 +236,9 @@ The bootstrap phase ends when the IdO obtains a confirmation from the ACME CA th
 ## Refresh
 {: #proto-auto-renewal}
 
-The CA automatically re-issues the certificate using the same CSR (and
-therefore the same identifier and public key) before it expires and publishes
+The CA issues the initial certificate, typically when the authorization is done.
+It then automatically re-issues the certificate using the same CSR (and
+therefore the same identifier and public key) before the previous one expires, and publishes
 it to the URL that was returned to the IdO at the end of the bootstrap phase.
 The certificate user, which could be either the IdO itself or a delegated third
 party, as described in {{I-D.sheffer-acme-star-request}}, obtains the
@@ -296,7 +297,7 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
    Certificate                                     ACME/STAR
    User                    IdO                     Server
    |                       |                       |
-   |                       |    Terminate Order    |
+   |                       |      Cancel Order     |
    |                       +---------------------->|
    |                       |                       +-------.
    |                       |                       |       |
@@ -345,7 +346,9 @@ in {{RFC3339}} format.
 When omitted, the start date is as soon as authorization is complete.
 - recurrent-end-date (required, string): the latest date of validity of the last certificate issued,
 in {{RFC3339}} format.
-- recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.  This is a nominal value which doesn't include any inflation due to pre-dating.  The client can use this value as a hint to configure its polling timer.
+- recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.  This is a nominal value which does not include any
+extra validity time which is due to pre-dating.  The client can use this value as a hint to configure its polling timer.
+- recurrent-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
 These attributes are included in a POST message when creating the Order, as part of the "payload" encoded object.
 They are returned when the Order has been created, and the ACME server MAY adjust them at will, according to its local policy (see also {{capability-discovery}}).
@@ -357,7 +360,7 @@ Request" and type "malformedRequest".
 ACME defines the following values for the Order resource's status: "pending", "ready", "processing", "valid", and "invalid".
 In the case of recurrent Orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
 
-A STAR certificate is by definition a mutable resource.  Instead of overloading the semantic of the "certificate" key, this document defines a new key "star-certificate" to be used instead of "certificate".
+A STAR certificate is by definition a mutable resource.  Instead of overloading the semantics of the "certificate" key, this document defines a new key "star-certificate" to be used instead of "certificate".
 
 - star-certificate (optional, string):  A URL for the (rolling) STAR certificate that has been issued in response to this Order.
 
@@ -401,15 +404,16 @@ Explicit certificate revocation using the revokeCert interface (Section 7.6 of {
 ## Capability Discovery
 {: #capability-discovery}
 
-In order to support the discovery of STAR capabilities, The directory object of an ACME STAR server MUST contain the following attributes inside the "meta" field:
+In order to support the discovery of STAR capabilities, The directory object of an ACME STAR server is extended with the following attributes inside the "meta" field:
 
 - star-enabled (required, boolean): indicates STAR support.
 An ACME STAR server MUST include this key, and MUST set it to true
 if the feature is enabled.
 - star-min-cert-validity (required, integer): minimum acceptable value for recurrent-certificate-validity, in seconds.
 - star-max-renewal (required, integer): maximum delta between recurrent-end-date and recurrent-start-date, in seconds.
+- star-allow-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
-Example directory object advertising STAR support with one day star-min-cert-validity and one year star-max-renewal:
+An example directory object advertising STAR support with one day star-min-cert-validity and one year star-max-renewal, and supporting certificate fetching with an HTTP GET:
 
 ~~~
   {
@@ -425,7 +429,8 @@ Example directory object advertising STAR support with one day star-min-cert-val
        "caa-identities": ["example.com"],
        "star-enabled": true,
        "star-min-cert-validity": 86400,
-       "star-max-renewal":  31536000
+       "star-max-renewal":  31536000,
+	   "star-allow-certificate-get": true
      }
   }
 ~~~
@@ -472,7 +477,7 @@ To avoid the client accidentally entering a broken state, the "next" certificate
 
 The server MUST NOT issue any additional certificates for this order beyond its recurrent-end-date.
 
-Immediately after the order expires, the server MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
+Immediately after the order expires, the server MUST set its state to "invalid" and MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
 
 ## Negotiate unauthenticated GET
 {: #certificate-get-nego }
@@ -504,7 +509,7 @@ If the server accepts the request, it MUST reflect the key in the Order.
 
 # Operational Considerations
 
-## Short Term and the Impact of Skewed Clocks
+## The Meaning of "Short Term" and the Impact of Skewed Clocks
 {: #operational-cons-clocks }
 
 "Short Term" is a relative concept, therefore trying to define a cut-off point that works in all cases would be a useless exercise.  In practice, the expected lifetime of a STAR certificate will be counted in minutes, hours or days, depending on different factors: the underlying requirements for revocation, how much clock synchronization is expected among relying parties and the issuing CA, etc.
@@ -605,7 +610,7 @@ This is a prototype.
 A STAR Client is not included in this implementation, but done by direct HTTP request with any open HTTP REST API tool.
 This is expected to be covered as part of the {{I-D.sheffer-acme-star-request}} implementation.
 
-This implementation completely covers STAR Proxy and ACME Server with STAR extension 
+This implementation completely covers STAR Proxy and ACME Server with STAR extension. 
 
 ## Version Compatibility
 
@@ -671,6 +676,9 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
+| star-enabled | boolean | RCF XXXX |
+| star-min-cert-validity | integer | RCF XXXX |
+| star-max-renewal | integer | RCF XXXX |
 | star-allow-certificate-get | boolean | RFC XXXX |
 
 ## Not-Before and Not-After HTTP Headers
