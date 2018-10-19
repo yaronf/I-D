@@ -337,8 +337,8 @@ zone:
 
 ### Order Object on the IdO-CA side
 
-When sending the Order to the ACME CA, the IdO SHOULD strip the "identifiers"
-attribute sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST add
+When sending the Order to the ACME CA, the IdO SHOULD strip the "delegated" and "cname"
+attributes sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST add
 the necessary STAR extensions to the Order.  In addition, to allow the NDC
 to download the certificate using unauthenticated GET, the IdO MUST add the
 recurrent-certificate-get attribute and set it to true.
@@ -404,14 +404,6 @@ mechanism by which the uCDN can advertise:
 # IANA Considerations
 
 [[RFC Editor: please replace XXXX below by the RFC number.]]
-
-## New fields in Order Objects
-
-This document adds the following entries to the ACME Order Object Fields registry:
-
-| Field Name | Field Type | Configurable | Reference |
-|------------|------------|--------------|-----------|
-| identifiers | object | true | RFC XXXX |
 
 ## New fields in the "meta" Object within a Directory Object
 

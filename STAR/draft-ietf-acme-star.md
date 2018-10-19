@@ -477,7 +477,7 @@ To avoid the client accidentally entering a broken state, the "next" certificate
 
 The server MUST NOT issue any additional certificates for this order beyond its recurrent-end-date.
 
-Immediately after the order expires, the server MUST set its state to "invalid" and MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired".
+Immediately after the order expires, the server MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired". Note that the Order resource's state remains "valid", as per the base protocol.
 
 ## Negotiate unauthenticated GET
 {: #certificate-get-nego }
