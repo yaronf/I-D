@@ -43,12 +43,16 @@ author:
 
 normative:
   RFC2119:
+  RFC2898:
   RFC6979:
   RFC8259:
   RFC7515:
   RFC7516:
   RFC7518:
   RFC7519:
+  RFC7748:
+  RFC8037:
+  RFC8174:
 
 informative:
   RFC6749:
@@ -180,9 +184,11 @@ not be provided by libraries, or until they are), and
 
 ## Conventions used in this document
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in {{RFC2119}}.
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+"MAY", and "OPTIONAL" in this document are to be interpreted as
+described in BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they
+appear in all capitals, as shown here.
 
 # Threats and Vulnerabilities
 
@@ -244,6 +250,10 @@ There are attacks in which one recipient will have a JWT intended for it
 and attempt to use it at a different recipient that it was not intended for.
 If not caught, these attacks can result in the attacker gaining access to resources
 that it is not entitled to access.
+For instance, if an OAuth 2.0 {{RFC6749}} access token is presented to an OAuth 2.0 protected resource
+that it is intended for, that protected resource might then attempt to gain access to a different
+protected resource by presenting that same access token to the different protected resource,
+which the access token is not intended for.
 
 For mitigations, see <xref target="validate-iss-sub"/> and <xref target="use-aud"/>.
 
@@ -284,12 +294,13 @@ Therefore, applications MUST only allow the use of cryptographically current alg
 that meet the security requirements of the application.
 This set will vary over time as new algorithms are introduced
 and existing algorithms are deprecated due to discovered cryptographic weaknesses.
-Applications must therefore be designed to enable cryptographic agility.
+Applications MUST therefore be designed to enable cryptographic agility.
 
 That said, if a JWT is cryptographically protected by a transport layer, such as TLS
 using cryptographically current algorithms, there may be no need to apply another layer of
 cryptographic protections to the JWT.
 In such cases, the use of the "none" algorithm can be perfectly acceptable.
+The "none" algorithm should only be used when the JWT is cryptographically protected by other means.
 JWTs using "none" are often used in application contexts in which the content is optionally signed;
 then the URL-safe claims representation and processing can be the same in both the signed and unsigned cases.
 
@@ -326,6 +337,8 @@ ECDH-ES ephemeral public key (epk) inputs should be validated according to the r
 chosen elliptic curve. For the NIST prime-order curves P-256, P-384 and P-521, validation MUST
 be performed according to Section 5.6.2.3.4 "ECC Partial Public-Key Validation Routine" of
 NIST Special Publication 800-56A revision 3 [nist-sp-800-56a-r3].
+Likewise, if the "X25519" or "X448" {{RFC8037}} algorithms are used,
+then the values MUST be validated according {{RFC7748}}.
 
 ## Ensure Cryptographic Keys have Sufficient Entropy {#key-entropy}
 
@@ -334,6 +347,8 @@ the Password Considerations in Section 8.8 of [RFC7518]
 MUST be followed.
 In particular, human-memorizable passwords MUST NOT be directly used
 as the key to a keyed-MAC algorithm such as "HS256".
+Rather, the principles from {{RFC2898}} SHOULD be used
+to derive cryptographic keys from user-supplied passwords.
 
 ## Avoid Length-Dependent Encryption Inputs
 
@@ -434,6 +449,7 @@ Given the broad diversity of JWT usage and applications,
 the best combination of types, required claims, values, header parameters, key usages, and issuers
 to differentiate among different kinds of JWTs
 will, in general, be application specific.
+For new JWT applications, the use of explicit typing is RECOMMENDED.
 
 # Security Considerations
 
