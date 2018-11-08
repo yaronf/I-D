@@ -460,13 +460,17 @@ This document requires no IANA actions.
 Thanks to Antonio Sanso for bringing the "ECDH-ES" invalid point attack to the attention
 of JWE and JWT implementers. Tim McLean published the RSA/HMAC confusion attack.
 Thanks to Nat Sakimura for advocating the use of explicit typing. Thanks to Neil Madden for his
-numerous comments, and to Carsten Bormann and Brian Campbell for their reviews.
+numerous comments, and to Carsten Bormann, Brian Campbell and Eric Rescorla for their reviews.
 
 --- back
 
 # Document History
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
+
+## draft-ietf-oauth-jwt-bcp-04
+
+- AD review comments.
 
 ## draft-ietf-oauth-jwt-bcp-03
 
