@@ -43,7 +43,6 @@ author:
 
 normative:
   RFC2119:
-  RFC2898:
   RFC6979:
   RFC8259:
   RFC7515:
