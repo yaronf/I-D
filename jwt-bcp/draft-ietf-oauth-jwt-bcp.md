@@ -298,7 +298,7 @@ In such cases, the use of the "none" algorithm can be perfectly acceptable.
 The "none" algorithm should only be used when the JWT is cryptographically protected by other means.
 JWTs using "none" are often used in application contexts in which the content is optionally signed;
 then the URL-safe claims representation and processing can be the same in both the signed and unsigned cases.
-JWT libraries should not generate JWTs using "none" unless explicitly requested to do by the caller.
+JWT libraries SHOULD NOT generate JWTs using "none" unless explicitly requested to do by the caller.
 
 Applications SHOULD follow these algorithm-specific recommendations:
 
@@ -345,7 +345,7 @@ In particular, human-memorizable passwords MUST NOT be directly used
 as the key to a keyed-MAC algorithm such as "HS256".
 In particular, passwords should only be used to perform key encryption, rather than content encryption,
 as described in Section 4.8 of {{RFC7518}}.
-Note that even when use for key encryption, password-based encryption is still subject to brute-force attacks.
+Note that even when used for key encryption, password-based encryption is still subject to brute-force attacks.
 
 ## Avoid Length-Dependent Encryption Inputs
 
