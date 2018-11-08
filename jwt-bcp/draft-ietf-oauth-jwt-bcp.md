@@ -43,12 +43,15 @@ author:
 
 normative:
   RFC2119:
+  RFC2898:
   RFC6979:
   RFC8259:
   RFC7515:
   RFC7516:
   RFC7518:
   RFC7519:
+  RFC8037:
+  RFC8174:
 
 informative:
   RFC6749:
@@ -180,9 +183,7 @@ not be provided by libraries, or until they are), and
 
 ## Conventions used in this document
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in {{RFC2119}}.
+{::boilerplate bcp14}
 
 # Threats and Vulnerabilities
 
@@ -244,6 +245,10 @@ There are attacks in which one recipient will have a JWT intended for it
 and attempt to use it at a different recipient that it was not intended for.
 If not caught, these attacks can result in the attacker gaining access to resources
 that it is not entitled to access.
+For instance, if an OAuth 2.0 {{RFC6749}} access token is presented to an OAuth 2.0 protected resource
+that it is intended for, that protected resource might then attempt to gain access to a different
+protected resource by presenting that same access token to the different protected resource,
+which the access token is not intended for.
 
 For mitigations, see <xref target="validate-iss-sub"/> and <xref target="use-aud"/>.
 
@@ -275,7 +280,7 @@ and this MUST be checked when the cryptographic operation is performed.
 
 ## Use Appropriate Algorithms ## {#appropriate-algorithms}
 
-As Section 5.2 of [RFC7515] says, "it is an application decision which algorithms may
+As Section 5.2 of {{RFC7515}} says, "it is an application decision which algorithms may
 be used in a given context.  Even if a JWS can be successfully
 validated, unless the algorithm(s) used in the JWS are acceptable to
 the application, it SHOULD consider the JWS to be invalid."
@@ -284,14 +289,16 @@ Therefore, applications MUST only allow the use of cryptographically current alg
 that meet the security requirements of the application.
 This set will vary over time as new algorithms are introduced
 and existing algorithms are deprecated due to discovered cryptographic weaknesses.
-Applications must therefore be designed to enable cryptographic agility.
+Applications MUST therefore be designed to enable cryptographic agility.
 
 That said, if a JWT is cryptographically protected by a transport layer, such as TLS
 using cryptographically current algorithms, there may be no need to apply another layer of
 cryptographic protections to the JWT.
 In such cases, the use of the "none" algorithm can be perfectly acceptable.
+The "none" algorithm should only be used when the JWT is cryptographically protected by other means.
 JWTs using "none" are often used in application contexts in which the content is optionally signed;
 then the URL-safe claims representation and processing can be the same in both the signed and unsigned cases.
+JWT libraries SHOULD NOT generate JWTs using "none" unless explicitly requested to do by the caller.
 
 Applications SHOULD follow these algorithm-specific recommendations:
 
@@ -300,7 +307,7 @@ Applications SHOULD follow these algorithm-specific recommendations:
 If even just a few bits of the random value are predictable across multiple messages then
 the security of the signature scheme may be compromised. In the worst case,
 the private key may be recoverable by an attacker. To counter these attacks,
-JWT libraries SHOULD implement ECDSA using the deterministic approach defined in [RFC6979].
+JWT libraries SHOULD implement ECDSA using the deterministic approach defined in {{RFC6979}}.
 This approach is completely compatible with existing ECDSA verifiers and so can be implemented
 without new algorithm identifiers being required.
 
@@ -326,14 +333,19 @@ ECDH-ES ephemeral public key (epk) inputs should be validated according to the r
 chosen elliptic curve. For the NIST prime-order curves P-256, P-384 and P-521, validation MUST
 be performed according to Section 5.6.2.3.4 "ECC Partial Public-Key Validation Routine" of
 NIST Special Publication 800-56A revision 3 [nist-sp-800-56a-r3].
+Likewise, if the "X25519" or "X448" {{RFC8037}} algorithms are used,
+then the security considerations in {{RFC8037}} apply.
 
 ## Ensure Cryptographic Keys have Sufficient Entropy {#key-entropy}
 
-The Key Entropy and Random Values advice in Section 10.1 of [RFC7515] and
-the Password Considerations in Section 8.8 of [RFC7518]
+The Key Entropy and Random Values advice in Section 10.1 of {{RFC7515}} and
+the Password Considerations in Section 8.8 of {{RFC7518}}
 MUST be followed.
 In particular, human-memorizable passwords MUST NOT be directly used
 as the key to a keyed-MAC algorithm such as "HS256".
+In particular, passwords should only be used to perform key encryption, rather than content encryption,
+as described in Section 4.8 of {{RFC7518}}.
+Note that even when used for key encryption, password-based encryption is still subject to brute-force attacks.
 
 ## Avoid Length-Dependent Encryption Inputs
 
@@ -344,8 +356,8 @@ since such compression often reveals information about the plaintext.
 
 ## Use UTF-8 ## {#use-utf8}
 
-[RFC7515], [RFC7516], and [RFC7519] all specify that UTF-8 be used for encoding and decoding JSON
-used in Header Parameters and JWT Claims Sets. This is also in line with the latest JSON specification [RFC8259].
+{{RFC7515}}, {{RFC7516}}, and {{RFC7519}} all specify that UTF-8 be used for encoding and decoding JSON
+used in Header Parameters and JWT Claims Sets. This is also in line with the latest JSON specification {{RFC8259}}.
 Implementations and applications MUST do this, and not use or admit the use of
 other Unicode encodings for these purposes.
 
@@ -393,7 +405,7 @@ Explicit JWT typing is accomplished by using the "typ" header parameter.
 For instance, the {{I-D.ietf-secevent-token}} specification uses the "application/secevent+jwt" media type
 to perform explicit typing of Security Event Tokens (SETs).
 
-Per the definition of "typ" in Section 4.1.9 of [RFC7515],
+Per the definition of "typ" in Section 4.1.9 of {{RFC7515}},
 it is RECOMMENDED that the "application/" prefix be omitted from the "typ" value.
 Therefore, for example, the "typ" value used to explicitly include a type for a SET
 SHOULD be "secevent+jwt".
@@ -434,6 +446,7 @@ Given the broad diversity of JWT usage and applications,
 the best combination of types, required claims, values, header parameters, key usages, and issuers
 to differentiate among different kinds of JWTs
 will, in general, be application specific.
+For new JWT applications, the use of explicit typing is RECOMMENDED.
 
 # Security Considerations
 
