@@ -37,10 +37,10 @@ author:
 
 normative:
   RFC2119:
-  I-D.ietf-tls-tls13:
   RFC5077:
   RFC8126:
-  I-D.ietf-tls-iana-registry-updates:
+  RFC8446:
+  RFC8447:
 
 informative:
   RFC2104:
@@ -357,7 +357,7 @@ MUST NOT be used for indexing as they may change over time.
 # Message Definitions
 
 This section defines the format of the PinningTicket extension.
-We follow the message notation of {{I-D.ietf-tls-tls13}}.
+We follow the message notation of {{RFC8446}}.
 
      opaque pinning_ticket<0..2^16-1>;
 
@@ -402,7 +402,7 @@ other than the client and the server.
 
 The pinning secret is derived
 using the Derive-Secret function provided by TLS 1.3, described in
-Section "Key Schedule" of {{I-D.ietf-tls-tls13}}.
+Section "Key Schedule" of {{RFC8446}}.
 
     pinning secret = Derive-Secret(Handshake Secret, "pinning secret",
              ClientHello...ServerHello)
@@ -851,11 +851,11 @@ And use these values to encrypt the ticket, AES-GCM(K, N, \<data\>).
 IANA is requested to allocate a TicketPinning extension value in the
 TLS ExtensionType Registry.
 
-{{I-D.ietf-tls-iana-registry-updates}} defines the procedure and
+{{RFC8447}} defines the procedure and
 requirements and the necessary information for the IANA to update the
 "TLS ExtensionType Values" registry {{TLS-EXT}}.
 
-According to {{I-D.ietf-tls-iana-registry-updates}} the update of the
+According to {{RFC8447}} the update of the
 "TLS ExtensionType Values" registry is "Specification Required"
 {{RFC8126}} which is fulfilled by the current document, when it is published as an
 RFC.
@@ -889,6 +889,10 @@ for several fruitful discussions.
 --- back
 
 # Document History
+
+## draft-sheffer-tls-pinning-ticket-07
+
+- Refer to published RFCs.
 
 ## draft-sheffer-tls-pinning-ticket-06
 
