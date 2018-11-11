@@ -411,11 +411,40 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
-| star-delegation-enabled | boolean | RCF XXXX |
+| star-delegation-enabled | boolean | RFC XXXX |
 
 # Security Considerations
 
-TBD
+## Restricting CDNs to the Delegation Mechanism
+
+When a web site is delegated to a CDN, the CDN can in principle modify the web
+site at will, create and remove pages. This means that a malicious or breached
+CDN can pass
+the ACME (as well as common non-ACME) HTTPS-based validation challenges and
+generate a certificate for the site. This is true regardless of whether
+the CNAME mechanisms defined in the current document is used or not.
+
+In some cases, this is the desired behavior: the domain owner trusts the CDN to have
+full control of the cryptographic credentials for the site. The current document however assumes
+that the domain owner only wants to delegate restricted control, and wishes to retain
+the capability to cancel the CDN's credentials at a short notice.
+
+To restrict certificate delegation only
+to the protocol defined here:
+
+-  The domain owner MUST make sure that the CDN cannot modify the DNS records for the
+      domain.  The domain owner should ensure it is the only entity authorized
+	  to modify the DNS zone. Typically, it 
+      establishes a CNAME resource record from a subdomain into a CDN-managed domain.
+
+-  The domain owner MUST use a CAA record {{!RFC6844}} to restrict certificate issuance
+for the domain to specific CAs that
+      comply with ACME.
+
+-  The domain owner MUST use the ACME-specific CAA mechanism {{!I-D.ietf-acme-caa}}
+to restrict issuance to a specific
+account key which is controlled by it, and MUST require "dns-01" as the sole
+validation method.
 
 # Acknowledgments
 
