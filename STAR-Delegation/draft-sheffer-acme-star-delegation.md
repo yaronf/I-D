@@ -458,6 +458,11 @@ Internet (MAMI). This support does not imply endorsement.
 
 [[Note to RFC Editor: please remove before publication.]]
 
+## draft-sheffer-acme-star-delegation-01
+
+- Added security considerations about disallowing CDNs from issuing
+certificates for a delegated domain.
+
 ## draft-sheffer-acme-star-delegation-00
 
 - Initial version, some text extracted from draft-sheffer-acme-star-requests-02
