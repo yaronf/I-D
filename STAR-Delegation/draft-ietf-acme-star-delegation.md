@@ -1,7 +1,7 @@
 ---
 title: An ACME Profile for Generating Delegated STAR Certificates
 abbrev: ACME STAR Delegation
-docname: draft-sheffer-acme-star-delegation-latest
+docname: draft-ietf-acme-star-delegation-latest
 category: std
 
 ipr: trust200902
