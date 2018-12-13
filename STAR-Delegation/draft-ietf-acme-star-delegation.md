@@ -458,6 +458,10 @@ Internet (MAMI). This support does not imply endorsement.
 
 [[Note to RFC Editor: please remove before publication.]]
 
+## draft-ietf-acme-star-delegation-00
+
+- Republished as a working group draft.
+
 ## draft-sheffer-acme-star-delegation-01
 
 - Added security considerations about disallowing CDNs from issuing
