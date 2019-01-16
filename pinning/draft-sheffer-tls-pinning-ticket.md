@@ -1,7 +1,7 @@
 ---
 title: TLS Server Identity Pinning with Tickets
 abbrev: Pinning Tickets
-docname: draft-sheffer-tls-pinning-ticket-08
+docname: draft-sheffer-tls-pinning-ticket-latest
 category: exp
 updates:
 obsoletes:
@@ -97,7 +97,7 @@ no manual management actions are required.
 # Introduction
 
 The global PKI system relies on the trust of a CA issuing certificates.
-As aresult, a corrupted trusted CA may issue a certificate for any
+As a result, a corrupted trusted CA may issue a certificate for any
 organization without the organization's approval (a misissued or "fake"
 certificate), and use the certificate to impersonate the organization.
 There are many attempts to resolve these weaknesses, including
@@ -178,7 +178,7 @@ This version of the draft only applies to TLS 1.3.  We believe that the
 idea can also be back-fitted into earlier versions of the protocol, but
 this would require significant changes. One example is that TLS 1.2 and
 earlier versions do not provide a generic facility of encrypted
-handshake extensions, such as is used here to transport the ticket
+handshake extensions, such as is used here to transport the ticket.
 
 
 The main advantages of this protocol over earlier pinning solutions are:
@@ -519,7 +519,7 @@ Misconfiguration can lead to the server's clock being off by a large
 amount of time.  Therefore we RECOMMEND never to automatically delete
 protection keys, even when they are long expired.  The decision to
 delete a key should at least consider the largest value of the ticket
-lifetime as well as the envision time desynchronisation between the
+lifetime as well as the expected time desynchronisation between the
 servers of the cluster and the time difference for distributing the new
 key among the different servers in the cluster.
 
@@ -692,7 +692,7 @@ certificate that will typically expire within a year or two.
 certificate).  At this point you can add the "Public-Key-Pins" header,
 using the two hashes you created in step 2.
 
-Note that only the first key-pair has been uploaded to the server so far.
+   Note that only the first key-pair has been uploaded to the server so far.
 
 
 6. Store the second (backup1) key-pair somewhere safe, probably
@@ -903,10 +903,10 @@ never generate more than 2**64 encrypted tickets for the same ticket
 pinning protection Key.
 
 * An alternative design which has been attributed to Karthik Bhargavan is
-as follows.  Start with a 128-bit master key "K_master" and then for
+as follows.  Start with a 128-bit master key "K\_master" and then for
 each encryption, generate a 256-bit random nonce and compute: K =
-HKDF(K_master, Nonce || "key") then N = HKDF(K_master, Nonce ||
-"nonce"). And use these values to encrypt the ticket, AES-GCM(K, N,
+HKDF(K\_master, Nonce || "key"), then N = HKDF(K\_master, Nonce ||
+"nonce"). Use these values to encrypt the ticket, AES-GCM(K, N,
 data). This nonce should then be stored and transmitted with the
 ticket.
  
@@ -944,14 +944,19 @@ Yung, Benny Pinkas and Omer Berkman. The current protocol is but a
 distant relative of the original Oreo protocol, and any errors are the
 draft authors' alone.
 
-We would like to thank Dave Garrett, Daniel Kahn Gillmor, Eric Rescorla
-and Yoav Nir for their comments on this draft.  Special thanks to Craig
+We would like to thank Dave Garrett, Daniel Kahn Gillmor, Yoav Nir, 
+Eric Rescorla and Rich Salz
+for their comments on this draft.  Special thanks to Craig
 Francis for contributing the HPKP deployment script, and to Ralph Holz
 for several fruitful discussions.
 
 --- back
 
 # Document History
+
+## draft-sheffer-tls-pinning-ticket-08
+
+- ISE comments by Rich Salz.
 
 ## draft-sheffer-tls-pinning-ticket-07
 
