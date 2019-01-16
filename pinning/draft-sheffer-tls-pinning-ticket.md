@@ -365,8 +365,8 @@ MUST NOT be used for indexing as they may change over time.
 
 # Message Definitions
 
-This section defines the format of the PinningTicket extension.  We
-follow the message notation of {{RFC8446}}.
+This section defines the format of the PinningTicket extension.
+We follow the message notation of {{RFC8446}}.
 
      opaque pinning_ticket<0..2^16-1>;
 
