@@ -75,60 +75,26 @@ informative:
 
 --- abstract
 
-Misissued public-key certificates can prevent TLS clients from appropriately
-authenticating the TLS server. Several alternatives
-have been proposed to detect this situation and prevent a client from establishing
-a TLS session with a TLS end point authenticated with an illegitimate
-public-key certificate, but none is currently in wide use.
+Misissued public-key certificates can prevent TLS clients from
+appropriately authenticating the TLS server. Several alternatives have
+been proposed to detect this situation and prevent a client from
+establishing a TLS session with a TLS end point authenticated with an
+illegitimate public-key certificate. These mechanisms are either not
+widely deployed or limited to public web browing.  
 
-This document proposes to extend TLS with opaque pinning tickets
-as a way to pin the server's identity. During an initial TLS session,
-the server provides an original encrypted pinning ticket.
-In subsequent TLS session establishment, upon receipt of the pinning ticket,
-the server proves its ability to decrypt the pinning ticket
-and thus the ownership of the pinning protection key.
-The client can now safely conclude that the TLS session is established
-with the same TLS server as the original TLS session.
-One of the important properties of this proposal is that
+This document proposes to extend TLS with opaque pinning tickets as a
+way to pin the server's identity. During an initial TLS session, the
+server provides an original encrypted pinning ticket.  In subsequent TLS
+session establishment, upon receipt of the pinning ticket, the server
+proves its ability to decrypt the pinning ticket and thus the ownership
+of the pinning protection key.  The client can now safely conclude that
+the TLS session is established with the same TLS server as the original
+TLS session.  One of the important properties of this proposal is that
 no manual management actions are required.
 
 --- middle
 
 # Introduction
-
-The global PKI system relies on the trust of a CA issuing certificates.
-As aresult, a corrupted trusted CA may issue a certificate for any
-organization without the organization's approval (a misissued or "fake"
-certificate), and use the certificate to impersonate the organization.
-There are many attempts to resolve these weaknesses, including
-Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key Pinning
-(HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.  CT requires
-cooperation of a large portion of the hundreds of extant certificate
-authorities (CAs) before it can be used "for real", in enforcing mode.
-It is noted that the relevant industry forum (CA/Browser Forum) is
-indeed pushing for such extensive adoption.  TACK has some similarities
-to the current proposal, but work on it seems to have stalled.  {{tack}}
-compares our proposal to TACK.
-
-HPKP is an IETF standard, but so far has proven hard to deploy. HPKP
-pins (fixes) a public key, one of the public keys listed in the
-certificate chain.  As a result, HPKP needs to be coordinated with the
-certificate management process.  Certificate management impacts HPKP and
-thus increases the probability of HPKP failures.  This risk is made even
-higher given the fact that, even though work has been done at the ACME
-WG to automate certificate management, in many or even most cases,
-certificates are still managed manually.  As a result, HPKP cannot be
-completely automated resulting in error-prone manual configuration. Such
-errors could prevent the web server from being accessed by some clients.
-In addition, HPKP uses a HTTP header which makes this solution HTTPS
-specific and not generic to TLS. On the other hand, the current document
-provides a solution that is independent of the server's certificate
-management and that can be entirely and easily automated. {{hpkp}}
-compares HPKP to the current draft in more detail.
-
-The ticket pinning proposal augments these mechanisms with a much easier
-to implement and deploy solution for server identity pinning, by reusing
-some of the ideas behind TLS session resumption.
 
 Ticket pinning is a second factor server authentication method and is
 not proposed as a substitute of the authentication method provided in
@@ -158,7 +124,8 @@ pinning ticket to the client with an associated pinning lifetime.
 The pinning lifetime value indicates for how long the server promises to
 retain the server-side ticket-encryption key, which allows it to
 complete the protocol exchange correctly and prove its identity. The
-committed lifetime is typically on the order of weeks.
+server committment (and ticket lifetime) is typically on the order of
+weeks.
 
 Once the key exchange is completed and the server is deemed
 authenticated, the client generates locally the pinning secret and
@@ -178,7 +145,7 @@ This version of the draft only applies to TLS 1.3.  We believe that the
 idea can also be back-fitted into earlier versions of the protocol, but
 this would require significant changes. One example is that TLS 1.2 and
 earlier versions do not provide a generic facility of encrypted
-handshake extensions, such as is used here to transport the ticket
+handshake extensions, such as is used here to transport the ticket.
 
 
 The main advantages of this protocol over earlier pinning solutions are:
@@ -365,8 +332,8 @@ MUST NOT be used for indexing as they may change over time.
 
 # Message Definitions
 
-This section defines the format of the PinningTicket extension.
-We follow the message notation of {{RFC8446}}.
+This section defines the format of the PinningTicket extension.  We
+follow the message notation of {{RFC8446}}.
 
      opaque pinning_ticket<0..2^16-1>;
 
@@ -519,7 +486,7 @@ Misconfiguration can lead to the server's clock being off by a large
 amount of time.  Therefore we RECOMMEND never to automatically delete
 protection keys, even when they are long expired.  The decision to
 delete a key should at least consider the largest value of the ticket
-lifetime as well as the envision time desynchronisation between the
+lifetime as well as the expected time desynchronisation between the
 servers of the cluster and the time difference for distributing the new
 key among the different servers in the cluster.
 
@@ -597,7 +564,194 @@ treated as ephemeral keys. Even when servers derive pinning secrets from
 resumption keys ({{pinning-secret}}), they MUST NOT back up resumption
 keys.
 
+# Security Considerations
+
+This section reviews several security aspects related to the proposed
+extension.
+
+## Trust on First Use (TOFU) and MITM Attacks
+
+This protocol is a "trust on first use" protocol. If a client initially
+connects to the "right" server, it will be protected against MITM
+attackers for the lifetime of each received ticket. If it connects
+regularly (depending of course on the server-selected lifetime), it will
+stay constantly protected against fake certificates.
+
+However if it initially connects to an attacker, subsequent connections
+to the "right" server will fail. Server operators might want to advise
+clients on how to remove corrupted pins, once such large scale attacks
+are detected and remediated.
+
+The protocol is designed so that it is not vulnerable to an active MITM
+attacker who has real-time access to the original server. The pinning
+proof includes a hash of the server's public key, to ensure the client
+that the proof was in fact generated by the server with which it is
+initiating the connection.
+
+## Pervasive Monitoring
+
+Some organizations, and even some countries perform pervasive monitoring
+on their constituents {{RFC7258}}. This often takes the form of
+always-active SSL proxies. Because of the TOFU property, this protocol
+does not provide any security in such cases.
+
+## Server-Side Error Detection {#server_error}
+
+Uniquely, this protocol allows the server to detect clients that present
+incorrect tickets and therefore can be assumed to be victims of a MITM
+attack. Server operators can use such cases as indications of ongoing
+attacks, similarly to fake certificate attacks that took place in a few
+countries in the past.
+
+## Client Policy and SSL Proxies {#client_policy}
+
+Like it or not, some clients are normally deployed behind an SSL proxy.
+Similarly to {{RFC7469}}, it is acceptable to allow pinning to be
+disabled for some hosts according to local policy. For example, a UA MAY
+disable pinning for hosts whose validated certificate chain terminates
+at a user-defined trust anchor, rather than a trust anchor built-in to
+the UA (or underlying platform). Moreover, a client MAY accept an empty
+PinningTicket extension from such hosts as a valid response.
+
+## Client-Side Error Behavior {#client_error}
+
+When a client receives a malformed or empty PinningTicket extension from
+a pinned server, it MUST abort the handshake and MUST NOT retry with no
+PinningTicket in the request. Doing otherwise would expose the client to
+trivial fallback attacks, similar to those described in {{RFC7507}}.
+
+This rule can however have negative affects on clients that move from
+behind SSL proxies into the open Internet and vice versa, if the advice
+in {{client_policy}} is not followed.  Therefore, we RECOMMEND that
+browser and library vendors provide a documented way to remove stored
+pins.
+
+## Stolen and Forged Tickets
+
+Stealing pinning tickets even in conjunction with other pinning
+parameters, such as the associated pinning secret, provides no benefit
+to the attacker since pinning tickets are used to secure the client
+rather than the server.  Similarly, it is useless to forge a ticket for
+a particular sever.
+
+## Client Privacy
+
+This protocol is designed so that an external attacker cannot correlate
+between different requests of a single client, provided the client
+requests and receives a fresh ticket upon each connection.
+
+On the other hand, the server to which the client is connecting can
+easily track the client.  This may be an issue when the client expects
+to connect to the server (e.g., a mail server) with multiple identities.
+Implementations SHOULD allow the user to opt out of pinning, either in
+general or for particular servers.
+
+## Ticket Protection Key Management
+
+While the ticket format is not mandated by this document, we RECOMMEND
+using authenticated encryption to protect it. Some of the algorithms
+commonly used for authenticated encryption, e.g. GCM, are highly
+vulnerable to nonce reuse, and this problem is magnified in a cluster
+setting.  Therefore implementations that choose AES-128-GCM MUST adopt
+one of these three alternatives:
+
+* Partition the nonce namespace between cluster members and use monotonic
+counters on each member, e.g. by setting the nonce to the concatenation
+of the cluster member ID and an incremental counter.
+
+* Generate random nonces but avoid the so-called birthday bound, i.e.
+never generate more than 2**64 encrypted tickets for the same ticket
+pinning protection Key.
+
+* An alternative design which has been attributed to Karthik Bhargavan is
+as follows.  Start with a 128-bit master key "K\_master" and then for
+each encryption, generate a 256-bit random nonce and compute: K =
+HKDF(K\_master, Nonce || "key"), then N = HKDF(K\_master, Nonce ||
+"nonce"). Use these values to encrypt the ticket, AES-GCM(K, N,
+data). This nonce should then be stored and transmitted with the
+ticket.
+ 
+Other alternative shemes may be used and the use of AES-GCM-SIV
+{{?I-D.irtf-cfrg-gcmsiv}} is one of these possible alternatives. 
+
+# IANA Considerations
+
+IANA is requested to allocate a TicketPinning extension value in the TLS
+ExtensionType Registry.
+
+{{RFC8447}} defines the procedure and requirements and the necessary
+information for the IANA to update the "TLS ExtensionType Values"
+registry {{TLS-EXT}}.
+
+According to {{RFC8447}} the update of the "TLS ExtensionType Values"
+registry is "Specification Required" {{RFC8126}} which is fulfilled by
+the current document, when it is published as an RFC.
+
+The TicketPinning Extension is not limited to Private use and as such
+the TicketPinning Extension Value is expected to have its first byte in
+the range 0-254. A value of 26 would address this requirement.
+
+The TicketPinning Extension Name is expected to be ticket\_pinning.
+
+The TicketPinning Extension Recommended value should be set to "No" with
+the publication of the current document as "Experimental".
+
+The TicketPinning Extension TLS.13 column should be set to CH, SH to
+indicate that the TicketPinning Extension is present in ClientHello and
+ServerHello messages.
+
+# Acknowledgements
+
+The original idea behind this proposal was published in {{Oreo}} by Moti
+Yung, Benny Pinkas and Omer Berkman. The current protocol is but a
+distant relative of the original Oreo protocol, and any errors are the
+draft authors' alone.
+
+We would like to thank Dave Garrett, Daniel Kahn Gillmor, Yoav Nir, 
+Eric Rescorla and Rich Salz
+for their comments on this draft.  Special thanks to Craig
+Francis for contributing the HPKP deployment script, and to Ralph Holz
+for several fruitful discussions.
+
+--- back
+
 # Previous Work
+
+The global PKI system relies on the trust of a CA issuing certificates.
+As a result, a corrupted trusted CA may issue a certificate for any
+organization without the organization's approval (a misissued or "fake"
+certificate), and use the certificate to impersonate the organization.
+There are many attempts to resolve these weaknesses, including
+Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key Pinning
+(HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.  CT requires
+cooperation of a large portion of the hundreds of extant certificate
+authorities (CAs) before it can be used "for real", in enforcing mode.
+It is noted that the relevant industry forum (CA/Browser Forum) is
+indeed pushing for such extensive adoption. On the other hand non public
+infrastructures may not willing to expose publicly the certificates they
+are using to secure their non public communications.  TACK has some
+similarities to the current proposal, but work on it seems to have
+stalled.  {{tack}} compares our proposal to TACK.
+
+HPKP is an IETF standard, but so far has proven hard to deploy. HPKP
+pins (fixes) a public key, one of the public keys listed in the
+certificate chain.  As a result, HPKP needs to be coordinated with the
+certificate management process.  Certificate management impacts HPKP and
+thus increases the probability of HPKP failures.  This risk is made even
+higher given the fact that, even though work has been done at the ACME
+WG to automate certificate management, in many or even most cases,
+certificates are still managed manually.  As a result, HPKP cannot be
+completely automated resulting in error-prone manual configuration. Such
+errors could prevent the web server from being accessed by some clients.
+In addition, HPKP uses a HTTP header which makes this solution HTTPS
+specific and not generic to TLS. On the other hand, the current document
+provides a solution that is independent of the server's certificate
+management and that can be entirely and easily automated. {{hpkp}}
+compares HPKP to the current draft in more detail.
+
+The ticket pinning proposal augments these mechanisms with a much easier
+to implement and deploy solution for server identity pinning, by reusing
+some of the ideas behind TLS session resumption.
 
 This section compares ticket pinning to two earlier proposals, HPKP and TACK.
 
@@ -692,7 +846,7 @@ certificate that will typically expire within a year or two.
 certificate).  At this point you can add the "Public-Key-Pins" header,
 using the two hashes you created in step 2.
 
-Note that only the first key-pair has been uploaded to the server so far.
+   Note that only the first key-pair has been uploaded to the server so far.
 
 
 6. Store the second (backup1) key-pair somewhere safe, probably
@@ -803,155 +957,12 @@ Mint itself and this fork are available under an MIT license.
 ### Contact Information
 See author details below.
 
-# Security Considerations
-
-This section reviews several security aspects related to the proposed
-extension.
-
-## Trust on First Use (TOFU) and MITM Attacks
-
-This protocol is a "trust on first use" protocol. If a client initially
-connects to the "right" server, it will be protected against MITM
-attackers for the lifetime of each received ticket. If it connects
-regularly (depending of course on the server-selected lifetime), it will
-stay constantly protected against fake certificates.
-
-However if it initially connects to an attacker, subsequent connections
-to the "right" server will fail. Server operators might want to advise
-clients on how to remove corrupted pins, once such large scale attacks
-are detected and remediated.
-
-The protocol is designed so that it is not vulnerable to an active MITM
-attacker who has real-time access to the original server. The pinning
-proof includes a hash of the server's public key, to ensure the client
-that the proof was in fact generated by the server with which it is
-initiating the connection.
-
-## Pervasive Monitoring
-
-Some organizations, and even some countries perform pervasive monitoring
-on their constituents {{RFC7258}}. This often takes the form of
-always-active SSL proxies. Because of the TOFU property, this protocol
-does not provide any security in such cases.
-
-## Server-Side Error Detection {#server_error}
-
-Uniquely, this protocol allows the server to detect clients that present
-incorrect tickets and therefore can be assumed to be victims of a MITM
-attack. Server operators can use such cases as indications of ongoing
-attacks, similarly to fake certificate attacks that took place in a few
-countries in the past.
-
-## Client Policy and SSL Proxies {#client_policy}
-
-Like it or not, some clients are normally deployed behind an SSL proxy.
-Similarly to {{RFC7469}}, it is acceptable to allow pinning to be
-disabled for some hosts according to local policy. For example, a UA MAY
-disable pinning for hosts whose validated certificate chain terminates
-at a user-defined trust anchor, rather than a trust anchor built-in to
-the UA (or underlying platform). Moreover, a client MAY accept an empty
-PinningTicket extension from such hosts as a valid response.
-
-## Client-Side Error Behavior {#client_error}
-
-When a client receives a malformed or empty PinningTicket extension from
-a pinned server, it MUST abort the handshake and MUST NOT retry with no
-PinningTicket in the request. Doing otherwise would expose the client to
-trivial fallback attacks, similar to those described in {{RFC7507}}.
-
-This rule can however have negative affects on clients that move from
-behind SSL proxies into the open Internet and vice versa, if the advice
-in {{client_policy}} is not followed.  Therefore, we RECOMMEND that
-browser and library vendors provide a documented way to remove stored
-pins.
-
-## Stolen and Forged Tickets
-
-Stealing pinning tickets even in conjunction with other pinning
-parameters, such as the associated pinning secret, provides no benefit
-to the attacker since pinning tickets are used to secure the client
-rather than the server.  Similarly, it is useless to forge a ticket for
-a particular sever.
-
-## Client Privacy
-
-This protocol is designed so that an external attacker cannot correlate
-between different requests of a single client, provided the client
-requests and receives a fresh ticket upon each connection.
-
-On the other hand, the server to which the client is connecting can
-easily track the client.  This may be an issue when the client expects
-to connect to the server (e.g., a mail server) with multiple identities.
-Implementations SHOULD allow the user to opt out of pinning, either in
-general or for particular servers.
-
-## Ticket Protection Key Management
-
-While the ticket format is not mandated by this document, we RECOMMEND
-using authenticated encryption to protect it. Some of the algorithms
-commonly used for authenticated encryption, e.g. GCM, are highly
-vulnerable to nonce reuse, and this problem is magnified in a cluster
-setting.  Therefore implementations that choose AES-128-GCM MUST adopt
-one of these three alternatives:
-
-* Partition the nonce namespace between cluster members and use monotonic
-counters on each member, e.g. by setting the nonce to the concatenation
-of the cluster member ID and an incremental counter.
-
-* Generate random nonces but avoid the so-called birthday bound, i.e.
-never generate more than 2**64 encrypted tickets for the same ticket
-pinning protection Key.
-
-* An alternative design which has been attributed to Karthik Bhargavan is
-as follows.  Start with a 128-bit master key "K_master" and then for
-each encryption, generate a 256-bit random nonce and compute: K =
-HKDF(K_master, Nonce || "key") then N = HKDF(K_master, Nonce ||
-"nonce"). And use these values to encrypt the ticket, AES-GCM(K, N,
-data). This nonce should then be stored and transmitted with the
-ticket.
- 
-
-# IANA Considerations
-
-IANA is requested to allocate a TicketPinning extension value in the TLS
-ExtensionType Registry.
-
-{{RFC8447}} defines the procedure and requirements and the necessary
-information for the IANA to update the "TLS ExtensionType Values"
-registry {{TLS-EXT}}.
-
-According to {{RFC8447}} the update of the "TLS ExtensionType Values"
-registry is "Specification Required" {{RFC8126}} which is fulfilled by
-the current document, when it is published as an RFC.
-
-The TicketPinning Extension is not limited to Private use and as such
-the TicketPinning Extension Value is expected to have its first byte in
-the range 0-254. A value of 26 would address this requirement.
-
-The TicketPinning Extension Name is expected to be ticket\_pinning.
-
-The TicketPinning Extension Recommended value should be set to "No" with
-the publication of the current document as "Experimental".
-
-The TicketPinning Extension TLS.13 column should be set to CH, SH to
-indicate that the TicketPinning Extension is present in ClientHello and
-ServerHello messages.
-
-# Acknowledgements
-
-The original idea behind this proposal was published in {{Oreo}} by Moti
-Yung, Benny Pinkas and Omer Berkman. The current protocol is but a
-distant relative of the original Oreo protocol, and any errors are the
-draft authors' alone.
-
-We would like to thank Dave Garrett, Daniel Kahn Gillmor, Eric Rescorla
-and Yoav Nir for their comments on this draft.  Special thanks to Craig
-Francis for contributing the HPKP deployment script, and to Ralph Holz
-for several fruitful discussions.
-
---- back
 
 # Document History
+
+## draft-sheffer-tls-pinning-ticket-08
+
+- ISE comments by Rich Salz.
 
 ## draft-sheffer-tls-pinning-ticket-07
 
