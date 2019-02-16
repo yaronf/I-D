@@ -79,7 +79,8 @@ Misissued public-key certificates can prevent TLS clients from appropriately
 authenticating the TLS server. Several alternatives
 have been proposed to detect this situation and prevent a client from establishing
 a TLS session with a TLS end point authenticated with an illegitimate
-public-key certificate, but none is currently in wide use.
+public-key certificate. These mechanisms are either not
+widely deployed or limited to public web browsing.
 
 This document proposes to extend TLS with opaque pinning tickets
 as a way to pin the server's identity. During an initial TLS session,
@@ -95,40 +96,6 @@ no manual management actions are required.
 --- middle
 
 # Introduction
-
-The global PKI system relies on the trust of a CA issuing certificates.
-As a result, a corrupted trusted CA may issue a certificate for any
-organization without the organization's approval (a misissued or "fake"
-certificate), and use the certificate to impersonate the organization.
-There are many attempts to resolve these weaknesses, including
-Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key Pinning
-(HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.  CT requires
-cooperation of a large portion of the hundreds of extant certificate
-authorities (CAs) before it can be used "for real", in enforcing mode.
-It is noted that the relevant industry forum (CA/Browser Forum) is
-indeed pushing for such extensive adoption.  TACK has some similarities
-to the current proposal, but work on it seems to have stalled.  {{tack}}
-compares our proposal to TACK.
-
-HPKP is an IETF standard, but so far has proven hard to deploy. HPKP
-pins (fixes) a public key, one of the public keys listed in the
-certificate chain.  As a result, HPKP needs to be coordinated with the
-certificate management process.  Certificate management impacts HPKP and
-thus increases the probability of HPKP failures.  This risk is made even
-higher given the fact that, even though work has been done at the ACME
-WG to automate certificate management, in many or even most cases,
-certificates are still managed manually.  As a result, HPKP cannot be
-completely automated resulting in error-prone manual configuration. Such
-errors could prevent the web server from being accessed by some clients.
-In addition, HPKP uses a HTTP header which makes this solution HTTPS
-specific and not generic to TLS. On the other hand, the current document
-provides a solution that is independent of the server's certificate
-management and that can be entirely and easily automated. {{hpkp}}
-compares HPKP to the current draft in more detail.
-
-The ticket pinning proposal augments these mechanisms with a much easier
-to implement and deploy solution for server identity pinning, by reusing
-some of the ideas behind TLS session resumption.
 
 Ticket pinning is a second factor server authentication method and is
 not proposed as a substitute of the authentication method provided in
@@ -158,7 +125,8 @@ pinning ticket to the client with an associated pinning lifetime.
 The pinning lifetime value indicates for how long the server promises to
 retain the server-side ticket-encryption key, which allows it to
 complete the protocol exchange correctly and prove its identity. The
-committed lifetime is typically on the order of weeks.
+server committment (and ticket lifetime) is typically on the order of
+weeks.
 
 Once the key exchange is completed and the server is deemed
 authenticated, the client generates locally the pinning secret and
@@ -599,6 +567,42 @@ keys.
 
 # Previous Work
 
+The global PKI system relies on the trust of a CA issuing certificates.
+As a result, a corrupted trusted CA may issue a certificate for any
+organization without the organization's approval (a misissued or "fake"
+certificate), and use the certificate to impersonate the organization.
+There are many attempts to resolve these weaknesses, including
+Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key Pinning
+(HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.  CT requires
+cooperation of a large portion of the hundreds of extant certificate
+authorities (CAs) before it can be used "for real", in enforcing mode.
+It is noted that the relevant industry forum (CA/Browser Forum) is
+indeed pushing for such extensive adoption. On the other hand non public  
+infrastructures may not willing to expose publicly the certificates they 
+are using to secure their non public communications. TACK has some similarities
+to the current proposal, but work on it seems to have stalled.  {{tack}}
+compares our proposal to TACK.
+
+HPKP is an IETF standard, but so far has proven hard to deploy. HPKP
+pins (fixes) a public key, one of the public keys listed in the
+certificate chain.  As a result, HPKP needs to be coordinated with the
+certificate management process.  Certificate management impacts HPKP and
+thus increases the probability of HPKP failures.  This risk is made even
+higher given the fact that, even though work has been done at the ACME
+WG to automate certificate management, in many or even most cases,
+certificates are still managed manually.  As a result, HPKP cannot be
+completely automated resulting in error-prone manual configuration. Such
+errors could prevent the web server from being accessed by some clients.
+In addition, HPKP uses a HTTP header which makes this solution HTTPS
+specific and not generic to TLS. On the other hand, the current document
+provides a solution that is independent of the server's certificate
+management and that can be entirely and easily automated. {{hpkp}}
+compares HPKP to the current draft in more detail.
+
+The ticket pinning proposal augments these mechanisms with a much easier
+to implement and deploy solution for server identity pinning, by reusing
+some of the ideas behind TLS session resumption.
+
 This section compares ticket pinning to two earlier proposals, HPKP and TACK.
 
 ## Comparison: HPKP {#hpkp}
@@ -909,7 +913,9 @@ HKDF(K\_master, Nonce || "key"), then N = HKDF(K\_master, Nonce ||
 "nonce"). Use these values to encrypt the ticket, AES-GCM(K, N,
 data). This nonce should then be stored and transmitted with the
 ticket.
- 
+
+Other alternative shemes may be used and the use of AES-GCM-SIV
+{{?I-D.irtf-cfrg-gcmsiv}} is one of these possible alternatives. 
 
 # IANA Considerations
 
