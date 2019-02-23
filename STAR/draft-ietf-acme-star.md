@@ -715,6 +715,13 @@ Mitigation recommendations from ACME still apply, but some of them need
     "recurrent-certificate-validity". Alternatively, the CA can set an
     internal certificate generation processes rate limit.
 
+## Privacy Considerations
+
+In order to avoid correlation of certificates by account, if unauthenticated
+GET is negotiated ({{certificate-get-nego}}) the server SHOULD choose URLs of
+certificate resources in a non-guessable way, for example using capability URLs
+{{?W3C.WD-capability-urls-20140218}}.
+
 # Acknowledgments
 
 This work is partially supported by the European Commission under
