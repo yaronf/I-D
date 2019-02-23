@@ -62,6 +62,7 @@ informative:
   RFC7942:
   RFC7633:
   I-D.sheffer-acme-star-request:
+  I-D.ietf-acme-star-delegation:
   I-D.nir-saag-star:
   Stark:
     -: ta
@@ -191,7 +192,12 @@ For a more generic treatment of STAR certificates, readers are referred to {{I-D
 
 ### Name Delegation Use Case
 
-The proposed mechanism can be used as a building block of an efficient name-delegation protocol, for example one that exists between a CDN or a cloud provider and its customers {{I-D.sheffer-acme-star-request}}.  At any time, the service customer (i.e., the IdO) can terminate the delegation by simply instructing the CA to stop the automatic renewal and letting the currently active certificate expire shortly thereafter.
+The proposed mechanism can be used as a building block of an efficient
+name-delegation protocol, for example one that exists between a CDN or a cloud
+provider and its customers {{I-D.ietf-acme-star-delegation}}.  At any time,
+the service customer (i.e., the IdO) can terminate the delegation by simply
+instructing the CA to stop the automatic renewal and letting the currently
+active certificate expire shortly thereafter.
 Note that in this case the delegated entity needs to access the auto-renewed
 certificate without being in possession of the ACME account key that was used
 for initiating the STAR issuance.
@@ -241,7 +247,7 @@ It then automatically re-issues the certificate using the same CSR (and
 therefore the same identifier and public key) before the previous one expires, and publishes
 it to the URL that was returned to the IdO at the end of the bootstrap phase.
 The certificate user, which could be either the IdO itself or a delegated third
-party, as described in {{I-D.sheffer-acme-star-request}}, obtains the
+party, as described in {{I-D.ietf-acme-star-delegation}}, obtains the
 certificate ({{fetching-certificates}}) and uses it.
 
 The refresh process ({{figprotorefresh}}) goes on until either:
@@ -483,7 +489,7 @@ Immediately after the order expires, the server MUST respond with 403 (Forbidden
 {: #certificate-get-nego }
 
 In order to enable the name delegation workflow defined in
-{{I-D.sheffer-acme-star-request}} as well as to increase the reliability of the
+{{I-D.ietf-acme-star-delegation}} as well as to increase the reliability of the
 STAR ecosystem (see {{dependability}} for details), this document defines a
 mechanism that allows a server to advertise support for accessing
 star-certificate resources via unauthenticated GET (instead of, or in addition
