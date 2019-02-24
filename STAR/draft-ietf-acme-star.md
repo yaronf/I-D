@@ -342,7 +342,9 @@ The Order resource is extended with the following attributes:
     "recurrent": true,
     "recurrent-start-date": "2016-01-01T00:00:00Z",
     "recurrent-end-date": "2017-01-01T00:00:00Z",
-    "recurrent-certificate-validity": 604800
+    "recurrent-certificate-validity": 604800,
+    "recurrent-certificate-predate": 432000,
+    "recurrent-certificate-get": true
   }
 ~~~
 
@@ -353,7 +355,8 @@ When omitted, the start date is as soon as authorization is complete.
 - recurrent-end-date (required, string): the latest date of validity of the last certificate issued,
 in {{RFC3339}} format.
 - recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.  This is a nominal value which does not include any
-extra validity time which is due to pre-dating.  The client can use this value as a hint to configure its polling timer.
+extra validity time which is due to pre-dating.  The client can use the value reflected by the server as a hint to configure its polling timer.
+- recurrent-certificate-predate (optional, integer): amount of pre-dating added to each STAR certificate, an integer that denotes a number of seconds.  If present, the value of the notBefore field that would otherwise appear in the STAR certificates is pre-dated of the specified number of seconds.  See also {{operational-cons-clocks}}.
 - recurrent-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
 These attributes are included in a POST message when creating the Order, as part of the "payload" encoded object.
@@ -436,7 +439,7 @@ An example directory object advertising STAR support with one day star-min-cert-
        "star-enabled": true,
        "star-min-cert-validity": 86400,
        "star-max-renewal":  31536000,
-	   "star-allow-certificate-get": true
+       "star-allow-certificate-get": true
      }
   }
 ~~~
