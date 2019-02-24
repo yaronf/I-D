@@ -47,8 +47,8 @@ author:
  -
     ins: T. Fossati
     name: Thomas Fossati
-    organization: Nokia
-    email: thomas.fossati@nokia.com
+    organization: ARM
+    email: thomas.fossati@arm.com
 
 normative:
   RFC2119:
@@ -739,6 +739,7 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 Thanks to
 Jon Peterson,
+Eric Rescorla,
 Sean Turner and
 Martin Thomson
 for helpful comments and discussions that have shaped this document.
