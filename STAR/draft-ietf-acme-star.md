@@ -356,7 +356,7 @@ When omitted, the start date is as soon as authorization is complete.
 in {{RFC3339}} format.
 - recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.  This is a nominal value which does not include any
 extra validity time which is due to pre-dating.  The client can use the value reflected by the server (which may be different from the one sent by the client) as a hint to configure its polling timer.
-- recurrent-certificate-predate (optional, integer): amount of pre-dating added to each STAR certificate, an integer that denotes a number of seconds.  If present, the value of the notBefore field that would otherwise appear in the STAR certificates is pre-dated by the specified number of seconds.  See also {{operational-cons-clocks}}.
+- recurrent-certificate-predate (optional, integer): amount of pre-dating added to each STAR certificate, an integer that denotes a number of seconds.  The default is 0.  If present, the value of the notBefore field that would otherwise appear in the STAR certificates is pre-dated by the specified number of seconds.  See also {{operational-cons-clocks}}.
 - recurrent-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
 These attributes are included in a POST message when creating the Order, as part of the "payload" encoded object.
@@ -406,7 +406,7 @@ Immediately after the order is canceled, the server:
 - MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide
 additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
 
-Issuing a cancellation for an order that is not in "valid" state has undefined semantics.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
+Issuing a cancellation for an order that is not in "valid" state is not allowed.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
 
 Explicit certificate revocation using the revokeCert interface (Section 7.6 of {{I-D.ietf-acme-acme}}) is not supported for STAR certificates.  A server receiving a revocation request for a STAR certificate MUST return an error response with status code 403 (Forbidden) and type "urn:ietf:params:acme:error:recurrentRevocationNotSupported".
 
@@ -482,7 +482,7 @@ Their purpose is to enable client implementations that do not parse the certific
 
 To improve robustness, the next certificate MUST be made available by the ACME CA at the URL pointed by "star-certificate" at the latest halfway through the lifetime of the currently active certificate.
 It is worth noting that this has an implication in case of cancellation: in fact, from the time the next certificate is made available, the cancellation is not completely effective until the latter also expires.
-To avoid the client accidentally entering a broken state, the "next" certificate MUST be pre-dated so that it is already valid when it is published at the "star-certificate" URL.  For further discussion on pre-dating, see {{operational-cons-clocks}}.
+To avoid the client accidentally entering a broken state, the "next" certificate MUST be pre-dated so that it is already valid when it is published at the "star-certificate" URL.  Note that the server might need to increase the recurrent-certificate-predate value to satisfy the latter requirement.  For further discussion on pre-dating, see {{operational-cons-clocks}}.
 
 The server MUST NOT issue any additional certificates for this order beyond its recurrent-end-date.
 
