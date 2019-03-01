@@ -583,6 +583,17 @@ The notBefore and notAfter of each short-term certificate are:
     ]
 ~~~
 
+A client should expect each certificate to be available from the
+star-certificate endpoint at the following times:
+
+~~~
+    [
+      "2016-01-10T00:00:00Z",
+      "2016-01-12T00:00:00Z",
+      "2016-01-16T00:00:00Z",
+    ]
+~~~
+
 # Operational Considerations
 
 ## The Meaning of "Short Term" and the Impact of Skewed Clocks
