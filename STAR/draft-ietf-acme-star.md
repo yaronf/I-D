@@ -549,7 +549,7 @@ where "predating" is the max between the (optional)
 recurrent-certificate-predate (rcp) and the amount of pre-dating that the
 server needs to add to make sure that all certificates being published are
 valid at the time of publication ({{fetching-certificates}}).  The server
-pre-dating is a fraction of rcv (i.e., 1/n with n>=2).
+pre-dating is a fraction of rcv (i.e., rcv/n with 1<n<=2).
 
 ~~~
     predating = max(rcp, rcv * 1/n)
