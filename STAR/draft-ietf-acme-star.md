@@ -47,8 +47,8 @@ author:
  -
     ins: T. Fossati
     name: Thomas Fossati
-    organization: Nokia
-    email: thomas.fossati@nokia.com
+    organization: ARM
+    email: thomas.fossati@arm.com
 
 normative:
   RFC2119:
@@ -62,6 +62,7 @@ informative:
   RFC7942:
   RFC7633:
   I-D.sheffer-acme-star-request:
+  I-D.ietf-acme-star-delegation:
   I-D.nir-saag-star:
   Stark:
     -: ta
@@ -191,7 +192,12 @@ For a more generic treatment of STAR certificates, readers are referred to {{I-D
 
 ### Name Delegation Use Case
 
-The proposed mechanism can be used as a building block of an efficient name-delegation protocol, for example one that exists between a CDN or a cloud provider and its customers {{I-D.sheffer-acme-star-request}}.  At any time, the service customer (i.e., the IdO) can terminate the delegation by simply instructing the CA to stop the automatic renewal and letting the currently active certificate expire shortly thereafter.
+The proposed mechanism can be used as a building block of an efficient
+name-delegation protocol, for example one that exists between a CDN or a cloud
+provider and its customers {{I-D.ietf-acme-star-delegation}}.  At any time,
+the service customer (i.e., the IdO) can terminate the delegation by simply
+instructing the CA to stop the automatic renewal and letting the currently
+active certificate expire shortly thereafter.
 Note that in this case the delegated entity needs to access the auto-renewed
 certificate without being in possession of the ACME account key that was used
 for initiating the STAR issuance.
@@ -241,7 +247,7 @@ It then automatically re-issues the certificate using the same CSR (and
 therefore the same identifier and public key) before the previous one expires, and publishes
 it to the URL that was returned to the IdO at the end of the bootstrap phase.
 The certificate user, which could be either the IdO itself or a delegated third
-party, as described in {{I-D.sheffer-acme-star-request}}, obtains the
+party, as described in {{I-D.ietf-acme-star-delegation}}, obtains the
 certificate ({{fetching-certificates}}) and uses it.
 
 The refresh process ({{figprotorefresh}}) goes on until either:
@@ -336,7 +342,9 @@ The Order resource is extended with the following attributes:
     "recurrent": true,
     "recurrent-start-date": "2016-01-01T00:00:00Z",
     "recurrent-end-date": "2017-01-01T00:00:00Z",
-    "recurrent-certificate-validity": 604800
+    "recurrent-certificate-validity": 604800,
+    "recurrent-certificate-predate": 432000,
+    "recurrent-certificate-get": true
   }
 ~~~
 
@@ -347,7 +355,8 @@ When omitted, the start date is as soon as authorization is complete.
 - recurrent-end-date (required, string): the latest date of validity of the last certificate issued,
 in {{RFC3339}} format.
 - recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.  This is a nominal value which does not include any
-extra validity time which is due to pre-dating.  The client can use this value as a hint to configure its polling timer.
+extra validity time which is due to pre-dating.  The client can use the value reflected by the server (which may be different from the one sent by the client) as a hint to configure its polling timer.
+- recurrent-certificate-predate (optional, integer): amount of pre-dating added to each STAR certificate, an integer that denotes a number of seconds.  The default is 0.  If present, the value of the notBefore field that would otherwise appear in the STAR certificates is pre-dated by the specified number of seconds.  See also {{operational-cons-clocks}}.
 - recurrent-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
 These attributes are included in a POST message when creating the Order, as part of the "payload" encoded object.
@@ -397,7 +406,7 @@ Immediately after the order is canceled, the server:
 - MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide
 additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
 
-Issuing a cancellation for an order that is not in "valid" state has undefined semantics.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
+Issuing a cancellation for an order that is not in "valid" state is not allowed.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
 
 Explicit certificate revocation using the revokeCert interface (Section 7.6 of {{I-D.ietf-acme-acme}}) is not supported for STAR certificates.  A server receiving a revocation request for a STAR certificate MUST return an error response with status code 403 (Forbidden) and type "urn:ietf:params:acme:error:recurrentRevocationNotSupported".
 
@@ -430,7 +439,7 @@ An example directory object advertising STAR support with one day star-min-cert-
        "star-enabled": true,
        "star-min-cert-validity": 86400,
        "star-max-renewal":  31536000,
-	   "star-allow-certificate-get": true
+       "star-allow-certificate-get": true
      }
   }
 ~~~
@@ -473,7 +482,7 @@ Their purpose is to enable client implementations that do not parse the certific
 
 To improve robustness, the next certificate MUST be made available by the ACME CA at the URL pointed by "star-certificate" at the latest halfway through the lifetime of the currently active certificate.
 It is worth noting that this has an implication in case of cancellation: in fact, from the time the next certificate is made available, the cancellation is not completely effective until the latter also expires.
-To avoid the client accidentally entering a broken state, the "next" certificate MUST be pre-dated so that it is already valid when it is published at the "star-certificate" URL.  For further discussion on pre-dating, see {{operational-cons-clocks}}.
+To avoid the client accidentally entering a broken state, the "next" certificate MUST be pre-dated so that it is already valid when it is published at the "star-certificate" URL.  Note that the server might need to increase the recurrent-certificate-predate value to satisfy the latter requirement.  For further discussion on pre-dating, see {{operational-cons-clocks}}.
 
 The server MUST NOT issue any additional certificates for this order beyond its recurrent-end-date.
 
@@ -483,7 +492,7 @@ Immediately after the order expires, the server MUST respond with 403 (Forbidden
 {: #certificate-get-nego }
 
 In order to enable the name delegation workflow defined in
-{{I-D.sheffer-acme-star-request}} as well as to increase the reliability of the
+{{I-D.ietf-acme-star-delegation}} as well as to increase the reliability of the
 STAR ecosystem (see {{dependability}} for details), this document defines a
 mechanism that allows a server to advertise support for accessing
 star-certificate resources via unauthenticated GET (instead of, or in addition
@@ -715,6 +724,13 @@ Mitigation recommendations from ACME still apply, but some of them need
     "recurrent-certificate-validity". Alternatively, the CA can set an
     internal certificate generation processes rate limit.
 
+## Privacy Considerations
+
+In order to avoid correlation of certificates by account, if unauthenticated
+GET is negotiated ({{certificate-get-nego}}) the server SHOULD choose URLs of
+certificate resources in a non-guessable way, for example using capability URLs
+{{?W3C.WD-capability-urls-20140218}}.
+
 # Acknowledgments
 
 This work is partially supported by the European Commission under
@@ -723,6 +739,7 @@ for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 Thanks to
 Jon Peterson,
+Eric Rescorla,
 Sean Turner and
 Martin Thomson
 for helpful comments and discussions that have shaped this document.
