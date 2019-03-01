@@ -518,11 +518,11 @@ If the server accepts the request, it MUST reflect the key in the Order.
 
 ## Computing notBefore and notAfter of STAR Certificates
 
-We define the "nominal renewal date" as the point in time when a new short-term
+We define "nominal renewal date" the point in time when a new short-term
 certificate for a given STAR Order is due.  It is a multiple of the Order's
-recurrent-certificate-validity which starts with the issuance of the
-first short-term certificate and it is upper bounded by the Order's
-recurrent-end-date ({{fignrd}}).
+recurrent-certificate-validity that starts with the issuance of the first
+short-term certificate and is upper-bounded by the Order's recurrent-end-date
+({{fignrd}}).
 
 ~~~
     rcv    - STAR Order's recurrent-certificate-validity
@@ -541,38 +541,39 @@ The rules to determine the notBefore and notAfter values of the i-th STAR
 certificate are as follows:
 
 ~~~
-  notBefore = nrd[i] - predating
-  notAfter = min(nrd[i] + rcv, red)
+    notBefore = nrd[i] - predating
+    notAfter  = min(nrd[i] + rcv, red)
 ~~~
 
 where "predating" is the max between the (optional)
 recurrent-certificate-predate (rcp) and the amount of pre-dating that the
 server needs to add to make sure that all certificates being published are
 valid at the time of publication ({{fetching-certificates}}).  The server
-pre-dating is a fraction of rcv (1/n with n>=2).
+pre-dating is a fraction of rcv (i.e., 1/n with n>=2).
 
 ~~~
-  predating = max(rcp, rcv * 1/n)
+    predating = max(rcp, rcv * 1/n)
 ~~~
 
 ### Example
 
-Given a server that intends to publish the next cert halfway through the
-lifetime of the previous one, and a STAR Order with the following settings:
+Given a server that intends to publish the next STAR certificate halfway
+through the lifetime of the previous one, and a STAR Order with the following
+attributes:
 
 ~~~
      {
        "recurrent-start-date": "2016-01-10T00:00:00Z",
-       "recurrent-end-date": "2016-01-20T00:00:00Z",	// 12d
-       "recurrent-certificate-validity": 345600,	// 4d
-       "recurrent-certificate-predate": 518400,		// 6d
+       "recurrent-end-date": "2016-01-20T00:00:00Z",
+       "recurrent-certificate-validity": 345600,    // 4 days
+       "recurrent-certificate-predate": 518400,     // 6 days
      }
 ~~~
 
 The amount of pre-dating that needs to be subtracted from each nominal renewal
-date is 6 days -- computed as max(518400, 345600 * 1/2).
+date is 6 days -- i.e., max(518400, 345600 * 1/2).
 
-The notBefore and notAfter of each short-term certificate is as follows:
+The notBefore and notAfter of each short-term certificate are:
 
 ~~~
     [
