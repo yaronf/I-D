@@ -566,7 +566,7 @@ attributes:
        "recurrent-start-date": "2016-01-10T00:00:00Z",
        "recurrent-end-date": "2016-01-20T00:00:00Z",
        "recurrent-certificate-validity": 345600,    // 4 days
-       "recurrent-certificate-predate": 518400,     // 6 days
+       "recurrent-certificate-predate": 518400      // 6 days
      }
 ~~~
 
@@ -590,7 +590,7 @@ star-certificate endpoint at the following times:
     [
       "2016-01-10T00:00:00Z",
       "2016-01-12T00:00:00Z",
-      "2016-01-16T00:00:00Z",
+      "2016-01-16T00:00:00Z"
     ]
 ~~~
 
