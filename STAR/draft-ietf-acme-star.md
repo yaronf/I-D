@@ -571,7 +571,7 @@ attributes:
 ~~~
 
 The amount of pre-dating that needs to be subtracted from each nominal renewal
-date is 6 days -- i.e., max(518400, 345600 * 1/2).
+date is 6 days -- i.e., max(518400, 345600 * .5).
 
 The notBefore and notAfter of each short-term certificate are:
 
@@ -588,7 +588,7 @@ star-certificate endpoint at the following times:
 
 ~~~
     [
-      "2016-01-10T00:00:00Z",
+      "2016-01-10T00:00:00Z",  // or earlier
       "2016-01-12T00:00:00Z",
       "2016-01-16T00:00:00Z"
     ]
