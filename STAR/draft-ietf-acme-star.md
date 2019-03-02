@@ -516,6 +516,84 @@ setting it to true.
 
 If the server accepts the request, it MUST reflect the key in the Order.
 
+## Computing notBefore and notAfter of STAR Certificates
+
+We define "nominal renewal date" the point in time when a new short-term
+certificate for a given STAR Order is due.  It is a multiple of the Order's
+recurrent-certificate-validity that starts with the issuance of the first
+short-term certificate and is upper-bounded by the Order's recurrent-end-date
+({{fignrd}}).
+
+~~~
+    rcv    - STAR Order's recurrent-certificate-validity
+    red    - STAR Order's recurrent-end-date
+    nrd[i] - nominal renewal date of the i-th STAR certificate
+
+
+                 .-rcv-.   .-rcv-.   .-rcv-.   ._rcv_.
+                /       \ /       \ /       \ /  red  \
+    -----------o---------o---------o---------o----X-------> t
+              nrd[0]    nrd[1]    nrd[2]    nrd[3]
+~~~
+{: #fignrd title="Nominal Renewal Date"}
+
+The rules to determine the notBefore and notAfter values of the i-th STAR
+certificate are as follows:
+
+~~~
+    notBefore = nrd[i] - predating
+    notAfter  = min(nrd[i] + rcv, red)
+~~~
+
+where "predating" is the max between the (optional)
+recurrent-certificate-predate (rcp) and the amount of pre-dating that the
+server needs to add to make sure that all certificates being published are
+valid at the time of publication ({{fetching-certificates}}).  The server
+pre-dating is a fraction f of rcv (i.e., f * rcv with .5 <= f < 1).
+
+~~~
+    predating = max(rcp, f * rcv)
+~~~
+
+### Example
+
+Given a server that intends to publish the next STAR certificate halfway
+through the lifetime of the previous one, and a STAR Order with the following
+attributes:
+
+~~~
+     {
+       "recurrent-start-date": "2016-01-10T00:00:00Z",
+       "recurrent-end-date": "2016-01-20T00:00:00Z",
+       "recurrent-certificate-validity": 345600,    // 4 days
+       "recurrent-certificate-predate": 518400      // 6 days
+     }
+~~~
+
+The amount of pre-dating that needs to be subtracted from each nominal renewal
+date is 6 days -- i.e., max(518400, 345600 * 1/2).
+
+The notBefore and notAfter of each short-term certificate are:
+
+~~~
+    [
+      [ "2016-01-04T00:00:00Z", "2016-01-14T00:00:00Z" ],
+      [ "2016-01-08T00:00:00Z", "2016-01-18T00:00:00Z" ],
+      [ "2016-01-12T00:00:00Z", "2016-01-20T00:00:00Z" ]
+    ]
+~~~
+
+A client should expect each certificate to be available from the
+star-certificate endpoint at the following times:
+
+~~~
+    [
+      "2016-01-10T00:00:00Z",
+      "2016-01-12T00:00:00Z",
+      "2016-01-16T00:00:00Z"
+    ]
+~~~
+
 # Operational Considerations
 
 ## The Meaning of "Short Term" and the Impact of Skewed Clocks
