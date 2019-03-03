@@ -530,8 +530,8 @@ short-term certificate and is upper-bounded by the Order's recurrent-end-date
     nrd[i] - nominal renewal date of the i-th STAR certificate
 
 
-                 .-rcv-.   .-rcv-.   .-rcv-.   ._rcv_.
-                /       \ /       \ /       \ /  red  \
+                 .-rcv-.   .-rcv-.   .-rcv-.   .__.
+                /       \ /       \ /       \ /  red
     -----------o---------o---------o---------o----X-------> t
               nrd[0]    nrd[1]    nrd[2]    nrd[3]
 ~~~
