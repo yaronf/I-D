@@ -828,6 +828,13 @@ for helpful comments and discussions that have shaped this document.
 
 [[Note to RFC Editor: please remove before publication.]]
 
+## draft-ietf-acme-star-05
+
+- EKR's AD review
+- A detailed example of the timing of certificate issuance and predating
+- Added an explicit client-side parameter for predating
+- Security considerations around unauthenticated GET
+
 ## draft-ietf-acme-star-04
 
 - WG last call comments by Sean Turner
