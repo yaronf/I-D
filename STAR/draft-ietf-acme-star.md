@@ -488,7 +488,7 @@ The server MUST NOT issue any additional certificates for this order beyond its 
 
 Immediately after the order expires, the server MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired". Note that the Order resource's state remains "valid", as per the base protocol.
 
-## Negotiate unauthenticated GET
+## Negotiating an unauthenticated GET
 {: #certificate-get-nego }
 
 In order to enable the name delegation workflow defined in
