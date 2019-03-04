@@ -753,7 +753,8 @@ This document adds the following entries to the ACME Order Object Fields registr
 | recurrent | string | true | RFC XXXX |
 | recurrent-start-date | string | true | RFC XXXX |
 | recurrent-end-date | string | true | RFC XXXX |
-| recurrent-certificate-validity | string | true | RFC XXXX |
+| recurrent-certificate-validity | integer | true | RFC XXXX |
+| recurrent-certificate-predate | integer | true | RFC XXXX |
 | recurrent-certificate-get | boolean | true | RFC XXXX |
 | star-certificate | string | false | RFC XXXX |
 
