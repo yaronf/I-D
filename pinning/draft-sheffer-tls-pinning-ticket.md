@@ -573,199 +573,6 @@ treated as ephemeral keys. Even when servers derive pinning secrets from
 resumption keys ({{pinning-secret}}), they MUST NOT back up resumption
 keys.
 
-# Previous Work
-
-The global PKI system relies on the trust of a CA issuing certificates.
-As a result, a corrupted trusted CA may issue a certificate for any
-organization without the organization's approval (a misissued or "fake"
-certificate), and use the certificate to impersonate the organization.
-There are many attempts to resolve these weaknesses, including
-Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key Pinning
-(HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.
-
-CT requires
-cooperation of a large portion of the hundreds of extant certificate
-authorities (CAs) before it can be used "for real", in enforcing mode.
-It is noted that the relevant industry forum (CA/Browser Forum) is
-indeed pushing for such extensive adoption. However the public nature of CT
-often makes it inappropriate for enterprise use, because many organizations
-are not willing to expose their internal infrastructure publicly.
-
-TACK has some similarities
-to the current proposal, but work on it seems to have stalled.  {{tack}}
-compares our proposal to TACK.
-
-HPKP is an IETF standard, but so far has proven hard to deploy. HPKP
-pins (fixes) a public key, one of the public keys listed in the
-certificate chain.  As a result, HPKP needs to be coordinated with the
-certificate management process.  Certificate management impacts HPKP and
-thus increases the probability of HPKP failures.  This risk is made even
-higher given the fact that, even though work has been done at the ACME
-WG to automate certificate management, in many or even most cases,
-certificates are still managed manually.  As a result, HPKP cannot be
-completely automated resulting in error-prone manual configuration. Such
-errors could prevent the web server from being accessed by some clients.
-In addition, HPKP uses a HTTP header which makes this solution HTTPS
-specific and not generic to TLS. On the other hand, the current document
-provides a solution that is independent of the server's certificate
-management and that can be entirely and easily automated. {{hpkp}}
-compares HPKP to the current draft in more detail.
-
-The ticket pinning proposal augments these mechanisms with a much easier
-to implement and deploy solution for server identity pinning, by reusing
-some of the ideas behind TLS session resumption.
-
-This section compares ticket pinning to two earlier proposals, HPKP and TACK.
-
-## Comparison: HPKP {#hpkp}
-
-The current IETF standard for pinning the identity of web servers is the
-Public Key Pinning Extension for HTTP, or HPKP {{RFC7469}}.
-
-The main differences between HPKP and the current document are the
-following:
-
-* HPKP limits its scope to HTTPS, while the current document considers all
-application above TLS.
-
-* HPKP pins the public key of the server (or another public key along the
-certificate chain) and as such is highly dependent on the management of
-certificates.  Such dependency increases the potential error surface,
-especially as certificate management is not yet largely automated.  The
-current proposal, on the other hand is independent of certificate
-management.
-
-* HPKP pins public keys which are public and used for the standard TLS
-authentication.  Identity pinning relies on the ownership of the pinning
-key which is not disclosed to the public and not involved in the
-standard TLS authentication.  As a result, identity pinning is a
-completely independent second factor authentication mechanism.
-
-* HPKP relies on a backup key to recover the misissuance of a key.  We
-believe such backup mechanisms add excessive complexity and cost.
-Reliability of the current mechanism is primarily based on its being
-highly automated.
-
-* HPKP relies on the client to report errors to the report-uri.  The
-current document not need any out-of band mechanism, and the server is
-informed automatically. This provides an easier and more reliable health
-monitoring.
-
-On the other hand, HPKP shares the following aspects with identity pinning:
-
-* Both mechanisms provide hard failure.  With HPKP only the client is
-aware of the failure, while with the current proposal both client and
-server are informed of the failure.  This provides room for further
-mechanisms to automatically recover such failures.
-
-* Both mechanisms are subject to a server compromise in which users are
-provided with an invalid ticket (e.g. a random one) or HTTP Header, with
-a very long lifetime. For identity pinning, this lifetime SHOULD NOT be
-longer than 31 days.  In both cases, clients will not be able to
-reconnect the server during this lifetime.  With the current proposal,
-an attacker needs to compromise the TLS layer, while with HPKP, the
-attacker needs to compromise the HTTP server.  Arguably, the TLS-level
-compromise is typically more difficult for the attacker.
-
-Unfortunately HPKP has not seen wide deployment yet.  As of March 2016,
-the number of servers using HPKP was less than 3000 {{Netcraft}}.  This
-may simply be due to inertia, but we believe the main reason is the
-interactions between HPKP and manual certificate management which is
-needed to implement HPKP for enterprise servers. The penalty for making
-mistakes (e.g. being too early or too late to deploy new pins) is having
-the server become unusable for some of the clients.
-
-To demonstrate this point, we present a list of the steps involved in
-deploying HPKP on a security-sensitive Web server.
-
-1. Generate two public/private key-pairs on a computer that is not the
-Live server. The second one is the "backup1" key-pair.
-
-    `openssl genrsa -out "example.com.key" 2048;`
-
-    `openssl genrsa -out "example.com.backup1.key" 2048;`
-
-
-2. Generate hashes for both of the public keys. These will be used in
-the HPKP header:
-
-    `openssl rsa -in "example.com.key" -outform der -pubout | openssl dgst -sha256 -binary | openssl enc -base64`
-
-    `openssl rsa -in "example.com.backup1.key" -outform der -pubout | openssl dgst -sha256 -binary | openssl enc -base64`
-
-3. Generate a single CSR (Certificate Signing Request) for the first
-key-pair, where you include the domain name in the CN (Common Name)
-field:
-
-    `openssl req -new -subj "/C=GB/ST=Area/L=Town/O=Company/CN=example.com"
-            -key "example.com.key" -out "example.com.csr";`
-
-4. Send this CSR to the CA (Certificate Authority), and go though the
-dance to prove you own the domain.  The CA will give you back a single
-certificate that will typically expire within a year or two.
-
-5. On the Live server, upload and setup the first key-pair (and its
-certificate).  At this point you can add the "Public-Key-Pins" header,
-using the two hashes you created in step 2.
-
-   Note that only the first key-pair has been uploaded to the server so far.
-
-
-6. Store the second (backup1) key-pair somewhere safe, probably
-somewhere encrypted like a password manager.  It won't expire, as it's
-just a key-pair, it just needs to be ready for when you need to get your
-next certificate.
-
-7. Time passes... probably just under a year (if waiting for a
-certificate to expire), or maybe sooner if you find that your server has
-been compromised and you need to replace the key-pair and certificate.
-
-8. Create a new CSR (Certificate Signing Request) using the "backup1"
-key-pair, and get a new certificate from your CA.
-
-9. Generate a new backup key-pair (backup2), get its hash, and store it
-in a safe place (again, not on the Live server).
-
-10. Replace your old certificate and old key-pair, and update the
-"Public-Key-Pins" header to remove the old hash, and add the new
-"backup2" key-pair.
-
-Note that in the above steps, both the certificate issuance as well as
-the storage of the backup key pair involve manual steps. Even with an
-automated CA that runs the ACME protocol, key backup would be a
-challenge to automate.
-
-## Comparison: TACK {#tack}
-
-Compared with HPKP, TACK {{I-D.perrin-tls-tack}} is a lot more similar
-to the current draft.  It can even be argued that this document is a
-symmetric-cryptography variant of TACK.  That said, there are still a
-few significant differences:
-
-- Probably the most important difference is that with TACK, validation of
-the server certificate is no longer required, and in fact TACK specifies
-it as a "MAY" requirement (Sec. 5.3).  With ticket pinning, certificate
-validation by the client remains a MUST requirement, and the ticket acts
-only as a second factor. If the pinning secret is compromised, the
-server's security is not immediately at risk.
-- Both TACK and the current draft are mostly orthogonal to the server
-certificate as far as their life cycle, and so both can be deployed with
-no manual steps.
-- TACK uses ECDSA to sign the server's public key. This allows
-cooperating clients to share server assertions between themselves. This
-is an optional TACK feature, and one that cannot be done with pinning
-tickets.
-- TACK allows multiple servers to share its public keys. Such sharing is
-disallowed by the current document.
-- TACK does not allow the server to track a particular client, and so
-has better privacy properties than the current draft.
-- TACK has an interesting way to determine the pin's lifetime, setting
-it to the time period since the pin was first observed, with a hard
-upper bound of 30 days.  The current draft makes the lifetime explicit,
-which may be more flexible to deploy.  For example, Web sites which are
-only visited rarely by users may opt for a longer period than other
-sites that expect users to visit on a daily basis.
-
 # Implementation Status
 
 Note to RFC Editor: please remove this section before publication,
@@ -967,6 +774,199 @@ Francis for contributing the HPKP deployment script, and to Ralph Holz
 for several fruitful discussions.
 
 --- back
+
+# Previous Work
+
+The global PKI system relies on the trust of a CA issuing certificates.
+As a result, a corrupted trusted CA may issue a certificate for any
+organization without the organization's approval (a misissued or "fake"
+certificate), and use the certificate to impersonate the organization.
+There are many attempts to resolve these weaknesses, including
+Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key Pinning
+(HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.
+
+CT requires
+cooperation of a large portion of the hundreds of extant certificate
+authorities (CAs) before it can be used "for real", in enforcing mode.
+It is noted that the relevant industry forum (CA/Browser Forum) is
+indeed pushing for such extensive adoption. However the public nature of CT
+often makes it inappropriate for enterprise use, because many organizations
+are not willing to expose their internal infrastructure publicly.
+
+TACK has some similarities
+to the current proposal, but work on it seems to have stalled.  {{tack}}
+compares our proposal to TACK.
+
+HPKP is an IETF standard, but so far has proven hard to deploy. HPKP
+pins (fixes) a public key, one of the public keys listed in the
+certificate chain.  As a result, HPKP needs to be coordinated with the
+certificate management process.  Certificate management impacts HPKP and
+thus increases the probability of HPKP failures.  This risk is made even
+higher given the fact that, even though work has been done at the ACME
+WG to automate certificate management, in many or even most cases,
+certificates are still managed manually.  As a result, HPKP cannot be
+completely automated resulting in error-prone manual configuration. Such
+errors could prevent the web server from being accessed by some clients.
+In addition, HPKP uses a HTTP header which makes this solution HTTPS
+specific and not generic to TLS. On the other hand, the current document
+provides a solution that is independent of the server's certificate
+management and that can be entirely and easily automated. {{hpkp}}
+compares HPKP to the current draft in more detail.
+
+The ticket pinning proposal augments these mechanisms with a much easier
+to implement and deploy solution for server identity pinning, by reusing
+some of the ideas behind TLS session resumption.
+
+This section compares ticket pinning to two earlier proposals, HPKP and TACK.
+
+## Comparison: HPKP {#hpkp}
+
+The current IETF standard for pinning the identity of web servers is the
+Public Key Pinning Extension for HTTP, or HPKP {{RFC7469}}.
+
+The main differences between HPKP and the current document are the
+following:
+
+* HPKP limits its scope to HTTPS, while the current document considers all
+application above TLS.
+
+* HPKP pins the public key of the server (or another public key along the
+certificate chain) and as such is highly dependent on the management of
+certificates.  Such dependency increases the potential error surface,
+especially as certificate management is not yet largely automated.  The
+current proposal, on the other hand is independent of certificate
+management.
+
+* HPKP pins public keys which are public and used for the standard TLS
+authentication.  Identity pinning relies on the ownership of the pinning
+key which is not disclosed to the public and not involved in the
+standard TLS authentication.  As a result, identity pinning is a
+completely independent second factor authentication mechanism.
+
+* HPKP relies on a backup key to recover the misissuance of a key.  We
+believe such backup mechanisms add excessive complexity and cost.
+Reliability of the current mechanism is primarily based on its being
+highly automated.
+
+* HPKP relies on the client to report errors to the report-uri.  The
+current document not need any out-of band mechanism, and the server is
+informed automatically. This provides an easier and more reliable health
+monitoring.
+
+On the other hand, HPKP shares the following aspects with identity pinning:
+
+* Both mechanisms provide hard failure.  With HPKP only the client is
+aware of the failure, while with the current proposal both client and
+server are informed of the failure.  This provides room for further
+mechanisms to automatically recover such failures.
+
+* Both mechanisms are subject to a server compromise in which users are
+provided with an invalid ticket (e.g. a random one) or HTTP Header, with
+a very long lifetime. For identity pinning, this lifetime SHOULD NOT be
+longer than 31 days.  In both cases, clients will not be able to
+reconnect the server during this lifetime.  With the current proposal,
+an attacker needs to compromise the TLS layer, while with HPKP, the
+attacker needs to compromise the HTTP server.  Arguably, the TLS-level
+compromise is typically more difficult for the attacker.
+
+Unfortunately HPKP has not seen wide deployment yet.  As of March 2016,
+the number of servers using HPKP was less than 3000 {{Netcraft}}.  This
+may simply be due to inertia, but we believe the main reason is the
+interactions between HPKP and manual certificate management which is
+needed to implement HPKP for enterprise servers. The penalty for making
+mistakes (e.g. being too early or too late to deploy new pins) is having
+the server become unusable for some of the clients.
+
+To demonstrate this point, we present a list of the steps involved in
+deploying HPKP on a security-sensitive Web server.
+
+1. Generate two public/private key-pairs on a computer that is not the
+Live server. The second one is the "backup1" key-pair.
+
+    `openssl genrsa -out "example.com.key" 2048;`
+
+    `openssl genrsa -out "example.com.backup1.key" 2048;`
+
+
+2. Generate hashes for both of the public keys. These will be used in
+the HPKP header:
+
+    `openssl rsa -in "example.com.key" -outform der -pubout | openssl dgst -sha256 -binary | openssl enc -base64`
+
+    `openssl rsa -in "example.com.backup1.key" -outform der -pubout | openssl dgst -sha256 -binary | openssl enc -base64`
+
+3. Generate a single CSR (Certificate Signing Request) for the first
+key-pair, where you include the domain name in the CN (Common Name)
+field:
+
+    `openssl req -new -subj "/C=GB/ST=Area/L=Town/O=Company/CN=example.com"
+            -key "example.com.key" -out "example.com.csr";`
+
+4. Send this CSR to the CA (Certificate Authority), and go though the
+dance to prove you own the domain.  The CA will give you back a single
+certificate that will typically expire within a year or two.
+
+5. On the Live server, upload and setup the first key-pair (and its
+certificate).  At this point you can add the "Public-Key-Pins" header,
+using the two hashes you created in step 2.
+
+   Note that only the first key-pair has been uploaded to the server so far.
+
+
+6. Store the second (backup1) key-pair somewhere safe, probably
+somewhere encrypted like a password manager.  It won't expire, as it's
+just a key-pair, it just needs to be ready for when you need to get your
+next certificate.
+
+7. Time passes... probably just under a year (if waiting for a
+certificate to expire), or maybe sooner if you find that your server has
+been compromised and you need to replace the key-pair and certificate.
+
+8. Create a new CSR (Certificate Signing Request) using the "backup1"
+key-pair, and get a new certificate from your CA.
+
+9. Generate a new backup key-pair (backup2), get its hash, and store it
+in a safe place (again, not on the Live server).
+
+10. Replace your old certificate and old key-pair, and update the
+"Public-Key-Pins" header to remove the old hash, and add the new
+"backup2" key-pair.
+
+Note that in the above steps, both the certificate issuance as well as
+the storage of the backup key pair involve manual steps. Even with an
+automated CA that runs the ACME protocol, key backup would be a
+challenge to automate.
+
+## Comparison: TACK {#tack}
+
+Compared with HPKP, TACK {{I-D.perrin-tls-tack}} is a lot more similar
+to the current draft.  It can even be argued that this document is a
+symmetric-cryptography variant of TACK.  That said, there are still a
+few significant differences:
+
+- Probably the most important difference is that with TACK, validation of
+the server certificate is no longer required, and in fact TACK specifies
+it as a "MAY" requirement (Sec. 5.3).  With ticket pinning, certificate
+validation by the client remains a MUST requirement, and the ticket acts
+only as a second factor. If the pinning secret is compromised, the
+server's security is not immediately at risk.
+- Both TACK and the current draft are mostly orthogonal to the server
+certificate as far as their life cycle, and so both can be deployed with
+no manual steps.
+- TACK uses ECDSA to sign the server's public key. This allows
+cooperating clients to share server assertions between themselves. This
+is an optional TACK feature, and one that cannot be done with pinning
+tickets.
+- TACK allows multiple servers to share its public keys. Such sharing is
+disallowed by the current document.
+- TACK does not allow the server to track a particular client, and so
+has better privacy properties than the current draft.
+- TACK has an interesting way to determine the pin's lifetime, setting
+it to the time period since the pin was first observed, with a hard
+upper bound of 30 days.  The current draft makes the lifetime explicit,
+which may be more flexible to deploy.  For example, Web sites which are
+only visited rarely by users may opt for a longer period than other
+sites that expect users to visit on a daily basis.
 
 # Document History
 
