@@ -97,19 +97,22 @@ no manual management actions are required.
 
 # Introduction
 
-Ticket pinning is a proposed solution for the problem of mis-issued certificates,
-either for the global PKI or for large scale deployments of certificates within enterprises.
-This is an easy to implement and deploy solution, reusing
+Misissued public-key certificates can prevent TLS clients from appropriately
+authenticating the TLS server. 
+This is a significant risk in the context of the global PKI, and similarly
+for large scale deployments of certificates within enterprises.
+We propose ticket pinning as an easy to implement and deploy solution
+to this problem, reusing
 some of the ideas behind TLS session resumption.
 
 Ticket pinning is a second factor server authentication method and is
-not proposed as a substitute of the authentication method provided in
+not proposed as a substitute for the authentication method provided in
 the TLS key exchange. More specifically, the client only uses the
 pinning identity method after the TLS key exchange is successfully
 completed.  In other words, the pinning identity method is only
 performed over an authenticated TLS session.  Note that Ticket Pinning
-does not pin certificate information and as such should be considered a
-"real" independent second factor authentication.
+does not pin certificate information and therefore is truly an
+independent second factor authentication.
 
 Ticket pinning is a Trust On First Use (TOFU) mechanism, in that the
 first server authentication is only based on PKI certificate validation,
@@ -578,13 +581,17 @@ organization without the organization's approval (a misissued or "fake"
 certificate), and use the certificate to impersonate the organization.
 There are many attempts to resolve these weaknesses, including
 Certificate Transparency (CT) {{RFC6962}}, HTTP Public Key Pinning
-(HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.  CT requires
+(HPKP) {{RFC7469}}, and TACK {{I-D.perrin-tls-tack}}.
+
+CT requires
 cooperation of a large portion of the hundreds of extant certificate
 authorities (CAs) before it can be used "for real", in enforcing mode.
 It is noted that the relevant industry forum (CA/Browser Forum) is
-indeed pushing for such extensive adoption. On the other hand non public  
-infrastructures may not willing to expose publicly the certificates they 
-are using to secure their non public communications. TACK has some similarities
+indeed pushing for such extensive adoption. However the public nature of CT
+often makes it inappropriate for enterprise use, because many organizations
+are not willing to expose their internal infrastructure publicly.
+
+TACK has some similarities
 to the current proposal, but work on it seems to have stalled.  {{tack}}
 compares our proposal to TACK.
 
@@ -634,7 +641,7 @@ key which is not disclosed to the public and not involved in the
 standard TLS authentication.  As a result, identity pinning is a
 completely independent second factor authentication mechanism.
 
-* HPKP relies on a backup key to recover the mis-issuance of a key.  We
+* HPKP relies on a backup key to recover the misissuance of a key.  We
 believe such backup mechanisms add excessive complexity and cost.
 Reliability of the current mechanism is primarily based on its being
 highly automated.
