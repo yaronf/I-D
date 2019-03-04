@@ -5,7 +5,7 @@ idnits ?= idnits
 rfcdiff ?= rfcdiff
 
 draft := draft-ietf-acme-star
-current_ver := $(shell git tag | grep "$(draft)" | tail -1 | sed -e"s/.*-//")
+current_ver := $(shell git tag | grep "$(draft)-[[:digit:]][[:digit:]]" | tail -1 | sed -e"s/.*-//")
 ifeq "${current_ver}" ""
 next_ver ?= 00
 else
