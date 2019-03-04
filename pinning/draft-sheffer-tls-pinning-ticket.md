@@ -97,6 +97,9 @@ no manual management actions are required.
 
 # Introduction
 
+Ticket pinning is a proposed solution for the problem of mis-issued certificates, either for the global PKI or for extensive deployments of certificates within enterprises. This is an easy to implement and deploy solution, reusing
+some of the ideas behind TLS session resumption.
+
 Ticket pinning is a second factor server authentication method and is
 not proposed as a substitute of the authentication method provided in
 the TLS key exchange. More specifically, the client only uses the
@@ -914,8 +917,6 @@ HKDF(K\_master, Nonce || "key"), then N = HKDF(K\_master, Nonce ||
 data). This nonce should then be stored and transmitted with the
 ticket.
 
-Other alternative shemes may be used and the use of AES-GCM-SIV
-{{?I-D.irtf-cfrg-gcmsiv}} is one of these possible alternatives. 
 
 # IANA Considerations
 
