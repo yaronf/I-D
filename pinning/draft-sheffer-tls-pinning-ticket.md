@@ -970,6 +970,10 @@ sites that expect users to visit on a daily basis.
 
 # Document History
 
+## draft-sheffer-tls-pinning-ticket-09
+
+- ISE comments by Yoav Nir.
+
 ## draft-sheffer-tls-pinning-ticket-08
 
 - ISE comments by Rich Salz.
