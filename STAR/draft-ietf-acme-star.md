@@ -53,9 +53,9 @@ author:
 normative:
   RFC2119:
   RFC3339:
-  I-D.ietf-acme-acme:
   RFC7231:
   RFC7807:
+  RFC8555:
 
 informative:
   RFC6962:
@@ -179,7 +179,7 @@ https://github.com/yaronf/I-D/tree/master/STAR.
 
 # Introduction
 
-The ACME protocol {{I-D.ietf-acme-acme}} automates the process of issuing a certificate to a named entity
+The ACME protocol {{RFC8555}} automates the process of issuing a certificate to a named entity
 (an Identifier Owner or IdO). Typically, but not always, the identifier is a domain name.
 
 If the IdO wishes to obtain a string of short-term certificates originating from the same private key (see {{Topalovic}} about why using short-lived certificates might be preferable to explicit revocation), she must go through the whole ACME protocol each time a new short-term certificate is needed - e.g., every 2-3 days.
@@ -408,7 +408,7 @@ additional information using a problem document {{RFC7807}} with type "urn:ietf:
 
 Issuing a cancellation for an order that is not in "valid" state is not allowed.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
 
-Explicit certificate revocation using the revokeCert interface (Section 7.6 of {{I-D.ietf-acme-acme}}) is not supported for STAR certificates.  A server receiving a revocation request for a STAR certificate MUST return an error response with status code 403 (Forbidden) and type "urn:ietf:params:acme:error:recurrentRevocationNotSupported".
+Explicit certificate revocation using the revokeCert interface (Section 7.6 of {{RFC8555}}) is not supported for STAR certificates.  A server receiving a revocation request for a STAR certificate MUST return an error response with status code 403 (Forbidden) and type "urn:ietf:params:acme:error:recurrentRevocationNotSupported".
 
 ## Capability Discovery
 {: #capability-discovery}
@@ -448,7 +448,7 @@ An example directory object advertising STAR support with one day star-min-cert-
 {: #fetching-certificates}
 
 The certificate is fetched from the star-certificate endpoint with POST-as-GET
-as per {{I-D.ietf-acme-acme}} Section 7.4.2, unless client and server have
+as per {{RFC8555}} Section 7.4.2, unless client and server have
 successfully negotiated the "unauthenticated GET" option described in
 {{certificate-get-nego}}.  In such case, the client can simply issue a GET to
 the star-certificate resource without authenticating itself to the server as
@@ -789,7 +789,7 @@ STAR adds a new attack vector that increases the threat of denial of
     depending on the "recurrent-certificate-validity" parameter. An attacker
     can use this property to aggressively reduce the
     "recurrent-certificate-validity" (e.g. 1 sec.) jointly with other ACME
-    attack vectors identified in Sec. 10 of {{I-D.ietf-acme-acme}}. Other collateral impact is
+    attack vectors identified in Sec. 10 of {{RFC8555}}. Other collateral impact is
     related to the certificate endpoint resource where the client can
     retrieve the certificates periodically. If this resource is external to
     the CA (e.g. a hosted web server), the previous attack will be reflected to
