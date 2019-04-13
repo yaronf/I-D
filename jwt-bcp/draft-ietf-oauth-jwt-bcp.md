@@ -55,6 +55,27 @@ normative:
 informative:
   RFC6749:
   RFC7517:
+
+  Alawatugoda:
+    author:
+    -
+        name: Janaka Alawatugoda
+    -
+        name: Douglas Stebila
+    -
+        name: Colin Boyd
+    title: "Protecting encrypted cookies from compression side-channel attacks"
+    date: January 2015
+    target: https://www.douglas.stebila.ca/research/papers/FC-AlaSteBoy15/
+
+  Kelsey:
+    author:
+    -
+      name: John Kelsey
+    title: "Compression and information leakage of plaintext"
+    date: 2002
+    target: http://dl.acm.org/citation.cfm?id=647937.741226
+
   Langkemper:
     author:
     -
@@ -217,7 +238,8 @@ For mitigations, see <xref target="key-entropy"/>.
 Previous versions of the JSON format {{RFC8259}} allowed several different character
 encodings: UTF-8, UTF-16 and UTF-32. This is not the case anymore, with the latest
 standard only allowing UTF-8. However older implementations may result in the JWT being
-misinterpreted by its recipient.
+misinterpreted by its recipient, and this could be used by a malicious sender to bypass
+the recipient's validation checks.
 
 For mitigations, see <xref target="use-utf8"/>.
 
@@ -351,7 +373,8 @@ Note that even when used for key encryption, password-based encryption is still 
 Many encryption algorithms leak information about the length of the plaintext, with a varying amount of
 leakage depending on the algorithm and mode of operation. Sensitive information, such as passwords,
 SHOULD be padded before being encrypted. It is RECOMMENDED to avoid any compression of data before encryption
-since such compression often reveals information about the plaintext.
+since such compression often reveals information about the plaintext. See {{Kelsey}} for general background
+on compression and encryption, and {{Alawatugoda}} for a specific example of attacks on HTTP cookies.
 
 ## Use UTF-8 ## {#use-utf8}
 
@@ -390,10 +413,13 @@ it MUST reject the JWT.
 ## Do Not Trust Received Claims
 
 The "kid" (key ID) header is used by the relying application to perform key lookup. Applications
-should ensure that this does not create SQL or LDAP injection vulnerabilities.
+should ensure that this does not create SQL or LDAP injection vulnerabilities, by validating
+and/or sanitizing the received value.
 
 Similarly, blindly following a "jku" (JWK set URL) header, which may contain an arbitrary URL,
-could result in server-side request forgery (SSRF) attacks.
+could result in server-side request forgery (SSRF) attacks. Applications should protect against such
+attacks, e.g. by matching the URL to a whitelist of allowed locations,
+and ensuring no cookies are sent in the GET request.
 
 ## Use Explicit Typing ## {#use-typ}
 
@@ -460,13 +486,17 @@ This document requires no IANA actions.
 Thanks to Antonio Sanso for bringing the "ECDH-ES" invalid point attack to the attention
 of JWE and JWT implementers. Tim McLean published the RSA/HMAC confusion attack.
 Thanks to Nat Sakimura for advocating the use of explicit typing. Thanks to Neil Madden for his
-numerous comments, and to Carsten Bormann, Brian Campbell and Eric Rescorla for their reviews.
+numerous comments, and to Carsten Bormann, Brian Campbell, Brian Carpenter and Eric Rescorla for their reviews.
 
 --- back
 
 # Document History
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
+
+## draft-ietf-oauth-jwt-bcp-05
+
+- Genart review comments.
 
 ## draft-ietf-oauth-jwt-bcp-04
 
