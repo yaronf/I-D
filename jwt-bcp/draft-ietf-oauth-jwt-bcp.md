@@ -56,26 +56,10 @@ informative:
   RFC6749:
   RFC7517:
 
-  Alawatugoda:
-    author:
-    -
-        name: Janaka Alawatugoda
-    -
-        name: Douglas Stebila
-    -
-        name: Colin Boyd
-    title: "Protecting encrypted cookies from compression side-channel attacks"
-    date: January 2015
-    target: https://www.douglas.stebila.ca/research/papers/FC-AlaSteBoy15/
+  Alawatugoda: DOI.10.1007/978-3-662-47854-7_6
 
-  Kelsey:
-    author:
-    -
-      name: John Kelsey
-    title: "Compression and information leakage of plaintext"
-    date: 2002
-    target: http://dl.acm.org/citation.cfm?id=647937.741226
-
+  Kelsey: DOI.10.1007/3-540-45661-9_21
+  
   Langkemper:
     author:
     -
