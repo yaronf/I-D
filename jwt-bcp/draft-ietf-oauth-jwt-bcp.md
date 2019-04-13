@@ -32,8 +32,7 @@ author:
   -
     ins: D. Hardt
     name: Dick Hardt
-    organization: Amazon
-    email: "dick@amazon.com"
+    email: "dick.hardt@gmail.com"
   -
     ins: M.B. Jones
     name: Michael B. Jones
