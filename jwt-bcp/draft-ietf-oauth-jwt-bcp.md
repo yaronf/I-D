@@ -401,7 +401,7 @@ and/or sanitizing the received value.
 
 Similarly, blindly following a "jku" (JWK set URL) header, which may contain an arbitrary URL,
 could result in server-side request forgery (SSRF) attacks. Applications should protect against such
-attacks, e.g. by matching the URL to a whitelist of allowed locations,
+attacks, e.g., by matching the URL to a whitelist of allowed locations,
 and ensuring no cookies are sent in the GET request.
 
 ## Use Explicit Typing ## {#use-typ}
