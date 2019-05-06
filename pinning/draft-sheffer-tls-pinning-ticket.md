@@ -44,6 +44,7 @@ normative:
 
 informative:
   RFC2104:
+  RFC5246:
   RFC6454:
   RFC6962:
   RFC7258:
@@ -82,8 +83,9 @@ a TLS session with a TLS end point authenticated with an illegitimate
 public-key certificate. These mechanisms are either not
 widely deployed or limited to public web browsing.
 
-This document proposes to extend TLS with opaque pinning tickets
-as a way to pin the server's identity. During an initial TLS session,
+This document proposes experimental extensions to TLS with opaque
+pinning tickets as a way to pin the server's identity.
+During an initial TLS session,
 the server provides an original encrypted pinning ticket.
 In subsequent TLS session establishment, upon receipt of the pinning ticket,
 the server proves its ability to decrypt the pinning ticket
@@ -97,14 +99,18 @@ no manual management actions are required.
 
 # Introduction
 
-Misissued public-key certificates can prevent TLS clients from appropriately
-authenticating the TLS server. 
-This is a significant risk in the context of the global PKI, and similarly
-for large scale deployments of certificates within enterprises.
-We propose ticket pinning as an easy to implement and deploy solution
-to this problem, reusing
-some of the ideas behind TLS session resumption.
 
+Misissued public-key certificates can prevent TLS {{RFC8446}} clients from
+appropriately authenticating the TLS server. This is a significant
+risk in the context of the global public key infrastructure (PKI),
+and similarly for large scale
+deployments of certificates within enterprises.
+
+This document proposes experimental extensions to TLS with opaque
+pinning tickets as a way to pin the server's identity. The approach
+is intended to be easy to implement and deploy, and reuses some of
+the ideas behind TLS session resumption.
+   
 Ticket pinning is a second factor server authentication method and is
 not proposed as a substitute for the authentication method provided in
 the TLS key exchange. More specifically, the client only uses the
@@ -133,7 +139,7 @@ pinning ticket to the client with an associated pinning lifetime.
 The pinning lifetime value indicates for how long the server promises to
 retain the server-side ticket-encryption key, which allows it to
 complete the protocol exchange correctly and prove its identity. The
-server committment (and ticket lifetime) is typically on the order of
+server commitment (and ticket lifetime) is typically on the order of
 weeks.
 
 Once the key exchange is completed and the server is deemed
@@ -150,18 +156,20 @@ stored pinning secret. If the proof matches, the client can conclude
 that the server it is currently connecting to is in fact the correct
 server.
 
-This version of the draft only applies to TLS 1.3.  We believe that the
+This document only applies to TLS 1.3.
+We believe that the
 idea can also be back-fitted into earlier versions of the protocol, but
-this would require significant changes. One example is that TLS 1.2 and
+this would require significant changes.
+One example is that TLS 1.2 {{RFC5246}} and
 earlier versions do not provide a generic facility of encrypted
 handshake extensions, such as is used here to transport the ticket.
-
 
 The main advantages of this protocol over earlier pinning solutions are:
 
 * The protocol is at the TLS level, and as a result is not restricted to
 HTTP at the application level.
-* The protocol is robust to server IP, CA, and public key changes.  The
+* The protocol is robust to server IP, Certificate Authority (CA),
+and public key changes.  The
 server is characterized by the ownership of the pinning protection key,
 which is never provided to the client. Server configuration parameters
 such as the CA and the public key may change without affecting the
@@ -171,7 +179,8 @@ is fully automated. The server administrator need not bother with the
 management of backup certificates or explicit pins.
 * For server clusters, we reuse the existing {{RFC5077}} infrastructure
 where it exists.
-* Pinning errors, presumably resulting from MITM attacks, can be detected
+* Pinning errors, presumably resulting from man-in-the-middle (MITM) attacks,
+can be detected
 both by the client and the server. This allows for server-side detection
 of MITM attacks using large-scale analytics, and with no need to rely on
 clients to explicitly report the error.
@@ -188,9 +197,7 @@ pinned.
 
 ## Conventions used in this document
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in <xref target="RFC2119"/>.
+{::boilerplate bcp14}
 
 # Protocol Overview
 
@@ -762,16 +769,15 @@ ServerHello messages.
 
 # Acknowledgements
 
-The original idea behind this proposal was published in {{Oreo}} by Moti
-Yung, Benny Pinkas and Omer Berkman. The current protocol is but a
-distant relative of the original Oreo protocol, and any errors are the
-draft authors' alone.
+The original idea behind this proposal was published in {{Oreo}} by
+Moti Yung, Benny Pinkas and Omer Berkman.  The current protocol is
+but a distant relative of the original Oreo protocol, and any errors
+are the responsibility of the authors of this document alone.
 
-We would like to thank Dave Garrett, Daniel Kahn Gillmor, Yoav Nir, 
-Eric Rescorla and Rich Salz
-for their comments on this draft.  Special thanks to Craig
-Francis for contributing the HPKP deployment script, and to Ralph Holz
-for several fruitful discussions.
+We would like to thank Dave Garrett, Daniel Kahn Gillmor, Yoav Nir,
+Eric Rescorla and Rich Salz for their comments on this document.
+Special thanks to Craig Francis for contributing the HPKP deployment
+script, and to Ralph Holz for several fruitful discussions.
 
 --- back
 
@@ -811,7 +817,7 @@ In addition, HPKP uses a HTTP header which makes this solution HTTPS
 specific and not generic to TLS. On the other hand, the current document
 provides a solution that is independent of the server's certificate
 management and that can be entirely and easily automated. {{hpkp}}
-compares HPKP to the current draft in more detail.
+compares HPKP to the current document in more detail.
 
 The ticket pinning proposal augments these mechanisms with a much easier
 to implement and deploy solution for server identity pinning, by reusing
@@ -940,7 +946,7 @@ challenge to automate.
 ## Comparison: TACK {#tack}
 
 Compared with HPKP, TACK {{I-D.perrin-tls-tack}} is a lot more similar
-to the current draft.  It can even be argued that this document is a
+to the current document.  It can even be argued that this document is a
 symmetric-cryptography variant of TACK.  That said, there are still a
 few significant differences:
 
@@ -950,7 +956,7 @@ it as a "MAY" requirement (Sec. 5.3).  With ticket pinning, certificate
 validation by the client remains a MUST requirement, and the ticket acts
 only as a second factor. If the pinning secret is compromised, the
 server's security is not immediately at risk.
-- Both TACK and the current draft are mostly orthogonal to the server
+- Both TACK and the current document are mostly orthogonal to the server
 certificate as far as their life cycle, and so both can be deployed with
 no manual steps.
 - TACK uses ECDSA to sign the server's public key. This allows
@@ -960,10 +966,10 @@ tickets.
 - TACK allows multiple servers to share its public keys. Such sharing is
 disallowed by the current document.
 - TACK does not allow the server to track a particular client, and so
-has better privacy properties than the current draft.
+has better privacy properties than the current document.
 - TACK has an interesting way to determine the pin's lifetime, setting
 it to the time period since the pin was first observed, with a hard
-upper bound of 30 days.  The current draft makes the lifetime explicit,
+upper bound of 30 days.  The current document makes the lifetime explicit,
 which may be more flexible to deploy.  For example, Web sites which are
 only visited rarely by users may opt for a longer period than other
 sites that expect users to visit on a daily basis.
