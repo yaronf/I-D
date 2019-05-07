@@ -260,7 +260,7 @@ the server's first response, in the returned PinningTicket extension.
             [] Indicates messages protected using keys
                derived from the master secret.
 
-If a client supports the pinning ticket extension and does not have any
+If a client supports the PinningTicket extension and does not have any
 pinning ticket associated with the server, the exchange is considered as
 an initial connection. Other reasons the client may not have a pinning
 ticket include the client having flushed its pinning ticket store, or
@@ -774,7 +774,8 @@ Moti Yung, Benny Pinkas and Omer Berkman.  The current protocol is
 but a distant relative of the original Oreo protocol, and any errors
 are the responsibility of the authors of this document alone.
 
-We would like to thank Dave Garrett, Daniel Kahn Gillmor, Yoav Nir,
+We would like to thank Adrian Farrel, Dave Garrett,
+Daniel Kahn Gillmor, Yoav Nir,
 Eric Rescorla and Rich Salz for their comments on this document.
 Special thanks to Craig Francis for contributing the HPKP deployment
 script, and to Ralph Holz for several fruitful discussions.
@@ -975,6 +976,10 @@ only visited rarely by users may opt for a longer period than other
 sites that expect users to visit on a daily basis.
 
 # Document History
+
+## draft-sheffer-tls-pinning-ticket-10
+
+- ISE comments by Adrian Farrel, the ISE.
 
 ## draft-sheffer-tls-pinning-ticket-09
 
