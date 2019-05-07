@@ -199,6 +199,30 @@ pinned.
 
 {::boilerplate bcp14}
 
+## Scope of Experimentation
+
+This document describes an experimental extension to the TLS protocol.
+This section defines constraints on this experiment and how it can yield useful information, potentially resulting in a standard.
+
+The protocol is designed so that if the server does not support it, the client and server fall back to a normal TLS exchange,
+with the exception of a single PinningTicket extension being initially sent by the client.
+In addition, the protocol is designed to only strengthen the validation of the server's identity ("second factor").
+As a result, implementation or even protocol errors should not result weakened security compared to the normal TLS exchange.
+Given these two points, experimentation can be run on the open Internet between consenting client and server implementations.
+
+The goal of the experiment is to prove that:
+
+- Non-supporting clients and servers are unaffected.
+- Connectivity between supporting clients and servers is retained under normal circumstances,
+whether the client connects to the server frequently (relative to the ticket's lifetime) or very rarely.
+- Enterprise middleboxes to not interrupt such connectivity.
+- Misissued certificates and rogue TLS-aware middleboxes do result in broken connectivity,
+and these cases are detected on the client and/or server side. Clients and servers can be recovered
+even after such events and the normal connectivity restored.
+
+Following two years of successful deployment, the authors will publish a document that summarizes
+the experiment's findings and will resubmit the protocol as a Proposed Standard.
+
 # Protocol Overview
 
 The protocol consists of two phases: the first time a particular client
