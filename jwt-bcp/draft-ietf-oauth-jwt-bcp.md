@@ -48,12 +48,19 @@ normative:
   RFC7516:
   RFC7518:
   RFC7519:
+  RFC8017:
   RFC8037:
   RFC8174:
 
 informative:
+  RFC2313:
   RFC6749:
+  RFC7159:
   RFC7517:
+
+  ANSI-X962-2005:
+    title: "American National Standard X9.62: The Elliptic Curve Digital Signature Algorithm (ECDSA)"
+    date: November 2005
 
   Alawatugoda: DOI.10.1007/978-3-662-47854-7_6
 
@@ -66,6 +73,14 @@ informative:
     title: "Attacking JWT Authentication"
     date: September 28, 2016
     target: https://www.sjoerdlangkemper.nl/2016/09/28/attacking-jwt-authentication/
+
+  McLean:
+    author:
+    -
+      name: Tim McLean
+    title: "Critical vulnerabilities in JSON Web Token libraries"
+    date: March 31, 2015
+    target: https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries//
 
   nist-sp-800-56a-r3:
     author:
@@ -204,7 +219,7 @@ this value and "validate" the JWT without checking any signature.
 * An "RS256" (RSA, 2048 bit) parameter value can be changed into
 "HS256" (HMAC, SHA-256), and some libraries
 would try to validate the signature using HMAC-SHA256 and using the RSA public key as the
-HMAC shared secret.
+HMAC shared secret (see {{McLean}} and CVE-2015-9235).
 
 For mitigations, see <xref target="algorithm-verification"/> and <xref target="appropriate-algorithms"/>.
 
@@ -218,9 +233,10 @@ For mitigations, see <xref target="key-entropy"/>.
 
 ## Multiplicity of JSON encodings
 
-Previous versions of the JSON format {{RFC8259}} allowed several different character
+Previous versions of the JSON format such as the obsoleted {{RFC7159}}
+allowed several different character
 encodings: UTF-8, UTF-16 and UTF-32. This is not the case anymore, with the latest
-standard only allowing UTF-8. However older implementations may result in the JWT being
+standard {{RFC8259}} only allowing UTF-8. However older implementations may result in the JWT being
 misinterpreted by its recipient, and this could be used by a malicious sender to bypass
 the recipient's validation checks.
 
@@ -306,8 +322,8 @@ JWT libraries SHOULD NOT generate JWTs using "none" unless explicitly requested 
 
 Applications SHOULD follow these algorithm-specific recommendations:
 
-- Avoid all RSA-PKCS1 v1.5 encryption algorithms, preferring RSA-OAEP.
-- ECDSA signatures require a unique random value for every message that is signed.
+- Avoid all RSA-PKCS1 v1.5 {{RFC2313}} encryption algorithms, preferring RSA-OAEP ({{RFC8017}}, Sec. 7.1).
+- ECDSA signatures {{ANSI-X962-2005}} require a unique random value for every message that is signed.
 If even just a few bits of the random value are predictable across multiple messages then
 the security of the signature scheme may be compromised. In the worst case,
 the private key may be recoverable by an attacker. To counter these attacks,
@@ -467,15 +483,21 @@ This document requires no IANA actions.
 # Acknowledgements
 
 Thanks to Antonio Sanso for bringing the "ECDH-ES" invalid point attack to the attention
-of JWE and JWT implementers. Tim McLean published the RSA/HMAC confusion attack.
+of JWE and JWT implementers. Tim McLean {{McLean}} published the RSA/HMAC confusion attack.
 Thanks to Nat Sakimura for advocating the use of explicit typing. Thanks to Neil Madden for his
-numerous comments, and to Carsten Bormann, Brian Campbell, Brian Carpenter and Eric Rescorla for their reviews.
+numerous comments, and to Carsten Bormann, Brian Campbell, Brian Carpenter,
+Roman Danyliw
+and Eric Rescorla for their reviews.
 
 --- back
 
 # Document History
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
+
+## draft-ietf-oauth-jwt-bcp-05
+
+- Second AD review.
 
 ## draft-ietf-oauth-jwt-bcp-05
 
