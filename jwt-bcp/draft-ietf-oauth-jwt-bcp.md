@@ -57,6 +57,8 @@ informative:
   RFC6749:
   RFC7159:
   RFC7517:
+  RFC8414:
+  RFC8417:
 
   ANSI-X962-2005:
     title: "American National Standard X9.62: The Elliptic Curve Digital Signature Algorithm (ECDSA)"
@@ -137,9 +139,6 @@ informative:
     title: "OpenID Connect Core 1.0"
     date: November 8, 2014
     target: http://openid.net/specs/openid-connect-core-1_0.html
-
-  I-D.ietf-oauth-discovery:
-  I-D.ietf-secevent-token:
 
 --- abstract
 
@@ -231,23 +230,24 @@ that are vulnerable to dictionary attacks [Langkemper].
 
 For mitigations, see <xref target="key-entropy"/>.
 
-## Multiplicity of JSON encodings
-
-Previous versions of the JSON format such as the obsoleted {{RFC7159}}
-allowed several different character
-encodings: UTF-8, UTF-16 and UTF-32. This is not the case anymore, with the latest
-standard {{RFC8259}} only allowing UTF-8. However older implementations may result in the JWT being
-misinterpreted by its recipient, and this could be used by a malicious sender to bypass
-the recipient's validation checks.
-
-For mitigations, see <xref target="use-utf8"/>.
-
 ## Incorrect Composition of Encryption and Signature
 
 Some libraries that decrypt a JWE-encrypted JWT to obtain a JWS-signed object
 do not always validate the internal signature.
 
 For mitigations, see <xref target="validate-crypto"/>.
+
+## Plaintext Leakage through Analysis of Ciphertext Length
+
+Many encryption algorithms leak information about the length of the plaintext, with a varying amount of
+leakage depending on the algorithm and mode of operation. This problem is exacerbated
+when the plaintext is initially compressed, because the length of the compressed plaintext and thus, the ciphertext, 
+depends not only on the length of the original plaintext but also
+on its content.
+See {{Kelsey}} for general background
+on compression and encryption, and {{Alawatugoda}} for a specific example of attacks on HTTP cookies.
+
+For mitigations, see {{no-compression}}.
 
 ## Insecure Use of Elliptic Curve Encryption
 
@@ -258,6 +258,17 @@ observe the cleartext outputs resulting from decryption with the invalid curve p
 can use this vulnerability to recover the recipient's private key.
 
 For mitigations, see <xref target="validate-inputs"/>.
+
+## Multiplicity of JSON encodings
+
+Previous versions of the JSON format such as the obsoleted {{RFC7159}}
+allowed several different character
+encodings: UTF-8, UTF-16 and UTF-32. This is not the case anymore, with the latest
+standard {{RFC8259}} only allowing UTF-8. However older implementations may result in the JWT being
+misinterpreted by its recipient, and this could be used by a malicious sender to bypass
+the recipient's validation checks.
+
+For mitigations, see <xref target="use-utf8"/>.
 
 ## Substitution Attacks ## {#substitution}
 
@@ -283,6 +294,14 @@ then mitigations MUST be employed to prevent these substitution attacks.
 
 For mitigations, see <xref target="validate-iss-sub"/>, <xref target="use-aud"/>,
 <xref target="use-typ"/>, and <xref target="preventing-confusion"/>.
+
+## Indirect Attacks on the Server
+
+Various JWT claims are used by the recipient to perform lookup operations, e.g. database and LDAP searches.
+Others include URLs that are similarly looked up by the server. Any of these claims can be used by
+an attacker as vectors for injection attacks or server-side request forgery (SSRF) attacks.
+
+For mitigations, see {{do-not-trust-claims}}.
 
 # Best Practices # {#BP}
 
@@ -367,13 +386,10 @@ In particular, passwords should only be used to perform key encryption, rather t
 as described in Section 4.8 of {{RFC7518}}.
 Note that even when used for key encryption, password-based encryption is still subject to brute-force attacks.
 
-## Avoid Length-Dependent Encryption Inputs
+## Avoid Length-Dependent Encryption Inputs {#no-compression}
 
-Many encryption algorithms leak information about the length of the plaintext, with a varying amount of
-leakage depending on the algorithm and mode of operation. Sensitive information, such as passwords,
-SHOULD be padded before being encrypted. It is RECOMMENDED to avoid any compression of data before encryption
-since such compression often reveals information about the plaintext. See {{Kelsey}} for general background
-on compression and encryption, and {{Alawatugoda}} for a specific example of attacks on HTTP cookies.
+It is RECOMMENDED to avoid any compression of data before encryption
+since such compression often reveals information about the plaintext.
 
 ## Use UTF-8 ## {#use-utf8}
 
@@ -392,7 +408,7 @@ The means of determining the keys owned by an issuer is application-specific.
 As one example, OpenID Connect {{OpenID.Core}} issuer values are "https" URLs
 that reference a JSON metadata document that contains a "jwks_uri" value that is
 an "https" URL from which the issuer's keys are retrieved as a JWK Set {{RFC7517}}.
-This same mechanism is used by {{I-D.ietf-oauth-discovery}}.
+This same mechanism is used by {{RFC8414}}.
 Other applications may use different means of binding keys to issuers.
 
 Similarly, when the JWT contains a "sub" (subject) claim, the application MUST validate that
@@ -409,13 +425,14 @@ Furthermore, the relying party or application MUST validate the audience value
 and if the audience value is not present or not associated with the recipient,
 it MUST reject the JWT.
 
-## Do Not Trust Received Claims
+## Do Not Trust Received Claims {#do-not-trust-claims}
 
 The "kid" (key ID) header is used by the relying application to perform key lookup. Applications
 should ensure that this does not create SQL or LDAP injection vulnerabilities, by validating
 and/or sanitizing the received value.
 
-Similarly, blindly following a "jku" (JWK set URL) header, which may contain an arbitrary URL,
+Similarly, blindly following a "jku" (JWK set URL) or "x5u" (X.509 URL) header,
+which may contain an arbitrary URL,
 could result in server-side request forgery (SSRF) attacks. Applications should protect against such
 attacks, e.g., by matching the URL to a whitelist of allowed locations,
 and ensuring no cookies are sent in the GET request.
@@ -426,7 +443,7 @@ Confusion of one kind of JWT for another
 can be prevented by having all the kinds of JWTs that could otherwise potentially be confused
 include an explicit JWT type value and include checking the type value in their validation rules.
 Explicit JWT typing is accomplished by using the "typ" header parameter.
-For instance, the {{I-D.ietf-secevent-token}} specification uses the "application/secevent+jwt" media type
+For instance, the {{RFC8417}} specification uses the "application/secevent+jwt" media type
 to perform explicit typing of Security Event Tokens (SETs).
 
 Per the definition of "typ" in Section 4.1.9 of {{RFC7515}},
@@ -495,9 +512,10 @@ and Eric Rescorla for their reviews.
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
 
-## draft-ietf-oauth-jwt-bcp-05
+## draft-ietf-oauth-jwt-bcp-06
 
 - Second AD review.
+- Removed unworkable recommendation to pad encrypted passwords.
 
 ## draft-ietf-oauth-jwt-bcp-05
 
