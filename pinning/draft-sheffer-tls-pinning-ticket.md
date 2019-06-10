@@ -242,9 +242,11 @@ for session resumption, or to authenticate the client. Instead, the
 pinning ticket only contains the Pinning Secret used to generate the
 proof. 
 
-{{RFC5077}} has been obsoleted by {{RFC8466}} and ticket resumption is
-not expected to be deployed for TLS 1.3. This document references
-{{RFC5077}} as an informational document as ticket resumption benefit
+{{RFC5077}} has been obsoleted by {{RFC8446}} and ticket resumption is
+now defined by Sec. 2.2 of {{RFC8446}}. This document references
+{{RFC5077}} as an informational document since it contains a more
+thorough discussion of stateless ticket resumption and because
+ticket resumption benefits
 from significant operational experience with TLS 1.2 that is still
 widely deployed at the time of writing this document.  This experience
 as well as deployment can easily be re-used for identity pinning. 
@@ -339,7 +341,7 @@ mandatory and MUST be included if a pinning ticket was sent by the client.
 
 * A fresh pinning ticket. The main reason for refreshing the ticket on
 each connection is privacy: to avoid the ticket serving as a fixed
-client identifier. While fresh pinning ticket might be of zero length,
+client identifier. While a fresh pinning ticket might be of zero length,
 it is RECOMMENDED to include a fresh ticket with a non zero length with each
 response.
 
@@ -370,7 +372,7 @@ others host name, IP addresses, protocol (TLS or DTLS) and port
 number.  In other words, the pin for port TCP/443 may be different from
 that for DTLS or from the pin for port TCP/8443. These identifiers are
 expected to be relevant to characterize the identity of the server as
-well as the establishing TLS session. When host name is used, it MUST be
+well as the establishing TLS session. When a host name is used, it MUST be
 the value sent inside the Server Name Indication (SNI) extension.  This
 definition is similar to a Web Origin {{RFC6454}}, but does not assume
 the existence of a URL.
@@ -454,7 +456,7 @@ number as to enable the pinning protection key to be refreshed.
 
 * The pinning ticket MAY include other information, in addition to the
 pinning secret. When additional information is included, a careful
-review needs to be performed to evaluate their impact on privacy.  
+review needs to be performed to evaluate its impact on privacy.
 
 The pinning ticket's format is not specified by this document, but we
 RECOMMEND a format similar to the one proposed by {{RFC5077}}.
@@ -482,8 +484,8 @@ example:
     pinning_protection_key = HKDF-Expand(resumption_protection_key,
                                   "pinning protection", L)
 
-With resumption_protection_key is the ticket protection key defined in
-{{RFC5077}}. Both resumption_protection_key and pinning_protection_key
+Where resumption\_protection\_key is the ticket protection key defined in
+{{RFC5077}}. Both resumption\_protection\_key and pinning\_protection\_key
 are only used by the server.
 
 ## Pinning Proof
@@ -499,7 +501,10 @@ original server.
 In order to address these requirements, the pinning proof is bound to
 the TLS session as well as the public key of the server:
     
-    proof = HMAC(original_pinning_secret, "pinning proof",
+    pinning_proof_secret=Derive-Secret(Handshake Secret, "pinning proof 1",
+                 ClientHello...ServerHello)
+
+    proof = HMAC(original_pinning_secret, "pinning proof 2",
                  pinning_proof_secret + Hash(server_public_key))
  
 where HMAC {{RFC2104}} uses the Hash algorithm that was negotiated in
@@ -541,14 +546,12 @@ that a client that receives a "new" ticket does not next hit a cluster
 member that still rejects this ticket.
 
 Misconfiguration can lead to the server's clock being off by a large
-amount of time. When servers share a key schedule with expiration time
-expressed in absolute time, a key expired on one server might be
-considered as valid on the other server. Tickets will be protected by
-different keys and the server for which the key is expired may need to
-be able to decrypt a valid ticket with the expired key.  Therefore, we
-RECOMMEND never to automatically delete protection keys, even when they
-are long expired. Automatic deletion of keys could lead to the server
-not responding to still valid tickets, potentially making it
+amount of time. Consider a case where a server's clock is misconfigured,
+for example, to be 1 year in
+the future, and the system is allowed to delete expired keys automatically.
+The server will then delete many outstanding keys because they are now
+long expired and will end up rejecting valid tickets that are stored
+by clients. Such a scenario could make the server
 inaccessible to a large number of clients.
 
 The decision to delete a key should at least consider
@@ -569,9 +572,9 @@ days.
 
 The protocol ensures that the client will continue speaking to the
 correct server even when the server's certificate is renewed. In this
-sense, pinning is not associated to certificates which is the reason we
+sense, pinning is not associated with certificates which is the reason we
 designate the protocol described in this document as "server identity
-pining". 
+pinning". 
 
 Note that this property is not impacted by the use of the server's
 public key in the pinning proof, because the scope of the public key
@@ -597,9 +600,9 @@ After a while no clients will hold valid tickets any more and the
 feature may be disabled. Note that clients that do not receive a new
 pinning ticket do not necessarily need to remove the original ticket.
 Instead, the client may keep on using the ticket until its lifetime
-expires. However, as detailed in section {{privacy}} the re-use of a
+expires. However, as detailed in section {{privacy}}, re-use of a
 ticket by the client may result in privacy concerns as the ticket value
-may be used to correlate TLS sessions. 
+may be used to correlate TLS sessions.
 
 Issuing a new pinning ticket with a shorter lifetime would only delay
 the ramp down process, as the shorter lifetime can only affect clients
@@ -719,7 +722,7 @@ on their constituents {{RFC7258}}. This often takes the form of
 always-active SSL proxies. Because of the TOFU property, this protocol
 does not provide any security in such cases.
 
-Pervasive monitoring may also result in privacy concerns detailled in
+Pervasive monitoring may also result in privacy concerns detailed in
 section {{privacy}}. 
 
 
@@ -769,11 +772,11 @@ between different requests of a single client, provided the client
 requests and receives a fresh ticket upon each connection. This may be
 of concern particularly during ramp-down, if the server does not provide
 any new ticket and the client re-uses the same ticket. To reduce or avoid such
-privacy concerns, the server is RECOMMENDED to issue fresh ticket with a
+privacy concerns, it is RECOMMENDED for the server to issue a fresh ticket with a
 reduced life time. This would at least reduce the time period under
 which TLS session of the client are correlated. The server MAY also
-issue tickets with zero second lifetime until it is confident all
-tickets are expired.    
+issue tickets with a zero second lifetime until it is confident all
+tickets are expired.
 
 On the other hand, the server to which the client is connecting can
 easily track the client.  This may be an issue when the client expects
@@ -781,10 +784,9 @@ to connect to the server (e.g., a mail server) with multiple identities.
 Implementations SHOULD allow the user to opt out of pinning, either in
 general or for particular servers.
 
-This document does not define how tickets are generated and some tickets
-may carry client informations. Such information raises privacy concerns
-and it is RECOMMENDED not to be included into the ticket. 
-
+This document does not define the exact content of tickets.
+Including client-specific information in tickets would raise privacy concerns
+and is NOT RECOMMENDED.
 
 ## Ticket Protection Key Management
 
@@ -801,8 +803,8 @@ counters on each member, e.g. by setting the nonce to the concatenation
 of the cluster member ID and an incremental counter.
 
 * Generate random nonces but avoid the so-called birthday bound, i.e.
-never generate more than the maximum authorized number of encrypted
-tickets ( 2**64 for AES-128-GCM) for the same ticket
+never generate more than the maximum allowed number of encrypted
+tickets (2**64 for AES-128-GCM) for the same ticket
 pinning protection Key.
 
 * An alternative design which has been attributed to Karthik Bhargavan is
@@ -838,7 +840,7 @@ the publication of the current document as "Experimental".
 
 The TicketPinning Extension TLS.13 column should be set to CH, EE to
 indicate that the TicketPinning Extension is present in ClientHello and
-ServerHello messages.
+EncryptedExtensions messages.
 
 # Acknowledgements
 
@@ -1049,6 +1051,11 @@ only visited rarely by users may opt for a longer period than other
 sites that expect users to visit on a daily basis.
 
 # Document History
+
+## draft-sheffer-tls-pinning-ticket-11
+
+- Comments by Ben Kaduk. Specifically, changed the derivation of the pinning proof
+to make it more in line with the TLS 1.3 key schedule.
 
 ## draft-sheffer-tls-pinning-ticket-10
 
