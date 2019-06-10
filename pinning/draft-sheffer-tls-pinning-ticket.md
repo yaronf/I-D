@@ -37,13 +37,13 @@ author:
 
 normative:
   RFC2119:
-  RFC5077:
   RFC8126:
   RFC8446:
   RFC8447:
 
 informative:
   RFC2104:
+  RFC5077:
   RFC5246:
   RFC6454:
   RFC6962:
@@ -215,13 +215,14 @@ The goal of the experiment is to prove that:
 - Non-supporting clients and servers are unaffected.
 - Connectivity between supporting clients and servers is retained under normal circumstances,
 whether the client connects to the server frequently (relative to the ticket's lifetime) or very rarely.
-- Enterprise middleboxes to not interrupt such connectivity.
+- Enterprise middleboxes do not interrupt such connectivity.
 - Misissued certificates and rogue TLS-aware middleboxes do result in broken connectivity,
 and these cases are detected on the client and/or server side. Clients and servers can be recovered
 even after such events and the normal connectivity restored.
 
 Following two years of successful deployment, the authors will publish a document that summarizes
-the experiment's findings and will resubmit the protocol as a Proposed Standard.
+the experiment's findings and will resubmit the protocol for
+consideration as a Proposed Standard.
 
 # Protocol Overview
 
@@ -233,13 +234,20 @@ Below we present it in the context of a full handshake, but behavior in
 0-RTT handshakes should be identical.
 
 The document presents some similarities with the ticket resumption
-mechanism described in {{RFC5077}}.  However the scope of this document
+mechanism described in {{RFC5077}}. However the scope of this document
 differs from session resumption mechanisms implemented with {{RFC5077}}
 or with other mechanisms. Specifically, the pinning ticket does not
 carry any state associated with a TLS session and thus cannot be used
 for session resumption, or to authenticate the client. Instead, the
 pinning ticket only contains the Pinning Secret used to generate the
-proof.
+proof. 
+
+{{RFC5077}} has been obsoleted by {{RFC8466}} and ticket resumption is
+not expected to be deployed for TLS 1.3. This document references
+{{RFC5077}} as an informational document as ticket resumption benefit
+from significant operational experience with TLS 1.2 that is still
+widely deployed at the time of writing this document.  This experience
+as well as deployment can easily be re-used for identity pinning. 
 
 With TLS 1.3, session resumption is based on a preshared key (PSK).
 This is orthogonal to this protocol. With TLS 1.3, a TLS session can be
@@ -260,7 +268,7 @@ the server's first response, in the returned PinningTicket extension.
 
      ClientHello
        + key_share
-       + signature_algorithms*
+       + signature_algorithms
        + PinningTicket         -------->
                                                      ServerHello
                                                      + key_share
@@ -326,12 +334,13 @@ ticket and MUST respond with a PinningTicket extension, which includes:
 
 * A proof that the server can understand the ticket that was sent by the
 client; this proof also binds the pinning ticket to the server's
-(current) public key, as well as the ongoing TLS session.  The proof is
-MANDATORY if a pinning ticket was sent by the client.
+(current) public key, as well as the ongoing TLS session. The proof is
+mandatory and MUST be included if a pinning ticket was sent by the client.
 
 * A fresh pinning ticket. The main reason for refreshing the ticket on
 each connection is privacy: to avoid the ticket serving as a fixed
-client identifier. It is RECOMMENDED to include a fresh ticket with each
+client identifier. While fresh pinning ticket might be of zero length,
+it is RECOMMENDED to include a fresh ticket with a non zero length with each
 response.
 
 If the server cannot validate the received ticket, that might indicate
@@ -356,9 +365,12 @@ extension.
 
 ## Indexing the Pins {#indexing}
 
-Each pin is associated with a host name, protocol (TLS or DTLS) and port
+Each pin is associated with a set of identifiers which include among
+others host name, IP addresses, protocol (TLS or DTLS) and port
 number.  In other words, the pin for port TCP/443 may be different from
-that for DTLS or from the pin for port TCP/8443.  The host name MUST be
+that for DTLS or from the pin for port TCP/8443. These identifiers are
+expected to be relevant to characterize the identity of the server as
+well as the establishing TLS session. When host name is used, it MUST be
 the value sent inside the Server Name Indication (SNI) extension.  This
 definition is similar to a Web Origin {{RFC6454}}, but does not assume
 the existence of a URL.
@@ -416,9 +428,9 @@ by the protocol peers.
 The pinning secret is generated locally by the client and the server
 which means they must use the same inputs to generate it. This value
 must be generated before the ServerHello message is sent, as the server
-includes the corresponding pinning ticket in the ServerHello message. In
-addition, the pinning secret must be unpredictable to any party other
-than the client and the server.
+includes the corresponding pinning ticket in the same flight as the
+ServerHello message. In addition, the pinning secret must be
+unpredictable to any party other than the client and the server.
 
 The pinning secret is derived using the Derive-Secret function provided
 by TLS 1.3, described in Section "Key Schedule" of {{RFC8446}}.
@@ -441,7 +453,8 @@ key.
 number as to enable the pinning protection key to be refreshed.
 
 * The pinning ticket MAY include other information, in addition to the
-pinning secret.
+pinning secret. When additional information is included, a careful
+review needs to be performed to evaluate their impact on privacy.  
 
 The pinning ticket's format is not specified by this document, but we
 RECOMMEND a format similar to the one proposed by {{RFC5077}}.
@@ -465,25 +478,30 @@ is deployed, an easy way to do it is to derive the protection key from
 the session-ticket protection key, which is already synchronized. For
 example:
 
+   
     pinning_protection_key = HKDF-Expand(resumption_protection_key,
                                   "pinning protection", L)
+
+With resumption_protection_key is the ticket protection key defined in
+{{RFC5077}}. Both resumption_protection_key and pinning_protection_key
+are only used by the server.
 
 ## Pinning Proof
 
 The pinning proof is sent by the server to demonstrate that it has been
 able to decrypt the pinning ticket and retrieve the pinning secret. The
 proof must be unpredictable and must not be replayed. Similarly to the
-pinning secret, the pinning proof is sent by the server in the
+pinning ticket, the pinning proof is sent by the server in the
 ServerHello message.  In addition, it must not be possible for a MITM
 server with a fake certificate to obtain a pinning proof from the
 original server.
 
 In order to address these requirements, the pinning proof is bound to
 the TLS session as well as the public key of the server:
-
-    proof = HMAC(original_pinning_secret, "pinning proof" +
-                 Handshake-Secret + Hash(server_public_key))
-
+    
+    proof = HMAC(original_pinning_secret, "pinning proof",
+                 pinning_proof_secret + Hash(server_public_key))
+ 
 where HMAC {{RFC2104}} uses the Hash algorithm that was negotiated in
 the handshake, and the same hash is also used over the server's public
 key. The original\_pinning\_secret value refers to the secret value
@@ -523,12 +541,21 @@ that a client that receives a "new" ticket does not next hit a cluster
 member that still rejects this ticket.
 
 Misconfiguration can lead to the server's clock being off by a large
-amount of time.  Therefore we RECOMMEND never to automatically delete
-protection keys, even when they are long expired.  The decision to
-delete a key should at least consider the largest value of the ticket
-lifetime as well as the expected time desynchronisation between the
-servers of the cluster and the time difference for distributing the new
-key among the different servers in the cluster.
+amount of time. When servers share a key schedule with expiration time
+expressed in absolute time, a key expired on one server might be
+considered as valid on the other server. Tickets will be protected by
+different keys and the server for which the key is expired may need to
+be able to decrypt a valid ticket with the expired key.  Therefore, we
+RECOMMEND never to automatically delete protection keys, even when they
+are long expired. Automatic deletion of keys could lead to the server
+not responding to still valid tickets, potentially making it
+inaccessible to a large number of clients.
+
+The decision to delete a key should at least consider
+the largest value of the ticket lifetime as well as the expected time
+desynchronisation between the servers of the cluster and the time
+difference for distributing the new key among the different servers in
+the cluster.
 
 ## Ticket Lifetime
 
@@ -542,8 +569,9 @@ days.
 
 The protocol ensures that the client will continue speaking to the
 correct server even when the server's certificate is renewed. In this
-sense, we are not "pinning certificates" and the protocol should more
-precisely be called "server identity pinning".
+sense, pinning is not associated to certificates which is the reason we
+designate the protocol described in this document as "server identity
+pining". 
 
 Note that this property is not impacted by the use of the server's
 public key in the pinning proof, because the scope of the public key
@@ -567,8 +595,11 @@ operation where:
 
 After a while no clients will hold valid tickets any more and the
 feature may be disabled. Note that clients that do not receive a new
-pinning ticket do not remove the original ticket. Instead, the client
-keeps on using the ticket until its lifetime expires.
+pinning ticket do not necessarily need to remove the original ticket.
+Instead, the client may keep on using the ticket until its lifetime
+expires. However, as detailed in section {{privacy}} the re-use of a
+ticket by the client may result in privacy concerns as the ticket value
+may be used to correlate TLS sessions. 
 
 Issuing a new pinning ticket with a shorter lifetime would only delay
 the ramp down process, as the shorter lifetime can only affect clients
@@ -602,7 +633,7 @@ Readers should note that {{RFC5077}} session resumption keys are more
 security sensitive, and should normally not be backed up but rather
 treated as ephemeral keys. Even when servers derive pinning secrets from
 resumption keys ({{pinning-secret}}), they MUST NOT back up resumption
-keys.
+keys. 
 
 # Implementation Status
 
@@ -688,6 +719,10 @@ on their constituents {{RFC7258}}. This often takes the form of
 always-active SSL proxies. Because of the TOFU property, this protocol
 does not provide any security in such cases.
 
+Pervasive monitoring may also result in privacy concerns detailled in
+section {{privacy}}. 
+
+
 ## Server-Side Error Detection {#server_error}
 
 Uniquely, this protocol allows the server to detect clients that present
@@ -727,11 +762,18 @@ to the attacker since pinning tickets are used to secure the client
 rather than the server.  Similarly, it is useless to forge a ticket for
 a particular sever.
 
-## Client Privacy
+## Client Privacy {#privacy}
 
 This protocol is designed so that an external attacker cannot correlate
 between different requests of a single client, provided the client
-requests and receives a fresh ticket upon each connection.
+requests and receives a fresh ticket upon each connection. This may be
+of concern particularly during ramp-down, if the server does not provide
+any new ticket and the client re-uses the same ticket. To reduce or avoid such
+privacy concerns, the server is RECOMMENDED to issue fresh ticket with a
+reduced life time. This would at least reduce the time period under
+which TLS session of the client are correlated. The server MAY also
+issue tickets with zero second lifetime until it is confident all
+tickets are expired.    
 
 On the other hand, the server to which the client is connecting can
 easily track the client.  This may be an issue when the client expects
@@ -739,13 +781,19 @@ to connect to the server (e.g., a mail server) with multiple identities.
 Implementations SHOULD allow the user to opt out of pinning, either in
 general or for particular servers.
 
+This document does not define how tickets are generated and some tickets
+may carry client informations. Such information raises privacy concerns
+and it is RECOMMENDED not to be included into the ticket. 
+
+
 ## Ticket Protection Key Management
 
 While the ticket format is not mandated by this document, we RECOMMEND
 using authenticated encryption to protect it. Some of the algorithms
 commonly used for authenticated encryption, e.g. GCM, are highly
 vulnerable to nonce reuse, and this problem is magnified in a cluster
-setting.  Therefore implementations that choose AES-128-GCM MUST adopt
+setting.  Therefore implementations that choose AES-GCM or any AEAD
+equivalent MUST adopt
 one of these three alternatives:
 
 * Partition the nonce namespace between cluster members and use monotonic
@@ -753,7 +801,8 @@ counters on each member, e.g. by setting the nonce to the concatenation
 of the cluster member ID and an incremental counter.
 
 * Generate random nonces but avoid the so-called birthday bound, i.e.
-never generate more than 2**64 encrypted tickets for the same ticket
+never generate more than the maximum authorized number of encrypted
+tickets ( 2**64 for AES-128-GCM) for the same ticket
 pinning protection Key.
 
 * An alternative design which has been attributed to Karthik Bhargavan is
@@ -787,7 +836,7 @@ The TicketPinning Extension Name is expected to be ticket\_pinning.
 The TicketPinning Extension Recommended value should be set to "No" with
 the publication of the current document as "Experimental".
 
-The TicketPinning Extension TLS.13 column should be set to CH, SH to
+The TicketPinning Extension TLS.13 column should be set to CH, EE to
 indicate that the TicketPinning Extension is present in ClientHello and
 ServerHello messages.
 
@@ -800,7 +849,7 @@ are the responsibility of the authors of this document alone.
 
 We would like to thank Adrian Farrel, Dave Garrett,
 Daniel Kahn Gillmor, Yoav Nir,
-Eric Rescorla and Rich Salz for their comments on this document.
+Eric Rescorla, Benjamin Kaduk and Rich Salz for their comments on this document.
 Special thanks to Craig Francis for contributing the HPKP deployment
 script, and to Ralph Holz for several fruitful discussions.
 
@@ -865,7 +914,7 @@ application above TLS.
 certificate chain) and as such is highly dependent on the management of
 certificates.  Such dependency increases the potential error surface,
 especially as certificate management is not yet largely automated.  The
-current proposal, on the other hand is independent of certificate
+current proposal, on the other hand, is independent of certificate
 management.
 
 * HPKP pins public keys which are public and used for the standard TLS
@@ -880,7 +929,7 @@ Reliability of the current mechanism is primarily based on its being
 highly automated.
 
 * HPKP relies on the client to report errors to the report-uri.  The
-current document not need any out-of band mechanism, and the server is
+current document does not need any out-of band mechanism, and the server is
 informed automatically. This provides an easier and more reliable health
 monitoring.
 
