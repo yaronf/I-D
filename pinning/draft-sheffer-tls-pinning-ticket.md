@@ -37,13 +37,13 @@ author:
 
 normative:
   RFC2119:
-  RFC5077:
   RFC8126:
   RFC8446:
   RFC8447:
 
 informative:
   RFC2104:
+  RFC5077:
   RFC5246:
   RFC6454:
   RFC6962:
@@ -234,13 +234,20 @@ Below we present it in the context of a full handshake, but behavior in
 0-RTT handshakes should be identical.
 
 The document presents some similarities with the ticket resumption
-mechanism described in {{RFC5077}}.  However the scope of this document
+mechanism described in {{RFC5077}}. However the scope of this document
 differs from session resumption mechanisms implemented with {{RFC5077}}
 or with other mechanisms. Specifically, the pinning ticket does not
 carry any state associated with a TLS session and thus cannot be used
 for session resumption, or to authenticate the client. Instead, the
 pinning ticket only contains the Pinning Secret used to generate the
-proof.
+proof. 
+
+{{RFC5077}} has been obsoleted by {{RFC8466}} and ticket resumption is
+not expected to be deployed for TLS 1.3. This document references
+{{RFC5077}} as an informational document as ticket resumption benefit
+from significant operational experience with TLS 1.2 that is still
+widely deployed at the time of writing this document.  This experience
+as well as deployment can easily be re-used for identity pinning. 
 
 With TLS 1.3, session resumption is based on a preshared key (PSK).
 This is orthogonal to this protocol. With TLS 1.3, a TLS session can be
@@ -421,9 +428,9 @@ by the protocol peers.
 The pinning secret is generated locally by the client and the server
 which means they must use the same inputs to generate it. This value
 must be generated before the ServerHello message is sent, as the server
-includes the corresponding pinning ticket in the ServerHello message. In
-addition, the pinning secret must be unpredictable to any party other
-than the client and the server.
+includes the corresponding pinning ticket in the same flight as the
+ServerHello message. In addition, the pinning secret must be
+unpredictable to any party other than the client and the server.
 
 The pinning secret is derived using the Derive-Secret function provided
 by TLS 1.3, described in Section "Key Schedule" of {{RFC8446}}.
@@ -475,6 +482,10 @@ example:
     pinning_protection_key = HKDF-Expand(resumption_protection_key,
                                   "pinning protection", L)
 
+With resumption_protection_key is the ticket protection key defined in
+{{RFC5077}}. Both resumption_protection_key and pinning_protection_key
+are only used by the server.
+
 ## Pinning Proof
 
 The pinning proof is sent by the server to demonstrate that it has been
@@ -488,11 +499,9 @@ original server.
 In order to address these requirements, the pinning proof is bound to
 the TLS session as well as the public key of the server:
     
-    proof = Derive-Secret(original_pinning_secret, "pinning proof" +
-                 Handshake Secret + Hash(server_public_key))
-    proof = HMAC(original_pinning_secret, "pinning proof" +
-                 Handshake Secret + Hash(server_public_key))
-
+    proof = HMAC(original_pinning_secret, "pinning proof",
+                 pinning_proof_secret + Hash(server_public_key))
+ 
 where HMAC {{RFC2104}} uses the Hash algorithm that was negotiated in
 the handshake, and the same hash is also used over the server's public
 key. The original\_pinning\_secret value refers to the secret value
@@ -536,9 +545,13 @@ amount of time. When servers share a key schedule with expiration time
 expressed in absolute time, a key expired on one server might be
 considered as valid on the other server. Tickets will be protected by
 different keys and the server for which the key is expired may need to
-be able to decrypt a valid ticket with the expired key. Therefore we
+be able to decrypt a valid ticket with the expired key.  Therefore, we
 RECOMMEND never to automatically delete protection keys, even when they
-are long expired.  The decision to delete a key should at least consider
+are long expired. Automatic deletion of keys could lead to the server
+not responding to still valid tickets, potentially making it
+inaccessible to a large number of clients.
+
+The decision to delete a key should at least consider
 the largest value of the ticket lifetime as well as the expected time
 desynchronisation between the servers of the cluster and the time
 difference for distributing the new key among the different servers in
