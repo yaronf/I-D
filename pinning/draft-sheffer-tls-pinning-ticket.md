@@ -109,7 +109,7 @@ deployments of certificates within enterprises.
 This document proposes experimental extensions to TLS with opaque
 pinning tickets as a way to pin the server's identity. The approach
 is intended to be easy to implement and deploy, and reuses some of
-the ideas behind TLS session resumption.
+the ideas behind TLS session resumption {{RFC5077}}.
    
 Ticket pinning is a second factor server authentication method and is
 not proposed as a substitute for the authentication method provided in
@@ -207,7 +207,8 @@ This section defines constraints on this experiment and how it can yield useful 
 The protocol is designed so that if the server does not support it, the client and server fall back to a normal TLS exchange,
 with the exception of a single PinningTicket extension being initially sent by the client.
 In addition, the protocol is designed to only strengthen the validation of the server's identity ("second factor").
-As a result, implementation or even protocol errors should not result weakened security compared to the normal TLS exchange.
+As a result, implementation or even protocol errors should not result in
+weakening security compared to the normal TLS exchange.
 Given these two points, experimentation can be run on the open Internet between consenting client and server implementations.
 
 The goal of the experiment is to prove that:
@@ -239,8 +240,9 @@ differs from session resumption mechanisms implemented with {{RFC5077}}
 or with other mechanisms. Specifically, the pinning ticket does not
 carry any state associated with a TLS session and thus cannot be used
 for session resumption, or to authenticate the client. Instead, the
-pinning ticket only contains the Pinning Secret used to generate the
-proof. 
+pinning ticket only contains the encrypted Pinning Secret. The pinning ticket is used by the server to prove
+its ability to decrypt it, and so the ownership of the pinning
+protection key. 
 
 {{RFC5077}} has been obsoleted by {{RFC8446}} and ticket resumption is
 now defined by Sec. 2.2 of {{RFC8446}}. This document references
@@ -763,7 +765,7 @@ Stealing pinning tickets even in conjunction with other pinning
 parameters, such as the associated pinning secret, provides no benefit
 to the attacker since pinning tickets are used to secure the client
 rather than the server.  Similarly, it is useless to forge a ticket for
-a particular sever.
+a particular server.
 
 ## Client Privacy {#privacy}
 
@@ -980,6 +982,7 @@ the HPKP header:
 3. Generate a single CSR (Certificate Signing Request) for the first
 key-pair, where you include the domain name in the CN (Common Name)
 field:
+
 
     `openssl req -new -subj "/C=GB/ST=Area/L=Town/O=Company/CN=example.com"
             -key "example.com.key" -out "example.com.csr";`
