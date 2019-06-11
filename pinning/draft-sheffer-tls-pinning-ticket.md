@@ -208,7 +208,7 @@ The protocol is designed so that if the server does not support it, the client a
 with the exception of a single PinningTicket extension being initially sent by the client.
 In addition, the protocol is designed to only strengthen the validation of the server's identity ("second factor").
 As a result, implementation or even protocol errors should not result in
-weakening security compared to the normal TLS exchange.
+weakened security compared to the normal TLS exchange.
 Given these two points, experimentation can be run on the open Internet between consenting client and server implementations.
 
 The goal of the experiment is to prove that:
@@ -240,8 +240,9 @@ differs from session resumption mechanisms implemented with {{RFC5077}}
 or with other mechanisms. Specifically, the pinning ticket does not
 carry any state associated with a TLS session and thus cannot be used
 for session resumption, or to authenticate the client. Instead, the
-pinning ticket only contains the encrypted Pinning Secret. The pinning ticket is used by the server to prove
-its ability to decrypt it, and so the ownership of the pinning
+pinning ticket only contains the encrypted pinning secret.
+The pinning ticket is used by the server to prove
+its ability to decrypt it, which implies ownership of the pinning
 protection key. 
 
 {{RFC5077}} has been obsoleted by {{RFC8446}} and ticket resumption is
@@ -740,7 +741,8 @@ countries in the past.
 
 Like it or not, some clients are normally deployed behind an SSL proxy.
 Similarly to {{RFC7469}}, it is acceptable to allow pinning to be
-disabled for some hosts according to local policy. For example, a UA MAY
+disabled for some hosts according to local policy. For example,
+a User Agent (UA) MAY
 disable pinning for hosts whose validated certificate chain terminates
 at a user-defined trust anchor, rather than a trust anchor built-in to
 the UA (or underlying platform). Moreover, a client MAY accept an empty
