@@ -371,7 +371,7 @@ extension.
 ## Indexing the Pins {#indexing}
 
 Each pin is associated with a set of identifiers which include among
-others host name, IP addresses, protocol (TLS or DTLS) and port
+others host name, protocol (TLS or DTLS) and port
 number.  In other words, the pin for port TCP/443 may be different from
 that for DTLS or from the pin for port TCP/8443. These identifiers are
 expected to be relevant to characterize the identity of the server as
@@ -507,7 +507,7 @@ the TLS session as well as the public key of the server:
     pinning_proof_secret=Derive-Secret(Handshake Secret, "pinning proof 1",
                  ClientHello...ServerHello)
 
-    proof = HMAC(original_pinning_secret, "pinning proof 2",
+    proof = HMAC(original_pinning_secret, "pinning proof 2" +
                  pinning_proof_secret + Hash(server_public_key))
  
 where HMAC {{RFC2104}} uses the Hash algorithm that was negotiated in
@@ -835,7 +835,7 @@ the current document, when it is published as an RFC.
 
 The TicketPinning Extension is not limited to Private use and as such
 the TicketPinning Extension Value is expected to have its first byte in
-the range 0-254. A value of 26 would address this requirement.
+the range 0-254.
 
 The TicketPinning Extension Name is expected to be ticket\_pinning.
 
@@ -854,7 +854,9 @@ but a distant relative of the original Oreo protocol, and any errors
 are the responsibility of the authors of this document alone.
 
 We would like to thank Adrian Farrel, Dave Garrett,
-Daniel Kahn Gillmor, Yoav Nir,
+Daniel Kahn Gillmor,
+Alexey Melnikov,
+Yoav Nir,
 Eric Rescorla, Benjamin Kaduk and Rich Salz for their comments on this document.
 Special thanks to Craig Francis for contributing the HPKP deployment
 script, and to Ralph Holz for several fruitful discussions.
@@ -1056,6 +1058,11 @@ only visited rarely by users may opt for a longer period than other
 sites that expect users to visit on a daily basis.
 
 # Document History
+
+## draft-sheffer-tls-pinning-ticket-12
+
+- Conflict Review comments.
+- IANA: removed request for a specific extension value.
 
 ## draft-sheffer-tls-pinning-ticket-11
 
