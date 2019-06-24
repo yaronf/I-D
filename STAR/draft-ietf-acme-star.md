@@ -234,10 +234,10 @@ ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 
 Other than that, the ACME protocol flows as usual between IdO and CA.
 In particular, IdO is responsible for satisfying the requested ACME challenges until the CA is willing to issue the requested certificate.
-Per normal ACME processing, the IdO is given back an order URL for the issued STAR certificate to be used in subsequent interaction with the CA (e.g., if
+Per normal ACME processing, the IdO is given back an Order resource associated with the STAR certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
-The bootstrap phase ends when the IdO obtains a confirmation from the ACME CA that includes a star-certificate endpoint.
+The bootstrap phase ends when the ACME CA updates the Order resource to include the URL for the issued STAR certificate.
 
 ## Refresh
 {: #proto-auto-renewal}
@@ -388,7 +388,7 @@ An important property of the recurrent Order is that it can be canceled by the I
 {: #figcancelingstarorder title="Canceling a Recurrent Order"}
 
 The server MUST NOT issue any additional certificates for this order,
-beyond the certificate that is available for collection at the time of deletion.
+beyond the certificate that is available for collection at the time the order is canceled.
 
 Immediately after the order is canceled, the server:
 
@@ -771,6 +771,24 @@ The "Message Headers" registry should be updated with the following additional v
 | Not-After         | http     | standard | RFC XXXX  |
 
 # Security Considerations
+
+## No revocation
+
+STAR certificates eliminate an important security feature of PKI which
+is the ability to revoke certificates.  Revocation allows the
+administrator to limit the damage done by a rogue node or an adversary
+who has control of the private key.  With STAR certificates expiration
+replaces revocation so there is a timeliness issue.  To that end, see
+also the discussion on clock skew in {{operational-cons-clocks}}.
+
+It should be noted that revocation also has timeliness issues, because
+both CRLs and OCSP responses have nextUpdate fields that tell RPs how
+long they should trust this revocation data.  These fields are typically
+set to hours, days, or even weeks in the future.  Any revocation that
+happens before the time in nextUpdate goes unnoticed by the RP.
+
+More discussion of the security of STAR certificates is available in
+{{Topalovic}}.
 
 ## Denial of Service Considerations
 
