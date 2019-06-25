@@ -387,8 +387,7 @@ An important property of the recurrent Order is that it can be canceled by the I
 ~~~
 {: #figcancelingstarorder title="Canceling a Recurrent Order"}
 
-The server MUST NOT issue any additional certificates for this order,
-beyond the certificate that is available for collection at the time the order is canceled.
+After a successful cancellation, the server MUST NOT issue any additional certificates for this order.
 
 Immediately after the order is canceled, the server:
 
@@ -816,9 +815,10 @@ Mitigation recommendations from ACME still apply, but some of them need
 ## Privacy Considerations
 
 In order to avoid correlation of certificates by account, if unauthenticated
-GET is negotiated ({{certificate-get-nego}}) the server SHOULD choose URLs of
-certificate resources in a non-guessable way, for example using capability URLs
-{{?W3C.WD-capability-urls-20140218}}.
+GET is negotiated ({{certificate-get-nego}}) the recommendation in Section 10.5
+of {{RFC8555}} regarding the choice of URL structure apply, i.e. servers SHOULD
+choose URLs of certificate resources in a non-guessable way, for example using
+capability URLs {{?W3C.WD-capability-urls-20140218}}.
 
 # Acknowledgments
 
@@ -827,6 +827,7 @@ Horizon 2020 grant agreement no. 688421 Measurement and Architecture
 for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 Thanks to
+Roman Danyliw,
 Jon Peterson,
 Eric Rescorla,
 Sean Turner and
@@ -838,6 +839,10 @@ for helpful comments and discussions that have shaped this document.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-06
+
+- Roman's AD review
 
 ## draft-ietf-acme-star-05
 
