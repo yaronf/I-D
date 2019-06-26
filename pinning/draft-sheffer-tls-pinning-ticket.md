@@ -493,7 +493,7 @@ are only used by the server.
 
 The above solution attempts to minimize code changes related to management of the resumption\_protection\_key.
 The drawback is that this key would be used both to directly encrypt session tickets and to derive
-the pinning\_protection_key, and such mixed usage of a single key goes against cryptographic best practices.
+the pinning\_protection_key, and such mixed usage of a single key is not in line with cryptographic best practices.
 Where possible, we RECOMMEND to have the resumption\_protection\_key and pinning\_protection\_key as two,
 unrelated keys that are separately shared among the relevant servers.
 
