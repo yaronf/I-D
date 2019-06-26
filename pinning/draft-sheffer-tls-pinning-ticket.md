@@ -491,6 +491,13 @@ Where resumption\_protection\_key is the ticket protection key defined in
 {{RFC5077}}. Both resumption\_protection\_key and pinning\_protection\_key
 are only used by the server.
 
+The above solution attempts to minimize code changes related to management of the resumption\_protection\_key.
+The drawback is that this key would be used both to directly encrypt session tickets and to derive
+the pinning\_protection_key, and such mixed usage of a single key goes against cryptographic best practices.
+Where possible, we RECOMMEND to have the resumption\_protection\_key and pinning\_protection\_key as two,
+unrelated keys that are separately shared among the relevant servers.
+
+
 ## Pinning Proof
 
 The pinning proof is sent by the server to demonstrate that it has been
@@ -1061,7 +1068,7 @@ sites that expect users to visit on a daily basis.
 
 ## draft-sheffer-tls-pinning-ticket-12
 
-- Conflict Review comments.
+- IETF-Conflict Review comments.
 - IANA: removed request for a specific extension value.
 
 ## draft-sheffer-tls-pinning-ticket-11
