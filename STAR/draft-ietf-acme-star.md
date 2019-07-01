@@ -465,7 +465,7 @@ illustrated in {{figunauthgetstarcert}}.
   [Other certificate contents]
   -----END CERTIFICATE-----
 ~~~
-{: #figunauthgetstarcert title="Fetching STAR certificate with unauthenticated GET"}
+{: #figunauthgetstarcert title="Fetching a STAR certificate with unauthenticated GET"}
 
 The Server SHOULD include the "Not-Before" and "Not-After" HTTP headers in the response.
 When they exist, they MUST be equal to the respective fields inside the end-entity certificate. Their format is "HTTP-date" as defined in Section 7.1.1.2 of {{RFC7231}}.
@@ -566,24 +566,19 @@ date is 6 days -- i.e., max(518400, 345600 * .5).
 
 The notBefore and notAfter of each short-term certificate are:
 
-~~~
-    [
-      [ "2016-01-04T00:00:00Z", "2016-01-14T00:00:00Z" ],
-      [ "2016-01-08T00:00:00Z", "2016-01-18T00:00:00Z" ],
-      [ "2016-01-12T00:00:00Z", "2016-01-20T00:00:00Z" ]
-    ]
-~~~
+| notBefore | notAfter |
+| 2016-01-04T00:00:00Z | 2016-01-14T00:00:00Z |
+| 2016-01-08T00:00:00Z | 2016-01-18T00:00:00Z |
+| 2016-01-12T00:00:00Z | 2016-01-20T00:00:00Z |
+
 
 A client should expect each certificate to be available from the
 star-certificate endpoint at the following times:
 
-~~~
-    [
-      "2016-01-10T00:00:00Z",  // or earlier
-      "2016-01-12T00:00:00Z",
-      "2016-01-16T00:00:00Z"
-    ]
-~~~
+||
+| 2016-01-10T00:00:00Z  (or earlier) |
+| 2016-01-12T00:00:00Z |
+| 2016-01-16T00:00:00Z |
 
 # Operational Considerations
 
@@ -776,12 +771,12 @@ The "Message Headers" registry should be updated with the following additional v
 STAR certificates eliminate an important security feature of PKI which
 is the ability to revoke certificates.  Revocation allows the
 administrator to limit the damage done by a rogue node or an adversary
-who has control of the private key.  With STAR certificates expiration
+who has control of the private key.  With STAR certificates, expiration
 replaces revocation so there is a timeliness issue.  To that end, see
 also the discussion on clock skew in {{operational-cons-clocks}}.
 
 It should be noted that revocation also has timeliness issues, because
-both CRLs and OCSP responses have nextUpdate fields that tell RPs how
+both CRLs and OCSP responses have nextUpdate fields that tell relying parties (RPs) how
 long they should trust this revocation data.  These fields are typically
 set to hours, days, or even weeks in the future.  Any revocation that
 happens before the time in nextUpdate goes unnoticed by the RP.
@@ -816,7 +811,7 @@ Mitigation recommendations from ACME still apply, but some of them need
 
 In order to avoid correlation of certificates by account, if unauthenticated
 GET is negotiated ({{certificate-get-nego}}) the recommendation in Section 10.5
-of {{RFC8555}} regarding the choice of URL structure apply, i.e. servers SHOULD
+of {{RFC8555}} regarding the choice of URL structure applies, i.e. servers SHOULD
 choose URLs of certificate resources in a non-guessable way, for example using
 capability URLs {{?W3C.WD-capability-urls-20140218}}.
 
