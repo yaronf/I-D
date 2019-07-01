@@ -136,7 +136,7 @@ informative:
     date: 2017
   Topalovic:
     -: ta
-    target: http://www.w2spconf.com/2012/papers/w2sp12-final9.pdf
+    target: http://www.ieee-security.org/TC/W2SP/2012/papers/w2sp12-final9.pdf
     title: Towards Short-Lived Certificates
     author:
       -
@@ -186,7 +186,7 @@ If the IdO wishes to obtain a string of short-term certificates originating from
 If done this way, the process would involve frequent interactions between the registration function of the ACME Certification Authority (CA) and the identity provider infrastructure (e.g.: DNS, web servers), therefore making the issuance of short-term certificates exceedingly dependent on the reliability of both.
 
 This document presents an extension of the ACME protocol that optimizes this process by making short-term certificates first class objects in the ACME ecosystem.
-Once the order for a string of short-term certificates is accepted, the CA is responsible for publishing the next certificate at an agreed upon URL before the previous one expires.  The IdO can terminate the automatic renewal before the natural deadline, if needed - e.g., on key compromise.
+Once the order for a string of short-term certificates is accepted, the CA is responsible for publishing the next certificate at an agreed upon URL before the previous one expires.  The IdO can terminate the automatic renewal before the negotiated deadline, if needed - e.g., on key compromise.
 
 For a more generic treatment of STAR certificates, readers are referred to {{I-D.nir-saag-star}}.
 
@@ -234,15 +234,15 @@ ACME client, requests the CA to issue a STAR certificate, i.e., one that:
 
 Other than that, the ACME protocol flows as usual between IdO and CA.
 In particular, IdO is responsible for satisfying the requested ACME challenges until the CA is willing to issue the requested certificate.
-Per normal ACME processing, the IdO is given back an order URL for the issued STAR certificate to be used in subsequent interaction with the CA (e.g., if
+Per normal ACME processing, the IdO is given back an Order resource associated with the STAR certificate to be used in subsequent interaction with the CA (e.g., if
 the certificate needs to be terminated.)
 
-The bootstrap phase ends when the IdO obtains a confirmation from the ACME CA that includes a star-certificate endpoint.
+The bootstrap phase ends when the ACME CA updates the Order resource to include the URL for the issued STAR certificate.
 
 ## Refresh
 {: #proto-auto-renewal}
 
-The CA issues the initial certificate, typically when the authorization is done.
+The CA issues the initial certificate after the authorization completes successfully.
 It then automatically re-issues the certificate using the same CSR (and
 therefore the same identifier and public key) before the previous one expires, and publishes
 it to the URL that was returned to the IdO at the end of the bootstrap phase.
@@ -266,7 +266,7 @@ The refresh process ({{figprotorefresh}}) goes on until either:
    |                       |      |             \
    |                       |<-----'              \
    |     Retrieve cert     |                      |
-   |---------------------->|                   72 hours
+   |---------------------->|            short validity period
    |                       |                      |
    |                       +------.              /
    |                       |      |             /
@@ -274,7 +274,7 @@ The refresh process ({{figprotorefresh}}) goes on until either:
    |                       |      |             \
    |                       |<-----'              \
    |     Retrieve cert     |                      |
-   |---------------------->|                   72 hours
+   |---------------------->|            short validity period
    |                       |                      |
    |                       +------.              /
    |                       |      |             /
@@ -337,17 +337,6 @@ This protocol extends the ACME protocol, to allow for recurrent Orders.
 
 The Order resource is extended with the following attributes:
 
-~~~
-  {
-    "recurrent": true,
-    "recurrent-start-date": "2016-01-01T00:00:00Z",
-    "recurrent-end-date": "2017-01-01T00:00:00Z",
-    "recurrent-certificate-validity": 604800,
-    "recurrent-certificate-predate": 432000,
-    "recurrent-certificate-get": true
-  }
-~~~
-
 - recurrent (required, boolean): MUST be true for STAR certificates.
 - recurrent-start-date (optional, string): the earliest date of validity of the first certificate issued,
 in {{RFC3339}} format.
@@ -362,21 +351,21 @@ extra validity time which is due to pre-dating.  The client can use the value re
 These attributes are included in a POST message when creating the Order, as part of the "payload" encoded object.
 They are returned when the Order has been created, and the ACME server MAY adjust them at will, according to its local policy (see also {{capability-discovery}}).
 
-The optional notBefore and notAfter fields MUST NOT be present in a STAR Order.
+The optional notBefore and notAfter fields defined in Section 7.1.3 of {{RFC8555}} MUST NOT be present in a STAR Order.
 If they are included, the server MUST return an error with status code 400 "Bad
 Request" and type "malformedRequest".
 
-ACME defines the following values for the Order resource's status: "pending", "ready", "processing", "valid", and "invalid".
+Section 7.1.6 of {{RFC8555}} defines the following values for the Order resource's status: "pending", "ready", "processing", "valid", and "invalid".
 In the case of recurrent Orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
 
-A STAR certificate is by definition a mutable resource.  Instead of overloading the semantics of the "certificate" key, this document defines a new key "star-certificate" to be used instead of "certificate".
+A STAR certificate is by definition a mutable resource.  Instead of overloading the semantics of the "certificate" attribute, this document defines a new attribute "star-certificate" to be used instead of "certificate".
 
 - star-certificate (optional, string):  A URL for the (rolling) STAR certificate that has been issued in response to this Order.
 
 ### Canceling a Recurrent Order
 {: #protocol-details-canceling}
 
-An important property of the recurrent Order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the Order, the ACME client sends a POST to the Order URL:
+An important property of the recurrent Order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the Order, the ACME client sends a POST to the Order URL as shown in {{figcancelingstarorder}}.
 
 ~~~
   POST /acme/order/TOlocE8rfgo HTTP/1.1
@@ -396,9 +385,9 @@ An important property of the recurrent Order is that it can be canceled by the I
     "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
   }
 ~~~
+{: #figcancelingstarorder title="Canceling a Recurrent Order"}
 
-The server MUST NOT issue any additional certificates for this order,
-beyond the certificate that is available for collection at the time of deletion.
+After a successful cancellation, the server MUST NOT issue any additional certificates for this order.
 
 Immediately after the order is canceled, the server:
 
@@ -413,16 +402,16 @@ Explicit certificate revocation using the revokeCert interface (Section 7.6 of {
 ## Capability Discovery
 {: #capability-discovery}
 
-In order to support the discovery of STAR capabilities, The directory object of an ACME STAR server is extended with the following attributes inside the "meta" field:
+In order to support the discovery of STAR capabilities, the directory object defined in Section 9.7.6 of {{RFC8555}} is extended with the following attributes inside the "meta" field:
 
 - star-enabled (required, boolean): indicates STAR support.
-An ACME STAR server MUST include this key, and MUST set it to true
+An ACME STAR server MUST include this attribute, and MUST set it to true
 if the feature is enabled.
 - star-min-cert-validity (required, integer): minimum acceptable value for recurrent-certificate-validity, in seconds.
 - star-max-renewal (required, integer): maximum delta between recurrent-end-date and recurrent-start-date, in seconds.
 - star-allow-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
-An example directory object advertising STAR support with one day star-min-cert-validity and one year star-max-renewal, and supporting certificate fetching with an HTTP GET:
+An example directory object advertising STAR support with one day star-min-cert-validity and one year star-max-renewal, and supporting certificate fetching with an HTTP GET is shown in {{figstardir}}.
 
 ~~~
   {
@@ -443,6 +432,7 @@ An example directory object advertising STAR support with one day star-min-cert-
      }
   }
 ~~~
+{: #figstardir title="Directory object with STAR support"}
 
 ## Fetching the Certificates
 {: #fetching-certificates}
@@ -452,7 +442,7 @@ as per {{RFC8555}} Section 7.4.2, unless client and server have
 successfully negotiated the "unauthenticated GET" option described in
 {{certificate-get-nego}}.  In such case, the client can simply issue a GET to
 the star-certificate resource without authenticating itself to the server as
-illustrated in the following example:
+illustrated in {{figunauthgetstarcert}}.
 
 ~~~
   GET /acme/cert/mAt3xBGaobw HTTP/1.1
@@ -475,6 +465,7 @@ illustrated in the following example:
   [Other certificate contents]
   -----END CERTIFICATE-----
 ~~~
+{: #figunauthgetstarcert title="Fetching STAR certificate with unauthenticated GET"}
 
 The Server SHOULD include the "Not-Before" and "Not-After" HTTP headers in the response.
 When they exist, they MUST be equal to the respective fields inside the end-entity certificate. Their format is "HTTP-date" as defined in Section 7.1.1.2 of {{RFC7231}}.
@@ -501,20 +492,20 @@ granularity.
 
 Specifically, a server states its availability to grant unauthenticated access
 to a client's Order star-certificate by setting the star-allow-certificate-get
-key to true in the meta field of the Directory object:
+attribute to true in the meta field of the Directory object:
 
 - star-allow-certificate-get (optional, boolean): If this field is present and
   set to true, the server allows GET requests to star-certificate URLs.
 
 A client states its will to access the issued star-certificate via
-unauthenticated GET by adding a recurrent-certificate-get key to its Order and
+unauthenticated GET by adding a recurrent-certificate-get attribute to its Order and
 setting it to true.
 
 - recurrent-certificate-get (optional, boolean): If this field is present and
   set to true, the client requests the server to allow unauthenticated GET to
   the star-certificate associated with this Order.
 
-If the server accepts the request, it MUST reflect the key in the Order.
+If the server accepts the request, it MUST reflect the attribute setting in the resulting Order object.
 
 ## Computing notBefore and notAfter of STAR Certificates
 
@@ -780,6 +771,24 @@ The "Message Headers" registry should be updated with the following additional v
 
 # Security Considerations
 
+## No revocation
+
+STAR certificates eliminate an important security feature of PKI which
+is the ability to revoke certificates.  Revocation allows the
+administrator to limit the damage done by a rogue node or an adversary
+who has control of the private key.  With STAR certificates expiration
+replaces revocation so there is a timeliness issue.  To that end, see
+also the discussion on clock skew in {{operational-cons-clocks}}.
+
+It should be noted that revocation also has timeliness issues, because
+both CRLs and OCSP responses have nextUpdate fields that tell RPs how
+long they should trust this revocation data.  These fields are typically
+set to hours, days, or even weeks in the future.  Any revocation that
+happens before the time in nextUpdate goes unnoticed by the RP.
+
+More discussion of the security of STAR certificates is available in
+{{Topalovic}}.
+
 ## Denial of Service Considerations
 
 STAR adds a new attack vector that increases the threat of denial of
@@ -806,9 +815,10 @@ Mitigation recommendations from ACME still apply, but some of them need
 ## Privacy Considerations
 
 In order to avoid correlation of certificates by account, if unauthenticated
-GET is negotiated ({{certificate-get-nego}}) the server SHOULD choose URLs of
-certificate resources in a non-guessable way, for example using capability URLs
-{{?W3C.WD-capability-urls-20140218}}.
+GET is negotiated ({{certificate-get-nego}}) the recommendation in Section 10.5
+of {{RFC8555}} regarding the choice of URL structure apply, i.e. servers SHOULD
+choose URLs of certificate resources in a non-guessable way, for example using
+capability URLs {{?W3C.WD-capability-urls-20140218}}.
 
 # Acknowledgments
 
@@ -817,6 +827,7 @@ Horizon 2020 grant agreement no. 688421 Measurement and Architecture
 for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 Thanks to
+Roman Danyliw,
 Jon Peterson,
 Eric Rescorla,
 Sean Turner and
@@ -828,6 +839,10 @@ for helpful comments and discussions that have shaped this document.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-06
+
+- Roman's AD review
 
 ## draft-ietf-acme-star-05
 
