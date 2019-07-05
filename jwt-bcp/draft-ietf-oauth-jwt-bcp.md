@@ -3,7 +3,7 @@ title: JSON Web Token Best Current Practices
 abbrev: JWT BCP
 docname: draft-ietf-oauth-jwt-bcp-latest
 category: bcp
-updates:
+updates: RFC 7519
 obsoletes:
 
 ipr: trust200902
@@ -52,8 +52,25 @@ normative:
   RFC8037:
   RFC8174:
 
+  nist-sp-800-56a-r3:
+    author:
+    -
+      name: Elaine Barker
+    -
+      name: Lily Chen
+    -
+      name: Sharon Keller
+    -
+      name: Allen Roginsky
+    -
+      name: Apostol Vassilev
+    -
+      name: Richard Davis
+    title: "Recommendation for Pair-Wise Key Establishment Schemes Using Discrete Logarithm Cryptography, Draft NIST Special Publication 800-56A Revision 3"
+    date: April 2018
+    target: https://doi.org/10.6028/NIST.SP.800-56Ar3
+
 informative:
-  RFC2313:
   RFC6749:
   RFC7159:
   RFC7517:
@@ -83,24 +100,6 @@ informative:
     title: "Critical vulnerabilities in JSON Web Token libraries"
     date: March 31, 2015
     target: https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries//
-
-  nist-sp-800-56a-r3:
-    author:
-    -
-      name: Elaine Barker
-    -
-      name: Lily Chen
-    -
-      name: Sharon Keller
-    -
-      name: Allen Roginsky
-    -
-      name: Apostol Vassilev
-    -
-      name: Richard Davis
-    title: "Recommendation for Pair-Wise Key Establishment Schemes Using Discrete Logarithm Cryptography, Draft NIST Special Publication 800-56A Revision 3"
-    date: April 2018
-    target: https://doi.org/10.6028/NIST.SP.800-56Ar3
 
   Valenta:
     author:
@@ -169,14 +168,15 @@ Such attacks are the result of under-specified security mechanisms, as well as i
 implementations and incorrect usage by applications.
 
 The goal of this document is to facilitate secure implementation and deployment of JWTs.
-Many of the recommendations in this document will actually be about
+Many of the recommendations in this document are about
 implementation and use of the cryptographic mechanisms underlying JWTs that are defined by
 JSON Web Signature (JWS) {{RFC7515}},
 JSON Web Encryption (JWE) {{RFC7516}}, and
 JSON Web Algorithms (JWA) {{RFC7518}}.
-Others will be about use of the JWT claims themselves.
+Others are about use of the JWT claims themselves.
 
-These are intended to be minimum recommendations for the use of JWTs in the vast majority of implementation
+These are intended to be minimum recommendations for the use of JWTs
+in the vast majority of implementation
 and deployment scenarios.  Other specifications that reference this document can have
 stricter requirements related to one or more aspects of the format, based on their
 particular circumstances; when that is the case, implementers are advised to adhere
@@ -191,9 +191,9 @@ updates that apply to this document.
 
 ## Target Audience
 
-The targets of this document are:
+The intended audience of this document is:
 
-* Implementers of JWT libraries (and the JWS and JWE libraries used by them),
+* Implementers of JWT libraries (and the JWS and JWE libraries used by those libraries),
 * Implementers of code that uses such libraries (to the extent that some mechanisms may
 not be provided by libraries, or until they are), and
 * Developers of specifications that rely on JWTs, both inside and outside the IETF.
@@ -241,8 +241,8 @@ For mitigations, see <xref target="validate-crypto"/>.
 
 Many encryption algorithms leak information about the length of the plaintext, with a varying amount of
 leakage depending on the algorithm and mode of operation. This problem is exacerbated
-when the plaintext is initially compressed, because the length of the compressed plaintext and thus, the ciphertext, 
-depends not only on the length of the original plaintext but also
+when the plaintext is initially compressed, because the length of the compressed plaintext and, thus, the ciphertext 
+depend not only on the length of the original plaintext but also
 on its content.
 See {{Kelsey}} for general background
 on compression and encryption, and {{Alawatugoda}} for a specific example of attacks on HTTP cookies.
@@ -264,22 +264,21 @@ For mitigations, see <xref target="validate-inputs"/>.
 Previous versions of the JSON format such as the obsoleted {{RFC7159}}
 allowed several different character
 encodings: UTF-8, UTF-16 and UTF-32. This is not the case anymore, with the latest
-standard {{RFC8259}} only allowing UTF-8. However older implementations may result in the JWT being
+standard {{RFC8259}} only allowing UTF-8. However, older implementations may result in the JWT being
 misinterpreted by its recipient, and this could be used by a malicious sender to bypass
 the recipient's validation checks.
 
 For mitigations, see <xref target="use-utf8"/>.
 
-## Substitution Attacks ## {#substitution}
+## Substitution Attacks {#substitution}
 
-There are attacks in which one recipient will have a JWT intended for it
-and attempt to use it at a different recipient that it was not intended for.
-If not caught, these attacks can result in the attacker gaining access to resources
-that it is not entitled to access.
-For instance, if an OAuth 2.0 {{RFC6749}} access token is presented to an OAuth 2.0 protected resource
-that it is intended for, that protected resource might then attempt to gain access to a different
-protected resource by presenting that same access token to the different protected resource,
-which the access token is not intended for.
+There are attacks in which one recipient will be given a JWT that was intended for it,
+and will attempt to use it at a different recipient for which that JWT was not intended.
+For instance, if an OAuth 2.0 {{RFC6749}} access token is legitimately presented to an
+OAuth 2.0 protected resource for which it is intended, that protected resource might then present
+that same access token to a different protected resource for which the access token is not intended,
+in an attempt to gain access.  If such situations are not caught, this can result in
+the attacker gaining access to resources that it is not entitled to access.
 
 For mitigations, see <xref target="validate-iss-sub"/> and <xref target="use-aud"/>.
 
@@ -297,7 +296,8 @@ For mitigations, see <xref target="validate-iss-sub"/>, <xref target="use-aud"/>
 
 ## Indirect Attacks on the Server
 
-Various JWT claims are used by the recipient to perform lookup operations, e.g. database and LDAP searches.
+Various JWT claims are used by the recipient to perform lookup operations,
+such as database and LDAP searches.
 Others include URLs that are similarly looked up by the server. Any of these claims can be used by
 an attacker as vectors for injection attacks or server-side request forgery (SSRF) attacks.
 
@@ -330,7 +330,7 @@ This set will vary over time as new algorithms are introduced
 and existing algorithms are deprecated due to discovered cryptographic weaknesses.
 Applications MUST therefore be designed to enable cryptographic agility.
 
-That said, if a JWT is cryptographically protected by a transport layer, such as TLS
+That said, if a JWT is cryptographically protected end-to-end by a transport layer, such as TLS
 using cryptographically current algorithms, there may be no need to apply another layer of
 cryptographic protections to the JWT.
 In such cases, the use of the "none" algorithm can be perfectly acceptable.
@@ -341,7 +341,7 @@ JWT libraries SHOULD NOT generate JWTs using "none" unless explicitly requested 
 
 Applications SHOULD follow these algorithm-specific recommendations:
 
-- Avoid all RSA-PKCS1 v1.5 {{RFC2313}} encryption algorithms, preferring RSA-OAEP ({{RFC8017}}, Sec. 7.1).
+- Avoid all RSA-PKCS1 v1.5 encryption algorithms ({{RFC8017}}, Sec. 7.2}, preferring RSA-OAEP ({{RFC8017}}, Sec. 7.1).
 - ECDSA signatures {{ANSI-X962-2005}} require a unique random value for every message that is signed.
 If even just a few bits of the random value are predictable across multiple messages then
 the security of the signature scheme may be compromised. In the worst case,
@@ -364,8 +364,8 @@ using the keys and algorithms supplied by the application.
 
 Some cryptographic operations, such as Elliptic Curve Diffie-Hellman key agreement
 ("ECDH-ES") take inputs that may contain invalid values, such as points not on the specified elliptic curve
-or other invalid points (see e.g. {{Valenta}}, Sec. 7.1).
-Either the JWS/JWE library itself must validate these inputs before using them
+or other invalid points (see, e.g. {{Valenta}}, Sec. 7.1).
+The JWS/JWE library itself must validate these inputs before using them
 or it must use underlying cryptographic libraries that do so (or both!).
 
 ECDH-ES ephemeral public key (epk) inputs should be validated according to the recipient's
@@ -388,9 +388,9 @@ Note that even when used for key encryption, password-based encryption is still 
 
 ## Avoid Length-Dependent Encryption Inputs {#no-compression}
 
-It is RECOMMENDED to avoid any compression of data before encryption
-since such compression often reveals information about the plaintext.
-
+Compression of data SHOULD NOT be done before encryption, because
+such compressed data often reveals information about the plaintext.
+   
 ## Use UTF-8 ## {#use-utf8}
 
 {{RFC7515}}, {{RFC7516}}, and {{RFC7519}} all specify that UTF-8 be used for encoding and decoding JSON
@@ -439,9 +439,10 @@ and ensuring no cookies are sent in the GET request.
 
 ## Use Explicit Typing ## {#use-typ}
 
-Confusion of one kind of JWT for another
-can be prevented by having all the kinds of JWTs that could otherwise potentially be confused
-include an explicit JWT type value and include checking the type value in their validation rules.
+Sometimes, one kind of JWT can be confused for another.  If a particular
+kind of JWT is subject to such confusion, that JWT can include an explicit
+JWT type value, and the validation rules can specify checking the type.
+This mechanism can prevent such confusion.
 Explicit JWT typing is accomplished by using the "typ" header parameter.
 For instance, the {{RFC8417}} specification uses the "application/secevent+jwt" media type
 to perform explicit typing of Security Event Tokens (SETs).
@@ -468,7 +469,8 @@ and the validation rules associated with them.
 If more than one kind of JWT can be issued by the same issuer,
 the validation rules for those JWTs MUST be written such that they are mutually exclusive,
 rejecting JWTs of the wrong kind.
-To prevent substitution of JWTs from one context into another, a number of strategies may be employed:
+To prevent substitution of JWTs from one context into another,
+application developers may employ a number of strategies:
 
 * Use explicit typing for different kinds of JWTs.
 Then the distinct "typ" values can be used to differentiate between the different kinds of JWTs.
@@ -502,15 +504,30 @@ This document requires no IANA actions.
 Thanks to Antonio Sanso for bringing the "ECDH-ES" invalid point attack to the attention
 of JWE and JWT implementers. Tim McLean {{McLean}} published the RSA/HMAC confusion attack.
 Thanks to Nat Sakimura for advocating the use of explicit typing. Thanks to Neil Madden for his
-numerous comments, and to Carsten Bormann, Brian Campbell, Brian Carpenter,
-Roman Danyliw
-and Eric Rescorla for their reviews.
+numerous comments, and to
+Carsten Bormann,
+Brian Campbell,
+Brian Carpenter,
+Alissa Cooper,
+Roman Danyliw,
+Ben Kaduk,
+Mirja Kuehlewind,
+Barry Leiba,
+Eric Rescorla,
+Adam Roach,
+Martin Vigoureux,
+and Eric Vyncke 
+for their reviews.
 
 --- back
 
 # Document History
 
 [[ to be removed by the RFC editor before publication as an RFC ]]
+
+## draft-ietf-oauth-jwt-bcp-07
+
+- IESG review comments.
 
 ## draft-ietf-oauth-jwt-bcp-06
 
