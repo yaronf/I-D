@@ -156,7 +156,7 @@ leading to secure implementation and deployment of JWTs.
 JSON Web Tokens, also known as JWTs {{RFC7519}}, are URL-safe JSON-based security tokens
 that contain a set of claims that can be signed and/or encrypted.
 The JWT specification has seen rapid adoption because it encapsulates
-security-relevant information in one, easy to protect location, and because
+security-relevant information in one easy-to-protect location, and because
 it is easy to implement using widely-available tools.
 One application area in which JWTs are commonly used is representing digital identity information,
 such as OpenID Connect ID Tokens {{OpenID.Core}}
@@ -222,11 +222,13 @@ HMAC shared secret (see {{McLean}} and CVE-2015-9235).
 
 For mitigations, see <xref target="algorithm-verification"/> and <xref target="appropriate-algorithms"/>.
 
-## Weak symmetric keys
+## Weak Symmetric Keys
 
-In addition, some applications sign tokens using a weak symmetric key and a keyed
-MAC algorithm such as "HS256". In most cases, these keys are human memorable passwords
-that are vulnerable to dictionary attacks [Langkemper].
+In addition, some applications use a keyed MAC algorithm such as
+"HS256" to sign tokens, but supply a weak symmetric key with
+insufficient entropy (such as a human memorable password).  Such keys
+are vulnerable to offline brute-force or dictionary attacks once an
+attacker gets hold of such a token [Langkemper].
 
 For mitigations, see <xref target="key-entropy"/>.
 
@@ -241,9 +243,14 @@ For mitigations, see <xref target="validate-crypto"/>.
 
 Many encryption algorithms leak information about the length of the plaintext, with a varying amount of
 leakage depending on the algorithm and mode of operation. This problem is exacerbated
-when the plaintext is initially compressed, because the length of the compressed plaintext and, thus, the ciphertext 
+when the plaintext is initially compressed, because the length of the compressed plaintext and, thus,
+the ciphertext 
 depend not only on the length of the original plaintext but also
 on its content.
+Compression attacks are particularly
+powerful when there is attacker-controlled data in the same compression
+space as secret data, as is the case for some attacks on HTTPS.
+
 See {{Kelsey}} for general background
 on compression and encryption, and {{Alawatugoda}} for a specific example of attacks on HTTP cookies.
 
@@ -259,13 +266,15 @@ can use this vulnerability to recover the recipient's private key.
 
 For mitigations, see <xref target="validate-inputs"/>.
 
-## Multiplicity of JSON encodings
+## Multiplicity of JSON Encodings
 
 Previous versions of the JSON format such as the obsoleted {{RFC7159}}
 allowed several different character
 encodings: UTF-8, UTF-16 and UTF-32. This is not the case anymore, with the latest
-standard {{RFC8259}} only allowing UTF-8. However, older implementations may result in the JWT being
-misinterpreted by its recipient, and this could be used by a malicious sender to bypass
+standard {{RFC8259}} only allowing UTF-8 except for internal use within a "closed ecosystem".
+This ambiguity where older implementations and those used within closed environments may generate
+non-standard encodings, may result in the JWT being
+misinterpreted by its recipient. This in turn could be used by a malicious sender to bypass
 the recipient's validation checks.
 
 For mitigations, see <xref target="use-utf8"/>.
@@ -338,6 +347,7 @@ The "none" algorithm should only be used when the JWT is cryptographically prote
 JWTs using "none" are often used in application contexts in which the content is optionally signed;
 then the URL-safe claims representation and processing can be the same in both the signed and unsigned cases.
 JWT libraries SHOULD NOT generate JWTs using "none" unless explicitly requested to do by the caller.
+Similarly, JWT libraries SHOULD NOT consume JWTs using "none" unless explicitly requested by the caller.
 
 Applications SHOULD follow these algorithm-specific recommendations:
 
@@ -421,7 +431,8 @@ If the issuer, subject, or the pair are invalid, the application MUST reject the
 If the same issuer can issue JWTs that are intended for use by more than one relying party or application,
 the JWT MUST contain an "aud" (audience) claim that can be used to determine whether the JWT
 is being used by an intended party or was substituted by an attacker at an unintended party.
-Furthermore, the relying party or application MUST validate the audience value
+
+In such cases, the relying party or application MUST validate the audience value
 and if the audience value is not present or not associated with the recipient,
 it MUST reject the JWT.
 
@@ -433,7 +444,7 @@ and/or sanitizing the received value.
 
 Similarly, blindly following a "jku" (JWK set URL) or "x5u" (X.509 URL) header,
 which may contain an arbitrary URL,
-could result in server-side request forgery (SSRF) attacks. Applications should protect against such
+could result in server-side request forgery (SSRF) attacks. Applications SHOULD protect against such
 attacks, e.g., by matching the URL to a whitelist of allowed locations,
 and ensuring no cookies are sent in the GET request.
 
@@ -489,7 +500,7 @@ Given the broad diversity of JWT usage and applications,
 the best combination of types, required claims, values, header parameters, key usages, and issuers
 to differentiate among different kinds of JWTs
 will, in general, be application specific.
-For new JWT applications, the use of explicit typing is RECOMMENDED.
+As discussed in {{use-typ}}, for new JWT applications, the use of explicit typing is RECOMMENDED.
 
 # Security Considerations
 
