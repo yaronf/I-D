@@ -452,8 +452,8 @@ illustrated in {{figunauthgetstarcert}}.
   HTTP/1.1 200 OK
   Content-Type: application/pem-certificate-chain
   Link: <https://example.com/acme/some-directory>;rel="index"
-  Not-Before: Mon, 1 Feb 2016 00:00:00 GMT
-  Not-After: Mon, 8 Feb 2016 00:00:00 GMT
+  Cert-Not-Before: Mon, 1 Feb 2016 00:00:00 GMT
+  Cert-Not-After: Mon, 8 Feb 2016 00:00:00 GMT
 
   -----BEGIN CERTIFICATE-----
   [End-entity certificate contents]
@@ -467,13 +467,35 @@ illustrated in {{figunauthgetstarcert}}.
 ~~~
 {: #figunauthgetstarcert title="Fetching a STAR certificate with unauthenticated GET"}
 
-The Server SHOULD include the "Not-Before" and "Not-After" HTTP headers in the response.
+The Server SHOULD include the "Cert-Not-Before" and "Cert-Not-After" HTTP headers in the response.
 When they exist, they MUST be equal to the respective fields inside the end-entity certificate. Their format is "HTTP-date" as defined in Section 7.1.1.2 of {{RFC7231}}.
 Their purpose is to enable client implementations that do not parse the certificate.
 
-To improve robustness, the next certificate MUST be made available by the ACME CA at the URL pointed by "star-certificate" at the latest halfway through the lifetime of the currently active certificate.
-It is worth noting that this has an implication in case of cancellation: in fact, from the time the next certificate is made available, the cancellation is not completely effective until the latter also expires.
-To avoid the client accidentally entering a broken state, the "next" certificate MUST be pre-dated so that it is already valid when it is published at the "star-certificate" URL.  Note that the server might need to increase the recurrent-certificate-predate value to satisfy the latter requirement.  For further discussion on pre-dating, see {{operational-cons-clocks}}.
+Following are further clarifications regarding usage of these headers, as per {{RFC7231}} Sec. 8.3.1.
+All apply to both headers.
+
+* This header is a single value, not a list.
+* The header is used only in responses to GET or HEAD requests, and only for MIME types that
+denote time-limited credentials.
+* Header semantics are independent of context.
+* The header is not hop-by-hop.
+* Intermediaries MAY insert or delete the value, but MUST ensure that if present, the header value
+equals the corresponding value within the credential.
+* The header is not appropriate for a Vary field.
+* The header is allowed within message trailers.
+* The header is not appropriate within redirects.
+* The header does not introduce additional security considerations. It discloses in a simpler form information
+that is already available inside the credential.
+
+To improve robustness, the next certificate MUST be made available by the ACME CA at the URL
+pointed by "star-certificate" at the latest halfway through the lifetime of the currently active certificate.
+It is worth noting that this has an implication in case of cancellation: in fact, from the time
+the next certificate is made available, the cancellation is not completely effective until the latter
+also expires.
+To avoid the client accidentally entering a broken state, the "next" certificate MUST be pre-dated
+so that it is already valid when it is published at the "star-certificate" URL.  Note that the server
+might need to increase the recurrent-certificate-predate value to satisfy the latter requirement.
+For further discussion on pre-dating, see {{operational-cons-clocks}}.
 
 The server MUST NOT issue any additional certificates for this order beyond its recurrent-end-date.
 
@@ -755,14 +777,16 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 | star-max-renewal | integer | RCF XXXX |
 | star-allow-certificate-get | boolean | RFC XXXX |
 
-## Not-Before and Not-After HTTP Headers
+## Cert-Not-Before and Cert-Not-After HTTP Headers
+{: #iana-http-headers}
 
 The "Message Headers" registry should be updated with the following additional values:
 
-| Header Field Name | Protocol | Status   | Reference |
-|-------------------|----------|----------|-----------|
-| Not-Before        | http     | standard | RFC XXXX  |
-| Not-After         | http     | standard | RFC XXXX  |
+|   Header Field Name   | Protocol | Status   | Reference |
+|-----------------------|----------|----------|-----------|
+| Cert-Not-Before       | http     | standard | RFC XXXX, {{fetching-certificates}} |
+| Cert-Not-After        | http     | standard | RFC XXXX, {{fetching-certificates}} |
+
 
 # Security Considerations
 
@@ -834,6 +858,11 @@ for helpful comments and discussions that have shaped this document.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-07
+
+- Changed the HTTP headers names and clarified the IANA registration, following feedback
+from the IANA expert reviewer
 
 ## draft-ietf-acme-star-06
 
