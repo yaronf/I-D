@@ -476,7 +476,7 @@ All apply to both headers.
 
 * This header is a single value, not a list.
 * The header is used only in responses to GET, HEAD and POST-as-GET requests, and only for MIME types that
-denote time-limited credentials.
+denote public key certificates.
 * Header semantics are independent of context.
 * The header is not hop-by-hop.
 * Intermediaries MAY insert or delete the value, but MUST ensure that if present, the header value
