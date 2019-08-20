@@ -475,7 +475,7 @@ Following are further clarifications regarding usage of these headers, as per {{
 All apply to both headers.
 
 * This header is a single value, not a list.
-* The header is used only in responses to GET or HEAD requests, and only for MIME types that
+* The header is used only in responses to GET, HEAD and POST-as-GET requests, and only for MIME types that
 denote time-limited credentials.
 * Header semantics are independent of context.
 * The header is not hop-by-hop.
