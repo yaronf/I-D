@@ -366,6 +366,72 @@ Potentially, since it holds the STAR cert private key, it could request the
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
 
+# CSR Template
+
+The CSR template is used to express and constrain the shape of the CSR that the
+NDC uses to request the certificate.  The CSR is used for every CSR created
+under the same delegation.  Its validation is a critical element in the
+security of the whole delegation mechanism.
+
+The CSR template is defined using JSON Schema {{!I-D.handrews-json-schema}}, a
+mature, widely used format, which is a natural fit for the JSON-centric ACME.
+
+Instead of defining every possible CSR attribute, this document takes a
+minimalist approach by declaring only the minimum attribute set and deferring
+the registration of further, more specific, attributes to future documents.
+Critically, this document establishes the necessary IANA registry and
+registration rules (see {{csr-template-registry}}).
+
+## Rules
+
+TODO
+
+## Example
+
+The CSR template in {{fig-csr-template}} represents one possible CSR template
+governing the delegation exchanges provided in the rest of this document.
+
+~~~
+{
+    "type": "object",
+    "properties": {
+        "san": {
+            "type": "string”,
+            "pattern": "*.ndc.dno.example."
+        },
+        "requested-algorithms": {
+            "type": "object",
+            "properties": {
+                “sigAlgo”: {
+                    "type": "string",
+                    "enum": [
+                        "ecdsa-with-sha256"
+                    ]
+                },
+            },
+            "required": [
+                “sigAlgo”
+            ]
+        },
+        "key-usage": {
+            "type": "string",
+            "enum": [
+                "digitalSignature"
+            ]
+        }
+    },
+    "required": [
+        “san”,
+        "requested-algorithms",
+        "key-length",
+        "key-usage"
+    ],
+    "title": "csr-template",
+    "description": “Example CSR Template for IETF ACME STAR Delegation"
+}
+~~~
+{: #fig-csr-template title="Example CSR template"}
+
 # Further Use Cases
 {: #further-use-cases}
 
@@ -434,6 +500,11 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
 | star-delegation-enabled | boolean | RFC XXXX |
+
+## CSR Template Registry
+{: #csr-template-registry }}
+
+TODO
 
 # Security Considerations
 
