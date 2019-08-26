@@ -371,12 +371,10 @@ revokeCert interface.
 
 ## CDNI
 
-Members of the IETF CDNI (Content Delivery Network Interconnection) working
-group are interested in delegating authority over web content to CDNs.  Their
-requirements are described in a draft {{?I-D.fieau-cdni-https-delegation}} that
-considers several solutions addressing different delegation requirements.  This
-section discusses two of these particular requirements in the context of the
-STAR delegation workflow.
+{{?I-D.ietf-cdni-interfaces-https-delegation}} discusses several solutions
+addressing different delegation requirements for the CDNI (CDN Interconnection)
+environment.  This section discusses two of the stated requirements in the
+context of the STAR delegation workflow.
 
 ### Multiple Parallel Delegates
 
@@ -396,17 +394,18 @@ In other cases, a content owner (IdO) delegates some domains to a large CDN
 contractual relationship with uCDN, and uCDN has a similar relationship with
 dCDN.  However IdO may not even know about dCDN.
 
-The STAR protocol does not prevent this use case, although there is no special
-support for it: uCDN could forward requests from dCDN to DNO, and forward
-responses back to dCDN.  Whether such proxying is allowed is governed by policy
-and contracts between the parties.
+The STAR protocol can be chained to support this use case: uCDN could forward
+requests from dCDN to DNO, and forward responses back to dCDN.  Whether such
+proxying is allowed is governed by policy and contracts between the parties.
 
-One thing that might be necessary at the interface between uCDN and dCDN is a
-mechanism by which the uCDN can advertise:
+A mechanism is necessary at the interface between uCDN and dCDN by which the
+uCDN can advertise:
 
 - The namespace that is made available to the dCDN to mint its delegated names;
 - The policy for creating the key material (allowed algorithms, minimum key
   lengths, key usage, etc.) that the dCDN needs to satisfy.
+
+Note that such mechanism is provided by the CSR template.
 
 ## STIR
 
