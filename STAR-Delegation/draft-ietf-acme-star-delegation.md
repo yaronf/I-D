@@ -539,6 +539,14 @@ to restrict issuance to a specific
 account key which is controlled by it, and MUST require "dns-01" as the sole
 validation method.
 
+## TBC
+
+- CSR validation
+- CNAME mappings
+- Composition with ACME STAR
+- Composition with other ACME extensions
+- Channel security
+
 # Acknowledgments
 
 This work is partially supported by the European Commission under Horizon 2020
