@@ -502,7 +502,7 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 | star-delegation-enabled | boolean | RFC XXXX |
 
 ## CSR Template Registry
-{: #csr-template-registry }}
+{: #csr-template-registry }
 
 TODO
 
@@ -526,9 +526,9 @@ To restrict certificate delegation only
 to the protocol defined here:
 
 -  The domain owner MUST make sure that the CDN cannot modify the DNS records for the
-      domain.  The domain owner should ensure it is the only entity authorized
-	  to modify the DNS zone. Typically, it 
-      establishes a CNAME resource record from a subdomain into a CDN-managed domain.
+  domain.  The domain owner should ensure it is the only entity authorized
+  to modify the DNS zone. Typically, it 
+  establishes a CNAME resource record from a subdomain into a CDN-managed domain.
 
 -  The domain owner MUST use a CAA record {{!RFC6844}} to restrict certificate issuance
 for the domain to specific CAs that
@@ -558,6 +558,13 @@ Internet (MAMI). This support does not imply endorsement.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-delegation-01
+
+- Addition of the STIR use case.
+- Refinement of the CDNI use case.
+- Addition of the CSR template (partial, more work required).
+- Further security considerations (work in progress).
 
 ## draft-ietf-acme-star-delegation-00
 
