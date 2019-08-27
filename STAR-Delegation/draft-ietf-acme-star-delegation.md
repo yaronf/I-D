@@ -79,6 +79,8 @@ balk at sharing their long-term private keys with another organization and,
 equally, delegates would rather not have to handle other parties' long-term
 secrets.
 
+Other relevant use cases are discussed in {{further-use-cases}}.
+
 This document describes a profile of the ACME protocol {{!I-D.ietf-acme-acme}}
 that allows the NDC to request the IdO, acting as a profiled ACME server, a
 certificate for a delegated identity - i.e., one belonging to the IdO.  The IdO
@@ -146,9 +148,9 @@ The protocol assumes the following preconditions are met:
   management interface;
 - The NDC has registered an ACME account with the IdO;
 - NDC and IdO have agreed on a "CSR template" to use, including at a minimum:
-  subject name (e.g., "somesite.example.com"), requested algorithms, key
-  length, key usage.  The NDC is required to use this template for every CSR
-  created under the same delegation;
+  subject name (e.g., "somesite.example.com"), requested algorithms and key
+  length, key usage, extensions (e.g., TNAuthList). The NDC is required to use
+  this template for every CSR created under the same delegation;
 - IdO has registered an ACME account with the Certificate Authority (CA)
 
 Note that even if the IdO implements the ACME server role, it is not acting as
@@ -161,7 +163,9 @@ CA.
 
 The interaction between the NDC and the IdO is governed by the profiled ACME
 workflow detailed in {{sec-profile}}.  The interaction between the IdO and the
-CA is ruled by ACME STAR {{!I-D.ietf-acme-star}}.
+CA is ruled by ACME STAR {{!I-D.ietf-acme-star}} as well as any other ACME
+extension that applies (e.g., {{?I-D.ietf-acme-authority-token-tnauthlist}} for
+STIR).
 
 The outline of the combined protocol is as follow ({{fig-endtoend}}):
 
@@ -362,16 +366,83 @@ Potentially, since it holds the STAR cert private key, it could request the
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
 
-# CDNI Use Cases
+# CSR Template
 
-Members of the IETF CDNI (Content Delivery Network Interconnection) working
-group are interested in delegating authority over web content to CDNs.  Their
-requirements are described in a draft {{?I-D.fieau-cdni-https-delegation}} that
-considers several solutions addressing different delegation requirements.  This
-section discusses two of these particular requirements in the context of the
-STAR delegation workflow.
+The CSR template is used to express and constrain the shape of the CSR that the
+NDC uses to request the certificate.  The CSR is used for every CSR created
+under the same delegation.  Its validation is a critical element in the
+security of the whole delegation mechanism.
 
-## Multiple Parallel Delegates
+The CSR template is defined using JSON Schema {{!I-D.handrews-json-schema}}, a
+mature, widely used format, which is a natural fit for the JSON-centric ACME.
+
+Instead of defining every possible CSR attribute, this document takes a
+minimalist approach by declaring only the minimum attribute set and deferring
+the registration of further, more specific, attributes to future documents.
+Critically, this document establishes the necessary IANA registry and
+registration rules (see {{csr-template-registry}}).
+
+## Rules
+
+TODO
+
+## Example
+
+The CSR template in {{fig-csr-template}} represents one possible CSR template
+governing the delegation exchanges provided in the rest of this document.
+
+~~~
+{
+    "type": "object",
+    "properties": {
+        "san": {
+            "type": "string”,
+            "pattern": "*.ndc.dno.example."
+        },
+        "requested-algorithms": {
+            "type": "object",
+            "properties": {
+                “sigAlgo”: {
+                    "type": "string",
+                    "enum": [
+                        "ecdsa-with-sha256"
+                    ]
+                },
+            },
+            "required": [
+                “sigAlgo”
+            ]
+        },
+        "key-usage": {
+            "type": "string",
+            "enum": [
+                "digitalSignature"
+            ]
+        }
+    },
+    "required": [
+        “san”,
+        "requested-algorithms",
+        "key-length",
+        "key-usage"
+    ],
+    "title": "csr-template",
+    "description": “Example CSR Template for IETF ACME STAR Delegation"
+}
+~~~
+{: #fig-csr-template title="Example CSR template"}
+
+# Further Use Cases
+{: #further-use-cases}
+
+## CDNI
+
+{{?I-D.ietf-cdni-interfaces-https-delegation}} discusses several solutions
+addressing different delegation requirements for the CDNI (CDN Interconnection)
+environment.  This section discusses two of the stated requirements in the
+context of the STAR delegation workflow.
+
+### Multiple Parallel Delegates
 
 In some cases the content owner (IdO) would like to delegate authority over a
 web site to multiple NDCs (CDNs).  This could happen if the IdO has agreements
@@ -382,24 +453,41 @@ naturally, since each CDN can authenticate separately to the IdO (via its own
 separate account) specifying its CSR, and the IdO is free to allow or deny each
 certificate request according to its own policy.
 
-## Chained Delegation
+### Chained Delegation
 
 In other cases, a content owner (IdO) delegates some domains to a large CDN
 (uCDN), which in turn delegates to a smaller regional CDN, dCDN.  The DNO has a
 contractual relationship with uCDN, and uCDN has a similar relationship with
 dCDN.  However IdO may not even know about dCDN.
 
-The STAR protocol does not prevent this use case, although there is no special
-support for it: uCDN could forward requests from dCDN to DNO, and forward
-responses back to dCDN.  Whether such proxying is allowed is governed by policy
-and contracts between the parties.
+The STAR protocol can be chained to support this use case: uCDN could forward
+requests from dCDN to DNO, and forward responses back to dCDN.  Whether such
+proxying is allowed is governed by policy and contracts between the parties.
 
-One thing that might be necessary at the interface between uCDN and dCDN is a
-mechanism by which the uCDN can advertise:
+A mechanism is necessary at the interface between uCDN and dCDN by which the
+uCDN can advertise:
 
 - The namespace that is made available to the dCDN to mint its delegated names;
 - The policy for creating the key material (allowed algorithms, minimum key
   lengths, key usage, etc.) that the dCDN needs to satisfy.
+
+Note that such mechanism is provided by the CSR template.
+
+## STIR
+
+As a second use case, we consider the delegation of credentials in the STIR
+ecosystem  {{?I-D.ietf-stir-cert-delegation}}.
+
+In the STIR "delegated" model, a service provider, the NDC, needs to sign
+PASSPorT’s {{?RFC8225}} for telephone numbers (e.g., TN=+123) belonging to
+another service provider, the IdO.  In order to do that, it needs a STIR
+certificate, and private key, that includes TN=+123 in the TNAuthList
+{{?RFC8226}} cert extension.
+
+The STAR delegation profile described in this document applies
+straightforwardly, the only extra requirement being the ability to instruct the
+NDC about the allowed TNAuthList values.  This can be achieved by a simple
+extension of the CSR template.
 
 # IANA Considerations
 
@@ -412,6 +500,11 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
 | star-delegation-enabled | boolean | RFC XXXX |
+
+## CSR Template Registry
+{: #csr-template-registry }}
+
+TODO
 
 # Security Considerations
 
@@ -445,6 +538,14 @@ for the domain to specific CAs that
 to restrict issuance to a specific
 account key which is controlled by it, and MUST require "dns-01" as the sole
 validation method.
+
+## TBC
+
+- CSR validation
+- CNAME mappings
+- Composition with ACME STAR
+- Composition with other ACME extensions
+- Channel security
 
 # Acknowledgments
 
