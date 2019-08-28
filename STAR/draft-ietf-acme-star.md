@@ -621,7 +621,7 @@ In terms of security, STAR certificates and certificates with OCSP must-staple {
 
 Provided that the recommendations in {{operational-cons-clocks}} are followed, the increase in Certificate Transparency (CT) {{RFC6962}} log ingestion should be one order of magnitude in the worst case compared to the current state.
 
-The input received from most members of the CT community when the issue was raised was that this should not represent a problem for the CT architecture.
+Even in the highly unlikely event STAR became the prevalent certificate issuance model, discussion with CT logs implementers led us to conclude that existing CT implementations are more than capable of sustaining said increase in ingestion rate.  Were that not be the case, it's also possible to devise load balancing schemes for spreading the weight around, for example by using temporal sharding, sharding by modulo of cert hash, using "smart" load-balancing CT proxies, etc.
 
 ## Dependability
 {: #dependability}
@@ -849,8 +849,9 @@ Thanks to
 Roman Danyliw,
 Jon Peterson,
 Eric Rescorla,
-Sean Turner and
-Martin Thomson
+Sean Turner,
+Martin Thomson and
+Mehmet Ersue
 for helpful comments and discussions that have shaped this document.
 
 --- back
