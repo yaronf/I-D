@@ -368,69 +368,71 @@ revokeCert interface.
 
 # CSR Template
 
-The CSR template is used to express and constrain the shape of the CSR that the
-NDC uses to request the certificate.  The CSR is used for every CSR created
-under the same delegation.  Its validation is a critical element in the
-security of the whole delegation mechanism.
+The IdO makes use of a "CSR template" to model the shape of the Certificate
+Signing Request (CSR) that the NDC will employ to place an order for the
+delegated STAR certificate.  From the point of view of the IdO, validating the
+received CSR against the intended template is a critical point in the overall
+security of the delegation mechanism.  From the perspective of the NDC, use of
+the CSR template minimises the likelihood of introducing unwanted errors in the
+delegation process.
 
-The CSR template is defined using JSON Schema {{!I-D.handrews-json-schema}}, a
-mature, widely used format, which is a natural fit for the JSON-centric ACME.
+The CSR template is a JSON Schema document {{!I-D.handrews-json-schema}} that
+constrains the CSR template schema detailed in {{sec-csr-template-schema-def}}.
+An IdO using ACME STAR-based delegation SHALL define the precise restrictions
+that apply to the specific delegation -- for example, in terms of naming of the
+certificate subject, cryptographic parameters, X.509 extensions -- by
+overlaying its constraints on top of the CSR template schema (see for example
+{{sec-csr-template-example}}).
+
+TODO: exchanging the CSR template.
 
 Instead of defining every possible CSR attribute, this document takes a
-minimalist approach by declaring only the minimum attribute set and deferring
-the registration of further, more specific, attributes to future documents.
-Critically, this document establishes the necessary IANA registry and
-registration rules (see {{csr-template-registry}}).
+minimalist approach by declaring the general shape and a small set of elements
+needed to support simple use cases while deferring the registration of further,
+more specific, attributes to future documents.  Critically, this document also
+establishes the necessary IANA registry and registration rules (see
+{{csr-template-registry}}) for extending the format hereby defined.
 
-## Rules
+## Schema Definition
+{: #sec-csr-template-schema-def }
 
-TODO
+The schema, which attempts to match as much as possible the CSR definition
+{{?RFC2986}}, comprises three top level entities: subject, key and extensions,
+of which only subject and key are mandatory.  The subject can be an
+"alternative name" and/or a "distinguished name".  The key section represents
+the signing algorithm and its parameters: one of RSA or ECDSA and related
+parameters.  The optional extensions section includes the usual "key purpose"
+signals: server and client authentication.
 
-## Example
+~~~~~~~~~~
+{::include csr-template/acme-star-csr-template-v1.0.0.json}
+~~~~~~~~~~
+{: #fig-csr-template-def title="CSR Template JSON Schema definition"}
+
+## Example CSR Template
+{: #sec-csr-template-example }
 
 The CSR template in {{fig-csr-template}} represents one possible CSR template
 governing the delegation exchanges provided in the rest of this document.
 
+In particular, note that the template limits:
+
+- RDN to exactly CN=abc.ndc.dno.example;
+- SAN choice to exactly DNS:abc.ndc.dno.example;
+- signing algorithm choice to ECC curve NIST P-256 and P-384.
+
 ~~~
-{
-    "type": "object",
-    "properties": {
-        "san": {
-            "type": "string”,
-            "pattern": "*.ndc.dno.example."
-        },
-        "requested-algorithms": {
-            "type": "object",
-            "properties": {
-                “sigAlgo”: {
-                    "type": "string",
-                    "enum": [
-                        "ecdsa-with-sha256"
-                    ]
-                },
-            },
-            "required": [
-                “sigAlgo”
-            ]
-        },
-        "key-usage": {
-            "type": "string",
-            "enum": [
-                "digitalSignature"
-            ]
-        }
-    },
-    "required": [
-        “san”,
-        "requested-algorithms",
-        "key-length",
-        "key-usage"
-    ],
-    "title": "csr-template",
-    "description": “Example CSR Template for IETF ACME STAR Delegation"
-}
+{::include csr-template/csr-template.json}
 ~~~
 {: #fig-csr-template title="Example CSR template"}
+
+One possible valid CSR description according to the above template is the one
+provided in {{fig-csr-description}}.
+
+~~~
+{::include csr-template/csr.json}
+~~~
+{: #fig-csr-description title="Valid CSR description"}
 
 # Further Use Cases
 {: #further-use-cases}

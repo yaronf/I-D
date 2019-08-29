@@ -1,0 +1,21 @@
+{
+  "subject": {
+    "distinguished_name": {
+      "common_name": "abc.ndc.dno.example"
+    },
+    "alternative_names": [
+      {
+        "dns": "abc.ndc.dno.example"
+      }
+    ]
+  },
+  "key": {
+    "algorithm": "ecdsa",
+    "size": 384
+  },
+  "extensions": [
+    "kp-serverAuth",
+    "kp-clientAuth"
+  ],
+  "$schema": "file://./csr-template.json"
+}

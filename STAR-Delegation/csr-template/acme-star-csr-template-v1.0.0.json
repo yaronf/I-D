@@ -1,0 +1,196 @@
+{
+  "title": "CSR Template Schema",
+  "description": "Certificate Signing Request (CSR) Template Schema",
+  "$id": "http://iana.org/json-schemas/csr-template/v1.0.0.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "_alternative_name_dns": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dns": {
+          "type": "string",
+          "format": "hostname"
+        }
+      }
+    },
+    "_alternative_name_rfc822": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rfc822": {
+          "type": "string",
+          "format": "email"
+        }
+      }
+    },
+    "_alternative_name_uri": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "_alternative_name_ipv4": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ipv4": {
+          "type": "string",
+          "format": "ipv4"
+        }
+      }
+    },
+    "_alternative_name_ipv6": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ipv6": {
+          "type": "string",
+          "format": "ipv6"
+        }
+      }
+    },
+    "_distinguished_name": {
+      "type": "object",
+      "properties": {
+        "common_name": {
+          "type": "string"
+        },
+        "organization_name": {
+          "type": "string"
+        },
+        "given_name": {
+          "type": "string"
+        },
+        "street_address": {
+          "type": "string"
+        },
+        "locality_name": {
+          "type": "string"
+        },
+        "state_or_province_name": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "country_name": {
+          "type": "string"
+        },
+        "organizational_unit_name": {
+          "type": "string"
+        }
+      }
+    },
+    "_key_rsa": {
+      "$id": "#_key_rsa",
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "const": "rsa"
+        },
+        "size": {
+          "enum": [
+            1024,
+            2048,
+            4096,
+            8192
+          ]
+        }
+      }
+    },
+    "_key_ecdsa": {
+      "$id": "#_key_ecdsa",
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "const": "ecdsa"
+        },
+        "size": {
+          "enum": [
+            256,
+            384,
+            521
+          ]
+        }
+      }
+    },
+    "_extension_serverAuth": {
+      "type": "string",
+      "const": "kp-serverAuth"
+    },
+    "_extension_clientAuth": {
+      "type": "string",
+      "const": "kp-clientAuth"
+    }
+  },
+  "type": "object",
+  "required": [
+    "subject",
+    "key"
+  ],
+  "properties": {
+    "subject": {
+      "type": "object",
+      "required": [
+        "alternative_names"
+      ],
+      "properties": {
+        "distinguished_name": {
+          "$ref": "#/definitions/_distinguished_name"
+        },
+        "alternative_names": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/definitions/_alternative_name_dns"
+              },
+              {
+                "$ref": "#/definitions/_alternative_name_rfc822"
+              },
+              {
+                "$ref": "#/definitions/_alternative_name_ipv4"
+              },
+              {
+                "$ref": "#/definitions/_alternative_name_ipv6"
+              },
+              {
+                "$ref": "#/definitions/_alternative_name_uri"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "key": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/_key_rsa"
+        },
+        {
+          "$ref": "#/definitions/_key_ecdsa"
+        }
+      ]
+    },
+    "extensions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/definitions/_extension_serverAuth"
+          },
+          {
+            "$ref": "#/definitions/_extension_clientAuth"
+          }
+        ]
+      }
+    }
+  }
+}

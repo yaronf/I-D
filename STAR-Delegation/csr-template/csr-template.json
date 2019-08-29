@@ -1,0 +1,54 @@
+{
+  "$id": "./",
+  "allOf": [
+    {
+      "$ref": "file://./acme-star-csr-template-v1.0.0.json"
+    },
+    {
+      "properties": {
+        "subject": {
+          "properties": {
+            "distinguished_name": {
+              "minProperties": 1,
+              "propertyNames": {
+                "const": "common_name"
+              },
+              "properties": {
+                "common_name": {
+                  "const": "abc.ndc.dno.example"
+                }
+              }
+            },
+            "alternative_names": {
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "propertyNames": {
+                  "const": "dns"
+                },
+                "properties": {
+                  "dns": {
+                    "const": "abc.ndc.dno.example"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "key": {
+          "properties": {
+            "algorithm": {
+              "const": "ecdsa"
+            },
+            "size": {
+              "enum": [
+                256,
+                384
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}
