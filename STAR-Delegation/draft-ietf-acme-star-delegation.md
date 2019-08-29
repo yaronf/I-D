@@ -42,8 +42,8 @@ author:
  -
     ins: T. Fossati
     name: Thomas Fossati
-    organization: Nokia
-    email: thomas.fossati@nokia.com
+    organization: ARM
+    email: thomas.fossati@arm.com
 
 
 --- abstract
