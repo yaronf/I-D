@@ -58,7 +58,6 @@ normative:
   RFC8555:
 
 informative:
-  RFC6962:
   RFC7942:
   RFC7633:
   I-D.sheffer-acme-star-request:
@@ -633,12 +632,12 @@ In terms of security, STAR certificates and certificates with OCSP must-staple {
 
 ## Impact on Certificate Transparency (CT) Logs
 
-Even in the highly unlikely case STAR becomes the only cert issuance model,
+Even in the highly unlikely case STAR becomes the only certificate issuance model,
 discussion with the IETF TRANS Working Group and Certificate Transparency (CT)
 logs implementers suggests that existing CT Log Server implementations
-are capable of sustaining the resulting 100x increase in ingestion
+are capable of sustaining the resulting 100-fold increase in ingestion
 rate.  Additionally, such a future, higher load could be managed with a variety
-of techniques (e.g., sharding by modulo of cert hash, using "smart"
+of techniques (e.g., sharding by modulo of certificate hash, using "smart"
 load-balancing CT proxies, etc.).  With regards to the increase in the log
 size, current CT log growth is already being managed with schemes like Chrome's
 Log Policy {{OBrien}} which allow Operators to define their log life-cycle; and
@@ -881,6 +880,10 @@ for helpful comments and discussions that have shaped this document.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-08
+
+- Improved text on interaction with CT Logs, responding to Mehmet Ersue's review.
 
 ## draft-ietf-acme-star-07
 
