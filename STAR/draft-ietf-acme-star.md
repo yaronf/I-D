@@ -160,6 +160,20 @@ informative:
         name: Dan Boneh
         org: Stanford University
     date: 2012
+  OBrien:
+    -: ta
+    target: https://github.com/chromium/ct-policy
+    title: Chromium Certificate Transparency Log Policy
+    author:
+      -
+        ins: D. O'Brien
+        name: Devon O'Brien
+        org: Google
+      -
+        ins: R. Sleevi
+        name: Ryan Sleevi
+        org: Google
+    date: 2017
 
 --- abstract
 
@@ -619,9 +633,17 @@ In terms of security, STAR certificates and certificates with OCSP must-staple {
 
 ## Impact on Certificate Transparency (CT) Logs
 
-Provided that the recommendations in {{operational-cons-clocks}} are followed, the increase in Certificate Transparency (CT) {{RFC6962}} log ingestion should be one order of magnitude in the worst case compared to the current state.
-
-The input received from most members of the CT community when the issue was raised was that this should not represent a problem for the CT architecture.
+Even in the highly unlikely case STAR becomes the only cert issuance model,
+discussion with the IETF TRANS Working Group and Certificate Transparency (CT)
+logs implementers suggests that existing CT Log Server implementations
+are capable of sustaining the resulting 100x increase in ingestion
+rate.  Additionally, such a future, higher load could be managed with a variety
+of techniques (e.g., sharding by modulo of cert hash, using "smart"
+load-balancing CT proxies, etc.).  With regards to the increase in the log
+size, current CT log growth is already being managed with schemes like Chrome's
+Log Policy {{OBrien}} which allow Operators to define their log life-cycle; and
+allowing the CAs, User Agents, Monitors, and any other interested entities to
+build-in support for that life-cycle ahead of time.
 
 ## Dependability
 {: #dependability}
@@ -849,8 +871,9 @@ Thanks to
 Roman Danyliw,
 Jon Peterson,
 Eric Rescorla,
-Sean Turner and
-Martin Thomson
+Sean Turner,
+Martin Thomson and
+Mehmet Ersue
 for helpful comments and discussions that have shaped this document.
 
 --- back
