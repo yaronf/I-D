@@ -199,7 +199,7 @@ If the IdO wishes to obtain a string of short-term certificates originating from
 If done this way, the process would involve frequent interactions between the registration function of the ACME Certification Authority (CA) and the identity provider infrastructure (e.g.: DNS, web servers), therefore making the issuance of short-term certificates exceedingly dependent on the reliability of both.
 
 This document presents an extension of the ACME protocol that optimizes this process by making short-term certificates first class objects in the ACME ecosystem.
-Once the order for a string of short-term certificates is accepted, the CA is responsible for publishing the next certificate at an agreed upon URL before the previous one expires.  The IdO can terminate the automatic renewal before the negotiated deadline, if needed - e.g., on key compromise.
+Once the Order for a string of short-term certificates is accepted, the CA is responsible for publishing the next certificate at an agreed upon URL before the previous one expires.  The IdO can terminate the automatic renewal before the negotiated deadline, if needed - e.g., on key compromise.
 
 For a more generic treatment of STAR certificates, readers are referred to {{I-D.nir-saag-star}}.
 
@@ -348,18 +348,15 @@ This protocol extends the ACME protocol, to allow for recurrent Orders.
 
 ### Extending the Order Resource
 
-The Order resource is extended with the following attributes:
+The Order resource is extended with a new "auto-renewal" object that MUST be present for STAR certificates.  The "auto-renewal" object has the following structure:
 
-- recurrent (required, boolean): MUST be true for STAR certificates.
-- recurrent-start-date (optional, string): the earliest date of validity of the first certificate issued,
+- start-date (optional, string): the earliest date of validity of the first certificate issued,
+in {{RFC3339}} format.  When omitted, the start date is as soon as authorization is complete.
+- end-date (required, string): the latest date of validity of the last certificate issued,
 in {{RFC3339}} format.
-When omitted, the start date is as soon as authorization is complete.
-- recurrent-end-date (required, string): the latest date of validity of the last certificate issued,
-in {{RFC3339}} format.
-- recurrent-certificate-validity (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.  This is a nominal value which does not include any
-extra validity time which is due to pre-dating.  The client can use the value reflected by the server (which may be different from the one sent by the client) as a hint to configure its polling timer.
-- recurrent-certificate-predate (optional, integer): amount of pre-dating added to each STAR certificate, an integer that denotes a number of seconds.  The default is 0.  If present, the value of the notBefore field that would otherwise appear in the STAR certificates is pre-dated by the specified number of seconds.  See also {{operational-cons-clocks}}.
-- recurrent-certificate-get (optional, boolean): see {{certificate-get-nego}}.
+- lifetime (required, integer): the maximum validity period of each STAR certificate, an integer that denotes a number of seconds.  This is a nominal value which does not include any extra validity time due to server or client adjustment (see below).
+- lifetime-adjust (optional, integer): amount of "left pad" added to each STAR certificate, an integer that denotes a number of seconds.  The default is 0.  If present, the value of the notBefore field that would otherwise appear in the STAR certificates is pre-dated by the specified number of seconds.  See also {{operational-cons-clocks}} for why a client might want to use this control and {{computing-effective-cert-lifetime}} for how the effective certificate lifetime is computed.  The value reflected by the server, together with the value of the lifetime attribute, can be used by the client as a hint to configure its polling timer.
+- allow-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
 These attributes are included in a POST message when creating the Order, as part of the "payload" encoded object.
 They are returned when the Order has been created, and the ACME server MAY adjust them at will, according to its local policy (see also {{capability-discovery}}).
@@ -400,31 +397,31 @@ An important property of the recurrent Order is that it can be canceled by the I
 ~~~
 {: #figcancelingstarorder title="Canceling a Recurrent Order"}
 
-After a successful cancellation, the server MUST NOT issue any additional certificates for this order.
+After a successful cancellation, the server MUST NOT issue any additional certificates for this Order.
 
-Immediately after the order is canceled, the server:
+Immediately after the Order is canceled, the server:
 
-- MUST update the status of the order resource to "canceled" and MUST set an appropriate "expires" date;
+- MUST update the status of the Order resource to "canceled" and MUST set an appropriate "expires" date;
 - MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide
 additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
 
-Issuing a cancellation for an order that is not in "valid" state is not allowed.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
+Issuing a cancellation for an Order that is not in "valid" state is not allowed.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
 
 Explicit certificate revocation using the revokeCert interface (Section 7.6 of {{RFC8555}}) is not supported for STAR certificates.  A server receiving a revocation request for a STAR certificate MUST return an error response with status code 403 (Forbidden) and type "urn:ietf:params:acme:error:recurrentRevocationNotSupported".
 
 ## Capability Discovery
 {: #capability-discovery}
 
-In order to support the discovery of STAR capabilities, the directory object defined in Section 9.7.6 of {{RFC8555}} is extended with the following attributes inside the "meta" field:
+In order to support the discovery of STAR capabilities, the "meta" field inside
+the directory object defined in Section 9.7.6 of {{RFC8555}} is extended with a
+new "auto-renewal" object.  The "auto-renewal" object MUST be present if the
+server supports STAR.  Its structure is as follows:
 
-- star-enabled (required, boolean): indicates STAR support.
-An ACME STAR server MUST include this attribute, and MUST set it to true
-if the feature is enabled.
-- star-min-cert-validity (required, integer): minimum acceptable value for recurrent-certificate-validity, in seconds.
-- star-max-renewal (required, integer): maximum delta between recurrent-end-date and recurrent-start-date, in seconds.
-- star-allow-certificate-get (optional, boolean): see {{certificate-get-nego}}.
+- min-lifetime (required, integer): minimum acceptable value for auto-renewal lifetime, in seconds.
+- max-duration (required, integer): maximum delta between the auto-renewal end-date and start-date, in seconds.
+- allow-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
-An example directory object advertising STAR support with one day star-min-cert-validity and one year star-max-renewal, and supporting certificate fetching with an HTTP GET is shown in {{figstardir}}.
+An example directory object advertising STAR support with one day min-lifetime and one year max-duration, and supporting certificate fetching with an HTTP GET is shown in {{figstardir}}.
 
 ~~~
   {
@@ -438,10 +435,11 @@ An example directory object advertising STAR support with one day star-min-cert-
        "terms-of-service": "https://example.com/acme/terms/2017-5-30",
        "website": "https://www.example.com/",
        "caa-identities": ["example.com"],
-       "star-enabled": true,
-       "star-min-cert-validity": 86400,
-       "star-max-renewal":  31536000,
-       "star-allow-certificate-get": true
+       "auto-renewal": {
+         "min-lifetime": 86400,
+         "max-duration":  31536000,
+         "allow-certificate-get": true
+       }
      }
   }
 ~~~
@@ -505,14 +503,14 @@ pointed by "star-certificate" at the latest halfway through the lifetime of the 
 It is worth noting that this has an implication in case of cancellation: in fact, from the time
 the next certificate is made available, the cancellation is not completely effective until the latter
 also expires.
-To avoid the client accidentally entering a broken state, the "next" certificate MUST be pre-dated
-so that it is already valid when it is published at the "star-certificate" URL.  Note that the server
-might need to increase the recurrent-certificate-predate value to satisfy the latter requirement.
-For further discussion on pre-dating, see {{operational-cons-clocks}}.
+To avoid the client accidentally entering a broken state, the notBefore of the "next" certificate MUST be set
+so that the certificate is already valid when it is published at the "star-certificate" URL.  Note that the server
+might need to increase the auto-renewal lifetime-adjust value to satisfy the latter requirement.
+For further rationale on the need for adjusting the certificate validity, see {{operational-cons-clocks}}.
 
-The server MUST NOT issue any additional certificates for this order beyond its recurrent-end-date.
+The server MUST NOT issue any additional certificates for this Order beyond its auto-renewal end-date.
 
-Immediately after the order expires, the server MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired". Note that the Order resource's state remains "valid", as per the base protocol.
+Immediately after the Order expires, the server MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired". Note that the Order resource's state remains "valid", as per the base protocol.
 
 ## Negotiating an unauthenticated GET
 {: #certificate-get-nego }
@@ -526,38 +524,39 @@ to, POST-as-GET), and a client to enable this service with per-Order
 granularity.
 
 Specifically, a server states its availability to grant unauthenticated access
-to a client's Order star-certificate by setting the star-allow-certificate-get
+to a client's Order star-certificate by setting the allow-certificate-get
 attribute to true in the meta field of the Directory object:
 
-- star-allow-certificate-get (optional, boolean): If this field is present and
+- allow-certificate-get (optional, boolean): If this field is present and
   set to true, the server allows GET requests to star-certificate URLs.
 
 A client states its will to access the issued star-certificate via
-unauthenticated GET by adding a recurrent-certificate-get attribute to its Order and
-setting it to true.
+unauthenticated GET by adding an allow-certificate-get attribute to the
+auto-renewal object of its Order and setting it to true.
 
-- recurrent-certificate-get (optional, boolean): If this field is present and
+- allow-certificate-get (optional, boolean): If this field is present and
   set to true, the client requests the server to allow unauthenticated GET to
   the star-certificate associated with this Order.
 
 If the server accepts the request, it MUST reflect the attribute setting in the resulting Order object.
 
 ## Computing notBefore and notAfter of STAR Certificates
+{: #computing-effective-cert-lifetime}
 
 We define "nominal renewal date" the point in time when a new short-term
 certificate for a given STAR Order is due.  It is a multiple of the Order's
-recurrent-certificate-validity that starts with the issuance of the first
-short-term certificate and is upper-bounded by the Order's recurrent-end-date
+auto-renewal lifetime that starts with the issuance of the first short-term
+certificate and is upper-bounded by the Order's auto-renewal end-date
 ({{fignrd}}).
 
 ~~~
-    rcv    - STAR Order's recurrent-certificate-validity
-    red    - STAR Order's recurrent-end-date
+    T      - STAR Order's auto-renewal lifetime
+    end    - STAR Order's auto-renewal end-date
     nrd[i] - nominal renewal date of the i-th STAR certificate
 
 
-                 .-rcv-.   .-rcv-.   .-rcv-.   .__.
-                /       \ /       \ /       \ /  red
+                 .- T -.   .- T -.   .- T -.   .__.
+                /       \ /       \ /       \ /  end
     -----------o---------o---------o---------o----X-------> t
               nrd[0]    nrd[1]    nrd[2]    nrd[3]
 ~~~
@@ -567,19 +566,24 @@ The rules to determine the notBefore and notAfter values of the i-th STAR
 certificate are as follows:
 
 ~~~
-    notBefore = nrd[i] - predating
-    notAfter  = min(nrd[i] + rcv, red)
+    notAfter  = min(nrd[i] + T, end)
+    notBefore = nrd[i] - max(adjust_client, adjust_server)
 ~~~
 
-where "predating" is the max between the (optional)
-recurrent-certificate-predate (rcp) and the amount of pre-dating that the
-server needs to add to make sure that all certificates being published are
-valid at the time of publication ({{fetching-certificates}}).  The server
-pre-dating is a fraction f of rcv (i.e., f * rcv with .5 <= f < 1).
+Where "adjust_client" is the min between the auto-renewal lifetime-adjust value
+("la"), optionally supplied by the client, and the auto-renewal lifetime of
+each short-term certificate ("T"); "adjust_server" is the amount of padding
+added by the ACME server to make sure that all certificates being published are
+valid at the time of publication.  The server padding is a fraction f of T
+(i.e., f * T with .5 <= f < 1, see {{fetching-certificates}}):
 
 ~~~
-    predating = max(rcp, f * rcv)
+    adjust_client = min(T, la)
+    adjust_server = f * T
 ~~~
+
+Note that the ACME server MUST NOT set the notBefore of the first STAR
+certificate to a date prior to the auto-renewal start-date.
 
 ### Example
 
@@ -588,32 +592,26 @@ through the lifetime of the previous one, and a STAR Order with the following
 attributes:
 
 ~~~
-     {
-       "recurrent-start-date": "2016-01-10T00:00:00Z",
-       "recurrent-end-date": "2016-01-20T00:00:00Z",
-       "recurrent-certificate-validity": 345600,    // 4 days
-       "recurrent-certificate-predate": 518400      // 6 days
+     "auto-renewal": {
+       "start-date": "2016-01-10T00:00:00Z",
+       "end-date": "2016-01-20T00:00:00Z",
+       "lifetime": 345600,          // 4 days
+       "lifetime-adjust": 259200    // 3 days
      }
 ~~~
 
-The amount of pre-dating that needs to be subtracted from each nominal renewal
-date is 6 days -- i.e., max(518400, 345600 * .5).
+The amount of time that needs to be subtracted from each nominal renewal
+date is 3 days -- i.e., max(min(345600, 259200), 345600 * .5).
 
 The notBefore and notAfter of each short-term certificate are:
 
 | notBefore | notAfter |
-| 2016-01-04T00:00:00Z | 2016-01-14T00:00:00Z |
-| 2016-01-08T00:00:00Z | 2016-01-18T00:00:00Z |
-| 2016-01-12T00:00:00Z | 2016-01-20T00:00:00Z |
+| 2016-01-10:00:00Z | 2016-01-14T00:00:00Z |
+| 2016-01-11:00:00Z | 2016-01-18T00:00:00Z |
+| 2016-01-15T00:00:00Z | 2016-01-20T00:00:00Z |
 
-
-A client should expect each certificate to be available from the
-star-certificate endpoint at the following times:
-
-||
-| 2016-01-10T00:00:00Z  (or earlier) |
-| 2016-01-12T00:00:00Z |
-| 2016-01-16T00:00:00Z |
+The value of the notBefore is also the time at which the client should expect
+the new certificate to be available from the star-certificate endpoint.
 
 # Operational Considerations
 
@@ -626,9 +624,9 @@ Nevertheless, this section attempts to provide reasonable suggestions for the We
 
 Acer et al. {{Acer}} find that one of the main causes of "HTTPS error" warnings in browsers is misconfigured client clocks.  In particular, they observe that roughly 95% of the "severe" clock skews - the 6.7% of clock-related breakage reports which account for clients that are more than 24 hours behind - happen to be within 6-7 days.
 
-In order to avoid these spurious warnings about a not (yet) valid server certificate, it is RECOMMENDED that site owners pre-date their Web facing certificates by 5 to 7 days.  The exact number depends on the percentage of the "clock-skewed" population that the site owner expects to protect - 5 days cover 97.3%, 7 days cover 99.6%.  Note that exact choice is also likely to depend on the kind of clients that is prevalent for a given site or app - for example, Android and Mac OS clients are known to behave better than Windows clients.  These considerations are clearly out of scope of the present document.
+In order to avoid these spurious warnings about a not (yet) valid server certificate, site owners could use the auto-renewal lifetime-adjust attribute to control the effective lifetime of their Web facing certificates.  The exact number depends on the percentage of the "clock-skewed" population that the site owner expects to protect - 5 days cover 97.3%, 7 days cover 99.6% as well as the nominal auto-renewal lifetime of the STAR Order.  Note that exact choice is also likely to depend on the kind of clients that is prevalent for a given site or app - for example, Android and Mac OS clients are known to behave better than Windows clients.  These considerations are clearly out of scope of the present document.
 
-In terms of security, STAR certificates and certificates with OCSP must-staple {{RFC7633}} can be considered roughly equivalent if the STAR certificate's and the OCSP response's lifetimes are the same.  Given OCSP responses can be cached on average for 4 days {{Stark}}, it is RECOMMENDED that a STAR certificate that is used on the Web has an "effective" lifetime (excluding any pre-dating to account for clock skews) no longer than 4 days.
+In terms of security, STAR certificates and certificates with OCSP must-staple {{RFC7633}} can be considered roughly equivalent if the STAR certificate's and the OCSP response's lifetimes are the same.  Given OCSP responses can be cached on average for 4 days {{Stark}}, it is RECOMMENDED that a STAR certificate that is used on the Web has an "effective" lifetime (excluding any adjustment to account for clock skews) no longer than 4 days.
 
 ## Impact on Certificate Transparency (CT) Logs
 
@@ -695,13 +693,13 @@ is available in https://github.com/mami-project/lurk/blob/master/proxySTAR_v2/RE
 
 This is a fork of the Let's Encrypt Boulder project that implements an ACME compliant CA.
 It includes modifications to extend the ACME protocol as it is specified in this draft,
-to support recurrent orders and cancelling orders. 
+to support recurrent Orders and cancelling Orders. 
 
 The implementation understands the new "recurrent" attributes as part of the Certificate
 issuance in the POST request for a new resource.
 An additional process "renewalManager.go" has been included in parallel that reads
 the details of each recurrent request, automatically produces a "cron" Linux based task
-that issues the recurrent certificates, until the lifetime ends or the order is canceled.
+that issues the recurrent certificates, until the lifetime ends or the Order is canceled.
 This process is also in charge of maintaining a fixed URI to enable the NDC to download certificates,
 unlike Boulder's regular process of producing a unique URI per certificate.
 
@@ -712,7 +710,7 @@ Certbot project that implements an ACME compliant client with the STAR extension
 The latter is a basic HTTP REST API server.
 
 The STAR Proxy understands the basic API request with a server. The current implementation
-of the API is defined in draft-ietf-acme-star-01. Registration or order cancellation
+of the API is defined in draft-ietf-acme-star-01. Registration or Order cancellation
 triggers the modified Certbot client that requests, or cancels, the recurrent generation
 of certificates using the STAR extension over ACME protocol.
 The URI with the location of the recurrent certificate is delivered to the STAR client as a response.
@@ -762,16 +760,23 @@ See author details below.
 
 [[RFC Editor: please replace XXXX below by the RFC number.]]
 
+## New Registries
+
+This document requests that IANA create the following new registries:
+
+* ACME Order Auto Renewal Fields ({{iana-order-auto-renewal-registry}})
+* ACME Directory Metadata Auto Renewal Fields ({{iana-metadata-auto-renewal-registry}})
+
 ## New Error Types
 
 This document adds the following entries to the ACME Error Type registry:
 
 | Type | Description | Reference |
 |------|-------------|-----------|
-| recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent order has been explicitly canceled by the IdO | RFC XXXX |
-| recurrentOrderExpired | The short-term certificate is no longer available because the recurrent order has expired | RFC XXXX |
-| recurrentCancellationInvalid | A request to cancel a recurrent order that is not in state "valid" has been received | RFC XXXX |
-| recurrentRevocationNotSupported | A request to revoke a recurrent order has been received | RFC XXXX |
+| recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent Order has been explicitly canceled by the IdO | RFC XXXX |
+| recurrentOrderExpired | The short-term certificate is no longer available because the recurrent Order has expired | RFC XXXX |
+| recurrentCancellationInvalid | A request to cancel a recurrent Order that is not in state "valid" has been received | RFC XXXX |
+| recurrentRevocationNotSupported | A request to revoke a recurrent Order has been received | RFC XXXX |
 
 ## New fields in Order Objects
 
@@ -779,24 +784,60 @@ This document adds the following entries to the ACME Order Object Fields registr
 
 | Field Name | Field Type | Configurable | Reference |
 |------------|------------|--------------|-----------|
-| recurrent | string | true | RFC XXXX |
-| recurrent-start-date | string | true | RFC XXXX |
-| recurrent-end-date | string | true | RFC XXXX |
-| recurrent-certificate-validity | integer | true | RFC XXXX |
-| recurrent-certificate-predate | integer | true | RFC XXXX |
-| recurrent-certificate-get | boolean | true | RFC XXXX |
+| auto-renewal | object | true | RFC XXXX |
 | star-certificate | string | false | RFC XXXX |
+
+## Fields in the "auto-renewal" Object within an Order Object
+{: #iana-order-auto-renewal-registry}
+
+The "ACME Order Auto Renewal Fields" registry lists field names that are
+defined for use in the JSON object included in the "auto-renewal" field of an
+ACME order object.
+
+Template:
+
+* Field name: The string to be used as a field name in the JSON object
+* Field type: The type of value to be provided, e.g., string, boolean, array of
+  string
+* Configurable: Boolean indicating whether the server should accept values
+  provided by the client
+* Reference: Where this field is defined
+
+| Field Name | Field Type | Configurable | Reference |
+|------------|------------|--------------|-----------|
+| start-date | string | true | RFC XXXX |
+| end-date | string | true | RFC XXXX |
+| lifetime | integer | true | RFC XXXX |
+| lifetime-adjust | integer | true | RFC XXXX |
+| allow-certificate-get | boolean | true | RFC XXXX |
 
 ## New fields in the "meta" Object within a Directory Object
 
-This document adds the following entries to the ACME Directory Metadata Fields:
+This document adds the following entry to the ACME Directory Metadata Fields:
 
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
-| star-enabled | boolean | RCF XXXX |
-| star-min-cert-validity | integer | RCF XXXX |
-| star-max-renewal | integer | RCF XXXX |
-| star-allow-certificate-get | boolean | RFC XXXX |
+| auto-renewal | object | RFC XXXX |
+
+## Fields in the "auto-renewal" Object within a Directory Metadata Object
+{: #iana-metadata-auto-renewal-registry}
+
+The "ACME Directory Metadata Auto Renewal Fields" registry lists field names
+that are defined for use in the JSON object included in the "auto-renewal"
+field of an ACME directory "meta" object.
+
+Template:
+
+* Field name: The string to be used as a field name in the JSON object
+* Field type: The type of value to be provided, e.g., string, boolean, array of
+  string
+* Reference: Where this field is defined
+
+| Field Name | Field Type | Reference |
+|------------|------------|--------------|
+| min-lifetime | integer | RCF XXXX |
+| max-duration | integer | RCF XXXX |
+| allow-certificate-get | boolean | RFC XXXX |
 
 ## Cert-Not-Before and Cert-Not-After HTTP Headers
 {: #iana-http-headers}
@@ -807,7 +848,6 @@ The "Message Headers" registry should be updated with the following additional v
 |-----------------------|----------|----------|-----------|
 | Cert-Not-Before       | http     | standard | RFC XXXX, {{fetching-certificates}} |
 | Cert-Not-After        | http     | standard | RFC XXXX, {{fetching-certificates}} |
-
 
 # Security Considerations
 
@@ -833,11 +873,11 @@ More discussion of the security of STAR certificates is available in
 
 STAR adds a new attack vector that increases the threat of denial of
     service attacks, caused by the change to the CA's behavior. Each STAR
-    request amplifies the resource demands upon the CA, where one order
+    request amplifies the resource demands upon the CA, where one Order
     produces not one, but potentially dozens or hundreds of certificates,
-    depending on the "recurrent-certificate-validity" parameter. An attacker
+    depending on the auto-renewal "lifetime" parameter. An attacker
     can use this property to aggressively reduce the
-    "recurrent-certificate-validity" (e.g. 1 sec.) jointly with other ACME
+    auto-renewal "lifetime" (e.g. 1 sec.) jointly with other ACME
     attack vectors identified in Sec. 10 of {{RFC8555}}. Other collateral impact is
     related to the certificate endpoint resource where the client can
     retrieve the certificates periodically. If this resource is external to
@@ -849,7 +889,7 @@ Mitigation recommendations from ACME still apply, but some of them need
     request, by the nature of the recurrent behavior cannot solve the
     above problem. The CA server needs complementary mitigation and
     specifically, it SHOULD enforce a minimum value on
-    "recurrent-certificate-validity". Alternatively, the CA can set an
+    auto-renewal "lifetime". Alternatively, the CA can set an
     internal certificate generation processes rate limit.
 
 ## Privacy Considerations
@@ -867,9 +907,11 @@ Horizon 2020 grant agreement no. 688421 Measurement and Architecture
 for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 Thanks to
+Richard Barnes,
 Roman Danyliw,
 Jon Peterson,
 Eric Rescorla,
+Ryan Sleevi,
 Sean Turner,
 Martin Thomson and
 Mehmet Ersue
@@ -880,6 +922,14 @@ for helpful comments and discussions that have shaped this document.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-09
+
+Richard and Ryan's review resulted in the following updates:
+
+- STAR Order and Directory Meta attributes renamed slightly and grouped under two brand new "auto-renewal" objects;
+- IANA registration updated accordingly (note that two new registries have been added as a consequence);
+- Unbounded pre-dating of certificates removed so that STAR certs are never issued with their notBefore in the past;
 
 ## draft-ietf-acme-star-08
 
