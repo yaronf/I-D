@@ -525,7 +525,8 @@ granularity.
 
 Specifically, a server states its availability to grant unauthenticated access
 to a client's Order star-certificate by setting the allow-certificate-get
-attribute to true in the meta field of the Directory object:
+attribute to true in the auto-renewal object of the meta field inside the
+Directory object:
 
 - allow-certificate-get (optional, boolean): If this field is present and
   set to true, the server allows GET requests to star-certificate URLs.
@@ -606,8 +607,8 @@ date is 3 days -- i.e., max(min(345600, 259200), 345600 * .5).
 The notBefore and notAfter of each short-term certificate are:
 
 | notBefore | notAfter |
-| 2016-01-10:00:00Z | 2016-01-14T00:00:00Z |
-| 2016-01-11:00:00Z | 2016-01-18T00:00:00Z |
+| 2016-01-10:00:00:00Z | 2016-01-14T00:00:00Z |
+| 2016-01-11:00:00:00Z | 2016-01-18T00:00:00Z |
 | 2016-01-15T00:00:00Z | 2016-01-20T00:00:00Z |
 
 The value of the notBefore is also the time at which the client should expect
