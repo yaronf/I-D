@@ -607,8 +607,8 @@ date is 3 days -- i.e., max(min(345600, 259200), 345600 * .5).
 The notBefore and notAfter of each short-term certificate are:
 
 | notBefore | notAfter |
-| 2016-01-10:00:00:00Z | 2016-01-14T00:00:00Z |
-| 2016-01-11:00:00:00Z | 2016-01-18T00:00:00Z |
+| 2016-01-10T00:00:00Z | 2016-01-14T00:00:00Z |
+| 2016-01-11T00:00:00Z | 2016-01-18T00:00:00Z |
 | 2016-01-15T00:00:00Z | 2016-01-20T00:00:00Z |
 
 The value of the notBefore is also the time at which the client should expect
