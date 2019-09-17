@@ -69,4 +69,4 @@ upload: $(draft).html $(draft).txt
 	python upload-draft.py $(draft).html
 
 spell: $(draft).md
-	spell $< | sort | uniq | less
+	which aspell && aspell list < $< | sort | uniq | less
