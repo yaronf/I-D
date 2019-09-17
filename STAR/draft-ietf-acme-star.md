@@ -330,7 +330,7 @@ Note that it is not necessary to explicitly revoke the short-term certificate.
    |                                               |
    |              Retrieve cert                    |
    +---------------------------------------------->|
-   |              Error: recurrentOrderCanceled    |
+   |              Error: autoRenewalCanceled       |
    |<----------------------------------------------+
    |                                               |
 ~~~~~~~~~~
@@ -344,7 +344,7 @@ to the ACME protocol required to issue STAR certificates.
 
 ## ACME Extensions
 
-This protocol extends the ACME protocol, to allow for recurrent Orders.
+This protocol extends the ACME protocol, to allow for automatically renewed Orders.
 
 ### Extending the Order Resource
 
@@ -366,16 +366,16 @@ If they are included, the server MUST return an error with status code 400 "Bad
 Request" and type "malformedRequest".
 
 Section 7.1.6 of {{RFC8555}} defines the following values for the Order resource's status: "pending", "ready", "processing", "valid", and "invalid".
-In the case of recurrent Orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
+In the case of auto-renewal Orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
 
 A STAR certificate is by definition a mutable resource.  Instead of overloading the semantics of the "certificate" attribute, this document defines a new attribute "star-certificate" to be used instead of "certificate".
 
 - star-certificate (optional, string):  A URL for the (rolling) STAR certificate that has been issued in response to this Order.
 
-### Canceling a Recurrent Order
+### Canceling an Auto-renewal Order
 {: #protocol-details-canceling}
 
-An important property of the recurrent Order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the Order, the ACME client sends a POST to the Order URL as shown in {{figcancelingstarorder}}.
+An important property of the auto-renewal Order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the Order, the ACME client sends a POST to the Order URL as shown in {{figcancelingstarorder}}.
 
 ~~~
   POST /acme/order/TOlocE8rfgo HTTP/1.1
@@ -395,7 +395,7 @@ An important property of the recurrent Order is that it can be canceled by the I
     "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
   }
 ~~~
-{: #figcancelingstarorder title="Canceling a Recurrent Order"}
+{: #figcancelingstarorder title="Canceling an Auto-renewal Order"}
 
 After a successful cancellation, the server MUST NOT issue any additional certificates for this Order.
 
@@ -403,11 +403,11 @@ Immediately after the Order is canceled, the server:
 
 - MUST update the status of the Order resource to "canceled" and MUST set an appropriate "expires" date;
 - MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide
-additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderCanceled".
+additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:autoRenewalCanceled".
 
-Issuing a cancellation for an Order that is not in "valid" state is not allowed.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:recurrentCancellationInvalid".
+Issuing a cancellation for an Order that is not in "valid" state is not allowed.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:autoRenewalCancellationInvalid".
 
-Explicit certificate revocation using the revokeCert interface (Section 7.6 of {{RFC8555}}) is not supported for STAR certificates.  A server receiving a revocation request for a STAR certificate MUST return an error response with status code 403 (Forbidden) and type "urn:ietf:params:acme:error:recurrentRevocationNotSupported".
+Explicit certificate revocation using the revokeCert interface (Section 7.6 of {{RFC8555}}) is not supported for STAR certificates.  A server receiving a revocation request for a STAR certificate MUST return an error response with status code 403 (Forbidden) and type "urn:ietf:params:acme:error:autoRenewalRevocationNotSupported".
 
 ## Capability Discovery
 {: #capability-discovery}
@@ -510,7 +510,7 @@ For further rationale on the need for adjusting the certificate validity, see {{
 
 The server MUST NOT issue any additional certificates for this Order beyond its auto-renewal end-date.
 
-Immediately after the Order expires, the server MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:recurrentOrderExpired". Note that the Order resource's state remains "valid", as per the base protocol.
+Immediately after the Order expires, the server MUST respond with 403 (Forbidden) to any requests to the star-certificate endpoint.  The response SHOULD provide additional information using a problem document {{RFC7807}} with type "urn:ietf:params:acme:error:autoRenewalExpired". Note that the Order resource's state remains "valid", as per the base protocol.
 
 ## Negotiating an unauthenticated GET
 {: #certificate-get-nego }
@@ -607,6 +607,7 @@ date is 3 days -- i.e., max(min(345600, 259200), 345600 * .5).
 The notBefore and notAfter of each short-term certificate are:
 
 | notBefore | notAfter |
+|-----------|----------|
 | 2016-01-10T00:00:00Z | 2016-01-14T00:00:00Z |
 | 2016-01-11T00:00:00Z | 2016-01-18T00:00:00Z |
 | 2016-01-15T00:00:00Z | 2016-01-20T00:00:00Z |
@@ -643,7 +644,7 @@ Log Policy {{OBrien}} which allow Operators to define their log life-cycle; and
 allowing the CAs, User Agents, Monitors, and any other interested entities to
 build-in support for that life-cycle ahead of time.
 
-## Dependability
+## HTTP Caching and Dependability
 {: #dependability}
 
 When using authenticated POST-as-GET, the HTTPS endpoint from where the STAR
@@ -653,6 +654,11 @@ dependent on the ACME server availability.  This might be problematic given the
 relatively high rate of client-server interactions in a STAR ecosystem.
 Clients and servers should consider using the mechanism described in
 {{certificate-get-nego}} to mitigate the risk.
+
+When using unauthenticated GET to fetch the STAR certificate, the server SHALL
+use the appropriate cache directives to set the freshness lifetime of the
+response (Section 5.2 of {{!RFC7234}}) such that on-path caches will consider
+it stale before or at the time its effective lifetime is due to expire.
 
 # Implementation Status
 
@@ -774,10 +780,10 @@ This document adds the following entries to the ACME Error Type registry:
 
 | Type | Description | Reference |
 |------|-------------|-----------|
-| recurrentOrderCanceled | The short-term certificate is no longer available because the recurrent Order has been explicitly canceled by the IdO | RFC XXXX |
-| recurrentOrderExpired | The short-term certificate is no longer available because the recurrent Order has expired | RFC XXXX |
-| recurrentCancellationInvalid | A request to cancel a recurrent Order that is not in state "valid" has been received | RFC XXXX |
-| recurrentRevocationNotSupported | A request to revoke a recurrent Order has been received | RFC XXXX |
+| autoRenewalCanceled | The short-term certificate is no longer available because the auto-renewal Order has been explicitly canceled by the IdO | RFC XXXX |
+| autoRenewalExpired | The short-term certificate is no longer available because the auto-renewal Order has expired | RFC XXXX |
+| autoRenewalCancellationInvalid | A request to cancel a auto-renewal Order that is not in state "valid" has been received | RFC XXXX |
+| autoRenewalRevocationNotSupported | A request to revoke a auto-renewal Order has been received | RFC XXXX |
 
 ## New fields in Order Objects
 
@@ -887,7 +893,7 @@ STAR adds a new attack vector that increases the threat of denial of
 
 Mitigation recommendations from ACME still apply, but some of them need
     to be adjusted. For example, applying rate limiting to the initial
-    request, by the nature of the recurrent behavior cannot solve the
+    request, by the nature of the auto-renewal behavior cannot solve the
     above problem. The CA server needs complementary mitigation and
     specifically, it SHOULD enforce a minimum value on
     auto-renewal "lifetime". Alternatively, the CA can set an
@@ -931,6 +937,9 @@ Richard and Ryan's review resulted in the following updates:
 - STAR Order and Directory Meta attributes renamed slightly and grouped under two brand new "auto-renewal" objects;
 - IANA registration updated accordingly (note that two new registries have been added as a consequence);
 - Unbounded pre-dating of certificates removed so that STAR certs are never issued with their notBefore in the past;
+- Changed "recurrent" to "autoRenewal" in error codes;
+- Changed "recurrent" to "auto-renewal" in reference to Orders;
+- Added operational considerations for HTTP caches.
 
 ## draft-ietf-acme-star-08
 
