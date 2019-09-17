@@ -842,8 +842,8 @@ Template:
 
 | Field Name | Field Type | Reference |
 |------------|------------|--------------|
-| min-lifetime | integer | RCF XXXX |
-| max-duration | integer | RCF XXXX |
+| min-lifetime | integer | RFC XXXX |
+| max-duration | integer | RFC XXXX |
 | allow-certificate-get | boolean | RFC XXXX |
 
 ## Cert-Not-Before and Cert-Not-After HTTP Headers
