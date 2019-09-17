@@ -657,8 +657,8 @@ Clients and servers should consider using the mechanism described in
 
 When using unauthenticated GET to fetch the STAR certificate, the server SHALL
 use the appropriate cache directives to set the freshness lifetime of the
-response {{!RFC7234}} such that on-path caches will consider it stale before or
-at the time its effective lifetime is due to expire.
+response (Section 5.2 of {{!RFC7234}}) such that on-path caches will consider
+it stale before or at the time its effective lifetime is due to expire.
 
 # Implementation Status
 
