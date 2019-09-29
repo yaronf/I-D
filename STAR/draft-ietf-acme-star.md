@@ -211,9 +211,10 @@ provider and its customers {{I-D.ietf-acme-star-delegation}}.  At any time,
 the service customer (i.e., the IdO) can terminate the delegation by simply
 instructing the CA to stop the automatic renewal and letting the currently
 active certificate expire shortly thereafter.
-Note that in this case the delegated entity needs to access the auto-renewed
-certificate without being in possession of the ACME account key that was used
-for initiating the STAR issuance.
+
+Note that in the name delegation use case the delegated entity needs to access
+the auto-renewed certificate without being in possession of the ACME account
+key that was used for initiating the STAR issuance.
 
 ## Terminology
 
@@ -347,6 +348,7 @@ to the ACME protocol required to issue STAR certificates.
 This protocol extends the ACME protocol, to allow for automatically renewed Orders.
 
 ### Extending the Order Resource
+{: #star-order-ext}
 
 The Order resource is extended with a new "auto-renewal" object that MUST be present for STAR certificates.  The "auto-renewal" object has the following structure:
 
@@ -663,7 +665,7 @@ it stale before or at the time its effective lifetime is due to expire.
 # Implementation Status
 
 Note to RFC Editor: please remove this section before publication,
-including the reference to {{RFC7942}}.
+including the reference to {{RFC7942}} and {{I-D.sheffer-acme-star-request}}.
 
 This section records the status of known implementations of the
 protocol defined by this specification at the time of posting of
@@ -810,6 +812,8 @@ Template:
   provided by the client
 * Reference: Where this field is defined
 
+Initial contents: The fields and descriptions defined in {{star-order-ext}}.
+
 | Field Name | Field Type | Configurable | Reference |
 |------------|------------|--------------|-----------|
 | start-date | string | true | RFC XXXX |
@@ -839,6 +843,8 @@ Template:
 * Field type: The type of value to be provided, e.g., string, boolean, array of
   string
 * Reference: Where this field is defined
+
+Initial contents: The fields and descriptions defined in {{capability-discovery}}.
 
 | Field Name | Field Type | Reference |
 |------------|------------|--------------|
