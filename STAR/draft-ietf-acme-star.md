@@ -776,6 +776,9 @@ This document requests that IANA create the following new registries:
 * ACME Order Auto Renewal Fields ({{iana-order-auto-renewal-registry}})
 * ACME Directory Metadata Auto Renewal Fields ({{iana-metadata-auto-renewal-registry}})
 
+All of these registries are administered under a Specification Required policy
+{{!RFC8126}}.
+
 ## New Error Types
 
 This document adds the following entries to the ACME Error Type registry:
