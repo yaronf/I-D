@@ -480,24 +480,24 @@ illustrated in {{figunauthgetstarcert}}.
 ~~~
 {: #figunauthgetstarcert title="Fetching a STAR certificate with unauthenticated GET"}
 
-The Server SHOULD include the "Cert-Not-Before" and "Cert-Not-After" HTTP headers in the response.
+The Server SHOULD include the "Cert-Not-Before" and "Cert-Not-After" HTTP header fields in the response.
 When they exist, they MUST be equal to the respective fields inside the end-entity certificate. Their format is "HTTP-date" as defined in Section 7.1.1.2 of {{RFC7231}}.
 Their purpose is to enable client implementations that do not parse the certificate.
 
-Following are further clarifications regarding usage of these headers, as per {{RFC7231}} Sec. 8.3.1.
+Following are further clarifications regarding usage of these header fields, as per {{RFC7231}} Sec. 8.3.1.
 All apply to both headers.
 
-* This header is a single value, not a list.
-* The header is used only in responses to GET, HEAD and POST-as-GET requests, and only for MIME types that
+* This header field is a single value, not a list.
+* The header field is used only in responses to GET, HEAD and POST-as-GET requests, and only for MIME types that
 denote public key certificates.
-* Header semantics are independent of context.
-* The header is not hop-by-hop.
-* Intermediaries MAY insert or delete the value, but MUST ensure that if present, the header value
-equals the corresponding value within the credential.
-* The header is not appropriate for a Vary field.
-* The header is allowed within message trailers.
-* The header is not appropriate within redirects.
-* The header does not introduce additional security considerations. It discloses in a simpler form information
+* Header field semantics are independent of context.
+* The header field is not hop-by-hop.
+* Intermediaries MAY insert or delete the value;
+* If an intermediary inserts the value, it MUST ensure that the newly added value matches the corresponding value in the certificate.
+* The header field is not appropriate for a Vary field.
+* The header field is allowed within message trailers.
+* The header field is not appropriate within redirects.
+* The header field does not introduce additional security considerations. It discloses in a simpler form information
 that is already available inside the credential.
 
 To improve robustness, the next certificate MUST be made available by the ACME CA at the URL
@@ -929,6 +929,8 @@ Jon Peterson,
 Eric Rescorla,
 Ryan Sleevi,
 Sean Turner,
+Alexey Melnikov,
+Adam Roach,
 Martin Thomson and
 Mehmet Ersue
 for helpful comments and discussions that have shaped this document.
@@ -938,6 +940,13 @@ for helpful comments and discussions that have shaped this document.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-10
+
+IESG processing:
+
+- More clarity on IANA registration (Alexey);
+- HTTP header requirements adjustments (Adam);
 
 ## draft-ietf-acme-star-09
 
