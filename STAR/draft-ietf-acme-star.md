@@ -481,7 +481,7 @@ illustrated in {{figunauthgetstarcert}}.
 {: #figunauthgetstarcert title="Fetching a STAR certificate with unauthenticated GET"}
 
 The Server SHOULD include the "Cert-Not-Before" and "Cert-Not-After" HTTP header fields in the response.
-When they exist, they MUST be equal to the respective fields inside the end-entity certificate. Their format is "HTTP-date" as defined in Section 7.1.1.2 of {{RFC7231}}.
+When they exist, they MUST be equal to the respective fields inside the end-entity certificate. Their format is "HTTP-date" as defined in Section 7.1.1.2 of {{RFC7231}}, protected with double-quotes to allow detecting and potentially recovering from situations where misbehaving intermediaries coalesce single value header fields (see Section 8.3.1 of {{RFC7231}}).
 Their purpose is to enable client implementations that do not parse the certificate.
 
 Following are further clarifications regarding usage of these header fields, as per {{RFC7231}} Sec. 8.3.1.
@@ -923,6 +923,7 @@ Horizon 2020 grant agreement no. 688421 Measurement and Architecture
 for a Middleboxed Internet (MAMI). This support does not imply endorsement.
 
 Thanks to
+Ben Kaduk,
 Richard Barnes,
 Roman Danyliw,
 Jon Peterson,
@@ -947,6 +948,11 @@ IESG processing:
 
 - More clarity on IANA registration (Alexey);
 - HTTP header requirements adjustments (Adam);
+
+IANA expert review:
+
+- wrap HTTP-date in DQUOTEs in header values
+
 
 ## draft-ietf-acme-star-09
 
