@@ -381,21 +381,21 @@ A STAR certificate is by definition a dynamic resource.  Instead of overloading 
 An important property of the auto-renewal Order is that it can be canceled by the IdO, with no need for certificate revocation. To cancel the Order, the ACME client sends a POST to the Order URL as shown in {{figcancelingstarorder}}.
 
 ~~~
-  POST /acme/order/TOlocE8rfgo HTTP/1.1
+  POST /acme/order/ogfr8EcolOT HTTP/1.1
   Host: example.org
   Content-Type: application/jose+json
 
   {
     "protected": base64url({
       "alg": "ES256",
-      "kid": "https://example.com/acme/acct/evOfKhNU60wg",
-      "nonce": "5XJ1L3lEkMG7tR6pA00clA",
-      "url": "https://example.com/acme/order/TOlocE8rfgo"
+      "kid": "https://example.com/acme/acct/gw06UNhKfOve",
+      "nonce": "Alc00Ap6Rt7GMkEl3L1JX5",
+      "url": "https://example.com/acme/order/ogfr8EcolOT"
     }),
     "payload": base64url({
       "status": "canceled"
     }),
-    "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
+    "signature": "g454e3hdBlkT4AEw...nKePnUyZTjGtXZ6H"
   }
 ~~~
 {: #figcancelingstarorder title="Canceling an Auto-renewal Order"}
