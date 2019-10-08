@@ -451,7 +451,7 @@ new "auto-renewal" object.  The "auto-renewal" object MUST be present if the
 server supports STAR.  Its structure is as follows:
 
 - min-lifetime (required, integer): minimum acceptable value for auto-renewal lifetime, in seconds.
-- max-duration (required, integer): maximum delta between the auto-renewal end-date and start-date, in seconds.
+- max-duration (required, integer): maximum delta between the auto-renewal end-date and start-date, in seconds.  Note that this value should be comparable with the validity period of "traditional" certificates.
 - allow-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
 An example directory object advertising STAR support with one day min-lifetime and one year max-duration, and supporting certificate fetching with an HTTP GET is shown in {{figstardir}}.
@@ -686,7 +686,9 @@ When using authenticated POST-as-GET, the HTTPS endpoint from where the STAR
 certificate is fetched can't be easily replicated by an on-path HTTP cache.
 Reducing the caching properties of the protocol makes STAR clients increasingly
 dependent on the ACME server availability.  This might be problematic given the
-relatively high rate of client-server interactions in a STAR ecosystem.
+relatively high rate of client-server interactions in a STAR ecosystem and
+especially when multiple endpoints (e.g., a high number of CDN edge nodes) end
+up requesting the same certificate.
 Clients and servers should consider using the mechanism described in
 {{certificate-get-nego}} to mitigate the risk.
 
@@ -902,12 +904,12 @@ The "Message Headers" registry should be updated with the following additional v
 
 ## No revocation
 
-STAR certificates eliminate an important security feature of PKI which
-is the ability to revoke certificates.  Revocation allows the
-administrator to limit the damage done by a rogue node or an adversary
-who has control of the private key.  With STAR certificates, expiration
-replaces revocation so there is a timeliness issue.  To that end, see
-also the discussion on clock skew in {{operational-cons-clocks}}.
+STAR certificates eliminate an important security feature of PKI which is the
+ability to revoke certificates.  Revocation allows the administrator to limit
+the damage done by a rogue node or an adversary who has control of the private
+key.  With STAR certificates, expiration replaces revocation so there is
+potential for lack of timeliness in the revocation taking effect.  To that end,
+see also the discussion on clock skew in {{operational-cons-clocks}}.
 
 It should be noted that revocation also has timeliness issues, because
 both CRLs and OCSP responses have nextUpdate fields that tell relying parties (RPs) how
@@ -940,6 +942,8 @@ Mitigation recommendations from ACME still apply, but some of them need
     specifically, it SHOULD enforce a minimum value on
     auto-renewal "lifetime". Alternatively, the CA can set an
     internal certificate generation processes rate limit.
+    Note that this limit has to take account of already-scheduled renewal
+    issuances as well as new incoming requests.
 
 ## Privacy Considerations
 
