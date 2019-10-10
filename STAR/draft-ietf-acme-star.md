@@ -214,7 +214,8 @@ active certificate expire shortly thereafter.
 
 Note that in the name delegation use case the delegated entity needs to access
 the auto-renewed certificate without being in possession of the ACME account
-key that was used for initiating the STAR issuance.
+key that was used for initiating the STAR issuance.  This leads to the optional
+use of unauthenticated GET in this protocol ({{certificate-get-nego}}).
 
 ## Terminology
 
@@ -370,7 +371,7 @@ Request" and type "malformedRequest".
 Section 7.1.6 of {{RFC8555}} defines the following values for the Order resource's status: "pending", "ready", "processing", "valid", and "invalid".
 In the case of auto-renewal Orders, the status MUST be "valid" as long as STAR certificates are being issued.  We add a new status value: "canceled", see {{protocol-details-canceling}}.
 
-A STAR certificate is by definition a dynamic resource.  Instead of overloading the semantics of the "certificate" attribute, this document defines a new attribute "star-certificate" to be used instead of "certificate".
+A STAR certificate is by definition a dynamic resource, i.e., it refers to an entity that varies over time.  Instead of overloading the semantics of the "certificate" attribute, this document defines a new attribute "star-certificate" to be used instead of "certificate".
 
 - star-certificate (optional, string):  A URL for the (rolling) STAR certificate that has been issued in response to this Order.
 
@@ -410,7 +411,7 @@ additional information using a problem document {{RFC7807}} with type "urn:ietf:
 
 Issuing a cancellation for an Order that is not in "valid" state is not allowed.  A client MUST NOT send such a request, and a server MUST return an error response with status code 400 (Bad Request) and type "urn:ietf:params:acme:error:autoRenewalCancellationInvalid".
 
-The state machine described in Section 7.1.6 or {{RFC8555}} is extended as illustrated in {{fig-order-state-transitions-ext}}.
+The state machine described in Section 7.1.6 of {{RFC8555}} is extended as illustrated in {{fig-order-state-transitions-ext}} (State Transitions for Order Objects).
 
 ~~~
     pending --------------+
@@ -426,7 +427,8 @@ The state machine described in Section 7.1.6 or {{RFC8555}} is extended as illus
        V                  |
    processing ------------+
        |                  |
-       | Certificate      | Error or
+       | First            |
+       | certificate      | Error or
        | issued           | Authorization failure
        V                  V
      valid             invalid
@@ -451,7 +453,7 @@ new "auto-renewal" object.  The "auto-renewal" object MUST be present if the
 server supports STAR.  Its structure is as follows:
 
 - min-lifetime (required, integer): minimum acceptable value for auto-renewal lifetime, in seconds.
-- max-duration (required, integer): maximum delta between the auto-renewal end-date and start-date, in seconds.  Note that this value should be comparable with the validity period of "traditional" certificates.
+- max-duration (required, integer): maximum delta between the auto-renewal end-date and start-date, in seconds.
 - allow-certificate-get (optional, boolean): see {{certificate-get-nego}}.
 
 An example directory object advertising STAR support with one day min-lifetime and one year max-duration, and supporting certificate fetching with an HTTP GET is shown in {{figstardir}}.
@@ -512,7 +514,7 @@ illustrated in {{figunauthgetstarcert}}.
 {: #figunauthgetstarcert title="Fetching a STAR certificate with unauthenticated GET"}
 
 The Server SHOULD include the "Cert-Not-Before" and "Cert-Not-After" HTTP header fields in the response.
-When they exist, they MUST be equal to the respective fields inside the end-entity certificate. Their format is "HTTP-date" as defined in Section 7.1.1.2 of {{RFC7231}}, protected with double-quotes to allow detecting and potentially recovering from situations where misbehaving intermediaries coalesce single value header fields (see Section 8.3.1 of {{RFC7231}}).
+When they exist, they MUST be equal to the respective fields inside the end-entity certificate. Their format is "HTTP-date" as defined in Section 7.1.1.2 of {{RFC7231}}.
 Their purpose is to enable client implementations that do not parse the certificate.
 
 Following are further clarifications regarding usage of these header fields, as per {{RFC7231}} Sec. 8.3.1.
@@ -529,7 +531,7 @@ denote public key certificates.
 * The header field is allowed within message trailers.
 * The header field is not appropriate within redirects.
 * The header field does not introduce additional security considerations. It discloses in a simpler form information
-that is already available inside the credential.
+that is already available inside the certificate.
 
 To improve robustness, the next certificate MUST be made available by the ACME CA at the URL
 pointed by "star-certificate" at the latest halfway through the lifetime of the currently active certificate.
@@ -539,7 +541,7 @@ also expires.
 To avoid the client accidentally entering a broken state, the notBefore of the "next" certificate MUST be set
 so that the certificate is already valid when it is published at the "star-certificate" URL.  Note that the server
 might need to increase the auto-renewal lifetime-adjust value to satisfy the latter requirement.
-For a detailed description of the renewal scheduling logics, see {{computing-effective-cert-lifetime}}.
+For a detailed description of the renewal scheduling logic, see {{computing-effective-cert-lifetime}}.
 For further rationale on the need for adjusting the certificate validity, see {{operational-cons-clocks}}.
 
 The server MUST NOT issue any certificates for this Order with notAfter after the auto-renewal end-date.
@@ -579,7 +581,7 @@ If the server accepts the request, it MUST reflect the attribute setting in the 
 ## Computing notBefore and notAfter of STAR Certificates
 {: #computing-effective-cert-lifetime}
 
-We define "nominal renewal date" the point in time when a new short-term
+We define "nominal renewal date" as the point in time when a new short-term
 certificate for a given STAR Order is due.  Its cadence is a multiple of the
 Order's auto-renewal lifetime that starts with the issuance of the first
 short-term certificate and is upper-bounded by the Order's auto-renewal
@@ -986,11 +988,6 @@ IESG processing:
 - More clarity on IANA registration (Alexey);
 - HTTP header requirements adjustments (Adam);
 - Misc editorial (Ben)
-
-IANA expert review:
-
-- wrap HTTP-date in DQUOTEs in header values
-
 
 ## draft-ietf-acme-star-09
 
