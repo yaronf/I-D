@@ -522,16 +522,14 @@ full control of the cryptographic credentials for the site. The current document
 that the domain owner only wants to delegate restricted control, and wishes to retain
 the capability to cancel the CDN's credentials at a short notice.
 
-Following is the proposed solution where the IdO wishes to restrict certificate delegation only
-to the protocol defined here:
+Following is the proposed solution where the IdO wishes to ensure that a rogue CDN cannot issue unauthorized certificates:
 
 -  The domain owner makes sure that the CDN cannot modify the DNS records for the
   domain.  The domain owner should ensure it is the only entity authorized
   to modify the DNS zone. Typically, it 
   establishes a CNAME resource record from a subdomain into a CDN-managed domain.
 -  The domain owner uses a CAA record {{!RFC6844}} to restrict certificate issuance
-for the domain to specific CAs that
-      comply with ACME.
+for the domain to specific CAs that comply with ACME and are known to implement {{!I-D.ietf-acme-caa}}.
 -  The domain owner uses the ACME-specific CAA mechanism {{!I-D.ietf-acme-caa}}
 to restrict issuance to a specific
 account key which is controlled by it, and MUST require "dns-01" as the sole
