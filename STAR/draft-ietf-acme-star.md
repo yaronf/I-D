@@ -578,6 +578,9 @@ true.
 
 If the server accepts the request, it MUST reflect the attribute setting in the resulting Order object.
 
+Note that even when the use of unauthenticated GET has been agreed, the server
+MUST also allow POST-as-GET requests to the star-certificate resource.
+
 ## Computing notBefore and notAfter of STAR Certificates
 {: #computing-effective-cert-lifetime}
 
