@@ -634,8 +634,8 @@ attributes:
 
 ~~~
      "auto-renewal": {
-       "start-date": "2016-01-10T00:00:00Z",
-       "end-date": "2016-01-20T00:00:00Z",
+       "start-date": "2019-01-10T00:00:00Z",
+       "end-date": "2019-01-20T00:00:00Z",
        "lifetime": 345600,          // 4 days
        "lifetime-adjust": 259200    // 3 days
      }
@@ -648,9 +648,9 @@ The notBefore and notAfter of each short-term certificate are:
 
 | notBefore | notAfter |
 |-----------|----------|
-| 2016-01-10T00:00:00Z | 2016-01-14T00:00:00Z |
-| 2016-01-11T00:00:00Z | 2016-01-18T00:00:00Z |
-| 2016-01-15T00:00:00Z | 2016-01-20T00:00:00Z |
+| 2019-01-10T00:00:00Z | 2019-01-14T00:00:00Z |
+| 2019-01-11T00:00:00Z | 2019-01-18T00:00:00Z |
+| 2019-01-15T00:00:00Z | 2019-01-20T00:00:00Z |
 
 The value of the notBefore is also the time at which the client should expect
 the new certificate to be available from the star-certificate endpoint.
