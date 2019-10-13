@@ -922,6 +922,18 @@ long they should trust this revocation data.  These fields are typically
 set to hours, days, or even weeks in the future.  Any revocation that
 happens before the time in nextUpdate goes unnoticed by the RP.
 
+One situation where the lack of explicit revocation could create a security
+risk to the IdO is when the Order is created with start-date some appreciable
+amount of time in the future.  Recall that when authorizations have been
+fulfilled, the Order moves to the "valid" state and the star-certificate
+endpoint is populated with the first cert
+({{fig-order-state-transitions-ext}}).  So, if an attacker manages to get hold
+of the private key as well as of the first (post-dated) certificate, there is a
+time window in the future when they will be able to successfully impersonate
+the IdO.  Note that cancellation is pointless in this case.  In order to
+mitigate the described threat, it is RECOMMENDED that IdO place their Orders at
+a time that is close to the Order's start-date.
+
 More discussion of the security of STAR certificates is available in
 {{Topalovic}}.
 
