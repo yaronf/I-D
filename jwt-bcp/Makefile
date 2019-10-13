@@ -2,6 +2,7 @@ xml2rfc ?= xml2rfc
 kramdown-rfc2629 ?= kramdown-rfc2629
 idnits ?= idnits
 rfcdiff ?= rfcdiff
+spell ?= aspell list
 
 draft := draft-ietf-oauth-jwt-bcp
 current_ver := $(shell git tag | grep "$(draft)" | tail -1 | sed -e"s/.*-//")
@@ -68,4 +69,4 @@ upload: $(draft).html $(draft).txt
 	python upload-draft.py $(draft).html
 
 spell: $(draft).md
-	spell $< | sort | uniq | less
+	$(spell) < $< | sort | uniq | less
