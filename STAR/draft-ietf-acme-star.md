@@ -491,7 +491,7 @@ the star-certificate resource without authenticating itself to the server as
 illustrated in {{figunauthgetstarcert}}.
 
 ~~~
-  GET /acme/cert/mAt3xBGaobw HTTP/1.1
+  GET /acme/cert/g7m3ZQeTEqa HTTP/1.1
   Host: example.org
   Accept: application/pem-certificate-chain
 
