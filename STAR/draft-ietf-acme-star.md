@@ -996,6 +996,10 @@ for helpful comments and discussions that have shaped this document.
 
 [[Note to RFC Editor: please remove before publication.]]
 
+## draft-ietf-acme-star-11
+
+- One more nit re: random URL
+
 ## draft-ietf-acme-star-10
 
 IESG processing:
