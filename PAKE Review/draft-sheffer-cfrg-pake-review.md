@@ -2,7 +2,7 @@
 title: Review of the CFRG PAKE Proposals
 
 abbrev: Sheffer PAKE Review
-docname: draft-sheffer-cfrg-pake-review
+docname: draft-sheffer-cfrg-pake-review-latest
 category: info
 
 ipr: trust200902
