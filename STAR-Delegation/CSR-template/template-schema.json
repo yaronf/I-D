@@ -1,0 +1,65 @@
+{
+	"title": "JSON Schema for the STAR Delegation CSR template",
+	"$schema": "http://json-schema.org/draft-07/schema#", 
+ 	"$id": "http://ietf.org/acme/drafts/star-delegation/csr-template", 
+
+	"$def": {
+			"distinguished-name": {
+				"$id": "#distinguished-name",
+				"type": "object",
+				"properties": {
+					"country": {"type": "string"},
+					"stateOrProvince": {"type": "string"},
+					"locality": {"type": "string"},
+					"organization": {"type": "string"},
+					"organizationalUnit": {"type": "string"},
+					"emailAddress": {"type": "string"},
+					"commonName": {"type": "string"}
+				},
+				"additionalProperties": false
+			}
+	},
+	"type": "object",
+	"properties": {
+		"key": {
+			"type": "object",
+			"properties": {
+				"PublicKeyType": {
+					"type": "string",
+					"enum": [
+						"RSA",
+						"ecPublicKey"
+					]
+				},
+				"PublicKeyLength": {
+					"type": "integer"
+				},
+				"SignatureType": {
+					"type": "string"
+				}
+			}
+		},
+		"subject": {
+			"$ref": "#distinguished-name"
+		},
+		"extensions": {
+			"type": "object",
+			"properties": {
+				"keyUsage": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": ["digitalSignature", "nonRepudiation", "keyEncipherment", "dataEncipherment", "keyAgreement", "keyCertSign", "cRLSign", "encipherOnly", "decipherOnly"]
+					}
+				},
+				"extendedKeyUsage": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"enum": ["serverAuth", "clientAuth", "codeSigning", "emailProtection", "timeStamping", "OCSPSigning"]
+					}
+				}
+			}
+		}
+	}
+}
