@@ -4,39 +4,67 @@
  	"$id": "http://ietf.org/acme/drafts/star-delegation/csr-template", 
 
 	"$def": {
-			"distinguished-name": {
-				"$id": "#distinguished-name",
-				"type": "object",
-				"properties": {
-					"country": {"type": "string"},
-					"stateOrProvince": {"type": "string"},
-					"locality": {"type": "string"},
-					"organization": {"type": "string"},
-					"organizationalUnit": {"type": "string"},
-					"emailAddress": {"type": "string"},
-					"commonName": {"type": "string"}
-				},
-				"additionalProperties": false
-			}
-	},
-	"type": "object",
-	"properties": {
-		"key": {
+		"distinguished-name": {
+			"$id": "#distinguished-name",
+			"type": "object",
+			"properties": {
+				"country": {"type": "string"},
+				"stateOrProvince": {"type": "string"},
+				"locality": {"type": "string"},
+				"organization": {"type": "string"},
+				"organizationalUnit": {"type": "string"},
+				"emailAddress": {"type": "string"},
+				"commonName": {"type": "string"}
+			},
+			"additionalProperties": false
+		},
+		"rsaKeyType": {
+			"$id": "#rsaKeyType",
 			"type": "object",
 			"properties": {
 				"PublicKeyType": {
 					"type": "string",
-					"enum": [
-						"RSA",
-						"ecPublicKey"
-					]
+					"const": "RSA"
 				},
 				"PublicKeyLength": {
 					"type": "integer"
 				},
 				"SignatureType": {
-					"type": "string"
+					"type": "string",
+					"enum": ["sha256WithRSAEncryption"]
 				}
+			},
+			"additionalProperties": false
+		},
+		"ecKeyTYpe": {
+			"$id": "#ecKeyType",
+			"type": "object",
+			"properties": {
+				"PublicKeyType": {
+					"type": "string",
+					"const": "ecPublicKey"
+				},
+				"Curve": {
+					"type": "string",
+					"enum": ["secp521r1"]
+				},
+				"SignatureType": {
+					"type": "string",
+					"enum": ["ecdsa-with-SHA256"]
+				}
+			},
+			"additionalProperties": false
+		}
+	},
+	"type": "object",
+	"properties": {
+		"keyTypes": {
+			"type": "array",
+			"items": {
+				"oneOf": [
+					{"$ref": "#rsaKeyType"},
+					{"$ref": "#ecKeyType"}
+				]
 			}
 		},
 		"subject": {
@@ -58,8 +86,38 @@
 						"type": "string",
 						"enum": ["serverAuth", "clientAuth", "codeSigning", "emailProtection", "timeStamping", "OCSPSigning"]
 					}
+				},
+				"subjectAltName": {
+					"type": "object",
+					"properties": {
+						"DNS": {
+							"type": "array",
+							"items": {
+								"type": "string",
+								"format": "hostname"
+							}
+						},
+						"IP": {
+							"type": "array",
+							"items": {
+								"oneOf": [
+									{
+										"type": "string",
+"format": "ipv4"
+									},
+									{
+										"type": "string",
+"format": "ipv6"
+									}
+								]
+							}
+						}
+					},
+					"additionalProperties": false
 				}
-			}
+			},
+			"additionalProperties": false
 		}
-	}
+	},
+	"additionalProperties": false
 }

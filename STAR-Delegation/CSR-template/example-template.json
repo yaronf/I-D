@@ -1,9 +1,11 @@
 {
-    "key": {
-	"PulicKeyType": "RSA",
-	"PublicKeyLength": 4096,
-	"SignatureType": "sha256WithRSAEncryption"
-    },
+    "keyTypes": [
+	{
+		"PublicKeyType": "RSA",
+		"PublicKeyLength": 4096,
+		"SignatureType": "sha256WithRSAEncryption"
+	}
+    ],
     "subject": {
 	"country": "CA",
 	"stateOrProvince": "**",
