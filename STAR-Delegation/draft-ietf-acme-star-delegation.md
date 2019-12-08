@@ -369,22 +369,27 @@ revokeCert interface.
 # CSR Template
 
 The CSR template is used to express and constrain the shape of the CSR that the
-NDC uses to request the certificate.  The CSR is used for every CSR created
-under the same delegation.  Its validation is a critical element in the
+NDC uses to request the certificate.  The CSR is used for every certificate created
+under the same delegation.  Its validation by the IdO is a critical element in the
 security of the whole delegation mechanism.
-
-The CSR template is defined using JSON Schema {{!I-D.handrews-json-schema}}, a
-mature, widely used format, which is a natural fit for the JSON-centric ACME.
 
 Instead of defining every possible CSR attribute, this document takes a
 minimalist approach by declaring only the minimum attribute set and deferring
 the registration of further, more specific, attributes to future documents.
-Critically, this document establishes the necessary IANA registry and
-registration rules (see {{csr-template-registry}}).
 
-## Rules
+## Template Syntax
 
-TODO
+The template is a JSON document. Each field denotes one of:
+
+* A mandatory field, where the template specifies the literal value of that field. This is denoted by a literal string, such as "client1.ndc.dno.example.com".
+* A mandatory field, where the content of the field is defined by the client. This is denoted by "\*\*".
+* An optional field, where the client decides whether the field is included in the CSR and what its value is. This is denoted by "\*".
+
+The NDC MUST NOT include in the CSR any fields that are not specified in the template, and in particular MUST NOT add any extensions unless those were previously negotiated out of band with the IdO.
+
+The mapping between X.509 CSR fields and the template will be defined in a future revision of this document.
+
+When the CSR is received by the IdO, it MUST verify that the CSR is consistent with the template that the IdO sent earlier. The IdO MAY enforce additional constraints, e.g. by restricting field lengths. 
 
 ## Example
 
@@ -392,45 +397,11 @@ The CSR template in {{fig-csr-template}} represents one possible CSR template
 governing the delegation exchanges provided in the rest of this document.
 
 ~~~
-{
-    "type": "object",
-    "properties": {
-        "san": {
-            "type": "string”,
-            "pattern": "*.ndc.dno.example."
-        },
-        "requested-algorithms": {
-            "type": "object",
-            "properties": {
-                “sigAlgo”: {
-                    "type": "string",
-                    "enum": [
-                        "ecdsa-with-sha256"
-                    ]
-                },
-            },
-            "required": [
-                “sigAlgo”
-            ]
-        },
-        "key-usage": {
-            "type": "string",
-            "enum": [
-                "digitalSignature"
-            ]
-        }
-    },
-    "required": [
-        “san”,
-        "requested-algorithms",
-        "key-length",
-        "key-usage"
-    ],
-    "title": "csr-template",
-    "description": “Example CSR Template for IETF ACME STAR Delegation"
-}
+{::include CSR-template/example-template.json}
 ~~~
 {: #fig-csr-template title="Example CSR template"}
+
+The template syntax is defined in [[Appendix A]].
 
 # Further Use Cases
 {: #further-use-cases}
@@ -580,3 +551,13 @@ certificates for a delegated domain.
 ## draft-sheffer-acme-star-delegation-00
 
 - Initial version, some text extracted from draft-sheffer-acme-star-requests-02
+
+# CSR Template Schema
+
+Following is a JSON Schema defition of the CSR template. The syntax used is that of draft 7 of {{json-schema}}, which may not be the latest version of the corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of publication.
+
+While the CSR template must follow the syntax defined here, neither the IdO nor the NDC are expected to validate it at run-time.
+
+~~~
+{:: include CSR-template/template-schema.json}
+~~~
