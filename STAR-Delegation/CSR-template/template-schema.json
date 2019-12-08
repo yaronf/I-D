@@ -111,6 +111,13 @@
 									}
 								]
 							}
+						},
+						"Email": {
+							"type": "array",
+							"items": {
+								"type": "string",
+								"format": "email"
+							}
 						}
 					},
 					"additionalProperties": false
