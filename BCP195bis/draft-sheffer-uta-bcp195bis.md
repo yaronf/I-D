@@ -3,6 +3,7 @@ title: Recommendations for Secure Use of Transport Layer Security (TLS) and Data
 abbrev: TLS Recommendations
 docname: draft-sheffer-uta-bcp195bis-latest
 category: bcp
+obsoletes: 7525
 
 ipr: trust200902
 area: Applications
