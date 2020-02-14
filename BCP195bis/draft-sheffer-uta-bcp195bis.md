@@ -51,7 +51,7 @@ informative:
 
   Soghoian2011: DOI.10.2139/ssrn.1591033
 
-  SESSION-HASH: I-D.draft-ietf-tls-session-hash-05
+  SESSION-HASH: RFC7627
 
   POODLE:
     author:
@@ -60,7 +60,7 @@ informative:
     target: https://www.us-cert.gov/ncas/alerts/TA14-290A
     title: SSL 3.0 Protocol Vulnerability and POODLE Attack
 
-  TLS-XMPP: I-D.draft-ietf-uta-xmpp-07
+  TLS-XMPP: RFC7590
 
   BETTERCRYPTO:
     author:
@@ -91,11 +91,11 @@ informative:
     seriesinfo:
       Usenix Security Symposium: '2012'
 
-  DANE-SMTP: I-D.draft-ietf-dane-smtp-with-dane-16
+  DANE-SMTP: RFC7672
 
   PatersonRS11: DOI.10.1007/978-3-642-25385-0_20
 
-  DANE-SRV: I-D.draft-ietf-dane-srv-14
+  DANE-SRV: RFC7673
 
   Kleinjung2010: DOI.10.1007/978-3-642-14623-7_18
 
@@ -166,7 +166,7 @@ Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are 
 
 # Introduction
 
-Transport Layer Security (TLS) {{!RFC5246}} and Datagram Transport Security Layer (DTLS) {{!RFC6347}} are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{?RFC7465}} encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.   
+Transport Layer Security (TLS) {{!RFC5246}} and Datagram Transport Security Layer (DTLS) {{!RFC6347}} are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.   
 
 Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code 
 
@@ -248,7 +248,7 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 
 Clients that "fall back" to lower versions of the protocol after the server rejects higher versions of the protocol MUST NOT fall back to SSLv3 or earlier.
 
-Rationale: Some client implementations revert to lower versions of TLS or even to SSLv3 if the server rejected higher versions of the protocol. This fallback can be forced by a man-in-the-middle (MITM) attacker. TLS 1.0 and SSLv3 are significantly less secure than TLS 1.2, the version recommended by this document.  While TLS 1.0-only servers are still quite common, IP scans show that SSLv3-only servers amount to only about 3% of the current Web server population. (At the time of this writing, an explicit method for preventing downgrade  attacks has been defined recently in {{!RFC7507}}.)
+Rationale: Some client implementations revert to lower versions of TLS or even to SSLv3 if the server rejected higher versions of the protocol. This fallback can be forced by a man-in-the-middle (MITM) attacker. TLS 1.0 and SSLv3 are significantly less secure than TLS 1.2, the version recommended by this document.  While TLS 1.0-only servers are still quite common, IP scans show that SSLv3-only servers amount to only about 3% of the current Web server population. (At the time of this writing, an explicit method for preventing downgrade  attacks has been defined recently in {{?RFC7507}}.)
 
 ## Strict TLS
 
@@ -264,13 +264,13 @@ The following recommendations are provided to help prevent SSL Stripping (an att
 
 
 * HTTP client and server implementations MUST support the HTTP Strict Transport
-      Security (HSTS) header {{!RFC6797}}, in order to allow Web servers to 
+      Security (HSTS) header {{?RFC6797}}, in order to allow Web servers to 
       advertise that they are
       willing to accept TLS-only clients.
 
 
 
-* Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in Section 11.3 of {{!RFC6797}}).
+* Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in Section 11.3 of {{?RFC6797}}).
       
 
 Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear. 
@@ -290,7 +290,7 @@ Implementers should note that compression at higher protocol levels can allow an
 ## TLS Session Resumption
 {: #rec-resume}
 
-If TLS session resumption is used, care ought to be taken to do so safely. In particular, when using session tickets {{!RFC5077}}, the resumption information MUST be authenticated and encrypted to prevent modification or eavesdropping by an attacker. Further recommendations apply to session tickets:
+If TLS session resumption is used, care ought to be taken to do so safely. In particular, when using session tickets {{?RFC5077}}, the resumption information MUST be authenticated and encrypted to prevent modification or eavesdropping by an attacker. Further recommendations apply to session tickets:
 
 * A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
 
@@ -363,7 +363,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 * Implementations MUST NOT negotiate RC4 cipher suites. 
                <vspace blankLines='1'/>
                Rationale: The RC4 stream cipher has a variety of cryptographic 
-               weaknesses, as documented in {{?RFC7465}}.
+               weaknesses, as documented in {{!RFC7465}}.
        Note that DTLS specifically forbids the use of RC4 already.
             
 
@@ -429,7 +429,7 @@ Given the foregoing considerations, implementation and deployment of the followi
 * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         
 
-These cipher suites are supported only in TLS 1.2 because they are authenticated encryption (AEAD) algorithms {{!RFC5116}}.
+These cipher suites are supported only in TLS 1.2 because they are authenticated encryption (AEAD) algorithms {{?RFC5116}}.
 
 Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software. (See {{BETTERCRYPTO}} for helpful deployment guidelines, but note that its recommendations differ from the current document in some details.)  It would be ideal if server software implementations were to prefer these suites by default.
 
@@ -537,7 +537,7 @@ This document does not modify the implementation and deployment recommendations 
 
 
   Designers of new application protocols developed through the Internet
-  Standards Process {{!RFC2026}} are expected at minimum to conform to the best
+  Standards Process {{?RFC2026}} are expected at minimum to conform to the best
   practices recommended here, unless they provide documentation of
   compelling reasons that would prevent such conformance (e.g.,
   widespread deployment on constrained devices that lack support for
@@ -607,7 +607,7 @@ If the host name is discovered indirectly and in an insecure manner (e.g., by an
 
 
 
-Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with {{!RFC5280}} (see also 
+Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with {{?RFC5280}} (see also 
         {{!RFC6125}}).
 
 
@@ -617,7 +617,7 @@ Host name validation typically applies only to the leaf "end entity" certificate
 {: #sec-aes}
 
 
-{{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to Section 11 of {{!RFC5246}} for general security considerations when using TLS 1.2, and to Section 6 of {{!RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
+{{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to Section 11 of {{RFC5246}} for general security considerations when using TLS 1.2, and to Section 6 of {{!RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
       
 ## Forward Secrecy
 {: #sec-pfs}
@@ -664,29 +664,29 @@ For performance reasons, many TLS implementations reuse Diffie-Hellman and Ellip
       
 ## Certificate Revocation
 
-The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates {{!RFC5280}}:
+The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates {{RFC5280}}:
 
 
 * Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness (despite workarounds such as partitioned CRLs and delta CRLs).
 
 * Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond a small number of the most heavily used Web servers.
 
-* The On-Line Certification Status Protocol (OCSP) {{!RFC6960}} presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.)
+* The On-Line Certification Status Protocol (OCSP) {{?RFC6960}} presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.)
 
 * The TLS Certificate Status Request extension (Section 8 of {{!RFC6066}}), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.
 
-* OCSP stapling as defined in {{!RFC6066}} does not extend to intermediate certificates used in a certificate chain. Although the Multiple Certificate Status extension {{!RFC6961}} addresses this shortcoming, it is a recent addition without much deployment.
+* OCSP stapling as defined in {{!RFC6066}} does not extend to intermediate certificates used in a certificate chain. Although the Multiple Certificate Status extension {{?RFC6961}} addresses this shortcoming, it is a recent addition without much deployment.
 
 * Both CRLs and OCSP depend on relatively reliable connectivity to the Internet, which might not be available to certain kinds of nodes (such as newly provisioned devices that need to establish a secure connection in order to boot up for the first time).
       
 
 With regard to common public key certificates, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution:
 
-1. OCSP {{!RFC6960}}
+1. OCSP {{?RFC6960}}
 
-1. Both the status\_request extension defined in {{!RFC6066}} and the status_request_v2 extension defined in {{!RFC6961}} (This might enable interoperability with the widest range of clients.)
+1. Both the status\_request extension defined in {{!RFC6066}} and the status_request_v2 extension defined in {{?RFC6961}} (This might enable interoperability with the widest range of clients.)
 
-1. The OCSP stapling extension defined in {{!RFC6961}}
+1. The OCSP stapling extension defined in {{?RFC6961}}
       
 
 The considerations in this section do not apply to scenarios where the DANE-TLSA resource record {{?RFC6698}} is used to signal to a client which certificate a server considers valid and good to use for TLS connections.
