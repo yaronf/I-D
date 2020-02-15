@@ -708,3 +708,14 @@ Ralph Holz gratefully acknowledges the support by Technische Universitaet Muench
 
 The authors gratefully acknowledge the assistance of Leif Johansson and Orit Levin as the working group chairs and Pete Resnick as the sponsoring Area Director.
 
+--- back
+
+# Document History
+
+[[Note to RFC Editor: please remove before publication.]]
+
+## draft-sheffer-uta-bcp195bis-00
+
+- Initial release, the RFC 7525 text as-is, with some minor editorial
+changes to the references.
+
