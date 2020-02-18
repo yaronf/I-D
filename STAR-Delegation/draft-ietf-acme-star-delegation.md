@@ -401,7 +401,7 @@ governing the delegation exchanges provided in the rest of this document.
 ~~~
 {: #fig-csr-template title="Example CSR template"}
 
-The template syntax is defined in [[Appendix A]].
+The template syntax is defined in {{csr-template-schema}}.
 
 # Further Use Cases
 {: #further-use-cases}
@@ -553,11 +553,12 @@ certificates for a delegated domain.
 - Initial version, some text extracted from draft-sheffer-acme-star-requests-02
 
 # CSR Template Schema
+{: #csr-template-schema}
 
-Following is a JSON Schema defition of the CSR template. The syntax used is that of draft 7 of {{json-schema}}, which may not be the latest version of the corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of publication.
+Following is a JSON Schema defition of the CSR template. The syntax used is that of draft 7 of [[json-schema]], which may not be the latest version of the corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of publication.
 
 While the CSR template must follow the syntax defined here, neither the IdO nor the NDC are expected to validate it at run-time.
 
 ~~~
-{:: include CSR-template/template-schema.json}
+{::include CSR-template/template-schema.json}
 ~~~

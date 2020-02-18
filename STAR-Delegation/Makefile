@@ -1,4 +1,4 @@
-xml2rfc ?= xml2rfc
+xml2rfc ?= xml2rfc --v3
 # kramdown-rfc2629 ?= XML_RESOURCE_ORG_PREFIX=https://unicorn-wg.github.io/idrefs kramdown-rfc2629
 kramdown-rfc2629 ?= kramdown-rfc2629
 idnits ?= idnits
@@ -16,7 +16,6 @@ next := $(draft)-$(next_ver)
 COMMIT=origin/master
 
 .PHONY: all latest submit clean
-.INTERMEDIATE: %.md2
 
 all latest: $(draft).txt $(draft).html
 
@@ -31,7 +30,6 @@ clean:
 	-rm -f $(draft)-[0-9][0-9].xml
 	-rm -f $(draft)-[0-9][0-9].txt
 	-rm -f $(draft)-[0-9][0-9].md
-	-rm -f *.md2
 
 $(draft)-orig.md:
 	-rm -rf $@
@@ -53,10 +51,7 @@ diff-commit: $(draft).txt $(draft)-$(COMMIT).txt
 $(next).md: $(draft).md
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@
 
-%.md2: %.md
-	python mk-appendix.py < $< > $@
-
-%.xml: %.md2
+%.xml: %.md
 	$(kramdown-rfc2629) $< > $@
 
 %.txt: %.xml
