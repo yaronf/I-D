@@ -530,6 +530,8 @@ Internet (MAMI). This support does not imply endorsement.
 
 ## draft-ietf-acme-star-delegation-02
 - Security considerations: review by Ryan Sleevi.
+- CSR template simplified: instead of being a JSON Schema document itself,
+it is now a simple JSON document which validates to a JSON Schema.
 
 ## draft-ietf-acme-star-delegation-01
 
@@ -555,7 +557,7 @@ certificates for a delegated domain.
 # CSR Template Schema
 {: #csr-template-schema}
 
-Following is a JSON Schema defition of the CSR template. The syntax used is that of draft 7 of [[json-schema]], which may not be the latest version of the corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of publication.
+Following is a JSON Schema definition of the CSR template. The syntax used is that of draft 7 of [[json-schema]], which may not be the latest version of the corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of publication.
 
 While the CSR template must follow the syntax defined here, neither the IdO nor the NDC are expected to validate it at run-time.
 

@@ -30,6 +30,7 @@ clean:
 	-rm -f $(draft)-[0-9][0-9].xml
 	-rm -f $(draft)-[0-9][0-9].txt
 	-rm -f $(draft)-[0-9][0-9].md
+	-rm -f metadata.min.js
 
 $(draft)-orig.md:
 	-rm -rf $@
@@ -64,4 +65,5 @@ upload: $(draft).html $(draft).txt
 	python upload-draft.py $(draft).html
 
 spell: $(draft).md
-	spell $< | sort | uniq | less
+	which aspell && aspell list < $< | sort | uniq | less
+	# spell $< | sort | uniq | less
