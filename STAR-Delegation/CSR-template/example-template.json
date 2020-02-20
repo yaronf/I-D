@@ -1,25 +1,33 @@
 {
-    "keyTypes": [
-	{
-		"PublicKeyType": "RSA",
-		"PublicKeyLength": 4096,
-		"SignatureType": "sha256WithRSAEncryption"
-	}
-    ],
-    "subject": {
-	"country": "CA",
-	"stateOrProvince": "**",
-	"locality": "**",
-	"commonName": "**"
-    },
-    "extensions": {
-	"subjectAltName": {
-	    "DNS": ["client1.ndc.dno.example"],
-	    "IP": ["1.2.3.4", "13::17"]
-	},
-	"keyUsage": ["digitalSignature"],
-	"extendedKeyUsage": [
-	    "serverAuth", "timeStamping"
-	]
+  "keyTypes": [
+    {
+      "PublicKeyType": "RSA",
+      "PublicKeyLength": 4096,
+      "SignatureType": "sha256WithRSAEncryption"
     }
+  ],
+  "subject": {
+    "country": "CA",
+    "stateOrProvince": "**",
+    "locality": "**",
+    "commonName": "**"
+  },
+  "extensions": {
+    "subjectAltName": {
+      "DNS": [
+        "client1.ndc.dno.example"
+      ],
+      "IP": [
+        "1.2.3.4",
+        "13::17"
+      ]
+    },
+    "keyUsage": [
+      "digitalSignature"
+    ],
+    "extendedKeyUsage": [
+      "serverAuth",
+      "timeStamping"
+    ]
+  }
 }
