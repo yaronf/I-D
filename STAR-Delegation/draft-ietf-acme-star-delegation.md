@@ -425,11 +425,24 @@ Note that such mechanism is provided by the CSR template.
 
 TODO Explain the following:
 
-* context: DNS all the way down (maybe another pic?)
+* context: DNS all the way down ({{fig-cdni-dns-redirection}})
+
+<t>
+  <figure anchor="fig-cdni-dns-redirection" title="DNS Redirection">
+    <artset>
+      <artwork type="ascii-art" src="art/cdni-dns-redirection.ascii-art" />
+      <artwork type="svg" src="art/cdni-dns-redirection.svg" />
+    </artset>
+  </figure>
+</t>
+
+
+Describe {{fig-cdni-flow}}, including:
+
 * which DNS names are in use, which SANs needs to be produced
 * who holds which key and their certs
 * delegation setup
-* flow using numbered arrows
+* flow, using numbered arrows
 
 <t>
   <figure anchor="fig-cdni-flow" title="Two levels delegation in CDNI">
