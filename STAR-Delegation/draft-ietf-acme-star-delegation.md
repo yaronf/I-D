@@ -191,37 +191,14 @@ finalize request, including the CSR, to the IdO immediately after the Order has
 been acknowledged.  The IdO must buffer a (valid) CSR until the Validation
 phase completes successfully.
 
-~~~
-     NDC                      IdO                   CA
-     Client              Server  Client             Server
-
-     Order
-     Signature ------->
-
-     [ No identity validation ]
-
-     CSR
-     Signature ------->
-
-                                 Order'
-                                 Signature ------->
-                                           <------- Required
-                                                    Authorizations
-
-                                 Responses
-                                 Signature ------->
-
-                                 <~~~~~~~~Validation~~~~~~~~>
-
-
-                                 CSR
-                                 Signature ------->
-
-    <~~~~~~Await issuance~~~~~~> <~~~~~~Await issuance~~~~~~>
-
-              <------------------------------------ Certificate
-~~~
-{: #fig-endtoend title="End to end flow"}
+<t>
+  <figure anchor="fig-endtoend" title="End to end STAR delegation flow">
+    <artset>
+      <artwork type="ascii-art" src="art/e2e-flow.ascii-art" />
+      <artwork type="svg" src="art/e2e-flow.svg" />
+    </artset>
+  </figure>
+</t>
 
 ## Delegated Identity Profile
 {: #sec-profile}
@@ -444,6 +421,25 @@ uCDN can advertise:
 
 Note that such mechanism is provided by the CSR template.
 
+### Two Level Delegation in CDNI
+
+TODO Explain the following:
+
+* context: DNS all the way down (maybe another pic?)
+* which DNS names are in use, which SANs needs to be produced
+* who holds which key and their certs
+* delegation setup
+* flow using numbered arrows
+
+<t>
+  <figure anchor="fig-cdni-flow" title="Two levels delegation in CDNI">
+    <artset>
+      <artwork type="ascii-art" src="art/cdni-delegation.ascii-art" />
+      <artwork type="svg" src="art/cdni-delegation.svg" />
+    </artset>
+  </figure>
+</t>
+
 ## STIR
 
 As a second use case, we consider the delegation of credentials in the STIR
@@ -523,6 +519,7 @@ grant agreement no. 688421 Measurement and Architecture for a Middleboxed
 Internet (MAMI). This support does not imply endorsement.
 
 --- back
+
 
 # Document History
 
