@@ -81,7 +81,7 @@ secrets.
 
 Other relevant use cases are discussed in {{further-use-cases}}.
 
-This document describes a profile of the ACME protocol {{!I-D.ietf-acme-acme}}
+This document describes a profile of the ACME protocol {{!RFC8555}}
 that allows the NDC to request the IdO, acting as a profiled ACME server, a
 certificate for a delegated identity - i.e., one belonging to the IdO.  The IdO
 then uses the ACME protocol (with the extensions described in
@@ -183,8 +183,10 @@ The outline of the combined protocol is as follow ({{fig-endtoend}}):
 - If the ACME STAR run is successful (i.e., Order' is "valid"), IdO copies the
   "star-certificate" URL from Order' to Order and moves its state "valid".
 
-The NDC can now download, install and use the certificate bearing the name
-delegated by the IdO.
+The NDC can now download, install and use the short-term certificate bearing
+the name delegated by the IdO.  This sequence of actions is repeated until the
+STAR certificate expires or the IdO decides to cancel the automatic renewal
+process with the ACME STAR CA.
 
 Note that, because the identity validation is suppressed, the NDC sends the
 finalize request, including the CSR, to the IdO immediately after the Order has
@@ -334,11 +336,11 @@ field:
   specified in this memo.  An ACME server that supports this delegation profile
   MUST include this key, and MUST set it to true.
 
-### On Cancelation 
+### On Cancellation
 
-It is worth noting that cancelation of the ACME STAR certificate is a
+It is worth noting that cancellation of the ACME STAR certificate is a
 prerogative of the IdO.  The NDC does not own the relevant account key on the
-ACME CA, therefore it can't issue a cancelation request for the STAR cert.
+ACME CA, therefore it can't issue a cancellation request for the STAR cert.
 Potentially, since it holds the STAR cert private key, it could request the
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
@@ -358,15 +360,24 @@ the registration of further, more specific, attributes to future documents.
 
 The template is a JSON document. Each field denotes one of:
 
-* A mandatory field, where the template specifies the literal value of that field. This is denoted by a literal string, such as "client1.ndc.dno.example.com".
-* A mandatory field, where the content of the field is defined by the client. This is denoted by "\*\*".
-* An optional field, where the client decides whether the field is included in the CSR and what its value is. This is denoted by "\*".
+* A mandatory field, where the template specifies the literal value of that
+  field. This is denoted by a literal string, such as
+  "client1.ndc.dno.example.com".
+* A mandatory field, where the content of the field is defined by the client.
+  This is denoted by "\*\*".
+* An optional field, where the client decides whether the field is included in
+  the CSR and what its value is. This is denoted by "\*".
 
-The NDC MUST NOT include in the CSR any fields that are not specified in the template, and in particular MUST NOT add any extensions unless those were previously negotiated out of band with the IdO.
+The NDC MUST NOT include in the CSR any fields that are not specified in the
+template, and in particular MUST NOT add any extensions unless those were
+previously negotiated out of band with the IdO.
 
-The mapping between X.509 CSR fields and the template will be defined in a future revision of this document.
+The mapping between X.509 CSR fields and the template will be defined in a
+future revision of this document.
 
-When the CSR is received by the IdO, it MUST verify that the CSR is consistent with the template that the IdO sent earlier. The IdO MAY enforce additional constraints, e.g. by restricting field lengths. 
+When the CSR is received by the IdO, it MUST verify that the CSR is consistent
+with the template that the IdO sent earlier. The IdO MAY enforce additional
+constraints, e.g. by restricting field lengths. 
 
 ## Example
 
@@ -408,9 +419,10 @@ In other cases, a content owner (IdO) delegates some domains to a large CDN
 contractual relationship with uCDN, and uCDN has a similar relationship with
 dCDN.  However IdO may not even know about dCDN.
 
-The STAR protocol can be chained to support this use case: uCDN could forward
-requests from dCDN to DNO, and forward responses back to dCDN.  Whether such
-proxying is allowed is governed by policy and contracts between the parties.
+If needed, the STAR protocol can be chained to support this use case: uCDN
+could forward requests from dCDN to DNO, and forward responses back to dCDN.
+Whether such proxying is allowed is governed by policy and contracts between
+the parties.
 
 A mechanism is necessary at the interface between uCDN and dCDN by which the
 uCDN can advertise:
@@ -421,7 +433,7 @@ uCDN can advertise:
 
 Note that such mechanism is provided by the CSR template.
 
-### Two Level Delegation in CDNI
+#### Two-Level Delegation in CDNI
 
 TODO Explain the following:
 
@@ -501,30 +513,32 @@ TODO
 
 When a web site is delegated to a CDN, the CDN can in principle modify the web
 site at will, create and remove pages. This means that a malicious or breached
-CDN can pass
-the ACME (as well as common non-ACME) HTTPS-based validation challenges and
-generate a certificate for the site. This is true regardless of whether
-the CNAME mechanisms defined in the current document is used or not.
+CDN can pass the ACME (as well as common non-ACME) HTTPS-based validation
+challenges and generate a certificate for the site. This is true regardless of
+whether the CNAME mechanisms defined in the current document is used or not.
 
-In some cases, this is the desired behavior: the domain owner trusts the CDN to have
-full control of the cryptographic credentials for the site. The current document however assumes
-that the domain owner only wants to delegate restricted control, and wishes to retain
-the capability to cancel the CDN's credentials at a short notice.
+In some cases, this is the desired behavior: the domain owner trusts the CDN to
+have full control of the cryptographic credentials for the site. The current
+document however assumes that the domain owner only wants to delegate
+restricted control, and wishes to retain the capability to cancel the CDN's
+credentials at a short notice.
 
-Following is the proposed solution where the IdO wishes to ensure that a rogue CDN cannot issue unauthorized certificates:
+Following is the proposed solution where the IdO wishes to ensure that a rogue
+CDN cannot issue unauthorized certificates:
 
--  The domain owner makes sure that the CDN cannot modify the DNS records for the
-  domain.  The domain owner should ensure it is the only entity authorized
-  to modify the DNS zone. Typically, it 
-  establishes a CNAME resource record from a subdomain into a CDN-managed domain.
--  The domain owner uses a CAA record {{!RFC6844}} to restrict certificate issuance
-for the domain to specific CAs that comply with ACME and are known to implement {{!I-D.ietf-acme-caa}}.
--  The domain owner uses the ACME-specific CAA mechanism {{!I-D.ietf-acme-caa}}
-to restrict issuance to a specific
-account key which is controlled by it, and MUST require "dns-01" as the sole
-validation method.
+- The domain owner makes sure that the CDN cannot modify the DNS records for
+  the domain.  The domain owner should ensure it is the only entity authorized
+  to modify the DNS zone. Typically, it establishes a CNAME resource record
+  from a subdomain into a CDN-managed domain.
+- The domain owner uses a CAA record {{!RFC6844}} to restrict certificate
+  issuance for the domain to specific CAs that comply with ACME and are known
+  to implement {{!I-D.ietf-acme-caa}}.
+- The domain owner uses the ACME-specific CAA mechanism {{!RFC8657}} to
+  restrict issuance to a specific account key which is controlled by it, and
+  MUST require "dns-01" as the sole validation method.
 
-We note that the above solution may need to be tweaked depending on the exact capabilities and authorisation flows supported by the selected CAs.
+We note that the above solution may need to be tweaked depending on the exact
+capabilities and authorisation flows supported by the selected CAs.
 
 ## TBC
 
@@ -576,9 +590,13 @@ certificates for a delegated domain.
 # CSR Template Schema
 {: #csr-template-schema}
 
-Following is a JSON Schema definition of the CSR template. The syntax used is that of draft 7 of [[json-schema]], which may not be the latest version of the corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of publication.
+Following is a JSON Schema definition of the CSR template. The syntax used is
+that of draft 7 of [[json-schema]], which may not be the latest version of the
+corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of
+publication.
 
-While the CSR template must follow the syntax defined here, neither the IdO nor the NDC are expected to validate it at run-time.
+While the CSR template must follow the syntax defined here, neither the IdO nor
+the NDC are expected to validate it at run-time.
 
 ~~~
 {::include CSR-template/template-schema.json}
