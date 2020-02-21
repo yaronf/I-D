@@ -448,7 +448,6 @@ TODO Explain the following:
   </figure>
 </t>
 
-
 Describe {{fig-cdni-flow}}, including:
 
 * which DNS names are in use, which SANs needs to be produced
@@ -470,11 +469,29 @@ Describe {{fig-cdni-flow}}, including:
 As a second use case, we consider the delegation of credentials in the STIR
 ecosystem  {{?I-D.ietf-stir-cert-delegation}}.
 
-In the STIR "delegated" model ({{fig-stir-flow}}), a service provider, the NDC,
-needs to sign PASSPorT’s {{?RFC8225}} for telephone numbers (e.g., TN=+123)
-belonging to another service provider, the IdO.  In order to do that, it needs
-a STIR certificate, and private key, that includes TN=+123 in the TNAuthList
+In the STIR "delegated" mode, a service provider SP2 - the NDC - needt to sign
+PASSPorT’s {{?RFC8225}} for telephone numbers (e.g., TN=+123) belonging to
+another service provider, SP1 - the IdO.  In order to do that, SP2 needs a STIR
+certificate, and private key, that includes TN=+123 in the TNAuthList
 {{?RFC8226}} cert extension.
+
+In details ({{fig-stir-flow}}):
+
+1. SP1 and SP2 agree on the configuration of the delegation - in particular,
+   the CSR template that applies;
+2. SP2 generates a private/public key-pair and sends a CSR to SP1 requesting
+   creation of a certificate with: SP1 name, SP2 public key, and a TNAuthList
+   extension with the list of TNs that SP1 delegates to SP2.  (Note that the
+   CSR sent by SP2 to SP1 needs to be validated against the CSR template
+   agreed upon in step 1.);
+3. SP1 sends an Order for the CSR to the ACME STAR CA;
+4. Subsequently, after the required TNAuthList authorizations are successfully
+   completed, the ACME STAR CA moves the Order to a "valid" state; at the same
+   time the star-certificate endpoint is populated.
+5. The Order contents are forwarded from SP1 to SP2 by means of the paired
+   "delegation" Order.
+6. SP2 dereferences the star-certificate URL in the Order to fetch the rolling
+   STAR certificate bearing the delegated identifiers.
 
 <t>
   <figure anchor="fig-stir-flow" title="Delegation in STIR">
@@ -485,10 +502,10 @@ a STIR certificate, and private key, that includes TN=+123 in the TNAuthList
   </figure>
 </t>
 
-The STAR delegation profile described in this document applies
+As shown, the STAR delegation profile described in this document applies
 straightforwardly, the only extra requirement being the ability to instruct the
 NDC about the allowed TNAuthList values.  This can be achieved by a simple
-extension of the CSR template.
+extension to the CSR template.
 
 # IANA Considerations
 
