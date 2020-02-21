@@ -458,11 +458,20 @@ Describe {{fig-cdni-flow}}, including:
 As a second use case, we consider the delegation of credentials in the STIR
 ecosystem  {{?I-D.ietf-stir-cert-delegation}}.
 
-In the STIR "delegated" model, a service provider, the NDC, needs to sign
-PASSPorT’s {{?RFC8225}} for telephone numbers (e.g., TN=+123) belonging to
-another service provider, the IdO.  In order to do that, it needs a STIR
-certificate, and private key, that includes TN=+123 in the TNAuthList
+In the STIR "delegated" model ({{fig-stir-flow}}), a service provider, the NDC,
+needs to sign PASSPorT’s {{?RFC8225}} for telephone numbers (e.g., TN=+123)
+belonging to another service provider, the IdO.  In order to do that, it needs
+a STIR certificate, and private key, that includes TN=+123 in the TNAuthList
 {{?RFC8226}} cert extension.
+
+<t>
+  <figure anchor="fig-stir-flow" title="Delegation in STIR">
+    <artset>
+      <artwork type="ascii-art" src="art/stir-delegation.ascii-art" />
+      <artwork type="svg" src="art/stir-delegation.svg" />
+    </artset>
+  </figure>
+</t>
 
 The STAR delegation profile described in this document applies
 straightforwardly, the only extra requirement being the ability to instruct the
