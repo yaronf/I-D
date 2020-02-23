@@ -469,7 +469,7 @@ Describe {{fig-cdni-flow}}, including:
 As a second use case, we consider the delegation of credentials in the STIR
 ecosystem  {{?I-D.ietf-stir-cert-delegation}}.
 
-In the STIR "delegated" mode, a service provider SP2 - the NDC - needt to sign
+In the STIR "delegated" mode, a service provider SP2 - the NDC - needs to sign
 PASSPorT’s {{?RFC8225}} for telephone numbers (e.g., TN=+123) belonging to
 another service provider, SP1 - the IdO.  In order to do that, SP2 needs a STIR
 certificate, and private key, that includes TN=+123 in the TNAuthList
