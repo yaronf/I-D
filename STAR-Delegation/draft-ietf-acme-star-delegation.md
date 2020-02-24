@@ -3,6 +3,7 @@ title: An ACME Profile for Generating Delegated STAR Certificates
 abbrev: ACME STAR Delegation
 docname: draft-ietf-acme-star-delegation-latest
 category: std
+consensus: true
 
 ipr: trust200902
 area: Security
@@ -220,29 +221,29 @@ The Order object created by the NDC:
   entity.
 
 ~~~
-   POST /acme/new-order HTTP/1.1
-   Host: acme.dno.example
-   Content-Type: application/jose+json
+POST /acme/new-order HTTP/1.1
+Host: acme.dno.example
+Content-Type: application/jose+json
 
-   {
-     "protected": base64url({
-       "alg": "ES256",
-       "kid": "https://acme.dno.example/acme/acct/evOfKhNU60wg",
-       "nonce": "5XJ1L3lEkMG7tR6pA00clA",
-       "url": "https://acme.dno.example/acme/new-order"
-     }),
-     "payload": base64url({
-       "identifiers": [
-         {
-           "type": "dns",
-           "value": "abc.ndc.dno.example.",
-           "delegated": true,
-           "cname": "abc.ndc.example."
-         }
-       ],
-     }),
-     "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
-   }
+{
+  "protected": base64url({
+    "alg": "ES256",
+    "kid": "https://acme.dno.example/acme/acct/evOfKhNU60wg",
+    "nonce": "5XJ1L3lEkMG7tR6pA00clA",
+    "url": "https://acme.dno.example/acme/new-order"
+  }),
+  "payload": base64url({
+    "identifiers": [
+      {
+        "type": "dns",
+        "value": "abc.ndc.dno.example.",
+        "delegated": true,
+        "cname": "abc.ndc.example."
+      }
+    ],
+  }),
+  "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
+}
 ~~~
 
 The Order object that is created on the IdO:
@@ -252,23 +253,23 @@ The Order object that is created on the IdO:
 - MUST NOT contain the "notBefore" and "notAfter" fields.
 
 ~~~
+{
+  "status": "ready",
+  "expires": "2016-01-01T00:00:00Z",
+
+  "identifiers": [
    {
-     "status": "ready",
-     "expires": "2016-01-01T00:00:00Z",
-
-     "identifiers": [
-      {
-        "type": "dns",
-        "value": "abc.ndc.dno.example.",
-        "delegated": true,
-        "cname": "abc.ndc.example."
-      }
-     ],
-
-     "authorizations": [],
-
-     "finalize": "https://acme.dno.example/acme/order/TO8rfgo/finalize"
+     "type": "dns",
+     "value": "abc.ndc.dno.example.",
+     "delegated": true,
+     "cname": "abc.ndc.example."
    }
+  ],
+
+  "authorizations": [],
+
+  "finalize": "https://acme.dno.example/acme/order/TO8rfgo/finalize"
+}
 ~~~
 
 The IdO SHOULD copy any "recurrent-*" field from the NDC request into the
@@ -284,25 +285,25 @@ The latter indirectly includes (via the NotBefore and NotAfter HTTP headers)
 the renewal timers needed by the NDC to inform its certificate reload logic.
 
 ~~~
+{
+  "status": "valid",
+  "expires": "2016-01-01T00:00:00Z",
+
+  "identifiers": [
    {
-     "status": "valid",
-     "expires": "2016-01-01T00:00:00Z",
-
-     "identifiers": [
-      {
-        "type": "dns",
-        "value": "abc.ndc.dno.example.",
-        "delegated": true,
-        "cname": "abc.ndc.example."
-      }
-     ],
-
-     "authorizations": [],
-
-     "finalize": "https://acme.dno.example/acme/order/TO8rfgo/finalize",
-
-     "star-certificate": "https://acme.ca.example/acme/order/yTr23sSDg9"
+     "type": "dns",
+     "value": "abc.ndc.dno.example.",
+     "delegated": true,
+     "cname": "abc.ndc.example."
    }
+  ],
+
+  "authorizations": [],
+
+  "finalize": "https://acme.dno.example/acme/order/TO8rfgo/finalize",
+
+  "star-certificate": "https://acme.ca.example/acme/order/yTr23sSDg9"
+}
 ~~~
 
 If an "identifier" object of type "dns" was included,
@@ -608,7 +609,7 @@ certificates for a delegated domain.
 {: #csr-template-schema}
 
 Following is a JSON Schema definition of the CSR template. The syntax used is
-that of draft 7 of [[json-schema]], which may not be the latest version of the
+that of draft 7 of JSON Schema, which may not be the latest version of the
 corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of
 publication.
 
