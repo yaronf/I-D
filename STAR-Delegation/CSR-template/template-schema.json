@@ -1,130 +1,170 @@
 {
-	"title": "JSON Schema for the STAR Delegation CSR template",
-	"$schema": "http://json-schema.org/draft-07/schema#", 
- 	"$id": "http://ietf.org/acme/drafts/star-delegation/csr-template", 
-
-	"$def": {
-		"distinguished-name": {
-			"$id": "#distinguished-name",
-			"type": "object",
-			"properties": {
-				"country": {"type": "string"},
-				"stateOrProvince": {"type": "string"},
-				"locality": {"type": "string"},
-				"organization": {"type": "string"},
-				"organizationalUnit": {"type": "string"},
-				"emailAddress": {"type": "string"},
-				"commonName": {"type": "string"}
-			},
-			"additionalProperties": false
-		},
-		"rsaKeyType": {
-			"$id": "#rsaKeyType",
-			"type": "object",
-			"properties": {
-				"PublicKeyType": {
-					"type": "string",
-					"const": "RSA"
-				},
-				"PublicKeyLength": {
-					"type": "integer"
-				},
-				"SignatureType": {
-					"type": "string",
-					"enum": ["sha256WithRSAEncryption"]
-				}
-			},
-			"additionalProperties": false
-		},
-		"ecKeyTYpe": {
-			"$id": "#ecKeyType",
-			"type": "object",
-			"properties": {
-				"PublicKeyType": {
-					"type": "string",
-					"const": "ecPublicKey"
-				},
-				"Curve": {
-					"type": "string",
-					"enum": ["secp521r1"]
-				},
-				"SignatureType": {
-					"type": "string",
-					"enum": ["ecdsa-with-SHA256"]
-				}
-			},
-			"additionalProperties": false
-		}
-	},
-	"type": "object",
-	"properties": {
-		"keyTypes": {
-			"type": "array",
-			"items": {
-				"oneOf": [
-					{"$ref": "#rsaKeyType"},
-					{"$ref": "#ecKeyType"}
-				]
-			}
-		},
-		"subject": {
-			"$ref": "#distinguished-name"
-		},
-		"extensions": {
-			"type": "object",
-			"properties": {
-				"keyUsage": {
-					"type": "array",
-					"items": {
-						"type": "string",
-						"enum": ["digitalSignature", "nonRepudiation", "keyEncipherment", "dataEncipherment", "keyAgreement", "keyCertSign", "cRLSign", "encipherOnly", "decipherOnly"]
-					}
-				},
-				"extendedKeyUsage": {
-					"type": "array",
-					"items": {
-						"type": "string",
-						"enum": ["serverAuth", "clientAuth", "codeSigning", "emailProtection", "timeStamping", "OCSPSigning"]
-					}
-				},
-				"subjectAltName": {
-					"type": "object",
-					"properties": {
-						"DNS": {
-							"type": "array",
-							"items": {
-								"type": "string",
-								"format": "hostname"
-							}
-						},
-						"IP": {
-							"type": "array",
-							"items": {
-								"oneOf": [
-									{
-										"type": "string",
-"format": "ipv4"
-									},
-									{
-										"type": "string",
-"format": "ipv6"
-									}
-								]
-							}
-						},
-						"Email": {
-							"type": "array",
-							"items": {
-								"type": "string",
-								"format": "email"
-							}
-						}
-					},
-					"additionalProperties": false
-				}
-			},
-			"additionalProperties": false
-		}
-	},
-	"additionalProperties": false
+  "title": "JSON Schema for the STAR Delegation CSR template",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://ietf.org/acme/drafts/star-delegation/csr-template",
+  "$def": {
+    "distinguished-name": {
+      "$id": "#distinguished-name",
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string"
+        },
+        "stateOrProvince": {
+          "type": "string"
+        },
+        "locality": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "organizationalUnit": {
+          "type": "string"
+        },
+        "emailAddress": {
+          "type": "string"
+        },
+        "commonName": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "rsaKeyType": {
+      "$id": "#rsaKeyType",
+      "type": "object",
+      "properties": {
+        "PublicKeyType": {
+          "type": "string",
+          "const": "RSA"
+        },
+        "PublicKeyLength": {
+          "type": "integer"
+        },
+        "SignatureType": {
+          "type": "string",
+          "enum": [
+            "sha256WithRSAEncryption"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "ecKeyTYpe": {
+      "$id": "#ecKeyType",
+      "type": "object",
+      "properties": {
+        "PublicKeyType": {
+          "type": "string",
+          "const": "ecPublicKey"
+        },
+        "Curve": {
+          "type": "string",
+          "enum": [
+            "secp521r1"
+          ]
+        },
+        "SignatureType": {
+          "type": "string",
+          "enum": [
+            "ecdsa-with-SHA256"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "keyTypes": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#rsaKeyType"
+          },
+          {
+            "$ref": "#ecKeyType"
+          }
+        ]
+      }
+    },
+    "subject": {
+      "$ref": "#distinguished-name"
+    },
+    "extensions": {
+      "type": "object",
+      "properties": {
+        "keyUsage": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "digitalSignature",
+              "nonRepudiation",
+              "keyEncipherment",
+              "dataEncipherment",
+              "keyAgreement",
+              "keyCertSign",
+              "cRLSign",
+              "encipherOnly",
+              "decipherOnly"
+            ]
+          }
+        },
+        "extendedKeyUsage": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "serverAuth",
+              "clientAuth",
+              "codeSigning",
+              "emailProtection",
+              "timeStamping",
+              "OCSPSigning"
+            ]
+          }
+        },
+        "subjectAltName": {
+          "type": "object",
+          "properties": {
+            "DNS": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "hostname"
+              }
+            },
+            "IP": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "format": "ipv4"
+                  },
+                  {
+                    "type": "string",
+                    "format": "ipv6"
+                  }
+                ]
+              }
+            },
+            "Email": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "email"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
 }
