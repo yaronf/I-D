@@ -63,10 +63,10 @@ deployed TLS ecosystem.
 
 # Introduction
 
-This document is a companion document to {{!RFC8739}}.  To avoid
+This document is a companion document to {{!I-D.ietf-acme-star}}.  To avoid
 duplication, we give here a bare-bones description of the motivation for this
 solution.  For more details and further use cases, please refer to the
-introductory sections of {{!RFC8739}}.
+introductory sections of {{!I-D.ietf-acme-star}}.
 
 An Identifier Owner (IdO), that we can associate in the primary use case to a
 content provider (also referred to as Domain Name Owner, DNO), has agreements
@@ -86,7 +86,7 @@ This document describes a profile of the ACME protocol {{!RFC8555}}
 that allows the NDC to request the IdO, acting as a profiled ACME server, a
 certificate for a delegated identity - i.e., one belonging to the IdO.  The IdO
 then uses the ACME protocol (with the extensions described in
-{{!RFC8739}}) to request issuance of a STAR certificate for the same
+{{!I-D.ietf-acme-star}}) to request issuance of a STAR certificate for the same
 delegated identity.  The generated short-term certificate is automatically
 renewed by the ACME Certification Authority (CA), periodically fetched by the NDC
 and used to terminate HTTPS connections in lieu of the IdO.  The IdO can end
@@ -138,7 +138,7 @@ CA
 
 This section presents the protocol flow.  For completeness, we include the ACME
 profile proposed in this draft as well as the extended ACME protocol described
-in {{!RFC8739}}.
+in {{!I-D.ietf-acme-star}}.
 
 ## Preconditions
 {: #proto-preconditions}
@@ -164,7 +164,7 @@ CA.
 
 The interaction between the NDC and the IdO is governed by the profiled ACME
 workflow detailed in {{sec-profile}}.  The interaction between the IdO and the
-CA is ruled by ACME STAR {{!RFC8739}} as well as any other ACME
+CA is ruled by ACME STAR {{!I-D.ietf-acme-star}} as well as any other ACME
 extension that applies (e.g., {{?I-D.ietf-acme-authority-token-tnauthlist}} for
 STIR).
 
@@ -214,7 +214,7 @@ The Order object created by the NDC:
 - MUST contain identifiers with the new "delegated" field set to true;
 - MUST NOT contain the notBefore and notAfter fields;
 - MAY contain an "auto-renewal" object and inside it, any of the fields
-listed in Section 3.1.1 of {{!RFC8739}};
+listed in Section 3.1.1 of {{!I-D.ietf-acme-star}};
 - In case the identifier type is "dns", it MAY contain a "cname" field with the
   alias of the identifier in the NDC domain.  This field is used by the IdO to
   create the DNS aliasing needed to redirect the resolvers to the delegated
@@ -439,9 +439,10 @@ Note that such mechanism is provided by the CSR template.
 
 #### Two-Level Delegation in CDNI
 
-TODO Explain the following:
-
-* context: DNS all the way down ({{fig-cdni-dns-redirection}})
+A User Agent (browser or set-top-box) wants to fetch the video resource at
+the following URI: "https://video.cp.example/movie".  Redirection between
+Content Provider, upstream, and downstream CDNs is arranged as a
+CNAME-based aliasing chain as illustrated in {{fig-cdni-dns-redirection}}.
 
 <t>
   <figure anchor="fig-cdni-dns-redirection" title="DNS Redirection">
@@ -452,12 +453,17 @@ TODO Explain the following:
   </figure>
 </t>
 
-Describe {{fig-cdni-flow}}, including:
+Unlike HTTP based redirection, where the original URL is supplanted by the one
+found in the Location header of the 302 response, DNS redirection is completely
+transparent to the User Agent.  As a result, the TLS connection to the dCDN
+edge is done with an SNI equal to the "host" in the original URI - in the
+example, "video.cp.example".  So, in order to successfully complete the
+handshake, the landing dCDN node has to be configured with a certificate whose
+SAN matches "video.cp.example", i.e., a Content Provider's name.
 
-* which DNS names are in use, which SANs needs to be produced
-* who holds which key and their certs
-* delegation setup
-* flow, using numbered arrows
+{{fig-cdni-flow}} illustrates the cascaded delegation flow that allows dCDN to
+obtain a STAR certificate that bears a name belonging to the Content Provider
+with a private key that is only known to the dCDN.
 
 <t>
   <figure anchor="fig-cdni-flow" title="Two levels delegation in CDNI">
@@ -467,6 +473,28 @@ Describe {{fig-cdni-flow}}, including:
     </artset>
   </figure>
 </t>
+
+TBD bootstrap, see https://github.com/yaronf/I-D/issues/47
+
+1. dCDN requests CDNI path metadata to uCDN;
+2. uCDN replies with, among other CDNI things, the STAR delegation
+   configuration, which includes the delegated Content Provider's name;
+3. dCDN creates a key-pair and the CSR with the delegated name.  It then places
+   an order for the delegated name to uCDN;
+4. uCDN forwards the received order to the Content Provider (CP);
+5. CP creates an order for a STAR certificate and sends it to the ACME CA.  The
+   order also requests unauthenticated access to the certificate resource;
+6. After all authorizations complete successfully, the STAR certificate is
+   issued;
+7. CP notifies uCDN that the STAR cert is available at the order's
+   star-certificate URL;
+8. uCDN forwards the information to dCDN.  At this point the ACME signalling is
+   complete;
+9. dCDN requests the STAR cert using unauthenticated GET from the ACME CA;
+10. the CA returns the certificate.  Now dCDN is fully configured to handle
+    HTTPS traffic in-lieu of the Content Provider.
+
+Note that 9. and 10. repeat until the delegation expires or is terminated.
 
 ## STIR
 
@@ -557,7 +585,7 @@ CDN cannot issue unauthorized certificates:
   from a subdomain into a CDN-managed domain.
 - The domain owner uses a CAA record {{!RFC6844}} to restrict certificate
   issuance for the domain to specific CAs that comply with ACME and are known
-  to implement {{!I-D.ietf-acme-caa}}.
+  to implement {{!RFC8657}}.
 - The domain owner uses the ACME-specific CAA mechanism {{!RFC8657}} to
   restrict issuance to a specific account key which is controlled by it, and
   MUST require "dns-01" as the sole validation method.
@@ -589,17 +617,15 @@ Internet (MAMI). This support does not imply endorsement.
 ## draft-ietf-acme-star-delegation-02
 - Security considerations: review by Ryan Sleevi.
 - CSR template simplified: instead of being a JSON Schema document itself,
-it is now a simple JSON document which validates to a JSON Schema.
+  it is now a simple JSON document which validates to a JSON Schema.
 - Some updates in accordance to latest changes in the base ACME STAR document,
-e.g. star-delegation-enabled capability renamed and moved.
+  e.g. star-delegation-enabled capability renamed and moved.
 - ACME STAR now an RFC!
 
 ## draft-ietf-acme-star-delegation-01
 
 - Refinement of the CDNI use case.
-
 - Addition of the CSR template (partial, more work required).
-
 - Further security considerations (work in progress).
 
 ## draft-ietf-acme-star-delegation-00
@@ -609,7 +635,7 @@ e.g. star-delegation-enabled capability renamed and moved.
 ## draft-sheffer-acme-star-delegation-01
 
 - Added security considerations about disallowing CDNs from issuing
-certificates for a delegated domain.
+  certificates for a delegated domain.
 
 ## draft-sheffer-acme-star-delegation-00
 
