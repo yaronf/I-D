@@ -63,10 +63,10 @@ deployed TLS ecosystem.
 
 # Introduction
 
-This document is a companion document to {{!I-D.ietf-acme-star}}.  To avoid
+This document is a companion document to {{!RFC8739}}.  To avoid
 duplication, we give here a bare-bones description of the motivation for this
 solution.  For more details and further use cases, please refer to the
-introductory sections of {{!I-D.ietf-acme-star}}.
+introductory sections of {{!RFC8739}}.
 
 An Identifier Owner (IdO), that we can associate in the primary use case to a
 content provider (also referred to as Domain Name Owner, DNO), has agreements
@@ -86,7 +86,7 @@ This document describes a profile of the ACME protocol {{!RFC8555}}
 that allows the NDC to request the IdO, acting as a profiled ACME server, a
 certificate for a delegated identity - i.e., one belonging to the IdO.  The IdO
 then uses the ACME protocol (with the extensions described in
-{{!I-D.ietf-acme-star}}) to request issuance of a STAR certificate for the same
+{{!RFC8739}}) to request issuance of a STAR certificate for the same
 delegated identity.  The generated short-term certificate is automatically
 renewed by the ACME Certification Authority (CA), periodically fetched by the NDC
 and used to terminate HTTPS connections in lieu of the IdO.  The IdO can end
@@ -138,7 +138,7 @@ CA
 
 This section presents the protocol flow.  For completeness, we include the ACME
 profile proposed in this draft as well as the extended ACME protocol described
-in {{!I-D.ietf-acme-star}}.
+in {{!RFC8739}}.
 
 ## Preconditions
 {: #proto-preconditions}
@@ -164,7 +164,7 @@ CA.
 
 The interaction between the NDC and the IdO is governed by the profiled ACME
 workflow detailed in {{sec-profile}}.  The interaction between the IdO and the
-CA is ruled by ACME STAR {{!I-D.ietf-acme-star}} as well as any other ACME
+CA is ruled by ACME STAR {{!RFC8739}} as well as any other ACME
 extension that applies (e.g., {{?I-D.ietf-acme-authority-token-tnauthlist}} for
 STIR).
 
@@ -173,7 +173,7 @@ The outline of the combined protocol is as follow ({{fig-endtoend}}):
 - NDC sends an Order for the delegated identifier to IdO;
 - IdO creates an Order resource in state "ready" with a "finalize" URL;
 - NDC immediately sends a finalize request (which includes the CSR) to the IdO;
-- IdO verifies the CSR according to the agreed CSR template;
+- IdO verifies the CSR according to the agreed upon CSR template;
 - If the CSR verification fails, the Order is moved to an "invalid" state and
   everything stops;
 - If the CSR verification is successful, IdO moves the Order to state
@@ -182,7 +182,7 @@ The outline of the combined protocol is as follow ({{fig-endtoend}}):
 - If the ACME STAR protocol fails, Order' moves to "invalid" and the same state
   is reflected in the NDC Order;
 - If the ACME STAR run is successful (i.e., Order' is "valid"), IdO copies the
-  "star-certificate" URL from Order' to Order and moves its state "valid".
+  "star-certificate" URL from Order' to Order and moves its state to "valid".
 
 The NDC can now download, install and use the short-term certificate bearing
 the name delegated by the IdO.  This sequence of actions is repeated until the
@@ -213,8 +213,8 @@ The Order object created by the NDC:
 
 - MUST contain identifiers with the new "delegated" field set to true;
 - MUST NOT contain the notBefore and notAfter fields;
-- MAY contain any of the "recurrent-*" fields listed in Section 3.1.1 of
-  {{!I-D.ietf-acme-star}};
+- MAY contain an "auto-renewal" object and inside it, any of the fields
+listed in Section 3.1.1 of {{!RFC8739}};
 - In case the identifier type is "dns", it MAY contain a "cname" field with the
   alias of the identifier in the NDC domain.  This field is used by the IdO to
   create the DNS aliasing needed to redirect the resolvers to the delegated
@@ -272,7 +272,8 @@ The Order object that is created on the IdO:
 }
 ~~~
 
-The IdO SHOULD copy any "recurrent-*" field from the NDC request into the
+The IdO SHOULD copy the "auto-renewal" object (if it exists) from the
+NDC request into the
 related STAR request to the ACME CA.
 
 When the validation of the identifiers has been successfully completed and the
@@ -325,7 +326,8 @@ When sending the Order to the ACME CA, the IdO SHOULD strip the "delegated" and 
 attributes sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST add
 the necessary STAR extensions to the Order.  In addition, to allow the NDC
 to download the certificate using unauthenticated GET, the IdO MUST add the
-recurrent-certificate-get attribute and set it to true.
+allow-certificate-get attribute and set it to true.
+This implies that an "auto-renewal" object must be included in the Order.
 
 ### Capability Discovery
 
@@ -343,7 +345,7 @@ field:
 It is worth noting that cancellation of the ACME STAR certificate is a
 prerogative of the IdO.  The NDC does not own the relevant account key on the
 ACME CA, therefore it can't issue a cancellation request for the STAR cert.
-Potentially, since it holds the STAR cert private key, it could request the
+Potentially, since it holds the STAR certificate's private key, it could request the
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
 
@@ -521,6 +523,10 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 |------------|------------|-----------|
 | delegation-enabled | boolean | RFC XXXX |
 
+## New Fields for Identifiers
+
+- "delegated", TBD.
+
 ## CSR Template Registry
 {: #csr-template-registry }
 
@@ -586,6 +592,7 @@ Internet (MAMI). This support does not imply endorsement.
 it is now a simple JSON document which validates to a JSON Schema.
 - Some updates in accordance to latest changes in the base ACME STAR document,
 e.g. star-delegation-enabled capability renamed and moved.
+- ACME STAR now an RFC!
 
 ## draft-ietf-acme-star-delegation-01
 
