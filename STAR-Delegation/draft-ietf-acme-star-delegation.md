@@ -330,10 +330,11 @@ recurrent-certificate-get attribute and set it to true.
 ### Capability Discovery
 
 In order to help a client to discover support for this profile, the directory
-object of an ACME server MUST contain the following attribute inside the "meta"
+object of an ACME server MUST contain the following attribute inside the
+"auto-renewal" object in the "meta"
 field:
 
-- star-delegation-enabled: boolean flag indicating support for the profile
+- delegation-enabled: boolean flag indicating support for the profile
   specified in this memo.  An ACME server that supports this delegation profile
   MUST include this key, and MUST set it to true.
 
@@ -512,13 +513,13 @@ extension to the CSR template.
 
 [[RFC Editor: please replace XXXX below by the RFC number.]]
 
-## New fields in the "meta" Object within a Directory Object
+## New Fields in the "auto-renewal" Object within a Directory Metadata Object
 
 This document adds the following entries to the ACME Directory Metadata Fields:
 
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
-| star-delegation-enabled | boolean | RFC XXXX |
+| delegation-enabled | boolean | RFC XXXX |
 
 ## CSR Template Registry
 {: #csr-template-registry }
@@ -583,6 +584,8 @@ Internet (MAMI). This support does not imply endorsement.
 - Security considerations: review by Ryan Sleevi.
 - CSR template simplified: instead of being a JSON Schema document itself,
 it is now a simple JSON document which validates to a JSON Schema.
+- Some updates in accordance to latest changes in the base ACME STAR document,
+e.g. star-delegation-enabled capability renamed and moved.
 
 ## draft-ietf-acme-star-delegation-01
 
