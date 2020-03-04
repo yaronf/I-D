@@ -15,8 +15,8 @@
     |   CSR              |       |                    |
     |   Signature        |       |                    |
     o------------------->|       |                    |
-    |                    |       |   Order'           |
-    |                    |       |   Signature        |
+    |   Acknowledgement  |       |   Order'           |
+    |<-------------------o       |   Signature        |
     |                    |       o------------------->|
     |                    |       |         Required   |
     |                    |       |   Authorizations   |
@@ -30,14 +30,22 @@
     |                    |       |   CSR              |
     |                    |       |   Signature        |
     |                    |       o------------------->|
+    |                    |       |   Acknowledgement  |
+    |                    |       |<-------------------o
     |                    |       |                    |
     |<~~Await issuance~->|       |<~~Await issuance~~>|
     |                                                 |
+    |     (unauthenticated) GET STAR certificate      |
+    o------------------------------------------------>|
     |                 Certificate #1                  |
     |<------------------------------------------------o
+    |     (unauthenticated) GET STAR certificate      |
+    o------------------------------------------------>|
     |                 Certificate #2                  |
     |<------------------------------------------------o
     |                     [...]                       |
+    |     (unauthenticated) GET STAR certificate      |
+    o------------------------------------------------>|
     |                 Certificate #n                  |
     |<------------------------------------------------o
 
