@@ -30,6 +30,7 @@ clean:
 	-rm -f $(draft)-[0-9][0-9].xml
 	-rm -f $(draft)-[0-9][0-9].txt
 	-rm -f $(draft)-[0-9][0-9].md
+	-rm metadata.min.js
 
 $(draft)-orig.md:
 	-rm -rf $@
