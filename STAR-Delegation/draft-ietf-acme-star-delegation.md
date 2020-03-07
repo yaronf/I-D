@@ -620,7 +620,6 @@ Internet (MAMI). This support does not imply endorsement.
   it is now a simple JSON document which validates to a JSON Schema.
 - Some updates in accordance to latest changes in the base ACME STAR document,
   e.g. star-delegation-enabled capability renamed and moved.
-- ACME STAR now an RFC!
 
 ## draft-ietf-acme-star-delegation-01
 
