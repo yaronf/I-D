@@ -656,13 +656,19 @@ Internet (MAMI). This support does not imply endorsement.
 
 [[Note to RFC Editor: please remove before publication.]]
 
-## draft-ietf-acme-star-delegation-02
-- Security considerations: review by Ryan Sleevi.
-- CSR template simplified: instead of being a JSON Schema document itself,
-  it is now a simple JSON document which validates to a JSON Schema.
+## draft-ietf-acme-star-delegation-03
+
 - Consistency with the latest changes in the base ACME STAR document,
   e.g. star-delegation-enabled capability renamed and moved.
 - Proxy use cases (recursive delegation) and the definition of proxy behavior.
+- More detailed analysis of the CDNI and STIR use cases, including
+  sequence diagrams.
+
+## draft-ietf-acme-star-delegation-02
+
+- Security considerations: review by Ryan Sleevi.
+- CSR template simplified: instead of being a JSON Schema document itself,
+  it is now a simple JSON document which validates to a JSON Schema.
 
 ## draft-ietf-acme-star-delegation-01
 
