@@ -3,7 +3,6 @@ title: An ACME Profile for Generating Delegated STAR Certificates
 abbrev: ACME STAR Delegation
 docname: draft-ietf-acme-star-delegation-latest
 category: std
-consensus: true
 
 ipr: trust200902
 area: Security
@@ -23,6 +22,7 @@ pi:
   text-list-symbols: o-*+
   compact: yes
   subcompact: yes
+  consensus: false
 
 author:
  -
