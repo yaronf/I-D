@@ -349,6 +349,48 @@ Potentially, since it holds the STAR certificate's private key, it could request
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
 
+## Proxy Behavior
+
+There are cases where the ACME Delegation flow should be proxied, such as the
+use case described in {{sec-cdni-dele}}. This section describes the behavior of
+such proxies.
+
+An ACME Delegation server can decide, on a per-identity case, whether to act
+as a proxy into another ACME Delegation server, or to behave as an IdO and
+obtain a certificate directly. The determining factor is whether the server can
+successfully be authorized by the ACME Server for the identity associated with
+the certificate request.
+
+The identities supported by each server and the disposition for each of them
+are preconfigured.
+
+Following is the proxy's behavior for each of the messages exchanged in the
+ACME Delegation process:
+
+* New-order request:
+  * The complete "identifiers" object MUST be copied as-is.
+  * Similarly, the "auto-renewal" object MUST be copied as-is.
+* New-order response:
+  * The "status", "expires", "authorizations", "identifiers" and "auto-renewal"
+    attributes/objects MUST be copied as-is.
+  * The "finalize" URL is rewritten, so that the "finalize" request will be
+    made to the proxy.
+  * Similarly, the Location header is rewritten.
+* Get Order response:
+  * The "status", "expires", "authorizations", "identifiers" and "auto-renewal"
+    attributes/objects MUST be copied as-is.
+  * Similarly, the "star-certificate" URL MUST be copied as-is.
+  * The "finalize" URL is rewritten, so that the "finalize" request will be
+    made to the proxy.
+  * The "Location" header must be rewritten.
+* Finalize request:
+  * The CSR MUST be copied as-is.
+* Finalize response:
+  * Both the Location header and the "finalize" URLs are rewritten.
+
+We note that all the above messages are authenticated, and therefore each proxy
+must be able to authenticate any subordinate server.
+
 # CSR Template
 
 The CSR template is used to express and constrain the shape of the CSR that the
@@ -417,7 +459,7 @@ separate account) specifying its CSR, and the IdO is free to allow or deny each
 certificate request according to its own policy.
 
 ### Chained Delegation
-
+{: #sec-cdni-dele}
 In other cases, a content owner (IdO) delegates some domains to a large CDN
 (uCDN), which in turn delegates to a smaller regional CDN, dCDN.  The DNO has a
 contractual relationship with uCDN, and uCDN has a similar relationship with
@@ -618,8 +660,9 @@ Internet (MAMI). This support does not imply endorsement.
 - Security considerations: review by Ryan Sleevi.
 - CSR template simplified: instead of being a JSON Schema document itself,
   it is now a simple JSON document which validates to a JSON Schema.
-- Some updates in accordance to latest changes in the base ACME STAR document,
+- Consistency with the latest changes in the base ACME STAR document,
   e.g. star-delegation-enabled capability renamed and moved.
+- Proxy use cases (recursive delegation) and the definition of proxy behavior.
 
 ## draft-ietf-acme-star-delegation-01
 
