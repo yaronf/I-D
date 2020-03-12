@@ -2,7 +2,6 @@ root := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
 xml2rfc ?= xml2rfc --v3
 xml2rfc-prep ?= $(xml2rfc) --preptool
-xml2rfc-exp ?= $(xml2rfc) --expand
 kramdown-rfc2629 ?= kramdown-rfc2629 --v3
 idnits ?= idnits
 rfcdiff ?= rfcdiff
@@ -82,10 +81,7 @@ $(next).md: $(draft).md
 
 %.xml: %.md
 	$(kramdown-rfc2629) $< > $@
-	$(xml2rfc-prep) $@
-	$(xml2rfc-exp) $(basename $@).prepped.xml
-	-mv $(basename $@).prepped.exp.xml $@
-	-rm -f $(basename $@).prepped.xml
+	$(xml2rfc-prep) $@ -o $@
 
 %.txt: %.xml
 	$(xml2rfc) $< $@
