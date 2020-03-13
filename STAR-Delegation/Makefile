@@ -35,6 +35,7 @@ csr_dir := $(root)CSR-template
 csr_src := $(wildcard $(csr_dir)/*.json)
 
 # UTF-8/ASCII diagrams
+art_dir := $(root)art
 art_src := $(wildcard $(art_dir)/*.ascii-art)
 
 COMMIT=origin/master
@@ -57,7 +58,6 @@ clean:
 	-rm -f $(draft)-[0-9][0-9].txt
 	-rm -f $(draft)-[0-9][0-9].md
 	-rm -f metadata.min.js
-	-rm -f $(art_svg)
 
 $(draft)-orig.md:
 	-rm -rf $@
