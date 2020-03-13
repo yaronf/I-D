@@ -193,14 +193,10 @@ finalize request, including the CSR, to the IdO immediately after the Order has
 been acknowledged.  The IdO must buffer a (valid) CSR until the Validation
 phase completes successfully.
 
-<t>
-  <figure anchor="fig-endtoend" title="End to end STAR delegation flow">
-    <artset>
-      <artwork type="ascii-art" src="art/e2e-flow.ascii-art" />
-      <artwork type="svg" src="art/e2e-flow.svg" />
-    </artset>
-  </figure>
-</t>
+~~~ goat
+{::include art/e2e-flow.ascii-art}
+~~~
+{: #fig-endtoend title="End to end STAR delegation flow"}
 
 ## Delegated Identity Profile
 {: #sec-profile}
@@ -485,14 +481,10 @@ the following URI: "https://video.cp.example/movie".  Redirection between
 Content Provider, upstream, and downstream CDNs is arranged as a
 CNAME-based aliasing chain as illustrated in {{fig-cdni-dns-redirection}}.
 
-<t>
-  <figure anchor="fig-cdni-dns-redirection" title="DNS Redirection">
-    <artset>
-      <artwork type="ascii-art" src="art/cdni-dns-redirection.ascii-art" />
-      <artwork type="svg" src="art/cdni-dns-redirection.svg" />
-    </artset>
-  </figure>
-</t>
+~~~ goat
+{::include art/cdni-dns-redirection.ascii-art}
+~~~
+{: #fig-cdni-dns-redirection title="DNS Redirection"}
 
 Unlike HTTP based redirection, where the original URL is supplanted by the one
 found in the Location header of the 302 response, DNS redirection is completely
@@ -506,14 +498,10 @@ SAN matches "video.cp.example", i.e., a Content Provider's name.
 obtain a STAR certificate that bears a name belonging to the Content Provider
 with a private key that is only known to the dCDN.
 
-<t>
-  <figure anchor="fig-cdni-flow" title="Two levels delegation in CDNI">
-    <artset>
-      <artwork type="ascii-art" src="art/cdni-delegation.ascii-art" />
-      <artwork type="svg" src="art/cdni-delegation.svg" />
-    </artset>
-  </figure>
-</t>
+~~~ goat
+{::include art/cdni-delegation.ascii-art}
+~~~
+{: #fig-cdni-flow title="Two levels delegation in CDNI"}
 
 TBD bootstrap, see https://github.com/yaronf/I-D/issues/47
 
@@ -566,14 +554,10 @@ In details ({{fig-stir-flow}}):
 6. SP2 dereferences the star-certificate URL in the Order to fetch the rolling
    STAR certificate bearing the delegated identifiers.
 
-<t>
-  <figure anchor="fig-stir-flow" title="Delegation in STIR">
-    <artset>
-      <artwork type="ascii-art" src="art/stir-delegation.ascii-art" />
-      <artwork type="svg" src="art/stir-delegation.svg" />
-    </artset>
-  </figure>
-</t>
+~~~ goat
+{::include art/stir-delegation.ascii-art}
+~~~
+{: #fig-stir-flow title="Delegation in STIR"}
 
 As shown, the STAR delegation profile described in this document applies
 straightforwardly, the only extra requirement being the ability to instruct the

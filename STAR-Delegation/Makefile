@@ -1,9 +1,5 @@
 root := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-xml2rfc ?= xml2rfc --v3
-xml2rfc-prep ?= $(xml2rfc) --preptool
-xml2rfc-exp ?= $(xml2rfc) --expand
-kramdown-rfc2629 ?= kramdown-rfc2629 --v3
 idnits ?= idnits
 rfcdiff ?= rfcdiff
 
@@ -16,6 +12,13 @@ endif
 svgcheck ?= $(shell command -v svgcheck)
 ifeq ($(strip $(svgcheck)),)
 $(error svgcheck not found. To install svgcheck: 'pip install svgcheck')
+endif
+
+kdrfc_check := $(shell gem list --installed kramdown-rfc2629 -v '>= 1.3.3')
+ifeq ($(kdrfc_check), true)
+kdrfc := kdrfc -3hp
+else
+$(error kdrfc not at the right version. To install it: 'gem install kramdown-rfc2629 -v '>= 1.3.3'')
 endif
 
 draft := draft-ietf-acme-star-delegation
@@ -31,10 +34,8 @@ next := $(draft)-$(next_ver)
 csr_dir := $(root)CSR-template
 csr_src := $(wildcard $(csr_dir)/*.json)
 
-# ASCII -> SVG art
-art_dir := $(root)art
+# UTF-8/ASCII diagrams
 art_src := $(wildcard $(art_dir)/*.ascii-art)
-art_svg := $(art_src:.ascii-art=.svg)
 
 COMMIT=origin/master
 
@@ -44,22 +45,19 @@ all latest: $(draft).txt $(draft).html
 
 submit: $(next).xml $(next).txt
 
-$(draft).txt $(draft).html: $(art_svg) $(csr_src)
+$(draft).txt $(draft).html: $(art_src) $(csr_src)
 
 idnits: $(next).txt
 	$(idnits) $<
 
 clean:
-	-rm -f $(draft).txt $(draft).html $(draft).xml
+	-rm -f $(draft).txt $(draft).html $(draft).xml $(draft).prepped.xml
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml
 	-rm -f $(draft)-[0-9][0-9].txt
 	-rm -f $(draft)-[0-9][0-9].md
 	-rm -f metadata.min.js
 	-rm -f $(art_svg)
-
-%.svg: %.ascii-art
-	@$(goat) $< | $(svgcheck) -r -o $@ 2>/dev/null || true
 
 $(draft)-orig.md:
 	-rm -rf $@
@@ -80,18 +78,8 @@ diff-commit: $(draft).txt $(draft)-$(COMMIT).txt
 $(next).md: $(draft).md
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@
 
-%.xml: %.md
-	$(kramdown-rfc2629) $< > $@
-	$(xml2rfc-prep) $@
-	$(xml2rfc-exp) $(basename $@).prepped.xml
-	-mv $(basename $@).prepped.exp.xml $@
-	-rm -f $(basename $@).prepped.xml
-
-%.txt: %.xml
-	$(xml2rfc) $< $@
-
-%.html: %.xml
-	$(xml2rfc) --html $< $@
+%.txt %.hmtl %.xml: %.md
+	$(kdrfc) $<
 
 upload: $(draft).html $(draft).txt
 	python upload-draft.py $(draft).html
