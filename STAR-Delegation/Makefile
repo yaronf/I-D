@@ -49,7 +49,7 @@ idnits: $(next).txt
 	$(idnits) $<
 
 clean:
-	-rm -f $(draft).txt $(draft).html $(draft).xml
+	-rm -f $(draft).txt $(draft).html $(draft).xml $(draft).prepped.xml
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml
 	-rm -f $(draft)-[0-9][0-9].txt
@@ -81,7 +81,9 @@ $(next).md: $(draft).md
 
 %.xml: %.md
 	$(kramdown-rfc2629) $< > $@
-	$(xml2rfc-prep) $@ -o $@
+	$(xml2rfc-prep) $@
+	-mv $(basename $@).prepped.xml $@
+	-rm -f $(basename $@).prepped.xml
 
 %.txt: %.xml
 	$(xml2rfc) $< $@
