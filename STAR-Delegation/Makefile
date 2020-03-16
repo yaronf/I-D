@@ -14,11 +14,13 @@ ifeq ($(strip $(svgcheck)),)
 $(error svgcheck not found. To install svgcheck: 'pip install svgcheck')
 endif
 
-kdrfc_check := $(shell gem list --installed kramdown-rfc2629 -v '>= 1.3.3')
-ifeq ($(kdrfc_check), true)
-kdrfc := kdrfc -3hp
-else
-$(error kdrfc not at the right version. To install it: 'gem install kramdown-rfc2629 -v '>= 1.3.3'')
+ifeq ($(strip $(kdrfc)),)
+  kdrfc_check := $(shell gem list --installed kramdown-rfc2629 -v '>= 1.3.3')
+  ifeq ($(kdrfc_check), true)
+    kdrfc := kdrfc -3hp
+  else
+    $(error kdrfc not at the right version. To install it: 'gem install kramdown-rfc2629 -v '>= 1.3.3'')
+  endif
 endif
 
 draft := draft-ietf-acme-star-delegation
@@ -35,6 +37,7 @@ csr_dir := $(root)CSR-template
 csr_src := $(wildcard $(csr_dir)/*.json)
 
 # UTF-8/ASCII diagrams
+art_dir := $(root)art
 art_src := $(wildcard $(art_dir)/*.ascii-art)
 
 COMMIT=origin/master
@@ -57,7 +60,6 @@ clean:
 	-rm -f $(draft)-[0-9][0-9].txt
 	-rm -f $(draft)-[0-9][0-9].md
 	-rm -f metadata.min.js
-	-rm -f $(art_svg)
 
 $(draft)-orig.md:
 	-rm -rf $@
@@ -80,6 +82,7 @@ $(next).md: $(draft).md
 
 %.txt %.hmtl %.xml: %.md
 	$(kdrfc) $<
+	-mv $*.prepped.xml $*.xml
 
 upload: $(draft).html $(draft).txt
 	python upload-draft.py $(draft).html
