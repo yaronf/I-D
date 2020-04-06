@@ -47,12 +47,12 @@ and following the all-virtual IETF-107 we expect to see more and more WG meeting
 A common practice at the IETF is to use room "humming" to gauge working group consensus,
 though the final consensus is determined by the working group chairs and typically
 requires a mailing list poll as well. We do not
-have a technique equivalent to the hum for virtual meetings, and this
-in effect reduces the effectiveness of these meetings.
+have a technique equivalent to the hum for virtual meetings, and arguably this
+reduces the effectiveness of these meetings.
 
-This document defines the requirements from a Web application whose
+This document defines the requirements from a web application whose
 goal is to most faithfully replicate the "feel" of hums, through the use
-of a traditional web user interfce.
+of a traditional web user interface.
 
 
 --- middle
@@ -64,16 +64,17 @@ and following the all-virtual IETF-107 we expect to see more and more WG meeting
 A common practice at the IETF is to use room "humming" to gauge working group consensus,
 though the final consensus is determined by the working group chairs and typically
 requires a mailing list poll as well. We do not
-have a technique equivalent to the hum for virtual meetings, and this
-in effect reduces the effectiveness of these meetings.
+have a technique equivalent to the hum for virtual meetings, and arguably, this
+reduces the effectiveness of these meetings.
 
-This document defines the requirements from a Web application whose
+This document defines the requirements from a web application whose
 goal is to most faithfully replicate the "feel" of hums, through the use
-of a traditional web user interfce.
+of a traditional web user interface.
 
 The document's scope is strictly on the web application, and not
 on the process implications of humming or of replacing it by
-a different (though hopefully similar) protocol. Please refer to {{?RFC7282}}
+a different (though hopefully similar) human protocol.
+Please refer to {{?RFC7282}}
 for the authoritative discussion of what IETF consensus means, how
 it can be reached, and the role - as well as the limitations - of humming
 in achieving consensus.
@@ -218,7 +219,8 @@ related to the IETF process, but none that apply directly to any IETF deliverabl
 
 # Privacy Considerations
 
-IETF processes are not expected to ensure anonynity of participants. Thre process described
+IETF processes are not expected to ensure anonymity of participants.
+The process described
 here does not make any changes to the existing privacy guarantees.
 
 # Acknowledgements
