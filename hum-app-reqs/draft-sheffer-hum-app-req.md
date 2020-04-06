@@ -171,7 +171,8 @@ Yes [button]
 
 No [button]
 
-Don’t have enough information [button]  (This is not the same as “I don’t understand the question”)
+Don’t have enough information [button] (This is not the same as
+                                “I don’t understand the question”)
 ~~~
 
 * Questions are visible to all participants as soon as they are entered (even keystroke by keystroke), similarly to Etherpad/hack-MD.
