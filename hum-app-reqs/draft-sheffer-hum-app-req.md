@@ -33,7 +33,7 @@ informative:
   Coldewey:
       -: ta
       target: "https://techcrunch.com/2018/06/11/the-messy-musical-process-behind-the-webs-new-security-standard/"
-      title: "The messy, musical process behind the web’s new security standard"
+      title: "The messy, musical process behind the web's new security standard"
       date: June 2018
       author:
         -
@@ -88,17 +88,17 @@ in achieving consensus.
 Note: the intended audience for this section is application developers who are not familiar
 with the IETF process.
 
-IETF, the Internet Engineering Task Force, is the most important standards body for the Internet.
+IETF, the Internet Engineering Task Force, is an important standards body for the Internet.
 Its main product is RFC documents that define protocols. For example, the IP protocol is defined by RFC 791,
 the HTTP protocol is defined by a series of RFCs, TLS 1.3 is defined by RFC 8446.
 The IETF has a very long history and very detailed processes associated with its operation.
 It has been holding 3 annual face-to-face meetings for a very long time,
 and is only now moving more fully into virtual meetings. In fact the first fully virtual IETF meeting
-is the upcoming IETF 107, taking place next week.
+is the upcoming IETF 107, taking place next week (at the time of writing).
 The IETF consists of dozens of working groups, and they come to decisions using a process
-called “rough consensus” which means that most participants are in favor of a certain decision
+called "rough consensus" which means that most participants are in favor of a certain decision
 and there is no large faction against or an even smaller faction but with strongly held opinions.
-Quoting “the Tao or the IETF”:
+Quoting "the Tao or the IETF":
 
 4.2 Getting Things Done in a Working Group
 
@@ -114,8 +114,7 @@ as they are in some other standards bodies: in the IETF, drafting is done elsewh
 Another aspect of Working Groups that confounds many people is the fact that there is no formal voting.
 The general rule on disputed topics is that the Working Group has to come to "rough consensus",
 meaning that a very large majority of those who care must agree. The exact method of determining
-rough consensus varies from Working Group to Working Group. Sometimes consensus is determined by "humming"
-— if you agree with a proposal, you hum when prompted by the chair. Most "hum" questions come in two parts:
+rough consensus varies from Working Group to Working Group. Sometimes consensus is determined by "humming" - if you agree with a proposal, you hum when prompted by the chair. Most "hum" questions come in two parts:
 you hum to the first part if you agree with the proposal, or you hum to the second part if you
 disagree with the proposal. Newcomers find it quite peculiar, but it works.
 It is up to the chair to decide when the Working Group has reached rough consensus.
@@ -142,7 +141,7 @@ This is a relatively simple web application. It needs to be usable by people who
 * Nice to have: OpenID authentication for admins.
 
 # Hum Rooms
-Anybody can open a “hum room”. The room is available for a period of time (default: 6 hours) and then
+Anybody can open a "hum room". The room is available for a period of time (default: 6 hours) and then
 it is archived. The room consists of:
 
 * A name, defined by the room admin.
@@ -152,14 +151,14 @@ it is archived. The room consists of:
 * A list of questions, see below.
 Some analytics, including the total number of participants seen, the total number of hums taken, number of unique IPs etc. Analytics are open to all participants.
 * Expiry time of the room.
-* A “get summary” button that enables downloading (e.g. as JSON) a summary of all analytics, questions and results, so they can be used in the meeting minutes. This button is available to everybody.
+* A "get summary" button that enables downloading (e.g. as JSON) a summary of all analytics, questions and results, so they can be used in the meeting minutes. This button is available to everybody.
 * A way to close the room even before it has expired. Available only to admins.
 
 # Hum Questions
 Questions are typically entered on-the-fly by the admin, during the meeting. So the interface must be very minimal/simple.
 
 * Introductory text (up to 2-3 lines of text).
-* Between 2-4 options, with text and a button for each. “I don’t understand the question” shall be suggested as one of the options, however it should be possible to delete it.
+* Between 2-4 options, with text and a button for each. "I don't understand the question" shall be suggested as one of the options, however it should be possible to delete it.
 * A link or popup with the detailed rules for consensus for this question, visible to all participants.
 
 For example:
@@ -171,8 +170,8 @@ Yes [button]
 
 No [button]
 
-Don’t have enough information [button] (This is not the same as
-                                “I don’t understand the question”)
+Don't have enough information [button] (This is not the same as
+                                "I don't understand the question")
 ~~~
 
 * Questions are visible to all participants as soon as they are entered (even keystroke by keystroke), similarly to Etherpad/hack-MD.
@@ -184,12 +183,13 @@ Don’t have enough information [button] (This is not the same as
 
 # Gauging Consensus
 When the time expires for a question, each option is evaluated separately:
+
 * Zero responses: silence.
 * Less than 20% of the total number of people who responded: weak hum.
 * 20-70%: medium hum.
 * 70-100%: strong hum.
 
-Only the summary (e.g. “medium hum”) is displayed/retained, not the exact numbers. In addition, we display the total number of responses.
+Only the summary (e.g. "medium hum") is displayed/retained, not the exact numbers. In addition, we display the total number of responses.
 
 Admins (working group chairs) are expected to announce the results to the protocol, and decide whether consensus has been reached, before moving on to the next question.
 
@@ -200,9 +200,9 @@ Please include the IETF logo, https://www.ietf.org/logo/.
 # Transport Security
 
 * HTTPS, and redirection from HTTP to HTTPS.
-* Please use Let’s Encrypt for certificates. You should probably use the Certbot client.
+* Please use Let's Encrypt for certificates. You should probably use the Certbot client.
 * The server should have scheduled code that fetches a new certificate automatically 2 weeks before the cert expires.
-* To authorize the server to Let’s Encrypt, use the HTTP-01 challenge.
+* To authorize the server to Let's Encrypt, use the HTTP-01 challenge.
 
 # Security, Access Control, Fraud
 Basically none. Counting unique IPs allows for detection of simple-minded fraud.
