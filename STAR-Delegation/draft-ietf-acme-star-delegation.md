@@ -169,19 +169,19 @@ applies (e.g., {{?I-D.ietf-acme-authority-token-tnauthlist}} for STIR).
 
 The outline of the combined protocol is as follow ({{fig-endtoend}}):
 
-- NDC sends an Order for the delegated identifier to IdO;
-- IdO creates an Order resource in state "ready" with a "finalize" URL;
+- NDC sends an order Order1 for the delegated identifier to IdO;
+- IdO creates an Order1 resource in state "ready" with a "finalize" URL;
 - NDC immediately sends a finalize request (which includes the CSR) to the IdO;
 - IdO verifies the CSR according to the agreed upon CSR template;
-- If the CSR verification fails, the Order is moved to an "invalid" state and
+- If the CSR verification fails, Order1 is moved to an "invalid" state and
   everything stops;
-- If the CSR verification is successful, IdO moves the Order to state
-  "processing", and sends an Order' (using its own account) for the delegated
+- If the CSR verification is successful, IdO moves  Order1 to state
+  "processing", and sends a new Order2 (using its own account) for the delegated
   identifier to the ACME STAR CA;
-- If the ACME STAR protocol fails, Order' moves to "invalid" and the same state
+- If the ACME STAR protocol fails, Order2 moves to "invalid" and the same state
   is reflected in the NDC Order;
-- If the ACME STAR run is successful (i.e., Order' is "valid"), IdO copies the
-  "star-certificate" URL from Order' to Order and moves its state to "valid".
+- If the ACME STAR run is successful (i.e., Order2 is "valid"), IdO copies the
+  "star-certificate" URL from Order2 to Order1 and moves its state to "valid".
 
 The NDC can now download, install and use the short-term certificate bearing
 the name delegated by the IdO.  This sequence of actions is repeated until the
@@ -189,7 +189,7 @@ STAR certificate expires or the IdO decides to cancel the automatic renewal
 process with the ACME STAR CA.
 
 Note that, because the identity validation is suppressed, the NDC sends the
-finalize request, including the CSR, to the IdO immediately after the Order has
+finalize request, including the CSR, to the IdO immediately after Order1 has
 been acknowledged.  The IdO must buffer a (valid) CSR until the Validation
 phase completes successfully.
 
