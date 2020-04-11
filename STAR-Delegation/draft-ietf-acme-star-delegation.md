@@ -201,6 +201,8 @@ phase completes successfully.
 ## Delegated Identity Profile
 {: #sec-profile}
 
+This section defines a profile of the ACME protocol, to be used between the NDC and IdO.
+
 ### Order Object on the NDC-IdO side
 {: #sec-profile-ndc-to-ido}
 
@@ -578,12 +580,35 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 
 ## New Fields for Identifiers
 
-- "delegated", TBD.
+This document adds the following entries to each element of the ACME "identifiers" array of objects:
 
-## CSR Template Registry
+| Field Name | Field Type |
+| ---------- | ---------- |
+| delegated  | boolean    |
+| cname      | string     |
+
+We note that {{RFC8555}} does not define a registry for these objects.
+
+## CSR Template Extensions
 {: #csr-template-registry }
 
-TODO
+IANA is requested to establish a registry "STAR Delegation CSR Template Extensions", with "Expert Review" as its registration procedure.
+
+Each extension registered must specify:
+
+* An extension name
+* An extension syntax, as a JSON Schema snippet that defines a type
+* Mapping into an X.509 certificate extension.
+
+The initial contents of this registry are the extensions defined by the JSON Schema document in {{csr-template-schema}}.
+
+| Extension Name   | Type                        | Mapping to X.509                                             |
+| ---------------- | --------------------------- | ------------------------------------------------------------ |
+| keyUsage         | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.3                                   |
+| extendedKeyUsage | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.12                                  |
+| subjectAltName   | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.6 (only for the supported name formats) |
+
+
 
 # Security Considerations
 
