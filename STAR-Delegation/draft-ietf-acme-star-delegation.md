@@ -210,7 +210,7 @@ The Order object created by the NDC:
 
 - MUST contain identifiers with the new "delegated" field set to true;
 - MUST NOT contain the notBefore and notAfter fields;
-- MAY contain an "auto-renewal" object and inside it, any of the fields
+- MUST contain an "auto-renewal" object and inside it, the fields
   listed in Section 3.1.1 of {{!RFC8739}};
 - In case the identifier type is "dns", it MAY contain a "cname" field with the
   alias of the identifier in the NDC domain.  This field is used by the IdO to
@@ -238,6 +238,11 @@ Content-Type: application/jose+json
         "cname": "abc.ndc.example."
       }
     ],
+    "auto-renewal": {
+      "end-date": "2020-04-20T00:00:00Z",
+      "lifetime": 345600,          // 4 days
+      "allow-certificate-get": true
+    }
   }),
   "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
 }
@@ -252,7 +257,7 @@ The Order object that is created on the IdO:
 ~~~
 {
   "status": "ready",
-  "expires": "2016-01-01T00:00:00Z",
+  "expires": "2019-05-01T00:00:00Z",
 
   "identifiers": [
    {
@@ -263,15 +268,20 @@ The Order object that is created on the IdO:
    }
   ],
 
+  "auto-renewal": {
+    "end-date": "2020-04-20T00:00:00Z",
+    "lifetime": 345600,
+    "allow-certificate-get": true
+  },
+
   "authorizations": [],
 
   "finalize": "https://acme.dno.example/acme/order/TO8rfgo/finalize"
 }
 ~~~
 
-The IdO SHOULD copy the "auto-renewal" object (if it exists) from the
-NDC request into the
-related STAR request to the ACME CA.
+The IdO MUST copy the "auto-renewal" object from the
+NDC request into the related STAR request to the ACME CA.
 
 When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
@@ -285,7 +295,7 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
 ~~~
 {
   "status": "valid",
-  "expires": "2016-01-01T00:00:00Z",
+  "expires": "2019-05-01T00:00:00Z",
 
   "identifiers": [
    {
@@ -295,6 +305,12 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
      "cname": "abc.ndc.example."
    }
   ],
+
+  "auto-renewal": {
+    "end-date": "2020-04-20T00:00:00Z",
+    "lifetime": 345600,
+    "allow-certificate-get": true
+  },
 
   "authorizations": [],
 
@@ -323,8 +339,7 @@ When sending the Order to the ACME CA, the IdO SHOULD strip the "delegated" and 
 attributes sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST add
 the necessary STAR extensions to the Order.  In addition, to allow the NDC
 to download the certificate using unauthenticated GET, the IdO MUST add the
-allow-certificate-get attribute and set it to true.
-This implies that an "auto-renewal" object must be included in the Order.
+"auto-renewal" object and inside it, include the "allow-certificate-get" attribute and set it to true.
 
 ### Capability Discovery
 
