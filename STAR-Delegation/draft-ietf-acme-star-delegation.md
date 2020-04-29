@@ -99,6 +99,10 @@ installed in the IdO's DNS zone to enable the aliasing of the delegated name,
 thus allowing the complete name delegation workflow to be handled using a
 single interface.
 
+While the primary use case we address is delegation of STAR certificates,
+the mechanism proposed here accommodates any certificate managed with
+the ACME protocol. See {{non-star-delegation}} for details.
+
 ## Terminology
 
 IdO
@@ -339,19 +343,22 @@ When sending the Order to the ACME CA, the IdO SHOULD strip the "delegated" and 
 attributes sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST add
 the necessary STAR extensions to the Order.  In addition, to allow the NDC
 to download the certificate using unauthenticated GET, the IdO MUST add the
-"auto-renewal" object and inside it, include the "allow-certificate-get" attribute and set it to true.
+"auto-renewal" object and inside it, include the "allow-certificate-get"
+attribute and set it to true.
 
 ### Capability Discovery
 
 In order to help a client to discover support for this profile, the directory
-object of an ACME server MUST contain the following attribute inside the
-"auto-renewal" object in the "meta"
+object of an ACME server MUST contain the following attribute in the "meta"
 field:
 
 - delegation-enabled: boolean flag indicating support for the profile
   specified in this memo.  An ACME server that supports this delegation profile
   MUST include this key, and MUST set it to true.
-
+  
+The "delegation-enabled" flag may be specified regardless
+of the existence or setting of the "auto-renewal" flag.
+  
 ### On Cancellation
 
 It is worth noting that cancellation of the ACME STAR certificate is a
@@ -360,6 +367,35 @@ ACME CA, therefore it can't issue a cancellation request for the STAR cert.
 Potentially, since it holds the STAR certificate's private key, it could request the
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
+
+## Delegation of Non-STAR Certificates
+{: #non-star-delegation}
+
+The mechanism defined here can be used to delegate regular ACME certificates
+whose expiry is not "short term".
+
+To allow delegation of non-STAR certificates, this document allows use
+of "allow-certificate-get" directly in the Order object and independently
+of the "auto-renewal" object, so that
+the NDC can fetch the certificate without having to authenticate into the ACME
+server.
+
+The following differences exist between STAR and non-STAR certificate delegation:
+
+* With STAR certificates, the "star-certificate" field is copied by the IdO; with
+non-STAR certificates, the "certificate" field is copied.
+* The "auto-renewal" object is not used (either in the request or response) for
+non-STAR certificates. The field "allow-certificate-get" MUST be included in the order
+object, and its value MUST be "true".
+* The "notBefore" and "notAfter" order fields are omitted only in STAR certificates.
+
+When delegating a non-STAR certificate, standard certificate revocation still
+applies. The ACME certificate revocation endpoint is explicitly unavailable
+for STAR certificates but it is available for all other certificates. We
+note that according to Sec. 7.6 of {{RFC8555}}, the revocation endpoint
+can be used with either the account keypair, or the certificate keypair. In other
+words, the NDC would be able to revoke the certificate. The authors believe
+that this is a very minor security risk.
 
 ## Proxy Behavior
 
@@ -585,13 +621,21 @@ extension to the CSR template.
 
 [[RFC Editor: please replace XXXX below by the RFC number.]]
 
-## New Fields in the "auto-renewal" Object within a Directory Metadata Object
+## New Fields in the "meta" Object within a Directory Object
 
 This document adds the following entries to the ACME Directory Metadata Fields:
 
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
 | delegation-enabled | boolean | RFC XXXX |
+
+## New Fields in the Order Object
+
+This document adds the following entries to the ACME Order object Fields:
+
+| Field Name | Field Type | Reference |
+|------------|------------|-----------|
+| allow-certificate-get | boolean | RFC XXXX |
 
 ## New Fields for Identifiers
 
