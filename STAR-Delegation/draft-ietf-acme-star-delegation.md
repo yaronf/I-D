@@ -673,7 +673,7 @@ The initial contents of this registry are the extensions defined by the JSON Sch
 
 ## Trust Model
 
-ACME trust model needs to be extended to include the bidirectional trust
+The ACME trust model needs to be extended to include the bidirectional trust
 between NDC and IdO.  Note that once this trust link is established, it
 automatically becomes recursive.  Therefore, there has to be a trust
 relationship between each of the nodes in the delegation chain.  In case of
@@ -687,24 +687,24 @@ Delegation introduces a new security goal: only an NDC that has been authorised
 by the IdO, either directly or transitively, can obtain a cert with an IdO
 identity.
 
-From the security point of view, the delegation process has two separate sides:
+From a security point of view, the delegation process has two separate sides:
 
 1. Enabling a specific third party (the intended NDC) to submit requests for
    delegated certificates;
 2. Making sure that any request for a delegated certificate matches the
-   intended "shape", both in terms of delegated identities and certificate
-   metadata - e.g., key length, x.509 extensions, etc.
+   intended "shape" in terms of delegated identities as well as any other
+   certificate metadata, e.g., key length, x.509 extensions, etc.
 
 The first part is covered by the NDC's ACME account that is administered by the
-IdO.  The security of it relies on the correct handling of the associated key
-pair.  When a compromise of the private key is detected, the delegate MUST use
-the account deactivation procedures defined in Section 7.3.6 of {{!RFC8555}}.
+IdO, whose security relies on the correct handling of the associated key pair.
+When a compromise of the private key is detected, the delegate MUST use the
+account deactivation procedures defined in Section 7.3.6 of {{!RFC8555}}.
 
 The second part is covered by the act of checking an NDC's certificate request
 against the intended CSR template.  The steps of shaping the CSR template
 correctly, selecting the right CSR template to check against the presented CSR,
-and making sure that the presented CSR matches the selected CSR template, are
-all relevant to the overall security.
+and making sure that the presented CSR matches the selected CSR template are
+all security relevant.
 
 # New ACME Channels
 
@@ -722,16 +722,16 @@ Channel discussed in {{!RFC8555}} apply verbatim to the IdO/ACME server leg.
 The same can be said for the ACME channel on the NDC/IdO leg.  A slightly
 different set of considerations apply to the ACME Channel between NDC and ACME
 server, which consists of a subset of the ACME interface comprising two API
-endpoints: unauthenticated certificate retrieval and, potentially, non-STAR
-revocation via certificate private key.  The privacy considerations in Section
-6.3 of {{!RFC8739}} apply to the former.  With regards to the latter, it should
-be noted that there is currently no means for an IdO to disable authorisation
-based on certificate private keys for the revocation API so in theory an NDC
-could use the revocation API directly with the ACME server, therefore
-by-passing the IdO.  The NDC SHOULD NOT directly use the revocation interface
-exposed by the ACME server unless failing to do so would compromise the overall
-security, for example if the certificate private key is compromised and the IdO
-is not reachable.
+endpoints: the unauthenticated certificate retrieval and, potentially, non-STAR
+revocation via certificate private key.  No specific security consideration
+apply to the former, but the privacy considerations in Section 6.3 of
+{{!RFC8739}} do.  With regards to the latter, it should be noted that there is
+currently no means for an IdO to disable authorising revocation based on
+certificate private keys.  So, in theory, an NDC could use the revocation API
+directly with the ACME server, therefore by-passing the IdO.  The NDC SHOULD
+NOT directly use the revocation interface exposed by the ACME server unless
+failing to do so would compromise the overall security, for example if the
+certificate private key is compromised and the IdO is not currently reachable.
 
 All other security considerations from {{!RFC8555}} and {{!RFC8739}} apply
 as-is to the delegation topology.
@@ -744,9 +744,8 @@ to be universally available needs to be fully integrated with {{?RFC6125}}
 identity verification.  Unfortunately, {{?RFC6125}} does not define a standard
 way to constrain the identity verification process based on information
 contained in the presented certificate: in fact, the algorithm succeeds if the
-sets of acceptable and presented identifiers have non-empty intersection.
-
-In an open system there is no standardised way to limit the scope of the
+sets of acceptable and presented identifiers have non-empty intersection.  So,
+in an open system there is no standardised way to limit the scope of a
 delegation.
 
 In closed systems, however, a tighter control could be exerted via a locally
@@ -757,8 +756,6 @@ the delegated certificate) must satisfy in order to be accepted by the client.
 Note that such hypothetical cert extension would be set in the CSR template.
 
 ## Restricting CDNs to the Delegation Mechanism
-
-TODO(tho) harmonise.
 
 When a web site is delegated to a CDN, the CDN can in principle modify the web
 site at will, create and remove pages. This means that a malicious or breached
