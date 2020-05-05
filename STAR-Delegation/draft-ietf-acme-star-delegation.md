@@ -706,7 +706,7 @@ correctly, selecting the right CSR template to check against the presented CSR,
 and making sure that the presented CSR matches the selected CSR template are
 all security relevant.
 
-# New ACME Channels
+## New ACME Channels
 
 Using the model established in Section 10.1 of {{!RFC8555}}, we can decompose
 the interactions of the basic delegation workflow as shown in
@@ -736,7 +736,7 @@ certificate private key is compromised and the IdO is not currently reachable.
 All other security considerations from {{!RFC8555}} and {{!RFC8739}} apply
 as-is to the delegation topology.
 
-# Limiting the scope of the delegation
+## Limiting the scope of the delegation
 {: #sec-limit-dele }
 
 Any mechanisms an IdO can use to limit the scope of the delegation that seeks
