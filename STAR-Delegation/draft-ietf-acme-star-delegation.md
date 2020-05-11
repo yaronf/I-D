@@ -673,7 +673,7 @@ The initial contents of this registry are the extensions defined by the JSON Sch
 
 ## Trust Model
 
-The ACME trust model needs to be extended to include the bidirectional trust
+The ACME trust model needs to be extended to include the trust
 between NDC and IdO.  Note that once this trust link is established, it
 automatically becomes recursive.  Therefore, there has to be a trust
 relationship between each of the nodes in the delegation chain.  In case of
@@ -687,7 +687,7 @@ Delegation introduces a new security goal: only an NDC that has been authorised
 by the IdO, either directly or transitively, can obtain a cert with an IdO
 identity.
 
-From a security point of view, the delegation process has two separate sides:
+From a security point of view, the delegation process has two separate parts:
 
 1. Enabling a specific third party (the intended NDC) to submit requests for
    delegated certificates;
@@ -751,7 +751,7 @@ delegation.
 In closed systems, however, a tighter control could be exerted via a locally
 defined {{?RFC6125}} profile.  For example, using a private X.509 extension
 that specifies the allowed IP blocks, the reverse name lookup patterns, or any
-another additional criteria that the service endpoint (i.e., the presenter of
+other additional criteria that the service endpoint (i.e., the presenter of
 the delegated certificate) must satisfy in order to be accepted by the client.
 Note that such hypothetical cert extension would be set in the CSR template.
 
