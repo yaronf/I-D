@@ -324,11 +324,10 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
 }
 ~~~
 
-If an "identifier" object of type "dns" was included,
-the IdO MUST validate the specified CNAME at this point in the flow.
-The NDC and IdO may have
-a pre-established list of valid CNAME values. At the minimum, the IdO MUST verify that
-both DNS names are syntactically valid.
+If an "identifier" object of type "dns" was included, the IdO MUST validate the
+specified CNAME at this point in the flow.  The NDC and IdO may have a
+pre-established list of valid CNAME values. At the minimum, the IdO MUST verify
+that both DNS names are syntactically valid.
 
 Following this validation, the IdO can add the CNAME records to its
 zone:
@@ -673,7 +672,7 @@ The initial contents of this registry are the extensions defined by the JSON Sch
 
 ## Trust Model
 
-The ACME trust model needs to be extended to include the trust
+The ACME trust model needs to be extended to include the trust relationship
 between NDC and IdO.  Note that once this trust link is established, it
 automatically becomes recursive.  Therefore, there has to be a trust
 relationship between each of the nodes in the delegation chain.  In case of
