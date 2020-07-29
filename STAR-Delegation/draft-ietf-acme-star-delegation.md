@@ -723,6 +723,11 @@ Internet (MAMI). This support does not imply endorsement.
 
 [[Note to RFC Editor: please remove before publication.]]
 
+## draft-ietf-acme-star-delegation-04
+
+- Delegation of non-STAR certificates.
+- More IANA clarity, specifically on certificate extensions.
+
 ## draft-ietf-acme-star-delegation-03
 
 - Consistency with the latest changes in the base ACME STAR document,
