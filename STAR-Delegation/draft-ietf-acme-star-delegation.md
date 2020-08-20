@@ -327,7 +327,8 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
 If an "identifier" object of type "dns" was included, the IdO MUST validate the
 specified CNAME at this point in the flow.  The NDC and IdO may have a
 pre-established list of valid CNAME values. At the minimum, the IdO MUST verify
-that both DNS names are syntactically valid.
+that both DNS names are syntactically valid, to prevent a malicious NDC from
+injecting arbitrary data into a DNS zone file.
 
 Following this validation, the IdO can add the CNAME records to its
 zone:
@@ -674,11 +675,12 @@ The initial contents of this registry are the extensions defined by the JSON Sch
 
 The ACME trust model needs to be extended to include the trust relationship
 between NDC and IdO.  Note that once this trust link is established, it
-automatically becomes recursive.  Therefore, there has to be a trust
-relationship between each of the nodes in the delegation chain.  In case of
-cascading CDNs this is contractually defined; in other environments, the IdO
-might want to limit the parties that are indirectly delegated (see
-{{sec-limit-dele}}).
+potentially becomes recursive.  Therefore, there has to be a trust relationship
+between each of the nodes in the delegation chain; for example, in case of
+cascading CDNs this is contractually defined.  Note that using standard
+{{?RFC6125}} identity verification there are no mechanisms available to the IdO
+to restrict the use of the delegated name once the name has been handed over to
+the first NDC.
 
 ## Delegation Security Goal
 
@@ -727,32 +729,13 @@ apply to the former, but the privacy considerations in Section 6.3 of
 {{!RFC8739}} do.  With regards to the latter, it should be noted that there is
 currently no means for an IdO to disable authorising revocation based on
 certificate private keys.  So, in theory, an NDC could use the revocation API
-directly with the ACME server, therefore by-passing the IdO.  The NDC SHOULD
-NOT directly use the revocation interface exposed by the ACME server unless
-failing to do so would compromise the overall security, for example if the
-certificate private key is compromised and the IdO is not currently reachable.
+directly with the ACME server, therefore bypassing the IdO.  The NDC SHOULD NOT
+directly use the revocation interface exposed by the ACME server unless failing
+to do so would compromise the overall security, for example if the certificate
+private key is compromised and the IdO is not currently reachable.
 
 All other security considerations from {{!RFC8555}} and {{!RFC8739}} apply
 as-is to the delegation topology.
-
-## Limiting the scope of the delegation
-{: #sec-limit-dele }
-
-Any mechanisms an IdO can use to limit the scope of the delegation that seeks
-to be universally available needs to be fully integrated with {{?RFC6125}}
-identity verification.  Unfortunately, {{?RFC6125}} does not define a standard
-way to constrain the identity verification process based on information
-contained in the presented certificate: in fact, the algorithm succeeds if the
-sets of acceptable and presented identifiers have non-empty intersection.  So,
-in an open system there is no standardised way to limit the scope of a
-delegation.
-
-In closed systems, however, a tighter control could be exerted via a locally
-defined {{?RFC6125}} profile.  For example, using a private X.509 extension
-that specifies the allowed IP blocks, the reverse name lookup patterns, or any
-other additional criteria that the service endpoint (i.e., the presenter of
-the delegated certificate) must satisfy in order to be accepted by the client.
-Note that such hypothetical cert extension would be set in the CSR template.
 
 ## Restricting CDNs to the Delegation Mechanism
 
