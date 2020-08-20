@@ -724,7 +724,7 @@ The same can be said for the ACME channel on the NDC/IdO leg.  A slightly
 different set of considerations apply to the ACME Channel between NDC and ACME
 server, which consists of a subset of the ACME interface comprising two API
 endpoints: the unauthenticated certificate retrieval and, potentially, non-STAR
-revocation via certificate private key.  No specific security consideration
+revocation via certificate private key.  No specific security considerations
 apply to the former, but the privacy considerations in Section 6.3 of
 {{!RFC8739}} do.  With regards to the latter, it should be noted that there is
 currently no means for an IdO to disable authorising revocation based on
