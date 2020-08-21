@@ -1,0 +1,30 @@
+{
+  "csr-template": {
+    "keyTypes": [
+      {
+        "PublicKeyType": "ecPublicKey",
+        "Curve": "secp521r1",
+        "SignatureType": "ecdsa-with-SHA256"
+      }
+    ],
+    "subject": {
+      "country": "CA",
+      "stateOrProvince": "**",
+      "locality": "**",
+      "commonName": "**"
+    },
+    "extensions": {
+      "subjectAltName": {
+        "DNS": [
+          "abc.ndc.dno.example"
+        ]
+      },
+      "keyUsage": [
+        "digitalSignature"
+      ],
+      "extendedKeyUsage": [
+        "serverAuth"
+      ]
+    }
+  }
+}
