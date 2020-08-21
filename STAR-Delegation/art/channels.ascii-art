@@ -1,0 +1,12 @@
+                               ACME Channel
+                        .------------>------------.
+.-----. ACME Channel .--+--.                   .--+----------.
+| NDC +------------->| IdO |                   | ACME server |
+'--+--'              '--+--'                   '--+-+--------'
+   |                    '-----------<-------------' |
+   |                         Validation Channel     |
+   '-------------------->---------------------------'
+             (subset of) ACME Channel [1]
+
+[1] Unauthenticated certificate fetch and non-STAR certificate revocation.
+

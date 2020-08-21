@@ -324,11 +324,11 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
 }
 ~~~
 
-If an "identifier" object of type "dns" was included,
-the IdO MUST validate the specified CNAME at this point in the flow.
-The NDC and IdO may have
-a pre-established list of valid CNAME values. At the minimum, the IdO MUST verify that
-both DNS names are syntactically valid.
+If an "identifier" object of type "dns" was included, the IdO MUST validate the
+specified CNAME at this point in the flow.  The NDC and IdO may have a
+pre-established list of valid CNAME values. At the minimum, the IdO MUST verify
+that both DNS names are syntactically valid, to prevent a malicious NDC from
+injecting arbitrary data into a DNS zone file.
 
 Following this validation, the IdO can add the CNAME records to its
 zone:
@@ -671,6 +671,72 @@ The initial contents of this registry are the extensions defined by the JSON Sch
 
 # Security Considerations
 
+## Trust Model
+
+The ACME trust model needs to be extended to include the trust relationship
+between NDC and IdO.  Note that once this trust link is established, it
+potentially becomes recursive.  Therefore, there has to be a trust relationship
+between each of the nodes in the delegation chain; for example, in case of
+cascading CDNs this is contractually defined.  Note that using standard
+{{?RFC6125}} identity verification there are no mechanisms available to the IdO
+to restrict the use of the delegated name once the name has been handed over to
+the first NDC.
+
+## Delegation Security Goal
+
+Delegation introduces a new security goal: only an NDC that has been authorised
+by the IdO, either directly or transitively, can obtain a cert with an IdO
+identity.
+
+From a security point of view, the delegation process has two separate parts:
+
+1. Enabling a specific third party (the intended NDC) to submit requests for
+   delegated certificates;
+2. Making sure that any request for a delegated certificate matches the
+   intended "shape" in terms of delegated identities as well as any other
+   certificate metadata, e.g., key length, x.509 extensions, etc.
+
+The first part is covered by the NDC's ACME account that is administered by the
+IdO, whose security relies on the correct handling of the associated key pair.
+When a compromise of the private key is detected, the delegate MUST use the
+account deactivation procedures defined in Section 7.3.6 of {{!RFC8555}}.
+
+The second part is covered by the act of checking an NDC's certificate request
+against the intended CSR template.  The steps of shaping the CSR template
+correctly, selecting the right CSR template to check against the presented CSR,
+and making sure that the presented CSR matches the selected CSR template are
+all security relevant.
+
+## New ACME Channels
+
+Using the model established in Section 10.1 of {{!RFC8555}}, we can decompose
+the interactions of the basic delegation workflow as shown in
+{{fig-sec-channels}}.
+
+~~~ goat
+{::include art/channels.ascii-art}
+~~~
+{: #fig-sec-channels title="Delegation Channels Topology"}
+
+The considerations regarding the security of the ACME Channel and Validation
+Channel discussed in {{!RFC8555}} apply verbatim to the IdO/ACME server leg.
+The same can be said for the ACME channel on the NDC/IdO leg.  A slightly
+different set of considerations apply to the ACME Channel between NDC and ACME
+server, which consists of a subset of the ACME interface comprising two API
+endpoints: the unauthenticated certificate retrieval and, potentially, non-STAR
+revocation via certificate private key.  No specific security considerations
+apply to the former, but the privacy considerations in Section 6.3 of
+{{!RFC8739}} do.  With regards to the latter, it should be noted that there is
+currently no means for an IdO to disable authorising revocation based on
+certificate private keys.  So, in theory, an NDC could use the revocation API
+directly with the ACME server, therefore bypassing the IdO.  The NDC SHOULD NOT
+directly use the revocation interface exposed by the ACME server unless failing
+to do so would compromise the overall security, for example if the certificate
+private key is compromised and the IdO is not currently reachable.
+
+All other security considerations from {{!RFC8555}} and {{!RFC8739}} apply
+as-is to the delegation topology.
+
 ## Restricting CDNs to the Delegation Mechanism
 
 When a web site is delegated to a CDN, the CDN can in principle modify the web
@@ -701,14 +767,6 @@ CDN cannot issue unauthorized certificates:
 
 We note that the above solution may need to be tweaked depending on the exact
 capabilities and authorisation flows supported by the selected CAs.
-
-## TBC
-
-- CSR validation
-- CNAME mappings
-- Composition with ACME STAR
-- Composition with other ACME extensions
-- Channel security
 
 # Acknowledgments
 
