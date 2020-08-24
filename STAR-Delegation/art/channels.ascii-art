@@ -8,5 +8,6 @@
    '-------------------->---------------------------'
              (subset of) ACME Channel [1]
 
-[1] Unauthenticated certificate fetch and non-STAR certificate revocation.
+[1] Unauthenticated certificate fetch and non-STAR certificate
+    revocation.
 
