@@ -211,8 +211,9 @@ and IdO.
 ### Delegation Configuration
 {: #sec-profile-dele-config}
 
-The configuration details regarding any delegation agreed upon by IdO and NDC
-are collected in a new delegation configuration object on the IdO side.  A
+An NDC identifies itself to the IdO as an ACME account.  The IdO can delegate
+multiple names through each NDC, and these configurations are described through
+`delegation` objects associated with the NDC's Account object on the IdO.  A
 delegation configuration object contains the CSR template (see
 {{sec-csr-template}}) that applies to that delegation.  Its structure is as
 follows:
@@ -227,10 +228,10 @@ An example delegation object is shown in {{fig-configuration-object}}.
 ~~~
 {: #fig-configuration-object title="Example Delegation Configuration object"}
 
-In order to list all the delegation configuration objects that are configured
-with the NDC account, a new `delegations` attribute is added to the Account
-object.  The value of this attribute is an array of URLs each pointing to a
-delegation configuration object as shown in {{fig-account-object}}.
+In order to list all the delegation configuration objects that are associated
+with the NDC account, a new (read-only) `delegations` attribute is added to the
+Account object.  The value of this attribute is an array of URLs each pointing
+to a delegation configuration object as shown in {{fig-account-object}}.
 
 ~~~
 {
@@ -382,10 +383,10 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
 }
 ~~~
 
-If an `identifier` of type `dns` was included, the IdO MUST validate the
-specified CNAME at this point in the flow.  At the minimum, the IdO MUST verify
-that both DNS names are syntactically valid, to prevent a malicious NDC from
-injecting arbitrary data into a DNS zone file.
+If an `identifier` attribute of type `dns` was included, the IdO MUST validate
+the specified CNAME at this point in the flow.  At the minimum, the IdO MUST
+verify that both DNS names are syntactically valid, to prevent a malicious NDC
+from injecting arbitrary data into a DNS zone file.
 
 Following this validation, the IdO can add the CNAME records to its
 zone:
@@ -861,6 +862,8 @@ Internet (MAMI). This support does not imply endorsement.
 
 - Delegation of non-STAR certificates.
 - More IANA clarity, specifically on certificate extensions.
+- Add delegation configuration object and extend account and order objects
+  accordingly.
 
 ## draft-ietf-acme-star-delegation-03
 
