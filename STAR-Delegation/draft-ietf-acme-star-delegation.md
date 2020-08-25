@@ -864,6 +864,7 @@ Internet (MAMI). This support does not imply endorsement.
 - More IANA clarity, specifically on certificate extensions.
 - Add delegation configuration object and extend account and order objects
   accordingly.
+- A lot more depth on Security Considerations.
 
 ## draft-ietf-acme-star-delegation-03
 
