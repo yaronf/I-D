@@ -229,9 +229,17 @@ Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 bu
 
 * Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
                <vspace blankLines='1'/>
-Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document ({{rec-cipher}} below) are only available in TLS 1.2.
+Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are only available in this version.
 
-This BCP applies to TLS 1.2 and also to earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
+* Implementations SHOULD support TLS 1.3 {{!RFC8446}} and if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
+               <vspace blankLines='1'/>
+Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it default to TLS 1.3, implementors MUST still follow all the recommendations in this document.
+
+* Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done {{?I-D.ietf-quic-tls}}) include TLS 1.3.
+               <vspace blankLines='1'/>
+Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.
+
+This BCP applies to TLS 1.2, 1.3 and to earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
 ### DTLS Protocol Versions
 
@@ -245,6 +253,8 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 <vspace blankLines='1'/>
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
+  
+* TODO: will require DTLS 1.3 at the SHOULD level if published before this document.
 
 
 ### Fallback to Lower Versions
