@@ -233,7 +233,7 @@ Rationale: Several stronger cipher suites are available only with TLS 1.2 (publi
 
 * Implementations SHOULD support TLS 1.3 {{!RFC8446}} and if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
                <vspace blankLines='1'/>
-Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it default to TLS 1.3, implementors MUST still follow all the recommendations in this document.
+Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it default to TLS 1.3, implementers MUST still follow all the recommendations in this document.
 
 * Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done {{?I-D.ietf-quic-tls}}) include TLS 1.3.
                <vspace blankLines='1'/>
