@@ -735,6 +735,8 @@ None in this version.
 ## draft-ietf-uta-rfc7525bis-00
 
 - Renamed: WG document.
+- General rewording of abstract and intro for revised version.
+- Protocol versions, fallback.
 
 ## draft-sheffer-uta-rfc7525bis-00
 
