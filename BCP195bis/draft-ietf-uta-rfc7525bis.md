@@ -218,13 +218,17 @@ Rationale: Today, SSLv2 is considered insecure {{!RFC6176}}.
                <vspace blankLines='1'/>
 Rationale: SSLv3 {{?RFC6101}} was an improvement over SSLv2 and plugged some significant security holes but did not support strong cipher suites. SSLv3 does not support TLS extensions, some of which (e.g., renegotiation_info {{!RFC5746}}) are security-critical.  In addition, with the emergence of the POODLE attack {{POODLE}}, SSLv3 is now widely recognized as fundamentally insecure.  See {{DEP-SSLv3}} for further details.
 
-* Implementations SHOULD NOT negotiate TLS version 1.0 {{?RFC2246}}; the only exception is when no higher version is available in the negotiation.
+* Implementations MUST NOT negotiate TLS version 1.0 {{?RFC2246}}.
                <vspace blankLines='1'/>
-Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors.
+Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. 
+               <vspace blankLines='1'/>
+NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{?I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
 
-* Implementations SHOULD NOT negotiate TLS version 1.1 {{?RFC4346}}; the only exception is when no higher version is available in the negotiation.
+* Implementations MUST NOT negotiate TLS version 1.1 {{?RFC4346}}.
                <vspace blankLines='1'/>
 Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
+               <vspace blankLines='1'/>
+NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{?I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
             
 
 * Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
@@ -233,7 +237,7 @@ Rationale: Several stronger cipher suites are available only with TLS 1.2 (publi
 
 * Implementations SHOULD support TLS 1.3 {{!RFC8446}} and if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
                <vspace blankLines='1'/>
-Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it default to TLS 1.3, implementers MUST still follow all the recommendations in this document.
+Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers MUST still follow all the recommendations in this document.
 
 * Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done {{?I-D.ietf-quic-tls}}) include TLS 1.3.
                <vspace blankLines='1'/>
@@ -245,17 +249,21 @@ This BCP applies to TLS 1.2, 1.3 and to earlier versions. It is not safe for rea
 
 DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was published.  The following are the recommendations with respect to DTLS:
 
-* Implementations SHOULD NOT negotiate DTLS version 1.0 {{?RFC4347}}.
+* Implementations MUST NOT negotiate DTLS version 1.0 {{?RFC4347}}.
 <vspace blankLines='1'/>
-  Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
+  Version 1.0 of DTLS correlates to version 1.1 of TLS (see above). For more details, refer to {{?I-D.ietf-tls-oldversions-deprecate}}.
+<vspace blankLines='1'/>
+NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{?I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
 
-* Implementations MUST support and MUST prefer to negotiate DTLS version 1.2 {{!RFC6347}}.
+* Implementations MUST support and (unless a higher version is available) MUST prefer to negotiate DTLS version 1.2 {{!RFC6347}} 
+
 <vspace blankLines='1'/>
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
   
-* TODO: will require DTLS 1.3 at the SHOULD level if published before this document.
-
+* Implementations SHOULD support and, if available, MUST prefer to negotiate DTLS version 1.3 as specified in {{?I-D.ietf-tls-dtls13}}.
+<vspace blankLines='1'/>
+  Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).
 
 ### Fallback to Lower Versions
 {: #rec-fallback}
@@ -294,7 +302,7 @@ Rationale: Combining unprotected and TLS-protected communication opens the way t
 ## Compression
 {: #rec-compress}
 
-In order to help prevent compression-related attacks (summarized in Section 2.6 of {{?RFC7457}}), implementations and deployments SHOULD disable TLS-level compression (Section 6.2.2 of {{!RFC5246}}), unless the application protocol in question has been shown not to be open to such attacks.
+In order to help prevent compression-related attacks (summarized in Section 2.6 of {{?RFC7457}}), when using TLS 1.2 implementations and deployments SHOULD disable TLS-level compression (Section 6.2.2 of {{!RFC5246}}), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.
 
 
 Rationale: TLS compression has been subject to security attacks, such as the CRIME attack.
@@ -305,7 +313,7 @@ Implementers should note that compression at higher protocol levels can allow an
 ## TLS Session Resumption
 {: #rec-resume}
 
-If TLS session resumption is used, care ought to be taken to do so safely. In particular, when using session tickets {{?RFC5077}}, the resumption information MUST be authenticated and encrypted to prevent modification or eavesdropping by an attacker. Further recommendations apply to session tickets:
+If TLS session resumption is used in the context of TLS 1.2, care ought to be taken to do so safely. In particular, when using session tickets {{?RFC5077}}, the resumption information MUST be authenticated and encrypted to prevent modification or eavesdropping by an attacker. Further recommendations apply to session tickets:
 
 * A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
 
@@ -320,9 +328,7 @@ Rationale: session resumption is another kind of TLS handshake, and therefore mu
 
 ## TLS Renegotiation
 
-Where handshake renegotiation is implemented, both clients and servers MUST implement the renegotiation_info extension, as defined in 
-         {{!RFC5746}}.
-      
+Where handshake renegotiation is implemented, both clients and servers MUST implement the renegotiation_info extension, as defined in {{!RFC5746}}. Note: this recommendation applies to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.
 
 The most secure option for countering the Triple Handshake attack is to refuse any change of certificates during renegotiation.  In addition, TLS clients SHOULD apply the same validation policy for all certificates received over a connection.  The {{triple-handshake}} document suggests several other possible countermeasures, such as binding the master secret to the full handshake (see {{SESSION-HASH}}) and binding the abbreviated session resumption handshake to the original full handshake.  Although the latter two techniques are still under development and thus do not qualify as current practices, those who implement and deploy TLS are advised to watch for further development of appropriate countermeasures.
       
@@ -330,17 +336,15 @@ The most secure option for countering the Triple Handshake attack is to refuse a
 
 ## Server Name Indication
 
-TLS implementations MUST support the Server Name Indication (SNI) extension defined in Section 3 of {{!RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS.
-
-
-However, the actual use of SNI in particular circumstances
-      is a matter of local policy.
+TLS implementations MUST support the Server Name Indication (SNI) extension defined in Section 3 of {{!RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello (formerly called Encrypted SNI) once {{?I-D.ietf-tls-esni}} has been standardized.
 
 
 
 Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
       address, and therefore enables fine-grained security for these virtual servers,
-      by allowing each one to have its own certificate.
+      by allowing each one to have its own certificate. However, SNI also leaks the 
+      target domain for a given connection; this information leak will be plugged by 
+      use of TLS Encrypted Client Hello.
 
 # Recommendations: Cipher Suites
 {: #detail}
@@ -715,8 +719,6 @@ Thanks to RJ Atkinson, Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel 
 Robert Sparks and Dave Waltermire provided helpful reviews on behalf of the General Area Review Team and the Security Directorate, respectively.
 
 During IESG review, Richard Barnes, Alissa Cooper, Spencer Dawkins, Stephen Farrell, Barry Leiba, Kathleen Moriarty, and Pete Resnick provided comments that led to further improvements.
-
-
 
 Ralph Holz gratefully acknowledges the support by Technische Universitaet Muenchen.
 
