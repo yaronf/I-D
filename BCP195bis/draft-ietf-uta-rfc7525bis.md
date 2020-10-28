@@ -162,22 +162,25 @@ informative:
 
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
+
+This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, we believe new guidance is needed.
  
 --- middle
 
 # Introduction
 
-Transport Layer Security (TLS) {{!RFC5246}} and Datagram Transport Security Layer (DTLS) {{!RFC6347}} are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.   
+Transport Layer Security (TLS) {{!RFC5246}} and Datagram Transport Security Layer (DTLS) {{!RFC6347}} are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.
 
-Because of these attacks, those who implement and deploy TLS and DTLS need updated guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code 
+The TLS community reacted to these attacks in two ways:
 
-to be deployed in environments defined in {{applicability}}. In fact, this document calls for the deployment of algorithms that are widely implemented but not yet widely deployed. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
+- Detailed guidance was published on the use of TLS 1.2 and earlier protocol versions. This guidance is included in the original {{?RFC7525}} and mostly retained in this revised version.
+- A new protocol version was released, TLS 1.3 {{!RFC8446}}, which largely mitigates or resolves these attacks.
 
+Those who implement and deploy TLS and DTLS, in particular versions 1.2 or earlier of these protocols, need guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
 
 The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless it is explicitly called out that a recommendation applies to TLS alone or to DTLS alone, each recommendation applies to both TLS and DTLS.
 
-It is expected that the TLS 1.3 specification will resolve many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. This document is likely to be updated after TLS 1.3 gets noticeable deployment.
-
+As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. This document is being republished with this in mind, and with an explicit goal to migrate most uses of TLS 1.2 into TLS 1.3.
 
 
 These are minimum recommendations for the use of TLS in the vast majority of implementation and deployment scenarios, with the exception of unauthenticated TLS (see {{applicability}}). Other specifications that reference this document can have stricter requirements related to one or more aspects of the protocol, based on their particular circumstances (e.g., for use with a particular application protocol); when that is the case, implementers are advised to adhere to those stricter requirements. Furthermore, this document provides a floor, not a ceiling, so stronger options are always allowed (e.g., depending on differing evaluations of the importance of cryptographic strength vs. computational load).
@@ -226,9 +229,17 @@ Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 bu
 
 * Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
                <vspace blankLines='1'/>
-Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document ({{rec-cipher}} below) are only available in TLS 1.2.
+Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are only available in this version.
 
-This BCP applies to TLS 1.2 and also to earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
+* Implementations SHOULD support TLS 1.3 {{!RFC8446}} and if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
+               <vspace blankLines='1'/>
+Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it default to TLS 1.3, implementers MUST still follow all the recommendations in this document.
+
+* Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done {{?I-D.ietf-quic-tls}}) include TLS 1.3.
+               <vspace blankLines='1'/>
+Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.
+
+This BCP applies to TLS 1.2, 1.3 and to earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
 ### DTLS Protocol Versions
 
@@ -242,14 +253,17 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 <vspace blankLines='1'/>
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
+  
+* TODO: will require DTLS 1.3 at the SHOULD level if published before this document.
 
 
 ### Fallback to Lower Versions
 {: #rec-fallback}
 
-Clients that "fall back" to lower versions of the protocol after the server rejects higher versions of the protocol MUST NOT fall back to SSLv3 or earlier.
+Clients that "fall back" to lower versions of the protocol after the server rejects higher versions of the protocol MUST NOT fall back to SSLv3 or earlier. Implementations of TLS/DTLS 1.2 or earlier MUST implement the Fallback SCSV mechanism {{!RFC7507}} to prevent
+such fallback being forced by an attacker.
 
-Rationale: Some client implementations revert to lower versions of TLS or even to SSLv3 if the server rejected higher versions of the protocol. This fallback can be forced by a man-in-the-middle (MITM) attacker. TLS 1.0 and SSLv3 are significantly less secure than TLS 1.2, the version recommended by this document.  While TLS 1.0-only servers are still quite common, IP scans show that SSLv3-only servers amount to only about 3% of the current Web server population. (At the time of this writing, an explicit method for preventing downgrade  attacks has been defined recently in {{?RFC7507}}.)
+Rationale: Some client implementations revert to lower versions of TLS or even to SSLv3 if the server rejected higher versions of the protocol. This fallback can be forced by a man-in-the-middle (MITM) attacker. TLS 1.0 and SSLv3 are significantly less secure than TLS 1.2 but at least TLS 1.0 is still allowed by many web servers. As of this writing, the Fallback SCSV solution is widely deployed and proven as a robust solution to this problem.
 
 ## Strict TLS
 
@@ -721,6 +735,8 @@ None in this version.
 ## draft-ietf-uta-rfc7525bis-00
 
 - Renamed: WG document.
+- General rewording of abstract and intro for revised version.
+- Protocol versions, fallback.
 
 ## draft-sheffer-uta-rfc7525bis-00
 
