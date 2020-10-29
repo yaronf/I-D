@@ -730,7 +730,12 @@ The authors gratefully acknowledge the assistance of Leif Johansson and Orit Lev
 
 # Differences from RFC 7525
 
-None in this version.
+* Clarified some items (e.g. renegotiation) that only apply to TLS 1.2 - many more TBD.
+* Changed status of TLS 1.0 and 1.1 from SHOULD NOT to MUST NOT.
+* Added TLS 1.3 at a SHOULD level.
+* Similar changes to DTLS, pending publication of DTLS 1.3.
+* Fallback SCSV as a MUST for TLS 1.2.
+* Added mention of TLS Encrypted Client Hello, but no recommendation to use yet.
 
 # Document History
 
@@ -739,8 +744,10 @@ None in this version.
 ## draft-ietf-uta-rfc7525bis-00
 
 - Renamed: WG document.
+- Started populating list of changes from RFC 7525.
 - General rewording of abstract and intro for revised version.
 - Protocol versions, fallback.
+- Reference to ECHO.
 
 ## draft-sheffer-uta-rfc7525bis-00
 
