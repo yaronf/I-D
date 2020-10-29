@@ -222,13 +222,13 @@ Rationale: SSLv3 {{?RFC6101}} was an improvement over SSLv2 and plugged some sig
                <vspace blankLines='1'/>
 Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. 
                <vspace blankLines='1'/>
-NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{?I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
+NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
 
 * Implementations MUST NOT negotiate TLS version 1.1 {{?RFC4346}}.
                <vspace blankLines='1'/>
 Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
                <vspace blankLines='1'/>
-NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{?I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
+NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
             
 
 * Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
@@ -251,9 +251,9 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 
 * Implementations MUST NOT negotiate DTLS version 1.0 {{?RFC4347}}.
 <vspace blankLines='1'/>
-  Version 1.0 of DTLS correlates to version 1.1 of TLS (see above). For more details, refer to {{?I-D.ietf-tls-oldversions-deprecate}}.
+  Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
 <vspace blankLines='1'/>
-NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{?I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
+NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
 
 * Implementations MUST support and (unless a higher version is available) MUST prefer to negotiate DTLS version 1.2 {{!RFC6347}} 
 
@@ -261,7 +261,7 @@ NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the as
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
   
-* Implementations SHOULD support and, if available, MUST prefer to negotiate DTLS version 1.3 as specified in {{?I-D.ietf-tls-dtls13}}.
+* Implementations SHOULD support and, if available, MUST prefer to negotiate DTLS version 1.3 as specified in {{!I-D.ietf-tls-dtls13}}.
 <vspace blankLines='1'/>
   Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).
 
@@ -713,6 +713,8 @@ The considerations in this section do not apply to scenarios where the DANE-TLSA
 
 # Acknowledgments
 {: #d1e1127}
+
+The following acknowledgements are inherited from {{?RFC7525}}.
 
 Thanks to RJ Atkinson, Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks also to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" {{Smith2013}}. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.
 
