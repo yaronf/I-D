@@ -468,9 +468,6 @@ This document does not change the mandatory-to-implement TLS cipher suite(s) pre
 Note that some profiles of TLS 1.2 use different cipher suites. For example, {{?RFC6460}} defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.
 
 {{!RFC4492}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC4492}}.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve {{!RFC4492}}. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".
-        
-
-​      
 
 ## Public Key Length
 {: #rec-keylength}
@@ -480,14 +477,11 @@ When using the cipher suites recommended in this document, two public keys are
       and one for server authentication. Where a client certificate is used, a third 
       public key is added.
 
-
 With a key exchange based on modular exponential (MODP) Diffie-Hellman groups ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.
 
  Rationale: For various reasons, in practice, DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key {{?RFC3766}}, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key {{?RFC3766}} and a DH key of 2048 bits might be sufficient for at least the next 10 years {{NIST.SP.800-56A}}. See {{detail-alt}} for additional information on the use of MODP Diffie-Hellman in TLS.
 
-
 As noted in {{?RFC3766}}, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.
-
 
 With regard to ECDH keys, the IANA "EC Named Curve Registry" (within the
    "Transport Layer Security (TLS) Parameters" registry {{IANA_TLS}}) contains 160-bit
@@ -495,13 +489,11 @@ elliptic curves that are considered to be roughly equivalent to only an 80-bit
 symmetric key {{ECRYPT-II}}.   Curves of less than 192 bits SHOULD NOT be used.
 
 When using RSA, servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED (see {{CAB-Baseline}} for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. 
-      
 
 ## Modular Exponential vs. Elliptic Curve DH Cipher Suites
 {: #detail-alt}
 
 Not all TLS implementations support both modular exponential (MODP) and elliptic curve (EC) Diffie-Hellman groups, as required by {{rec-cipher}}. Some implementations are severely limited in the length of DH values. When such implementations need to be accommodated, the following are RECOMMENDED (in priority order):
-
 
 1. Elliptic Curve DHE with appropriately negotiated parameters (e.g., the curve to be used) and a Message Authentication Code (MAC) algorithm stronger than HMAC-SHA1 {{!RFC5289}}
 
@@ -509,9 +501,7 @@ Not all TLS implementations support both modular exponential (MODP) and elliptic
 
 1. TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters
         
-
 Rationale: Although Elliptic Curve Cryptography is widely deployed, there are some communities where its adoption has been limited for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved {{?RFC6090}}).  Note that ECDHE cipher suites exist for both RSA and ECDSA certificates, so moving to ECDHE cipher suites does not require moving away from RSA-based certificates.  On the other hand, there are two related issues hindering effective use of MODP Diffie-Hellman cipher suites in TLS:
-
 
 * There are no standardized, widely implemented protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.
 
@@ -605,8 +595,8 @@ This document specifies best practices for TLS in general.  A separate document 
 This entire document discusses the security practices directly affecting applications
     using the TLS protocol. This section contains broader security considerations related
     to technologies used in conjunction with or by TLS.
-## Host Name Validation
 
+## Host Name Validation
 
   Application authors should take note that some TLS implementations
   do not validate host names.  If the TLS implementation they are
@@ -616,25 +606,15 @@ This entire document discusses the security practices directly affecting applica
 
 It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Section 3 of {{!RFC2818}}.
 
-
-
 Readers are referred to {{!RFC6125}} for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.
 
-
-
 If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an MX or SRV record), it SHOULD NOT be used as a reference identifier {{!RFC6125}} even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see {{DANE-SRV}} and {{DANE-SMTP}}).
-
-
 
 Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with {{?RFC5280}} (see also 
         {{!RFC6125}}).
 
-
-  
-
 ## AES-GCM
 {: #sec-aes}
-
 
 {{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to Section 11 of {{RFC5246}} for general security considerations when using TLS 1.2, and to Section 6 of {{!RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
       
@@ -646,7 +626,6 @@ Forward secrecy (also called "perfect forward secrecy" or "PFS" and defined in {
 Should the attacker be able to obtain these long-term keys at some point later in time, the session keys and thus the entire conversation could be decrypted.
 
 In the context of TLS and DTLS, such compromise of long-term keys is not entirely implausible. It can happen, for example, due to:
-
 
 * A client or server being attacked by some other attack vector, and the private key retrieved.
 
