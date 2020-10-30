@@ -493,6 +493,8 @@ When using RSA, servers SHOULD authenticate using certificates with at least a 2
 ## Modular Exponential vs. Elliptic Curve DH Cipher Suites
 {: #detail-alt}
 
+[[TODO: revise after Logjam?]]
+
 Not all TLS implementations support both modular exponential (MODP) and elliptic curve (EC) Diffie-Hellman groups, as required by {{rec-cipher}}. Some implementations are severely limited in the length of DH values. When such implementations need to be accommodated, the following are RECOMMENDED (in priority order):
 
 1. Elliptic Curve DHE with appropriately negotiated parameters (e.g., the curve to be used) and a Message Authentication Code (MAC) algorithm stronger than HMAC-SHA1 {{!RFC5289}}
