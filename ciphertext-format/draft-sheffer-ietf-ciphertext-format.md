@@ -1,7 +1,7 @@
 ---
 title: "A Generic Ciphertext Format"
 abbrev: Ciphertext Format
-docname: draft-sheffer-ciphertext-format-latest
+docname: draft-sheffer-ietf-ciphertext-format-latest
 category: std
 updates: 
 obsoletes:
