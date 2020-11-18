@@ -39,7 +39,6 @@ author:
     name: Yoav Nir
     organization: Dell Technologies
     email: ynir.ietf@gmail.com
-  -
 
 normative:
 
