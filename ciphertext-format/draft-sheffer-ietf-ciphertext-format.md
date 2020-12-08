@@ -50,8 +50,6 @@ informative:
 
 This document defines a format for encrypted data, that allows to detect such data in large data stores, and associate it back to the system where it was created and the key with which it was encrypted. This allows organizations to extend the concept of data governance to encrypted data, and to manage such data even when encrypted by multiple systems and cloud providers.
 
-We intend to standardize this format through the IETF, and the document is organized as an Internet Draft.
-
 --- middle
 
 # Introduction and Design Principles

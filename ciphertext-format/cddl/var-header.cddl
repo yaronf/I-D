@@ -1,0 +1,13 @@
+metadata = {
+	K_KEY_ID: bstr,
+	? K_KEY_VERSION: uint,
+	? K_AUX_DATA: bstr,
+	*uint => any ; extensions
+}
+
+K_RESERVED = 0
+K_KEY_ID = 1
+K_KEY_VERSION = 2
+K_AUX_DATA = 3
+	; extend here
+
