@@ -74,7 +74,7 @@ Our main goal in defining a common ciphertext format is to allow organizations t
 
 *   Proprietary data encryption formats mean that the data remains tied to a single vendor.
 
-*   Standardisation around key management best practices.
+*   Standardization around key management best practices.
 
 ## Design Goals
 
@@ -148,7 +148,7 @@ Correct interpretation of the format may have security implications, making it i
 *   A recipient MUST reject a malformed header, e.g. if the total length is larger than the physical length allocated to it based on higher-level network protocols or storage formats.
 *   A recipient MUST reject a ciphertext if it does not recognize the format version.
 *   A recipient MUST reject a ciphertext if the variable header is not valid CBOR, as per {{RFC8949}} Sec. 5.3.1. In particular, it MUST reject duplicate map keys.
-*   A recipient MUST accept a ciphertext even if it does not recognize some of the TLVs. It MUST ignore the unknown TLVs and MUST interpret all known ones. In other words, the only way to introduce new mandatory TLVs is by incrementing the format version.
+*   A recipient MUST accept a ciphertext even if it does not recognize some of the map keys. It MUST ignore the unknown map keys and MUST interpret all known ones. In other words, the only way to introduce new mandatory map keys is by incrementing the format version.
 *   If ciphertext integrity protection coverage includes the header, a recipient MUST reject the header as well as the ciphertext if the integrity protection fails to validate.
 
 ## Fixed Header Rationale
