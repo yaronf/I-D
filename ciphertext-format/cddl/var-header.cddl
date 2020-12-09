@@ -1,4 +1,5 @@
-metadata = {
+var_header = {
+	K_KEY_PROVIDER: uint,
 	K_KEY_ID: bstr,
 	? K_KEY_VERSION: uint,
 	? K_AUX_DATA: bstr,
@@ -6,8 +7,9 @@ metadata = {
 }
 
 K_RESERVED = 0
-K_KEY_ID = 1
-K_KEY_VERSION = 2
-K_AUX_DATA = 3
+K_KEY_PROVIDER = 1
+K_KEY_ID = 2
+K_KEY_VERSION = 3
+K_AUX_DATA = 4
 	; extend here
 

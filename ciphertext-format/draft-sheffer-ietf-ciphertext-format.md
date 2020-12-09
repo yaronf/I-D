@@ -42,6 +42,8 @@ author:
 
 normative:
 
+    RFC8949:
+
 informative:
 
     NISTSP800-38D: DOI.10.6028/NIST.SP.800-38D
@@ -55,6 +57,8 @@ This document defines a format for encrypted data, that allows to detect such da
 # Introduction and Design Principles
 
 Organizations that manage sensitive data often employ application-level encryption to protect data at rest. When this solution is used, it is common that very large numbers of encrypted data items are stored, potentially for a long time. Security best practices, complicated organizational structures, as well as the existence of modern key management systems, lead to the proliferation of large numbers of encryption keys. After a while it becomes difficult to identify the encryption key that was used for a particular piece of data, with the situation becoming even more complicated when multiple key management systems are used by the same organization.
+
+Application-level encryption can be deployed at different scales: in some cases a multi-megabyte file may be encrypted with a single key. In other cases, we may want to deploy encryption for specific database fields, which can easily manifest itself as millions of keys for a single database table.
 
 Tagging encrypted data with metadata supports a number of important use cases: it allows the organization to better catalog the data (a.k.a. “data governance”), to discover the owner of each piece of encrypted data, to detect data encrypted with outdated keys.
 
@@ -104,7 +108,7 @@ A few notable formats are:
 
 ## Format Overview
 
-The ciphertext is prefixed by a header, which in turn, consists of a fixed header, a 2-octet header length, and a sequence of Type-Length-Value (TLV) structures. The TLV structures may appear in any order.
+The ciphertext is prefixed by a header, which in turn, consists of a short fixed header and variable header. The variable header is a CBOR {{RFC8949}} map.
 
 Following the header is the body of the ciphertext. The format (including length) of the body is out of scope for this document.
 
@@ -113,34 +117,18 @@ Following the header is the body of the ciphertext. The format (including length
 The fixed header consists of:
 
 *   A single constant octet 0x08 (see {{fixed-header-rationale}}).
+*   A single octet denoting the format version. The version is 0x01 for the format defined in this document.
 
-*   1 octet denoting the format version. The version is 0x01 for the format defined in this document.
+### Variable Header
 
-*   2 octets for the Key Provider (the organization responsible for the key management system).
+The variable header is a CBOR map consisting of elements from the following table.
 
-### Header Length
-
-The header length field consists of 2 octets of length (covering the complete header including the fixed header), in network order.
-
-### TLV Structures
-
-All other fields consist of:
-
-*   1 octet type
-
-*   2 octet length of the Value field, where the length is encoded in network order. For TV structures, the length field is omitted and the length of the value is implied by the "type" field.
-
-*   Variable-length value.
-
-Issue: we could define “short” vs. “long” TLVs, where for short TLVs the type and length are packed into a single byte (MS nibble for type, LS nibble for length).
-
-The fields are defined by the following table.
-
-| Field Name | Type Tag | Meaning                                                  | Mandatory |
-| -------------- | ------------ | ------------------------------------------------------------ | ------------- |
-| Key ID         | 1            | An encryption key, as stored in a key  management system. This must denote a unique key, even if the Provider  supports multiple tenants. Encoding of this field is Provider-specific. The  field must appear once. | Y             |
-| Key Version    | 2            | A version of a key, where the key is  rotated on a periodic basis. Encoding of this field is Provider-specific. The  field must appear at most once. | N             |
-| Auxiliary Data | 3            | Additional data required to derive a specific key from the referenced key  (and key version, if any), see also {{deriving-a-specific-key}}. The field must  appear at most once. | N             |
+| Field Name | Map Key | Value Type       | Meaning                                                      | Mandatory |
+| -------------- | ------------ | ------------------------------------------------------------ | ------------- | -------------- |
+| Key Provider   | 1       | Unsigned integer | The organization responsible for the key management system.  | Y |
+| Key ID         | 2       | Byte string      | An encryption key, as stored in a key  management system. This must denote a unique key, even if the Provider  supports multiple tenants. Encoding of this field is Provider-specific. The  field must appear once. | Y |
+| Key Version    | 3       | Unsigned integer | A version of a key, where the key is  rotated on a periodic basis. Encoding of this field is Provider-specific. The  field must appear at most once. | N |
+| Auxiliary Data | 4 | Byte string      | Additional data required to derive a specific key from the referenced key  (and key version, if any), see also {{deriving-a-specific-key}}. The field must  appear at most once. | N |
 
 ### Deriving a Specific Key
 {: #deriving-a-specific-key}
@@ -157,12 +145,10 @@ The exact algorithm is implementation dependent, and should be uniquely defined 
 
 Correct interpretation of the format may have security implications, making it important to define the exact semantics even when the entity that receives a ciphertext may not understand parts of the header.
 
-*   A recipient MUST reject a malformed header, e.g. if the total length is larger than the physical length allocated to it based on higher-level network protocols.
-
+*   A recipient MUST reject a malformed header, e.g. if the total length is larger than the physical length allocated to it based on higher-level network protocols or storage formats.
 *   A recipient MUST reject a ciphertext if it does not recognize the format version.
-
-*   A recipient MUST accept a ciphertext even if it does not recognize some of the TLVs, it MUST ignore the unknown TLVs and MUST interpret all known ones. In other words, the only way to introduce new mandatory TLVs is by incrementing the format version.
-
+*   A recipient MUST reject a ciphertext if the variable header is not valid CBOR, as per {{RFC8949}} Sec. 5.3.1. In particular, it MUST reject duplicate map keys.
+*   A recipient MUST accept a ciphertext even if it does not recognize some of the TLVs. It MUST ignore the unknown TLVs and MUST interpret all known ones. In other words, the only way to introduce new mandatory TLVs is by incrementing the format version.
 *   If ciphertext integrity protection coverage includes the header, a recipient MUST reject the header as well as the ciphertext if the integrity protection fails to validate.
 
 ## Fixed Header Rationale
@@ -171,6 +157,51 @@ Correct interpretation of the format may have security implications, making it i
 We chose the initial byte 0x08, since strings are very unlikely to start with it, as we explain below. Automated tools can detect encrypted data in structured contexts (e.g., a SQL database column) by sampling a number of data items and if all start with this byte, determining that they are encrypted with a high probability.
 
 The byte 0x08 encodes the ASCII control character “backspace”. It has the same meaning in UTF-8, and the 08 block of UTF-16 characters is only populated by two very small languages and rarely-used extended [Arabic characters](https://en.wikipedia.org/wiki/Arabic_Extended-A).
+
+# Example
+
+## Fixed Header
+
+``08 01``
+
+## Variable Header: CBOR Diagnostic Notation
+
+```
+{1: 65535, 2: h'1122334455', 3: 6, }
+```
+
+## Variable Header: Binary
+
+```
+a3 01 19 ff ff 02 45 11 22 33 44 55 03 06
+```
+
+## Complete Header
+
+```
+08 01 a3 01 19 ff ff 02 45 11 22 33 44 55 03 06
+```
+
+## CDDL
+
+The following non-normative snippet defines the format of the variable header using CDDL {{?RFC8610}}.
+
+~~~
+var_header = {
+        K_KEY_PROVIDER: uint,
+        K_KEY_ID: bstr,
+        ? K_KEY_VERSION: uint,
+        ? K_AUX_DATA: bstr,
+        *uint => any ; extensions
+}
+
+K_RESERVED = 0
+K_KEY_PROVIDER = 1
+K_KEY_ID = 2
+K_KEY_VERSION = 3
+K_AUX_DATA = 4
+        ; extend here
+~~~
 
 # IANA Considerations
 
@@ -193,6 +224,12 @@ There are cases where it is convenient to manipulate the ciphertext header, even
 
 # Document History
 
+## draft-sheffer-ietf-ciphertext-format-01
+
+* SAAG feedback: the variable header is now CBOR.
+* Binary example.
+* Non-normative CDDL.
+
 ## draft-sheffer-ietf-ciphertext-format-00
 
-Initial version.
+* Initial version.
