@@ -86,7 +86,7 @@ Some of the goals behind this design include:
 
 *   Specifically, following security best practices, a given key material should be used with only a single cryptographic algorithm. Therefore, the algorithm identifier should be stored with the key (or the key version), rather than with the ciphertext.
 
-*   The format defined here only covers the ciphertext header, and not the cipher text itself (referred to as "body" in this document). The body is defined elsewhere, such as {{NISTSP800-38D}} for AES-GCM.
+*   The format defined here only covers the ciphertext header, and not the ciphertext itself (referred to as "body" in this document). The body is defined elsewhere, such as {{NISTSP800-38D}} for AES-GCM.
 
 *   The header is not encrypted. Integrity-protection is optional. See {{integrity-protection}} for details.
 
@@ -126,9 +126,12 @@ The variable header is a CBOR map consisting of elements from the following tabl
 | Field Name | Map Key | Value Type       | Meaning                                                      | Mandatory |
 | -------------- | ------------ | ------------------------------------------------------------ | ------------- | -------------- |
 | Key Provider   | 1       | Unsigned integer | The organization responsible for the key management system.  | Y |
-| Key ID         | 2       | Byte string      | An encryption key, as stored in a key  management system. This must denote a unique key, even if the Provider  supports multiple tenants. Encoding of this field is Provider-specific. The  field must appear once. | Y |
-| Key Version    | 3       | Unsigned integer | A version of a key, where the key is  rotated on a periodic basis. Encoding of this field is Provider-specific. The  field must appear at most once. | N |
-| Auxiliary Data | 4 | Byte string      | Additional data required to derive a specific key from the referenced key  (and key version, if any), see also {{deriving-a-specific-key}}. The field must  appear at most once. | N |
+| Key ID         | 2       | Byte string      | An encryption key identifier, where the key is stored in a key management system. This must denote a unique key, even if the Provider supports multiple tenants. Encoding of this field is Provider-specific. The field must appear once. | Y |
+| Key Version    | 3       | Unsigned integer | A version of a key, where the key is rotated on a periodic basis. Encoding of this field is Provider-specific. The field must appear at most once. | N |
+| Auxiliary Data | 4 | Byte string      | Additional data required to derive a specific key from the referenced key (and key version, if any), see also {{deriving-a-specific-key}}. The field must appear at most once. | N |
+| Nonce | 5 | Byte string | A nonce or initialization vector (IV), if required by the cipher algorithm. We note that an implementation may prefer to store the nonce and authentication tag in-line with the ciphertext. | N |
+| Authentication Tag | 6 | Byte string | An authentication tag or integrity check value (ICV), if required by the cipher algorithm. | N |
+| Additional Authenticated Data | 7 | Byte string | Additional authenticated data (AAD), which is integrity-protected but not encrypted by the cipher. | N |
 
 ### Deriving a Specific Key
 {: #deriving-a-specific-key}
@@ -186,21 +189,8 @@ a3 01 19 ff ff 02 45 11 22 33 44 55 03 06
 
 The following non-normative snippet defines the format of the variable header using CDDL {{?RFC8610}}.
 
-~~~
-var_header = {
-        K_KEY_PROVIDER: uint,
-        K_KEY_ID: bstr,
-        ? K_KEY_VERSION: uint,
-        ? K_AUX_DATA: bstr,
-        *uint => any ; extensions
-}
-
-K_RESERVED = 0
-K_KEY_PROVIDER = 1
-K_KEY_ID = 2
-K_KEY_VERSION = 3
-K_AUX_DATA = 4
-        ; extend here
+~~~ 
+{::include cddl/var-header.cddl}
 ~~~
 
 # IANA Considerations
@@ -229,6 +219,7 @@ There are cases where it is convenient to manipulate the ciphertext header, even
 * SAAG feedback: the variable header is now CBOR.
 * Binary example.
 * Non-normative CDDL.
+* Additional types for non-inline AEAD.
 
 ## draft-sheffer-ietf-ciphertext-format-00
 
