@@ -50,7 +50,7 @@ informative:
 
 --- abstract
 
-This document defines a format for encrypted data, that allows to detect such data in large data stores, and associate it back to the system where it was created and the key with which it was encrypted. This allows organizations to extend the concept of data governance to encrypted data, and to manage such data even when encrypted by multiple systems and cloud providers.
+This document defines a set of structured headers for encrypted data. The main goal of this format is to enable detection of encrypted data in large data stores, and associating it back to the system where it was created and the key with which it was encrypted. This allows organizations to extend the concept of data governance to encrypted data, and to manage such data even when encrypted by multiple different systems and cloud providers.
 
 --- middle
 
