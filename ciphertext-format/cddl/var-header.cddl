@@ -1,11 +1,13 @@
+; Tentative CDDL, should probably be enhanced to resolve
+; the "cut" issue (RFC 8610, Sec. 3.5.4)
 var_header = {
-	K_KEY_PROVIDER: uint,
-	K_KEY_ID: bstr,
-	? K_KEY_VERSION: uint,
-	? K_AUX_DATA: bstr,
-	? K_NONCE : bstr,
-	? K_AUTH_TAG : bstr,
-	? K_AAD : bstr,
+	K_KEY_PROVIDER => uint,
+	K_KEY_ID => bstr,
+	? K_KEY_VERSION => uint,
+	? K_AUX_DATA => bstr,
+	? K_NONCE  => bstr,
+	? K_AUTH_TAG  => bstr,
+	? K_AAD  => bstr,
 	*uint => any ; extensions
 }
 
