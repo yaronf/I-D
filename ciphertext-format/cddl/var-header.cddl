@@ -1,14 +1,14 @@
 ; Tentative CDDL, should probably be enhanced to resolve
 ; the "cut" issue (RFC 8610, Sec. 3.5.4)
 var_header = {
-	K_KEY_PROVIDER => uint,
-	K_KEY_ID => bstr,
-	? K_KEY_VERSION => uint,
-	? K_AUX_DATA => bstr,
-	? K_NONCE  => bstr,
-	? K_AUTH_TAG  => bstr,
-	? K_AAD  => bstr,
-	*uint => any ; extensions
+        K_KEY_PROVIDER => uint,
+        K_KEY_ID => bstr,
+        ? K_KEY_VERSION => uint,
+        ? K_AUX_DATA => bstr,
+        ? K_NONCE  => bstr,
+        ? K_AUTH_TAG  => bstr,
+        ? K_AAD  => bstr,
+        *uint => any ; extensions
 }
 
 K_RESERVED = 0
@@ -19,4 +19,4 @@ K_AUX_DATA = 4
 K_NONCE = 5
 K_AUTH_TAG = 6
 K_AAD = 7
-	; extend here
+        ; extend here

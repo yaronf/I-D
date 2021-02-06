@@ -131,7 +131,7 @@ The variable header is a CBOR map consisting of elements from the following tabl
 | Auxiliary Data | 4 | Byte string      | Additional data required to derive a specific key from the referenced key (and key version, if any), see also {{deriving-a-specific-key}}. The field must appear at most once. | N |
 | Nonce | 5 | Byte string | A nonce or initialization vector (IV), if required by the cipher algorithm. We note that an implementation may prefer to store the nonce and authentication tag in-line with the ciphertext. | N |
 | Authentication Tag | 6 | Byte string | An authentication tag or integrity check value (ICV), if required by the cipher algorithm. | N |
-| Additional Authenticated Data | 7 | Byte string | Additional authenticated data (AAD), which is integrity-protected but not encrypted by the cipher. | N |
+| Additional Authenticated Data | 7 | Byte string | Additional authenticated data (AAD), which is integrity-protected but not encrypted by the cipher. See also {{aad-multiple}}. | N |
 
 ### Deriving a Specific Key
 {: #deriving-a-specific-key}
@@ -143,6 +143,16 @@ The Auxiliary Data field is used to support derivation of a key, specific to the
 *   Decryption of a wrapped key: SK = Decrypt(key, aux-data)
 
 The exact algorithm is implementation dependent, and should be uniquely defined by the combination of Key Provider, Key ID and (if given) Key Version.
+
+### Multiple Values of Additional Authenticated Data
+
+{: #aad-multiple}
+
+When multiple values of Additional Authenticated Data (AAD) are needed, the content of the Additional Authenticated Data field MUST consist of a well-formed CBOR structure, such as an array of byte strings. The cipher algorithm takes the entire structure (including the initial array marker, if any) as its AAD input.
+
+This field needs to be structured so as to prevent ambiguous encoding, which often results in security issues.
+
+The internal structure of the field in such cases is implementation dependent.
 
 ## Receiving Ciphertext
 
@@ -213,6 +223,10 @@ There are cases where it is convenient to manipulate the ciphertext header, even
 --- back
 
 # Document History
+
+## draft-sheffer-ietf-ciphertext-format-02
+
+* Addressed secdispatch feedback from Russ Housley and Carsten Bormann.
 
 ## draft-sheffer-ietf-ciphertext-format-01
 
