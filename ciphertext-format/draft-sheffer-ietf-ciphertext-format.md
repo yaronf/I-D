@@ -131,7 +131,8 @@ The variable header is a CBOR map consisting of elements from the following tabl
 | Auxiliary Data | 4 | Byte string      | Additional data required to derive a specific key from the referenced key (and key version, if any), see also {{deriving-a-specific-key}}. The field must appear at most once. | N |
 | Nonce | 5 | Byte string | A nonce or initialization vector (IV), if required by the cipher algorithm. We note that an implementation may prefer to store the nonce and authentication tag in-line with the ciphertext. | N |
 | Authentication Tag | 6 | Byte string | An authentication tag or integrity check value (ICV), if required by the cipher algorithm. | N |
-| Additional Authenticated Data | 7 | Byte string | Additional authenticated data (AAD), which is integrity-protected but not encrypted by the cipher. See also {{aad-multiple}}. | N |
+| Additional Authenticated Data | 7 | Byte string | Additional authenticated data (AAD), which is integrity-protected but not encrypted by the cipher. | N |
+| Structured Additional Authenticated Data | 8 | Any | Additional authenticated data (AAD), encoded as an arbitrary CBOR structure. See {{aad-multiple}}. | N |
 
 ### Deriving a Specific Key
 {: #deriving-a-specific-key}
@@ -145,14 +146,21 @@ The Auxiliary Data field is used to support derivation of a key, specific to the
 The exact algorithm is implementation dependent, and should be uniquely defined by the combination of Key Provider, Key ID and (if given) Key Version.
 
 ### Multiple Values of Additional Authenticated Data
-
 {: #aad-multiple}
 
-When multiple values of Additional Authenticated Data (AAD) are needed, the content of the Additional Authenticated Data field MUST consist of a well-formed CBOR structure, such as an array of byte strings. The cipher algorithm takes the entire structure (including the initial array marker, if any) as its AAD input.
+When multiple values of Additional Authenticated Data (AAD) are needed, they must be carefully encoded to prevent security issues as a result of ambiguities.
 
-This field needs to be structured so as to prevent ambiguous encoding, which often results in security issues.
+For example, if we were to simply concatenate the AAD values, then the following two sequences of byte strings would result in the same AAD used as input to the cipher:
 
-The internal structure of the field in such cases is implementation dependent.
+`aabbcc, dd, eeff`
+
+`aabb, ccddee, ff`
+
+This might cause a data recipient to be confused about the internal structure of protected data. A common solution is to prepend the length of each string to the string itself: `03aabbcc01dd02eeff`. However, we would like to avoid a custom encoding scheme.
+
+Therefore, when the application requires support for multiple AAD values, it MUST use the Structured Additional Authenticated Data field type, whose content consists of a well-formed CBOR structure, such as an array of byte strings. The cipher algorithm takes the entire structure (including the initial array marker, if any) as its AAD input.
+
+The internal structure of this field type (e.g. CBOR array or map) is implementation dependent.
 
 ## Receiving Ciphertext
 
