@@ -83,7 +83,7 @@ secrets.
 Other relevant use cases are discussed in {{further-use-cases}}.
 
 This document describes a profile of the ACME protocol {{!RFC8555}} that allows
-the NDC to request the IdO, acting as a profiled ACME server, a certificate for
+the NDC to request from the IdO, acting as a profiled ACME server, a certificate for
 a delegated identity - i.e., one belonging to the IdO.  The IdO then uses the
 ACME protocol (with the extensions described in {{!RFC8739}}) to request
 issuance of a STAR certificate for the same delegated identity.  The generated
@@ -212,7 +212,7 @@ and IdO.
 {: #sec-profile-dele-config}
 
 An NDC identifies itself to the IdO as an ACME account.  The IdO can delegate
-multiple names through each NDC, and these configurations are described through
+multiple names to a NDC, and these configurations are described through
 `delegation` objects associated with the NDC's Account object on the IdO.  A
 delegation configuration object contains the CSR template (see
 {{sec-csr-template}}) that applies to that delegation.  Its structure is as
@@ -588,9 +588,9 @@ Note that such mechanism is provided by the CSR template.
 
 #### Two-Level Delegation in CDNI
 
-A User Agent (browser or set-top-box) wants to fetch the video resource at
+A User Agent (UA), browser or set-top-box, wants to fetch the video resource at
 the following URI: `https://video.cp.example/movie`.  Redirection between
-Content Provider, upstream, and downstream CDNs is arranged as a
+Content Provider (CP), upstream, and downstream CDNs is arranged as a
 CNAME-based aliasing chain as illustrated in {{fig-cdni-dns-redirection}}.
 
 ~~~ goat
@@ -604,7 +604,7 @@ transparent to the User Agent.  As a result, the TLS connection to the dCDN
 edge is done with an SNI equal to the `host` in the original URI - in the
 example, `video.cp.example`.  So, in order to successfully complete the
 handshake, the landing dCDN node has to be configured with a certificate whose
-SAN matches `video.cp.example`, i.e., a Content Provider's name.
+subjectAltName matches `video.cp.example`, i.e., a Content Provider's name.
 
 {{fig-cdni-flow}} illustrates the cascaded delegation flow that allows dCDN to
 obtain a STAR certificate that bears a name belonging to the Content Provider
@@ -618,7 +618,7 @@ with a private key that is only known to the dCDN.
 TBD bootstrap, see https://github.com/yaronf/I-D/issues/47
 
 1. dCDN requests CDNI path metadata to uCDN;
-2. uCDN replies with, among other CDNI things, the STAR delegation
+2. uCDN replies with, among other CDNI meta-data, the STAR delegation
    configuration, which includes the delegated Content Provider's name;
 3. dCDN creates a key-pair and the CSR with the delegated name.  It then places
    an order for the delegated name to uCDN;
@@ -627,11 +627,12 @@ TBD bootstrap, see https://github.com/yaronf/I-D/issues/47
    order also requests unauthenticated access to the certificate resource;
 6. After all authorizations complete successfully, the STAR certificate is
    issued;
-7. CP notifies uCDN that the STAR cert is available at the order's
+7. CP notifies uCDN that the STAR certificate is available at the order's
    star-certificate URL;
 8. uCDN forwards the information to dCDN.  At this point the ACME signalling is
    complete;
-9. dCDN requests the STAR cert using unauthenticated GET from the ACME CA;
+9. dCDN requests the STAR certificate using unauthenticated GET from the ACME
+   CA;
 10. the CA returns the certificate.  Now dCDN is fully configured to handle
     HTTPS traffic in-lieu of the Content Provider.
 
@@ -646,7 +647,7 @@ In the STIR `delegated` mode, a service provider SP2 - the NDC - needs to sign
 PASSPorT’s {{?RFC8225}} for telephone numbers (e.g., TN=+123) belonging to
 another service provider, SP1 - the IdO.  In order to do that, SP2 needs a STIR
 certificate, and private key, that includes TN=+123 in the TNAuthList
-{{?RFC8226}} cert extension.
+{{?RFC8226}} certificate extension.
 
 In details ({{fig-stir-flow}}):
 
@@ -762,8 +763,8 @@ the first NDC.
 ## Delegation Security Goal
 
 Delegation introduces a new security goal: only an NDC that has been authorised
-by the IdO, either directly or transitively, can obtain a cert with an IdO
-identity.
+by the IdO, either directly or transitively, can obtain a certificate with an
+IdO identity.
 
 From a security point of view, the delegation process has two separate parts:
 
@@ -828,8 +829,8 @@ document however assumes that the domain owner only wants to delegate
 restricted control, and wishes to retain the capability to cancel the CDN's
 credentials at a short notice.
 
-Following is the proposed solution where the IdO wishes to ensure that a rogue
-CDN cannot issue unauthorized certificates:
+The following is a possible mitigation when the IdO wishes to ensure that a
+rogue CDN cannot issue unauthorized certificates:
 
 - The domain owner makes sure that the CDN cannot modify the DNS records for
   the domain.  The domain owner should ensure it is the only entity authorized
