@@ -46,6 +46,22 @@ author:
     organization: ARM
     email: thomas.fossati@arm.com
 
+informative:
+  json-schema-07:
+    -: ta
+    target: https://datatracker.ietf.org/doc/html/draft-handrews-json-schema-validation-01
+    title: "JSON Schema Validation: A Vocabulary for Structural Validation of JSON"
+    author:
+      -
+        ins: A. Wright
+        name: Austin Wright
+      -
+        ins: H. Andrews
+        name: Henry Andrews
+      -
+        ins: G. Luff
+        name: Geraint Luff
+    date: 2018
 
 --- abstract
 
@@ -414,9 +430,10 @@ field:
   specified in this memo.  An ACME server that supports this delegation profile
   MUST include this key, and MUST set it to true.
   
+
 The `delegation-enabled` flag may be specified regardless of the existence or
 setting of the `auto-renewal` flag.
-  
+
 ### On Cancellation
 
 It is worth noting that cancellation of the ACME STAR certificate is a
@@ -903,10 +920,7 @@ Internet (MAMI). This support does not imply endorsement.
 # CSR Template Schema
 {: #csr-template-schema}
 
-Following is a JSON Schema definition of the CSR template. The syntax used is
-that of draft 7 of JSON Schema, which may not be the latest version of the
-corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of
-publication.
+Following is a JSON Schema definition of the CSR template. The syntax used is that of draft 7 of JSON Schema, which is documented in {{json-schema-07}}. Note that later versions of this (now expired) draft describe later versions of the JSON Schema syntax. At the time of writing, a stable reference for this syntax is not available yet.
 
 While the CSR template must follow the syntax defined here, neither the IdO nor
 the NDC are expected to validate it at run-time.
