@@ -414,9 +414,10 @@ field:
   specified in this memo.  An ACME server that supports this delegation profile
   MUST include this key, and MUST set it to true.
   
+
 The `delegation-enabled` flag may be specified regardless of the existence or
 setting of the `auto-renewal` flag.
-  
+
 ### On Cancellation
 
 It is worth noting that cancellation of the ACME STAR certificate is a
@@ -519,14 +520,13 @@ The template is a JSON document. Each field denotes one of:
 * A mandatory field, where the content of the field is defined by the client.
   This is denoted by `\*\*`.
 * An optional field, where the client decides whether the field is included in
-  the CSR and what its value is. This is denoted by `\*`.
+  the CSR and if so, what its value is. This is denoted by `\*`.
 
 The NDC MUST NOT include in the CSR any fields that are not specified in the
 template, and in particular MUST NOT add any extensions unless those were
 previously negotiated out of band with the IdO.
 
-The mapping between X.509 CSR fields and the template will be defined in a
-future revision of this document.
+The `subject` field and its subfields are mapped into the `subject` field of the CSR, as per {{RFC5280}}, Sec. 4.1.2.6. Other extension fields of the CSR template are mapped into the CSR according to the table in {{csr-template-registry}}.
 
 When the CSR is received by the IdO, it MUST verify that the CSR is consistent
 with the template that the IdO sent earlier. The IdO MAY enforce additional
@@ -743,7 +743,7 @@ Schema document in {{csr-template-schema}}.
 | ---------------- | --------------------------- | ------------------------------------------------------------ |
 | keyUsage         | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.3                                   |
 | extendedKeyUsage | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.12                                  |
-| subjectAltName   | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.6 (only for the supported name formats) |
+| subjectAltName   | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.6 (note that only specific name formats are allowed: IPv4 address, IPv6 address, DNS name, email address) |
 
 
 
