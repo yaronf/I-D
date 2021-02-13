@@ -2,7 +2,7 @@
   "title": "JSON Schema for the STAR Delegation CSR template",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "http://ietf.org/acme/drafts/star-delegation/csr-template",
-  "$def": {
+  "$defs": {
     "distinguished-name": {
       "$id": "#distinguished-name",
       "type": "object",
