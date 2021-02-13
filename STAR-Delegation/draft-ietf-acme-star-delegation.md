@@ -749,8 +749,8 @@ Extensions", with "Expert Review" as its registration procedure.
 
 Each extension registered must specify:
 
-* An extension name
-* An extension syntax, as a JSON Schema snippet that defines a type
+* An extension name.
+* An extension syntax, as a reference to a JSON Schema document that defines this extension.
 * Mapping into an X.509 certificate extension.
 
 The initial contents of this registry are the extensions defined by the JSON
