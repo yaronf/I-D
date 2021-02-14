@@ -563,6 +563,9 @@ The template syntax is defined in {{csr-template-schema}}.
 # Further Use Cases
 {: #further-use-cases}
 
+This non-normative section describes additional use cases that use STAR certificate
+delegation in non-trivial ways.
+
 ## CDNI
 
 {{?I-D.ietf-cdni-interfaces-https-delegation}} discusses several solutions
