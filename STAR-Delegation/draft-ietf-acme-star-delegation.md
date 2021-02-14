@@ -753,7 +753,7 @@ Each extension registered must specify:
 
 * An extension name.
 * An extension syntax, as a reference to a JSON Schema document that defines this extension.
-* Mapping into an X.509 certificate extension.
+* The extension's mapping into an X.509 certificate extension.
 
 The initial contents of this registry are the extensions defined by the JSON
 Schema document in {{csr-template-schema}}.
