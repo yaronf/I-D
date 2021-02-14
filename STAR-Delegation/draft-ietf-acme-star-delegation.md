@@ -756,7 +756,7 @@ Each extension registered must specify:
 The initial contents of this registry are the extensions defined by the JSON
 Schema document in {{csr-template-schema}}.
 
-| Extension Name   | Type                        | Mapping to X.509                                             |
+| Extension Name   | Extension Syntax            | Mapping to X.509 Certificate Extension                       |
 | ---------------- | --------------------------- | ------------------------------------------------------------ |
 | keyUsage         | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.3                                   |
 | extendedKeyUsage | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.12                                  |
