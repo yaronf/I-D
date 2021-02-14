@@ -46,6 +46,22 @@ author:
     organization: ARM
     email: thomas.fossati@arm.com
 
+informative:
+  json-schema-07:
+    -: ta
+    target: https://datatracker.ietf.org/doc/html/draft-handrews-json-schema-validation-01
+    title: "JSON Schema Validation: A Vocabulary for Structural Validation of JSON"
+    author:
+      -
+        ins: A. Wright
+        name: Austin Wright
+      -
+        ins: H. Andrews
+        name: Henry Andrews
+      -
+        ins: G. Luff
+        name: Geraint Luff
+    date: 2018
 
 --- abstract
 
@@ -414,9 +430,10 @@ field:
   specified in this memo.  An ACME server that supports this delegation profile
   MUST include this key, and MUST set it to true.
   
+
 The `delegation-enabled` flag may be specified regardless of the existence or
 setting of the `auto-renewal` flag.
-  
+
 ### On Cancellation
 
 It is worth noting that cancellation of the ACME STAR certificate is a
@@ -683,7 +700,7 @@ extension to the CSR template.
 
 ## New Fields in the "meta" Object within a Directory Object
 
-This document adds the following entries to the ACME Directory Metadata Fields:
+This document adds the following entries to the ACME Directory Metadata Fields registry:
 
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
@@ -691,25 +708,25 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 
 ## New Fields in the Order Object
 
-This document adds the following entries to the ACME Order Object Fields:
+This document adds the following entries to the ACME Order Object Fields registry:
 
 | Field Name | Field Type | Configurable | Reference |
 |------------|------------|--------------|-----------|
 | allow-certificate-get | boolean | true | RFC XXXX |
 | delegation | string | true | RFC XXXX |
 
-Note that the delegation field is only meaningful in interactions with ACME
+Note that the `delegation` field is only meaningful in interactions with ACME
 servers that have `delegation-enabled` set to true in their meta Object.
 
 ## New Fields in the Account Object
 
-This document adds the following entries to the ACME Account Object Fields:
+This document adds the following entries to the ACME Account Object Fields registry:
 
 | Field Name | Field Type | Requests | Reference |
 |------------|------------|----------|-----------|
 | delegations | array of strings | none | RFC XXXX |
 
-Note that the delegations field is only reported by ACME servers that have
+Note that the `delegations` field is only reported by ACME servers that have
 `delegation-enabled` set to true in their meta Object.
 
 ## New Fields for Identifiers
@@ -732,14 +749,14 @@ Extensions", with "Expert Review" as its registration procedure.
 
 Each extension registered must specify:
 
-* An extension name
-* An extension syntax, as a JSON Schema snippet that defines a type
+* An extension name.
+* An extension syntax, as a reference to a JSON Schema document that defines this extension.
 * Mapping into an X.509 certificate extension.
 
 The initial contents of this registry are the extensions defined by the JSON
 Schema document in {{csr-template-schema}}.
 
-| Extension Name   | Type                        | Mapping to X.509                                             |
+| Extension Name   | Extension Syntax            | Mapping to X.509 Certificate Extension                       |
 | ---------------- | --------------------------- | ------------------------------------------------------------ |
 | keyUsage         | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.3                                   |
 | extendedKeyUsage | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.12                                  |
@@ -903,10 +920,7 @@ Internet (MAMI). This support does not imply endorsement.
 # CSR Template Schema
 {: #csr-template-schema}
 
-Following is a JSON Schema definition of the CSR template. The syntax used is
-that of draft 7 of JSON Schema, which may not be the latest version of the
-corresponding Internet Draft {{!I-D.handrews-json-schema}} at the time of
-publication.
+Following is a JSON Schema definition of the CSR template. The syntax used is that of draft 7 of JSON Schema, which is documented in {{json-schema-07}}. Note that later versions of this (now expired) draft describe later versions of the JSON Schema syntax. At the time of writing, a stable reference for this syntax is not available yet.
 
 While the CSR template must follow the syntax defined here, neither the IdO nor
 the NDC are expected to validate it at run-time.
