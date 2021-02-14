@@ -414,9 +414,10 @@ field:
   specified in this memo.  An ACME server that supports this delegation profile
   MUST include this key, and MUST set it to true.
   
+
 The `delegation-enabled` flag may be specified regardless of the existence or
 setting of the `auto-renewal` flag.
-  
+
 ### On Cancellation
 
 It is worth noting that cancellation of the ACME STAR certificate is a
@@ -615,10 +616,10 @@ with a private key that is only known to the dCDN.
 ~~~
 {: #fig-cdni-flow title="Two levels delegation in CDNI"}
 
-TBD bootstrap, see https://github.com/yaronf/I-D/issues/47
+uCDN is configured to delegate to dCDN, and CP is configured to delegate to uCDN, both as defined in {{sec-profile-dele-config}}.
 
 1. dCDN requests CDNI path metadata to uCDN;
-2. uCDN replies with, among other CDNI meta-data, the STAR delegation
+2. uCDN replies with, among other CDNI metadata, the STAR delegation
    configuration, which includes the delegated Content Provider's name;
 3. dCDN creates a key-pair and the CSR with the delegated name.  It then places
    an order for the delegated name to uCDN;
