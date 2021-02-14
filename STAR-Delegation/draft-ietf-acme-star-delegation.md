@@ -700,7 +700,7 @@ extension to the CSR template.
 
 ## New Fields in the "meta" Object within a Directory Object
 
-This document adds the following entries to the ACME Directory Metadata Fields:
+This document adds the following entries to the ACME Directory Metadata Fields registry:
 
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
@@ -708,25 +708,25 @@ This document adds the following entries to the ACME Directory Metadata Fields:
 
 ## New Fields in the Order Object
 
-This document adds the following entries to the ACME Order Object Fields:
+This document adds the following entries to the ACME Order Object Fields registry:
 
 | Field Name | Field Type | Configurable | Reference |
 |------------|------------|--------------|-----------|
 | allow-certificate-get | boolean | true | RFC XXXX |
 | delegation | string | true | RFC XXXX |
 
-Note that the delegation field is only meaningful in interactions with ACME
+Note that the `delegation` field is only meaningful in interactions with ACME
 servers that have `delegation-enabled` set to true in their meta Object.
 
 ## New Fields in the Account Object
 
-This document adds the following entries to the ACME Account Object Fields:
+This document adds the following entries to the ACME Account Object Fields registry:
 
 | Field Name | Field Type | Requests | Reference |
 |------------|------------|----------|-----------|
 | delegations | array of strings | none | RFC XXXX |
 
-Note that the delegations field is only reported by ACME servers that have
+Note that the `delegations` field is only reported by ACME servers that have
 `delegation-enabled` set to true in their meta Object.
 
 ## New Fields for Identifiers
