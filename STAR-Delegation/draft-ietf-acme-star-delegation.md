@@ -855,7 +855,7 @@ rogue CDN cannot issue unauthorized certificates:
   the domain.  The domain owner should ensure it is the only entity authorized
   to modify the DNS zone. Typically, it establishes a CNAME resource record
   from a subdomain into a CDN-managed domain.
-- The domain owner uses a CAA record {{!RFC6844}} to restrict certificate
+- The domain owner uses a CAA record {{!RFC8659}} to restrict certificate
   issuance for the domain to specific CAs that comply with ACME and are known
   to implement {{!RFC8657}}.
 - The domain owner uses the ACME-specific CAA mechanism {{!RFC8657}} to
