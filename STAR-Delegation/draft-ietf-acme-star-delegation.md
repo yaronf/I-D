@@ -922,7 +922,7 @@ Internet (MAMI). This support does not imply endorsement.
 # CSR Template Schema
 {: #csr-template-schema}
 
-Following is a JSON Schema definition of the CSR template. The syntax used is that of draft 7 of JSON Schema, which is documented in {{json-schema-07}}. Note that later versions of this (now expired) draft describe later versions of the JSON Schema syntax. At the time of writing, a stable reference for this syntax is not available yet.
+Following is a JSON Schema definition of the CSR template. The syntax used is that of draft 7 of JSON Schema, which is documented in {{json-schema-07}}. Note that later versions of this (now expired) draft describe later versions of the JSON Schema syntax. At the time of writing, a stable reference for this syntax is not yet available, and we have chosen to use the draft version which is currently best supported by tool implementations.
 
 While the CSR template must follow the syntax defined here, neither the IdO nor
 the NDC are expected to validate it at run-time.
