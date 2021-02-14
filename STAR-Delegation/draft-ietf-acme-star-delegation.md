@@ -469,8 +469,11 @@ applies. The ACME certificate revocation endpoint is explicitly unavailable for
 STAR certificates but it is available for all other certificates. We note that
 according to Sec. 7.6 of {{RFC8555}}, the revocation endpoint can be used with
 either the account keypair, or the certificate keypair. In other words, the NDC
-would be able to revoke the certificate. The authors believe that this is a
-very minor security risk.
+would be able to revoke the certificate. However, given the trust relationship
+between NDC and IdO expected by the delegation trust model
+({{sec-trust-model}}) as well as the lack of incentives for the NDC - which,
+doing so, would create a self-inflicted DoS - this does not represent a
+security risk.
 
 ## Proxy Behavior
 
@@ -769,6 +772,7 @@ Schema document in {{csr-template-schema}}.
 # Security Considerations
 
 ## Trust Model
+{: #sec-trust-model}
 
 The ACME trust model needs to be extended to include the trust relationship
 between NDC and IdO.  Note that once this trust link is established, it
