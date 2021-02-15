@@ -199,9 +199,10 @@ The outline of the combined protocol is as follow ({{fig-endtoend}}):
   `processing`, and sends a new Order2 (using its own account) for the delegated
   identifier to the ACME STAR CA;
 - If the ACME STAR protocol fails, Order2 moves to `invalid` and the same state
-  is reflected in the NDC Order;
+  is reflected in Order1 (i.e., the NDC Order);
 - If the ACME STAR run is successful (i.e., Order2 is `valid`), IdO copies the
-  `star-certificate` URL from Order2 to Order1 and moves its state to `valid`.
+  `star-certificate` URL from Order2 to Order1 and updates the Order1 state to
+  `valid`.
 
 The NDC can now download, install and use the short-term certificate bearing
 the name delegated by the IdO.  This can continue until the STAR certificate
