@@ -270,7 +270,7 @@ certificate a new `delegation` attribute is added to the Order object on the
 NDC-IdO side (see {{sec-profile-ndc-to-ido}}).  The value of this attribute is
 the URL pointing to the delegation configuration object that is to be used for
 this certificate request.  If the `delegations` attribute in the Order object
-contains a URL that does not correspond to an existing configuration, the IdO
+contains a URL that does not correspond to a configuration available to the requesting NDC, the IdO
 MUST return an error response with status code 403 (Forbidden) and type
 `urn:ietf:params:acme:error:unknownDelegation`.
 
