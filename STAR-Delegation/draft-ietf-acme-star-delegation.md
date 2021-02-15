@@ -199,19 +199,23 @@ The outline of the combined protocol is as follow ({{fig-endtoend}}):
   `processing`, and sends a new Order2 (using its own account) for the delegated
   identifier to the ACME STAR CA;
 - If the ACME STAR protocol fails, Order2 moves to `invalid` and the same state
-  is reflected in the NDC Order;
+  is reflected in Order1 (i.e., the NDC Order);
 - If the ACME STAR run is successful (i.e., Order2 is `valid`), IdO copies the
-  `star-certificate` URL from Order2 to Order1 and moves its state to `valid`.
+  `star-certificate` URL from Order2 to Order1 and updates the Order1 state to
+  `valid`.
 
 The NDC can now download, install and use the short-term certificate bearing
 the name delegated by the IdO.  This can continue until the STAR certificate
 expires or the IdO decides to cancel the automatic renewal process with the
 ACME STAR CA.
 
-Note that, because the identity validation is suppressed, the NDC sends the
-finalize request, including the CSR, to the IdO immediately after Order1 has
-been acknowledged.  The IdO must buffer a (valid) CSR until the Validation
-phase completes successfully.
+Note that the interactive identifier authorization phase described in Section
+7.5 of {{RFC8555}} is suppressed on the NDC-IdO side because the delegated
+identity contained in the CSR presented to the IdO is validated against the
+configured CSR template ({{sec-profile-dele-config}}).  Therefore, the NDC
+sends the finalize request, including the CSR, to the IdO immediately after
+Order1 has been acknowledged.  The IdO SHALL buffer a (valid) CSR until the
+Validation phase completes successfully.
 
 ~~~ goat
 {::include art/e2e-flow.ascii-art}
@@ -269,13 +273,17 @@ In order to indicate which specific delegation applies to the requested
 certificate a new `delegation` attribute is added to the Order object on the
 NDC-IdO side (see {{sec-profile-ndc-to-ido}}).  The value of this attribute is
 the URL pointing to the delegation configuration object that is to be used for
-this certificate request.
+this certificate request.  If the `delegations` attribute in the Order object
+contains a URL that does not correspond to a configuration available to the requesting NDC, the IdO
+MUST return an error response with status code 403 (Forbidden) and type
+`urn:ietf:params:acme:error:unknownDelegation`.
 
 ### Order Object on the NDC-IdO side
 {: #sec-profile-ndc-to-ido}
 
 The Order object created by the NDC:
 
+- MUST have the delegated name as the identifier value;
 - MUST contain a `delegation` attribute indicating the configuration used for
   this request;
 - MUST contain identifiers with the new `delegated` field set to true;
@@ -364,6 +372,9 @@ code 403 (Forbidden) and an appropriate type, e.g., `rejectedIdentifier` or
 `badCSR`.  If the CSR is successfully validated, the Order object status moves
 to `processing` and the twin ACME protocol instance is initiated on the IdO-CA
 side.
+
+The IdO MUST copy the identifier value with the delegated name from the NDC
+request into the related request to the ACME CA.
 
 The IdO MUST copy the `auto-renewal` object from the NDC request into the
 related STAR request to the ACME CA.
@@ -743,6 +754,14 @@ This document adds the following entries to the ACME Account Object Fields regis
 
 Note that the `delegations` field is only reported by ACME servers that have
 `delegation-enabled` set to true in their meta Object.
+
+## New Error Types
+
+This document adds the following entries to the ACME Error Type registry:
+
+| Type | Description | Reference |
+|------|-------------|-----------|
+| unknownDelegation | An unknown configuration is listed in the `delegations` attribute of the request Order | RFC XXXX |
 
 ## New Fields for Identifiers
 

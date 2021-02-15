@@ -9,8 +9,9 @@
     |   Signature        |       |                    |
     o------------------->|       |                    |
     |                    |       |                    |
-    |   [ No identity ]  |       |                    |
-    |   [ validation  ]  |       |                    |
+    | [ No identity    ] |       |                    |
+    | [ validation via ] |       |                    |
+    | [ authorizations ] |       |                    |
     |                    |       |                    |
     |   CSR              |       |                    |
     |   Signature        |       |                    |
