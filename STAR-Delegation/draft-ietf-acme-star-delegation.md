@@ -201,7 +201,7 @@ The outline of the combined protocol is as follow ({{fig-endtoend}}):
 - If the ACME STAR protocol fails, Order2 moves to `invalid` and the same state
   is reflected in Order1 (i.e., the NDC Order);
 - If the ACME STAR run is successful (i.e., Order2 is `valid`), IdO copies the
-  `star-certificate` URL from Order2 to Order1 and moves the Order1 state to
+  `star-certificate` URL from Order2 to Order1 and updates the Order1 state to
   `valid`.
 
 The NDC can now download, install and use the short-term certificate bearing
