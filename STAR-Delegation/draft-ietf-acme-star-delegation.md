@@ -356,6 +356,15 @@ The Order object that is created on the IdO:
 }
 ~~~
 
+The Order is then finalized by the NDC supplying the CSR containing the
+delegated identifiers.  The IdO checks the provided CSR against the template
+that applies to the delegation, as described in {{sec-csr-template-syntax}}.
+If the CSR fails validation, the IdO MUST return an error response with status
+code 403 (Forbidden) and an appropriate type, e.g., `rejectedIdentifier` or
+`badCSR`.  If the CSR is successfully validated, the Order object status moves
+to `processing` and the twin ACME protocol instance is initiated on the IdO-CA
+side.
+
 The IdO MUST copy the `auto-renewal` object from the NDC request into the
 related STAR request to the ACME CA.
 
@@ -530,6 +539,7 @@ minimalist approach by declaring only the minimum attribute set and deferring
 the registration of further, more specific, attributes to future documents.
 
 ## Template Syntax
+{: #sec-csr-template-syntax}
 
 The template is a JSON document. Each field denotes one of:
 
