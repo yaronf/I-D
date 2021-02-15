@@ -208,10 +208,13 @@ the name delegated by the IdO.  This can continue until the STAR certificate
 expires or the IdO decides to cancel the automatic renewal process with the
 ACME STAR CA.
 
-Note that, because the identity validation is suppressed, the NDC sends the
-finalize request, including the CSR, to the IdO immediately after Order1 has
-been acknowledged.  The IdO must buffer a (valid) CSR until the Validation
-phase completes successfully.
+Note that the interactive identifier authorization phase described in Section
+7.5 of {{RFC8555}} is suppressed on the NDC-IdO side because the delegated
+identity contained in the CSR presented to the IdO is validated against the
+configured CSR template ({{sec-profile-dele-config}}).  Therefore, the NDC
+sends the finalize request, including the CSR, to the IdO immediately after
+Order1 has been acknowledged.  The IdO SHALL buffer a (valid) CSR until the
+Validation phase completes successfully.
 
 ~~~ goat
 {::include art/e2e-flow.ascii-art}
