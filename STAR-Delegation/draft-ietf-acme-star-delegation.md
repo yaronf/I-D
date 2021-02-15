@@ -276,6 +276,7 @@ this certificate request.
 
 The Order object created by the NDC:
 
+- MUST have the delegated name as the identifier value;
 - MUST contain a `delegation` attribute indicating the configuration used for
   this request;
 - MUST contain identifiers with the new `delegated` field set to true;
@@ -355,6 +356,9 @@ The Order object that is created on the IdO:
   "finalize": "https://acme.dno.example/acme/order/TO8rfgo/finalize"
 }
 ~~~
+
+The IdO MUST copy the identifier value with the delegated name from the NDC
+request into the related request to the ACME CA.
 
 The IdO MUST copy the `auto-renewal` object from the NDC request into the
 related STAR request to the ACME CA.
