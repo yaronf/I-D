@@ -272,7 +272,10 @@ In order to indicate which specific delegation applies to the requested
 certificate a new `delegation` attribute is added to the Order object on the
 NDC-IdO side (see {{sec-profile-ndc-to-ido}}).  The value of this attribute is
 the URL pointing to the delegation configuration object that is to be used for
-this certificate request.
+this certificate request.  If the `delegations` attribute in the Order object
+contains a URL that does not correspond to a configuration available to the requesting NDC, the IdO
+MUST return an error response with status code 403 (Forbidden) and type
+`urn:ietf:params:acme:error:unknownDelegation`.
 
 ### Order Object on the NDC-IdO side
 {: #sec-profile-ndc-to-ido}
@@ -740,6 +743,14 @@ This document adds the following entries to the ACME Account Object Fields regis
 
 Note that the `delegations` field is only reported by ACME servers that have
 `delegation-enabled` set to true in their meta Object.
+
+## New Error Types
+
+This document adds the following entries to the ACME Error Type registry:
+
+| Type | Description | Reference |
+|------|-------------|-----------|
+| unknownDelegation | An unknown configuration is listed in the `delegations` attribute of the request Order | RFC XXXX |
 
 ## New Fields for Identifiers
 
