@@ -492,11 +492,11 @@ There are cases where the ACME Delegation flow should be proxied, such as the
 use case described in {{sec-cdni-dele}}. This section describes the behavior of
 such proxies.
 
-An ACME Delegation server can decide, on a per-identity case, whether to act
-as a proxy into another ACME Delegation server, or to behave as an IdO and
-obtain a certificate directly. The determining factor is whether the server can
-successfully be authorized by the ACME Server for the identity associated with
-the certificate request.
+An entity implementing the IdO server role - an "ACME Delegation server" - can
+decide, on a per-identity case, whether to act as a proxy into another ACME
+Delegation server, or to behave as an IdO and obtain a certificate directly.
+The determining factor is whether it can successfully be authorized by
+the ACME Server for the identity associated with the certificate request.
 
 The identities supported by each server and the disposition for each of them
 are preconfigured.
