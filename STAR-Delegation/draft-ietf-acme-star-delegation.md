@@ -528,11 +528,11 @@ ACME Delegation process:
   * Similarly, the `star-certificate` URL MUST be copied as-is.
   * The `finalize` URL is rewritten, so that the `finalize` request will be
     made to the proxy.
-  * The `Location` header must be rewritten.
+  * The `Location` header MUST be rewritten to point to an `Order` object on the proxy.
 * Finalize request:
   * The CSR MUST be copied as-is.
 * Finalize response:
-  * Both the `Location` header and the `finalize` URLs are rewritten.
+  * Both the `Location` header and the `finalize` URLs are rewritten as for Get Order.
 
 We note that all the above messages are authenticated, and therefore each proxy
 must be able to authenticate any subordinate server.
