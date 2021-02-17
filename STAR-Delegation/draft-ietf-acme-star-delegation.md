@@ -148,7 +148,7 @@ ACME
   certificate management protocol.
 
 CA
-: A Certificate Authority that implements the ACME protocol.
+: A Certificate Authority that implements the ACME protocol. Synonymous with "ACME server".
 
 ## Conventions used in this document
 
@@ -197,7 +197,7 @@ The outline of the combined protocol is as follow ({{fig-endtoend}}):
   everything stops;
 - If the CSR verification is successful, IdO moves  Order1 to state
   `processing`, and sends a new Order2 (using its own account) for the delegated
-  identifier to the ACME STAR CA;
+  identifier to the CA;
 - If the ACME STAR protocol fails, Order2 moves to `invalid` and the same state
   is reflected in Order1 (i.e., the NDC Order);
 - If the ACME STAR run is successful (i.e., Order2 is `valid`), IdO copies the
@@ -206,8 +206,7 @@ The outline of the combined protocol is as follow ({{fig-endtoend}}):
 
 The NDC can now download, install and use the short-term certificate bearing
 the name delegated by the IdO.  This can continue until the STAR certificate
-expires or the IdO decides to cancel the automatic renewal process with the
-ACME STAR CA.
+expires or the IdO decides to cancel the automatic renewal process with the CA.
 
 Note that the interactive identifier authorization phase described in Section
 7.5 of {{RFC8555}} is suppressed on the NDC-IdO side because the delegated
@@ -374,10 +373,10 @@ to `processing` and the twin ACME protocol instance is initiated on the IdO-CA
 side.
 
 The IdO MUST copy the identifier value with the delegated name from the NDC
-request into the related request to the ACME CA.
+request into the related request to the ACME server.
 
 The IdO MUST copy the `auto-renewal` object from the NDC request into the
-related STAR request to the ACME CA.
+related STAR request to the ACME server.
 
 When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
@@ -433,7 +432,7 @@ zone:
 
 ### Order Object on the IdO-CA side
 
-When sending the Order to the ACME CA, the IdO SHOULD strip the `delegated` and
+When sending the Order to the ACME server, the IdO SHOULD strip the `delegated` and
 `cname` attributes sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST
 add the necessary STAR extensions to the Order.  In addition, to allow the NDC
 to download the certificate using unauthenticated GET, the IdO MUST add the
@@ -458,7 +457,7 @@ setting of the `auto-renewal` flag.
 
 It is worth noting that cancellation of the ACME STAR certificate is a
 prerogative of the IdO.  The NDC does not own the relevant account key on the
-ACME CA, therefore it can't issue a cancellation request for the STAR cert.
+ACME server, therefore it can't issue a cancellation request for the STAR cert.
 Potentially, since it holds the STAR certificate's private key, it could request the
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
@@ -505,7 +504,7 @@ An entity implementing the IdO server role - an "ACME Delegation server" - can
 decide, on a per-identity case, whether to act as a proxy into another ACME
 Delegation server, or to behave as an IdO and obtain a certificate directly.
 The determining factor is whether it can successfully be authorized by
-the ACME Server for the identity associated with the certificate request.
+the ACME server for the identity associated with the certificate request.
 
 The identities supported by each server and the disposition for each of them
 are preconfigured.
@@ -666,7 +665,7 @@ uCDN is configured to delegate to dCDN, and CP is configured to delegate to uCDN
 3. dCDN creates a key-pair and the CSR with the delegated name.  It then places
    an order for the delegated name to uCDN;
 4. uCDN forwards the received order to the Content Provider (CP);
-5. CP creates an order for a STAR certificate and sends it to the ACME CA.  The
+5. CP creates an order for a STAR certificate and sends it to the CA.  The
    order also requests unauthenticated access to the certificate resource;
 6. After all authorizations complete successfully, the STAR certificate is
    issued;
@@ -701,9 +700,9 @@ In details ({{fig-stir-flow}}):
    extension with the list of TNs that SP1 delegates to SP2.  (Note that the
    CSR sent by SP2 to SP1 needs to be validated against the CSR template
    agreed upon in step 1.);
-3. SP1 sends an Order for the CSR to the ACME STAR CA;
+3. SP1 sends an Order for the CSR to the CA;
 4. Subsequently, after the required TNAuthList authorizations are successfully
-   completed, the ACME STAR CA moves the Order to a "valid" state; at the same
+   completed, the CA moves the Order to a "valid" state; at the same
    time the star-certificate endpoint is populated.
 5. The Order contents are forwarded from SP1 to SP2 by means of the paired
    "delegation" Order.
