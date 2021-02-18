@@ -557,13 +557,12 @@ The template is a JSON document. Each field denotes one of:
   field. This is denoted by a literal string, such as
   `client1.ndc.dno.example.com`.
 * A mandatory field, where the content of the field is defined by the client.
-  This is denoted by `\*\*`.
+  This is denoted by `**`.
 * An optional field, where the client decides whether the field is included in
-  the CSR and if so, what its value is. This is denoted by `\*`.
+  the CSR and if so, what its value is. This is denoted by `*`.
 
-The NDC MUST NOT include in the CSR any fields that are not specified in the
-template, and in particular MUST NOT add any extensions unless those were
-previously negotiated out of band with the IdO.
+The NDC MUST NOT include in the CSR any fields, including any extensions, unless they are specified in the
+template.
 
 The `subject` field and its subfields are mapped into the `subject` field of the CSR, as per {{RFC5280}}, Sec. 4.1.2.6. Other extension fields of the CSR template are mapped into the CSR according to the table in {{csr-template-registry}}.
 
