@@ -84,13 +84,12 @@ we give here a bare-bones description of the motivation for this solution.  For
 more details and further use cases, please refer to the introductory sections
 of {{!RFC8739}}.
 
-An Identifier Owner (IdO), that we can associate in the primary use case to a
-content provider (also referred to as Domain Name Owner, DNO), has agreements
+An Identifier Owner (IdO) has agreements
 in place with one or more NDC (Name Delegation Consumer) to use and attest its
 identity.
 
-In the primary use case, we consider a Content Delivery Network (CDN) provider contracted to
-serve the IdO content over HTTPS.  The CDN terminates the HTTPS connection at
+In the primary use case the IdO is a content provider, and we consider a Content Delivery Network (CDN) provider contracted to
+serve the content over HTTPS.  The CDN terminates the HTTPS connection at
 one of its edge cache servers and needs to present its clients (browsers,
 mobile apps, set-top-boxes) a certificate whose name matches the authority of
 the URL that is requested, i.e., that of the IdO.  Understandably, some IdOs may balk at sharing their long-term private keys with another organization and,
@@ -125,10 +124,6 @@ We note that other ongoing efforts address the problem of certificate delegation
 IdO
 : Identifier Owner, the owner of an identifier (e.g., a domain
   name) that needs to be delegated.
-
-DNO
-: Domain Name Owner, a specific kind of IdO whose identifier is a
-  domain name
 
 NDC
 : Name Delegation Consumer, the entity to which the domain name is
@@ -262,8 +257,8 @@ to a delegation configuration object as shown in {{fig-account-object}}.
   "termsOfServiceAgreed": true,
   "orders": "https://example.com/acme/orders/rzGoeA",
   "delegations": [
-    "https://acme.dno.example/acme/acct/ndc/delegations/1",
-    "https://acme.dno.example/acme/acct/ndc/delegations/2"
+    "https://acme.ido.example/acme/acct/ndc/delegations/1",
+    "https://acme.ido.example/acme/acct/ndc/delegations/2"
   ]
 }
 ~~~
@@ -297,21 +292,21 @@ The Order object created by the NDC:
 
 ~~~
 POST /acme/new-order HTTP/1.1
-Host: acme.dno.example
+Host: acme.ido.example
 Content-Type: application/jose+json
 
 {
   "protected": base64url({
     "alg": "ES256",
-    "kid": "https://acme.dno.example/acme/acct/evOfKhNU60wg",
+    "kid": "https://acme.ido.example/acme/acct/evOfKhNU60wg",
     "nonce": "5XJ1L3lEkMG7tR6pA00clA",
-    "url": "https://acme.dno.example/acme/new-order"
+    "url": "https://acme.ido.example/acme/new-order"
   }),
   "payload": base64url({
     "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.dno.example.",
+        "value": "abc.ndc.ido.example.",
         "delegated": true,
         "cname": "abc.ndc.example."
       }
@@ -322,7 +317,7 @@ Content-Type: application/jose+json
       "allow-certificate-get": true
     },
     "delegation":
-      "https://acme.dno.example/acme/acct/ndc/delegations/2"
+      "https://acme.ido.example/acme/acct/ndc/delegations/2"
   }),
   "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
 }
@@ -343,7 +338,7 @@ The Order object that is created on the IdO:
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.dno.example.",
+     "value": "abc.ndc.ido.example.",
      "delegated": true,
      "cname": "abc.ndc.example."
    }
@@ -356,11 +351,11 @@ The Order object that is created on the IdO:
   },
 
   "delegation":
-    "https://acme.dno.example/acme/acct/ndc/delegations/2",
+    "https://acme.ido.example/acme/acct/ndc/delegations/2",
 
   "authorizations": [],
 
-  "finalize": "https://acme.dno.example/acme/order/TO8rfgo/finalize"
+  "finalize": "https://acme.ido.example/acme/order/TO8rfgo/finalize"
 }
 ~~~
 
@@ -396,7 +391,7 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.dno.example.",
+     "value": "abc.ndc.ido.example.",
      "delegated": true,
      "cname": "abc.ndc.example."
    }
@@ -409,11 +404,11 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
   },
 
   "delegation":
-    "https://acme.dno.example/acme/acct/ndc/delegations/2",
+    "https://acme.ido.example/acme/acct/ndc/delegations/2",
 
   "authorizations": [],
 
-  "finalize": "https://acme.dno.example/acme/order/TO8rfgo/finalize",
+  "finalize": "https://acme.ido.example/acme/order/TO8rfgo/finalize",
 
   "star-certificate": "https://acme.ca.example/acme/order/yTr23sSDg9"
 }
@@ -428,7 +423,7 @@ Following this validation, the IdO can add the CNAME records to its
 zone:
 
 ~~~
-   abc.ndc.dno.example. CNAME abc.ndc.example.
+   abc.ndc.ido.example. CNAME abc.ndc.example.
 ~~~
 
 ### Order Object on the IdO-CA side
@@ -558,7 +553,7 @@ The template is a JSON document. Each field denotes one of:
 
 * A mandatory field, where the template specifies the literal value of that
   field. This is denoted by a literal string, such as
-  `client1.ndc.dno.example.com`.
+  `client1.ndc.ido.example.com`.
 * A mandatory field, where the content of the field is defined by the client.
   This is denoted by `**`.
 * An optional field, where the client decides whether the field is included in
@@ -614,12 +609,12 @@ certificate request according to its own policy.
 ### Chained Delegation
 {: #sec-cdni-dele}
 In other cases, a content owner (IdO) delegates some domains to a large CDN
-(uCDN), which in turn delegates to a smaller regional CDN, dCDN.  The DNO has a
+(uCDN), which in turn delegates to a smaller regional CDN, dCDN.  The IdO has a
 contractual relationship with uCDN, and uCDN has a similar relationship with
 dCDN.  However IdO may not even know about dCDN.
 
 If needed, the STAR protocol can be chained to support this use case: uCDN
-could forward requests from dCDN to DNO, and forward responses back to dCDN.
+could forward requests from dCDN to IdO, and forward responses back to dCDN.
 Whether such proxying is allowed is governed by policy and contracts between
 the parties.
 
