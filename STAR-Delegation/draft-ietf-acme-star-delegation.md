@@ -521,6 +521,7 @@ ACME Delegation process:
   * The `finalize` URL is rewritten, so that the `finalize` request will be
     made to the proxy.
   * Similarly, the `Location` header MUST be rewritten to point to an Order object on the proxy.
+  * And similarly, any `Link` relations.
 * Get Order response:
   * The `status`, `expires`, `authorizations`, `identifiers` and `auto-renewal`
     attributes/objects MUST be copied as-is.
@@ -528,10 +529,11 @@ ACME Delegation process:
   * The `finalize` URL is rewritten, so that the `finalize` request will be
     made to the proxy.
   * The `Location` header MUST be rewritten to point to an Order object on the proxy.
+  * Any `Link` relations MUST be rewritten to point to the proxy.
 * Finalize request:
   * The CSR MUST be copied as-is.
 * Finalize response:
-  * Both the `Location` header and the `finalize` URLs are rewritten as for Get Order.
+  * The `Location` header, `Link` relations and the `finalize` URLs are rewritten as for Get Order.
 
 We note that all the above messages are authenticated, and therefore each proxy
 must be able to authenticate any subordinate server.
