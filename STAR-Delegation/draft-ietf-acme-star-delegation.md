@@ -31,13 +31,13 @@ author:
     organization: Intuit
     email: yaronf.ietf@gmail.com
  -
-    ins: D. Lopez
-    name: Diego Lopez
+    ins: D. López
+    name: Diego López
     organization: Telefonica I+D
     email: diego.r.lopez@telefonica.com
  -
     ins: A. Pastor Perales
-    name: Antonio Agustin Pastor Perales
+    name: Antonio Agustín Pastor Perales
     organization: Telefonica I+D
     email: antonio.pastorperales@telefonica.com
  -
@@ -898,6 +898,8 @@ capabilities and authorisation flows supported by the selected CAs.
 
 # Acknowledgments
 
+We would like to thank the following people who contributed significantly to this document with their review comments and design proposals: Roman Danyliw, Frédéric Fieau, Sanjay Mishra, Jon Peterson, Ryan Sleevi, Emile Stephan.
+
 This work is partially supported by the European Commission under Horizon 2020
 grant agreement no. 688421 Measurement and Architecture for a Middleboxed
 Internet (MAMI). This support does not imply endorsement.
@@ -908,6 +910,12 @@ Internet (MAMI). This support does not imply endorsement.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-delegation-05
+
+* Detailed AD review by Roman Danyliw.
+* Some comments that were left unaddressed in Ryan Sleevi's review.
+* Numerous other edits for clarity and consistency.
 
 ## draft-ietf-acme-star-delegation-04
 
