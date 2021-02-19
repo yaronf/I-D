@@ -87,16 +87,15 @@ of {{!RFC8739}}.
 An Identifier Owner (IdO), that we can associate in the primary use case to a
 content provider (also referred to as Domain Name Owner, DNO), has agreements
 in place with one or more NDC (Name Delegation Consumer) to use and attest its
-identity.  In the primary use case, we consider a CDN provider contracted to
+identity.
+
+In the primary use case, we consider a Content Delivery Network (CDN) provider contracted to
 serve the IdO content over HTTPS.  The CDN terminates the HTTPS connection at
 one of its edge cache servers and needs to present its clients (browsers,
 mobile apps, set-top-boxes) a certificate whose name matches the authority of
-the URL that is requested, i.e., that of the IdO.  Understandably, most IdOs
-balk at sharing their long-term private keys with another organization and,
+the URL that is requested, i.e., that of the IdO.  Understandably, some IdOs may balk at sharing their long-term private keys with another organization and,
 equally, delegates would rather not have to handle other parties' long-term
-secrets.
-
-Other relevant use cases are discussed in {{further-use-cases}}.
+secrets. Other relevant use cases are discussed in {{further-use-cases}}.
 
 This document describes a profile of the ACME protocol {{!RFC8555}} that allows
 the NDC to request from the IdO, acting as a profiled ACME server, a certificate for
@@ -118,6 +117,8 @@ single interface.
 While the primary use case we address is delegation of STAR certificates,
 the mechanism proposed here accommodates any certificate managed with
 the ACME protocol. See {{non-star-delegation}} for details.
+
+We note that other ongoing efforts address the problem of certificate delegation for TLS connections, specifically {{?I-D.ietf-tls-subcerts}} and {{?I-D.mglt-lurk-tls13}}. Compared to these other solutions, the current draft does not introduce additional latency to the TLS connection, nor does it require changes to the TLS network stack of either the client or the server.
 
 ## Terminology
 
@@ -594,6 +595,8 @@ delegation in non-trivial ways.
 addressing different delegation requirements for the CDNI (CDN Interconnection)
 environment.  This section discusses two of the stated requirements in the
 context of the STAR delegation workflow.
+
+This section uses specifically CDNI terminology, e.g. "uCDN" and "dCDN", as defined in {{?RFC7336}}.
 
 ### Multiple Parallel Delegates
 
