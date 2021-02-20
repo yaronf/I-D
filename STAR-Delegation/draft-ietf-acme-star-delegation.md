@@ -710,9 +710,13 @@ extension to the CSR template.
 
 ## New ACME Identifier Object Fields
 
-This document requests that IANA create the following new registry:
+This document requests that IANA create the following new registry under the
+Automated Certificate Management Environment (ACME) Protocol:
 
 * ACME Identifier Object Fields
+
+This registry is administered under a Specification Required policy
+{{RFC8126}}.
 
 The "ACME Identifier Object Fields" registry lists field names that are
 defined for use in the ACME identifier object.
