@@ -226,27 +226,17 @@ and IdO.
 ### Delegation Configuration
 {: #sec-profile-dele-config}
 
+#### Account Object Extensions
+
 An NDC identifies itself to the IdO as an ACME account.  The IdO can delegate
 multiple names to a NDC, and these configurations are described through
-`delegation` objects associated with the NDC's Account object on the IdO.  A
-delegation configuration object contains the CSR template (see
-{{sec-csr-template}}) that applies to that delegation.  Its structure is as
-follows:
+`delegation` objects associated with the NDC's Account object on the IdO.
 
-* csr-template (required, object): CSR template as defined in
-  {{sec-csr-template}}.
+As shown in {{fig-account-object}}, the ACME account resource on the IdO is
+extended with a new `delegations` attribute:
 
-An example delegation object is shown in {{fig-configuration-object}}.
-
-~~~
-{::include CSR-template/example-configuration-object.json}
-~~~
-{: #fig-configuration-object title="Example Delegation Configuration object"}
-
-In order to list all the delegation configuration objects that are associated
-with the NDC account, a new (read-only) `delegations` attribute is added to the
-Account object.  The value of this attribute is an array of URLs each pointing
-to a delegation configuration object as shown in {{fig-account-object}}.
+- delegations (required, string): A URL from which a list of delegations
+  configured for this account can be fetched via a POST-as-GET request.
 
 ~~~
 {
@@ -256,39 +246,55 @@ to a delegation configuration object as shown in {{fig-account-object}}.
   ],
   "termsOfServiceAgreed": true,
   "orders": "https://example.com/acme/orders/rzGoeA",
-  "delegations": [
-    "https://acme.ido.example/acme/acct/ndc/delegations/1",
-    "https://acme.ido.example/acme/acct/ndc/delegations/2"
-  ]
+  "delegations": "https://acme.ido.example/acme/delegations/adFqoz"
 }
 ~~~
 {: #fig-account-object title="Example Account object with delegations"}
 
+#### Delegation Objects
+
+This profile extends the ACME resource model with a new read-only delegation
+object that represents a delegation configuration that applies to a given NDC.
+
+A delegation object contains the CSR template (see {{sec-csr-template}}) that
+applies to that delegation, and optionally any related CNAME mapping for the
+delegated identifiers.  Its structure is as follows:
+
+- csr-template (required, object): CSR template as defined in
+  {{sec-csr-template}}.
+- cname-map (optional, object): a map of FQDN pairs.  In each pair, the name is
+  the delegated identifier, the value is the corresponding IdO name that is
+  aliased in the IdO's zone file to redirect the resolvers to the delegated
+  entity.  Both names and values MUST be FQDNs with a terminating '.'.
+  This field is only meaningful for identifiers of type `dns`.
+
+An example delegation object is shown in {{fig-configuration-object}}.
+
+~~~
+{::include CSR-template/example-configuration-object.json}
+~~~
+{: #fig-configuration-object title="Example Delegation Configuration object"}
+
 In order to indicate which specific delegation applies to the requested
-certificate a new `delegation` attribute is added to the Order object on the
-NDC-IdO side (see {{sec-profile-order-journey}}).  The value of this attribute is
-the URL pointing to the delegation configuration object that is to be used for
-this certificate request.  If the `delegations` attribute in the Order object
-contains a URL that does not correspond to a configuration available to the requesting NDC, the IdO
-MUST return an error response with status code 403 (Forbidden) and type
+certificate a new `delegation` attribute is added to the identifier in the
+Order object on the NDC-IdO side (see {{sec-profile-order-journey}}).  The
+value of this attribute is the URL pointing to the delegation configuration
+object that is to be used for this certificate request.  If the `delegation`
+attribute in the Order object contains a URL that does not correspond to a
+configuration available to the requesting NDC, the IdO MUST return an error
+response with status code 403 (Forbidden) and type
 `urn:ietf:params:acme:error:unknownDelegation`.
 
-### Order Object, the Journey from NDC to ACME Server via IdO
+### Order Object Transmitted from NDC to IdO and to ACME Server
 {: #sec-profile-order-journey}
 
 The Order object created by the NDC:
 
-- MUST have the delegated name as the identifier value;
-- MUST contain a `delegation` attribute indicating the configuration used for
-  this request;
-- MUST contain identifiers with the new `delegated` field set to true;
+- MUST have the delegated name as the identifier value with a
+  `delegation` attribute indicating the configuration used for the identifier;
 - MUST NOT contain the `notBefore` and `notAfter` fields;
 - MUST contain an `auto-renewal` object and inside it, the fields
   listed in Section 3.1.1 of {{!RFC8739}};
-- In case the identifier type is `dns`, it MAY contain a `cname` field with the
-  alias of the identifier in the NDC domain.  This field is used by the IdO to
-  create the DNS aliasing needed to redirect the resolvers to the delegated
-  entity.
 
 ~~~
 POST /acme/new-order HTTP/1.1
@@ -307,17 +313,15 @@ Content-Type: application/jose+json
       {
         "type": "dns",
         "value": "abc.ndc.ido.example.",
-        "delegated": true,
-        "cname": "abc.ndc.example."
+        "delegation":
+           "https://acme.ido.example/acme/delegations/adFqoz/2"
       }
     ],
     "auto-renewal": {
       "end-date": "2020-04-20T00:00:00Z",
       "lifetime": 345600,          // 4 days
       "allow-certificate-get": true
-    },
-    "delegation":
-      "https://acme.ido.example/acme/acct/ndc/delegations/2"
+    }
   }),
   "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
 }
@@ -328,7 +332,7 @@ The Order object that is created on the IdO:
 - MUST start in the `ready` state;
 - MUST contain an `authorizations` array with zero elements;
 - MUST NOT contain the `notBefore` and `notAfter` fields;
-- MUST contain the indicated `delegation` configuration.
+- MUST contain the indicated `delegation` configurations.
 
 ~~~
 {
@@ -339,8 +343,8 @@ The Order object that is created on the IdO:
    {
      "type": "dns",
      "value": "abc.ndc.ido.example.",
-     "delegated": true,
-     "cname": "abc.ndc.example."
+     "delegation":
+        "https://acme.ido.example/acme/delegations/adFqoz/2"
    }
   ],
 
@@ -350,9 +354,6 @@ The Order object that is created on the IdO:
     "allow-certificate-get": true
   },
 
-  "delegation":
-    "https://acme.ido.example/acme/acct/ndc/delegations/2",
-
   "authorizations": [],
 
   "finalize": "https://acme.ido.example/acme/order/TO8rfgo/finalize"
@@ -361,17 +362,18 @@ The Order object that is created on the IdO:
 
 The Order is then finalized by the NDC supplying the CSR containing the
 delegated identifiers.  The IdO checks the provided CSR against the template
-that applies to the delegation, as described in {{sec-csr-template-syntax}}.
-If the CSR fails validation, the IdO MUST return an error response with status
-code 403 (Forbidden) and an appropriate type, e.g., `rejectedIdentifier` or
-`badCSR`.  If the CSR is successfully validated, the Order object status moves
-to `processing` and the twin ACME protocol instance is initiated on the IdO-CA
-side.
+that applies to each delegated identifier, as described in
+{{sec-csr-template-syntax}}.  If the CSR fails validation for any of the
+identifiers, the IdO MUST return an error response with status code 403
+(Forbidden) and an appropriate type, e.g., `rejectedIdentifier` or `badCSR`.
+The error response SHOULD contain subproblems (Section 6.7.1 of {{RFC8555}})
+for each failed identifier.  If the CSR is successfully validated, the Order
+object status moves to `processing` and the twin ACME protocol instance is
+initiated on the IdO-CA side.
 
 The Order object created by the IdO:
 
-- MUST copy the identifiers sent by the NDC and strip the `delegated` and
-  `cname` attributes;
+- MUST copy the identifiers sent by the NDC and strip the `delegation` attribute;
 - MUST carry a copy of the `auto-renewal` object sent by the NDC and augment it
   with an `allow-certificate-get` attribute set to true;
 
@@ -393,8 +395,8 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
    {
      "type": "dns",
      "value": "abc.ndc.ido.example.",
-     "delegated": true,
-     "cname": "abc.ndc.example."
+     "delegation":
+        "https://acme.ido.example/acme/delegations/adFqoz/2"
    }
   ],
 
@@ -404,9 +406,6 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
     "allow-certificate-get": true
   },
 
-  "delegation":
-    "https://acme.ido.example/acme/acct/ndc/delegations/2",
-
   "authorizations": [],
 
   "finalize": "https://acme.ido.example/acme/order/TO8rfgo/finalize",
@@ -415,13 +414,8 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
 }
 ~~~
 
-If an `identifier` attribute of type `dns` was included, the IdO MUST validate
-the specified CNAME at this point in the flow.  At the minimum, the IdO MUST
-verify that both DNS names are syntactically valid, to prevent a malicious NDC
-from injecting arbitrary data into a DNS zone file.
-
-Following this validation, the IdO can add the CNAME records to its
-zone:
+If an identifier object of type `dns` was included, the IdO can add the
+corresponding CNAME records to its zone, e.g.:
 
 ~~~
    abc.ndc.ido.example. CNAME abc.ndc.example.
