@@ -414,8 +414,8 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
 }
 ~~~
 
-If an `identifier` object of type `dns` was included, the IdO can add the
-CNAME records to its zone, e.g.:
+If an identifier object of type `dns` was included, the IdO can add the
+corresponding CNAME records to its zone, e.g.:
 
 ~~~
    abc.ndc.ido.example. CNAME abc.ndc.example.
