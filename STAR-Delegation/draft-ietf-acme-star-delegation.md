@@ -262,11 +262,11 @@ delegated identifiers.  Its structure is as follows:
 
 - csr-template (required, object): CSR template as defined in
   {{sec-csr-template}}.
-- cname-map (optional, object): a list of domain name pairs.  The left-hand
-  side is the delegated identifier, the right-hand side is the corresponding
-  IdO name that is aliased in the IdO's zone file to redirect the resolvers to
-  the delegated entity.  This field is only meaningful for identifiers of type
-  `dns`.
+- cname-map (optional, object): a map of FQDN pairs.  In each pair, the name is
+  the delegated identifier, the value is the corresponding IdO name that is
+  aliased in the IdO's zone file to redirect the resolvers to the delegated
+  entity.  Both names and values MUST be FQDNs with a terminating '.'.
+  This field is only meaningful for identifiers of type `dns`.
 
 An example delegation object is shown in {{fig-configuration-object}}.
 
@@ -285,7 +285,7 @@ configuration available to the requesting NDC, the IdO MUST return an error
 response with status code 403 (Forbidden) and type
 `urn:ietf:params:acme:error:unknownDelegation`.
 
-### Order Object, the Journey from NDC to ACME Server via IdO
+### Order Object Transmitted from NDC to IdO and to ACME Server
 {: #sec-profile-order-journey}
 
 The Order object created by the NDC:
@@ -414,13 +414,8 @@ the renewal timers needed by the NDC to inform its certificate reload logic.
 }
 ~~~
 
-If an `identifier` attribute of type `dns` was included, the IdO MUST validate
-the `cname-map` entry in the configuration at this point in the flow.  At the
-minimum, the IdO MUST verify that both DNS names are syntactically valid, to
-prevent a malicious NDC from injecting arbitrary data into a DNS zone file.
-
-Following this validation, the IdO can add the CNAME records to its
-zone:
+If an `identifier` object of type `dns` was included, the IdO can add the
+CNAME records to its zone, e.g.:
 
 ~~~
    abc.ndc.ido.example. CNAME abc.ndc.example.
