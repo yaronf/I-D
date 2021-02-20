@@ -16,7 +16,7 @@
     "extensions": {
       "subjectAltName": {
         "DNS": [
-          "abc.ndc.dno.example"
+          "abc.ndc.ido.example"
         ]
       },
       "keyUsage": [
@@ -26,5 +26,8 @@
         "serverAuth"
       ]
     }
+  },
+  "cname-map": {
+    "abc.ndc.ido.example": "abc.ndc.example."
   }
 }

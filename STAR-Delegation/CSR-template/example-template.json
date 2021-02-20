@@ -15,11 +15,11 @@
   "extensions": {
     "subjectAltName": {
       "DNS": [
-        "client1.ndc.dno.example"
+        "client1.ndc.ido.example"
       ],
       "IP": [
-        "1.2.3.4",
-        "13::17"
+        "192.0.2.1",
+        "2001:db8::1"
       ]
     },
     "keyUsage": [
