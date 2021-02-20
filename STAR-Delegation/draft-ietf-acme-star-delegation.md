@@ -708,6 +708,37 @@ extension to the CSR template.
 
 [[RFC Editor: please replace XXXX below by the RFC number.]]
 
+## New ACME Identifier Object Fields
+
+This document requests that IANA create the following new registry under the
+Automated Certificate Management Environment (ACME) Protocol:
+
+* ACME Identifier Object Fields
+
+This registry is administered under a Specification Required policy
+{{RFC8126}}.
+
+The "ACME Identifier Object Fields" registry lists field names that are
+defined for use in the ACME identifier object.
+
+Template:
+
+* Field name: The string to be used as a field name in the JSON object
+* Field type: The type of value to be provided, e.g., string, boolean, array of
+  string
+* Reference: Where this field is defined
+
+| Field Name | Field Type | Reference |
+|------------|------------|-----------|
+| type | string | Section 7.1.3 of RFC 8555 |
+| value | string | Section 7.1.3 of RFC 8555 |
+| delegation | string | RFC XXXX |
+
+Note: this registry was not created at the time {{RFC8555}} was standardized
+likely because it was not anticipated that the identifier object would be
+extended.  It is retrospectively introduced to record the status quo and allow
+controlled extensibility of the identifier object.
+
 ## New Fields in the "meta" Object within a Directory Object
 
 This document adds the following entries to the ACME Directory Metadata Fields registry:
@@ -723,10 +754,6 @@ This document adds the following entries to the ACME Order Object Fields registr
 | Field Name | Field Type | Configurable | Reference |
 |------------|------------|--------------|-----------|
 | allow-certificate-get | boolean | true | RFC XXXX |
-| delegation | string | true | RFC XXXX |
-
-Note that the `delegation` field is only meaningful in interactions with ACME
-servers that have `delegation-enabled` set to true in their meta Object.
 
 ## New Fields in the Account Object
 
@@ -734,7 +761,7 @@ This document adds the following entries to the ACME Account Object Fields regis
 
 | Field Name | Field Type | Requests | Reference |
 |------------|------------|----------|-----------|
-| delegations | array of strings | none | RFC XXXX |
+| delegations | string | none | RFC XXXX |
 
 Note that the `delegations` field is only reported by ACME servers that have
 `delegation-enabled` set to true in their meta Object.
@@ -746,18 +773,6 @@ This document adds the following entries to the ACME Error Type registry:
 | Type | Description | Reference |
 |------|-------------|-----------|
 | unknownDelegation | An unknown configuration is listed in the `delegations` attribute of the request Order | RFC XXXX |
-
-## New Fields for Identifiers
-
-This document adds the following entries to each element of the ACME
-`identifiers` array of objects:
-
-| Field Name | Field Type |
-| ---------- | ---------- |
-| delegated  | boolean    |
-| cname      | string     |
-
-We note that {{RFC8555}} does not define a registry for these objects.
 
 ## CSR Template Extensions
 {: #csr-template-registry }
@@ -779,8 +794,6 @@ Schema document in {{csr-template-schema}}.
 | keyUsage         | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.3                                   |
 | extendedKeyUsage | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.12                                  |
 | subjectAltName   | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.6 (note that only specific name formats are allowed: IPv4 address, IPv6 address, DNS name, email address) |
-
-
 
 # Security Considerations
 
