@@ -174,7 +174,7 @@ Note that even if the IdO implements the ACME server role, it is not acting as
 a CA: in fact, from the point of view of the certificate issuance process, the
 IdO only works as a "policing" forwarder of the NDC's key-pair and is
 responsible for completing the identity verification process towards the ACME
-CA.
+server.
 
 ## Overview
 
@@ -266,15 +266,15 @@ to a delegation configuration object as shown in {{fig-account-object}}.
 
 In order to indicate which specific delegation applies to the requested
 certificate a new `delegation` attribute is added to the Order object on the
-NDC-IdO side (see {{sec-profile-ndc-to-ido}}).  The value of this attribute is
+NDC-IdO side (see {{sec-profile-order-journey}}).  The value of this attribute is
 the URL pointing to the delegation configuration object that is to be used for
 this certificate request.  If the `delegations` attribute in the Order object
 contains a URL that does not correspond to a configuration available to the requesting NDC, the IdO
 MUST return an error response with status code 403 (Forbidden) and type
 `urn:ietf:params:acme:error:unknownDelegation`.
 
-### Order Object on the NDC-IdO side
-{: #sec-profile-ndc-to-ido}
+### Order Object, the Journey from NDC to ACME Server via IdO
+{: #sec-profile-order-journey}
 
 The Order object created by the NDC:
 
@@ -368,11 +368,12 @@ code 403 (Forbidden) and an appropriate type, e.g., `rejectedIdentifier` or
 to `processing` and the twin ACME protocol instance is initiated on the IdO-CA
 side.
 
-The IdO MUST copy the identifier value with the delegated name from the NDC
-request into the related request to the ACME server.
+The Order object created by the IdO:
 
-The IdO MUST copy the `auto-renewal` object from the NDC request into the
-related STAR request to the ACME server.
+- MUST copy the identifiers sent by the NDC and strip the `delegated` and
+  `cname` attributes;
+- MUST carry a copy of the `auto-renewal` object sent by the NDC and augment it
+  with an `allow-certificate-get` attribute set to true;
 
 When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
@@ -425,15 +426,6 @@ zone:
 ~~~
    abc.ndc.ido.example. CNAME abc.ndc.example.
 ~~~
-
-### Order Object on the IdO-CA side
-
-When sending the Order to the ACME server, the IdO SHOULD strip the `delegated` and
-`cname` attributes sent by the NDC ({{sec-profile-ndc-to-ido}}).  The IdO MUST
-add the necessary STAR extensions to the Order.  In addition, to allow the NDC
-to download the certificate using unauthenticated GET, the IdO MUST add the
-`auto-renewal` object and inside it, include the `allow-certificate-get`
-attribute and set it to true.
 
 ### Capability Discovery
 
@@ -673,7 +665,7 @@ uCDN is configured to delegate to dCDN, and CP is configured to delegate to uCDN
 8. uCDN forwards the information to dCDN.  At this point the ACME signalling is
    complete;
 9. dCDN requests the STAR certificate using unauthenticated GET from the ACME
-   CA;
+   server;
 10. the CA returns the certificate.  Now dCDN is fully configured to handle
     HTTPS traffic in-lieu of the Content Provider.
 
