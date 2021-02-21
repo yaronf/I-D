@@ -290,11 +290,14 @@ response with status code 403 (Forbidden) and type
 
 The Order object created by the NDC:
 
-- MUST have the delegated name as the identifier value with a
-  `delegation` attribute indicating the configuration used for the identifier;
+- MUST have the delegated name as the identifier value with a `delegation`
+  attribute indicating the configuration used for the identifier.
+
+Besides, when delegation is for a STAR certificate, the Order:
+
 - MUST NOT contain the `notBefore` and `notAfter` fields;
 - MUST contain an `auto-renewal` object and inside it, the fields
-  listed in Section 3.1.1 of {{!RFC8739}};
+  listed in Section 3.1.1 of {{!RFC8739}}.
 
 ~~~
 POST /acme/new-order HTTP/1.1
@@ -331,8 +334,11 @@ The Order object that is created on the IdO:
 
 - MUST start in the `ready` state;
 - MUST contain an `authorizations` array with zero elements;
-- MUST NOT contain the `notBefore` and `notAfter` fields;
 - MUST contain the indicated `delegation` configurations.
+
+Besides, when delegation is for a STAR certificate, the Order:
+
+- MUST NOT contain the `notBefore` and `notAfter` fields.
 
 ~~~
 {
@@ -373,18 +379,33 @@ initiated on the IdO-CA side.
 
 The Order object created by the IdO:
 
-- MUST copy the identifiers sent by the NDC and strip the `delegation` attribute;
+- MUST copy the identifiers sent by the NDC and strip the `delegation`
+  attribute;
+
+Besides, when delegation is for a STAR certificate, the Order:
+
 - MUST carry a copy of the `auto-renewal` object sent by the NDC and augment it
-  with an `allow-certificate-get` attribute set to true;
+  with an `allow-certificate-get` attribute set to true.
+
+Instead, when the delegation is for a non-STAR certificate, the Order:
+
+- MUST include the `allow-certificate-get` attribute set to true.
 
 When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
-- MUST move its Order resource status to `valid`;
-- MUST copy the `star-certificate` field from the STAR Order;
+- MUST move its Order resource status to `valid`.
 
-The latter indirectly includes (via the NotBefore and NotAfter HTTP headers)
-the renewal timers needed by the NDC to inform its certificate reload logic.
+Besides, when delegation is for a STAR certificate, the IdO:
+
+- MUST copy the `star-certificate` field from the STAR Order.  The latter
+  indirectly includes (via the NotBefore and NotAfter HTTP headers) the renewal
+  timers needed by the NDC to inform its certificate reload logic.
+
+Instead, when the delegation is for a non-STAR certificate, the IdO:
+
+- MUST copy the `certificate`, `notBefore` and `notAfter` fields from the
+  Order.
 
 ~~~
 {
