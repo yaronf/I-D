@@ -716,7 +716,7 @@ Automated Certificate Management Environment (ACME) Protocol:
 * ACME Identifier Object Fields
 
 This registry is administered under a Specification Required policy
-{{RFC8126}}.
+{{!RFC8126}}.
 
 The "ACME Identifier Object Fields" registry lists field names that are
 defined for use in the ACME identifier object.
@@ -815,13 +815,16 @@ Delegation introduces a new security goal: only an NDC that has been authorised
 by the IdO, either directly or transitively, can obtain a certificate with an
 IdO identity.
 
-From a security point of view, the delegation process has two separate parts:
+From a security point of view, the delegation process has five separate parts:
 
 1. Enabling a specific third party (the intended NDC) to submit requests for
    delegated certificates;
 2. Making sure that any request for a delegated certificate matches the
    intended "shape" in terms of delegated identities as well as any other
-   certificate metadata, e.g., key length, x.509 extensions, etc.
+   certificate metadata, e.g., key length, x.509 extensions, etc.;
+3. Serving the certificate back to the NDC;
+4. A process for handling revocation of the delegation;
+5. A process for handling revocation of the certificate itself.
 
 The first part is covered by the NDC's ACME account that is administered by the
 IdO, whose security relies on the correct handling of the associated key pair.
@@ -833,6 +836,21 @@ against the intended CSR template.  The steps of shaping the CSR template
 correctly, selecting the right CSR template to check against the presented CSR,
 and making sure that the presented CSR matches the selected CSR template are
 all security relevant.
+
+The third part builds on the trust relationship between NDC and IdO that is
+responsible for correctly forwarding the certificate URL from the Order
+returned by the ACME server.
+
+The fourth part is associated with the ability of the IdO to unilaterally
+remove the delegation object associated with the revoked identity, therefore
+disabling any further NDC requests for such identity.  Note that, in more
+extreme circumstances, the IdO might decide to disable the NDC account
+thus entirely blocking any further interaction.
+
+The fifth is covered by two different mechanisms, depending on the nature of
+the certificate.  For STAR, the IdO shall use the cancellation interface
+defined in Section 2.3 of {{RFC8739}}. For non-STAR, the certificate revocation
+interface defined in Section 7.6 of {{RFC8555}}).
 
 ## New ACME Channels
 
