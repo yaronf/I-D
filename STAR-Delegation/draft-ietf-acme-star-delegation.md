@@ -404,8 +404,8 @@ Besides, when delegation is for a STAR certificate, the IdO:
 
 Instead, when the delegation is for a non-STAR certificate, the IdO:
 
-- MUST copy the `certificate`, `notBefore` and `notAfter` fields from the
-  Order.
+- MUST copy the `certificate` field from the Order, as well as `notBefore`
+  and `notAfter` if these fields exist.
 
 ~~~
 {
