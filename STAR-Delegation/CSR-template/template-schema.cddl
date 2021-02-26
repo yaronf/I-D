@@ -9,7 +9,7 @@ optional-wildcard = "*"
 wildcard = mandatory-wildcard / optional-wildcard
 
 ; regtext matches all text strings but "*" and "**"
-regtext = text .regexp "^([^\*].*)|([\*][^\*].*)|([\*][\*].+)"
+regtext = text .regexp "([^\*].*)|([\*][^\*].*)|([\*][\*].+)"
 
 regtext-or-wildcard = regtext / wildcard
 
