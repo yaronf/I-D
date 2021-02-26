@@ -569,6 +569,12 @@ The template is a JSON document. Each field denotes one of:
 The NDC MUST NOT include in the CSR any fields, including any extensions, unless they are specified in the
 template.
 
+The structure of the template object is described using CDDL {{!RFC8610}} notation:
+
+~~~
+{::include CSR-template/template-schema.cddl}
+~~~
+
 The `subject` field and its subfields are mapped into the `subject` field of the CSR, as per {{RFC5280}}, Sec. 4.1.2.6. Other extension fields of the CSR template are mapped into the CSR according to the table in {{csr-template-registry}}.
 
 When the CSR is received by the IdO, it MUST verify that the CSR is consistent

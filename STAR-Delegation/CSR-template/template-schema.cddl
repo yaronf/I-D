@@ -1,0 +1,73 @@
+csr-template-schema = {
+  ? keyTypes: [* rsaKeyType / ecKeyType] ; XXX(tho) could IdO specify multiple keyTypes?
+  ? subject: distinguishedName
+  ? extensions: extensions
+}
+
+mandatory-wildcard = "**"
+optional-wildcard = "*"
+wildcard = mandatory-wildcard / optional-wildcard
+
+text-or-wildcard = text / wildcard
+
+distinguishedName = {
+  ? country: text-or-wildcard
+  ? stateOrProvince: text-or-wildcard
+  ? locality: text-or-wildcard
+  ? organization: text-or-wildcard
+  ? organizationalUnit: text-or-wildcard
+  ? emailAddress: text-or-wildcard
+  ? commonName: text-or-wildcard
+}
+
+rsaKeyType = {
+  ? PublicKeyType: "RSA"
+  ? PublicKeyLength: $rsaKeySize / mandatory-wildcard
+  ? SignatureType: $signatureType / mandatory-wildcard
+}
+
+$rsaKeySize /= "2048"
+$rsaKeySize /= "4096"
+$rsaKeySize /= "8192"
+
+$signatureType /= "sha256WithRSAEncryption"
+
+ecKeyType = {
+  ? PublicKeyType: "ecPublicKey"
+  ? Curve: $ecCurve
+  ? SignatureType: $ecSignatureType
+}
+
+$ecCurve /= "secp521r1"
+
+$ecSignatureType /= "ecdsa-with-SHA256"
+
+subjectaltname = {
+  ? DNS: [ 1* text ]
+  ? IP: [ 1* text-or-wildcard ]
+  ? Email: [ 1* text ]
+}
+
+extensions = {
+  ? keyUsage: [ 1* keyUsageType ]
+  ? extendedKeyUsage: [ 1* extendedKeyUsageType ]
+  ? subjectAltName: subjectaltname
+}
+
+keyUsageType /= "digitalSignature"
+keyUsageType /= "nonRepudiation"
+keyUsageType /= "keyEncipherment"
+keyUsageType /= "dataEncipherment"
+keyUsageType /= "keyAgreement"
+keyUsageType /= "keyCertSign"
+keyUsageType /= "cRLSign"
+keyUsageType /= "encipherOnly"
+keyUsageType /= "decipherOnly"
+
+extendedKeyUsageType /= "serverAuth"
+extendedKeyUsageType /= "clientAuth"
+extendedKeyUsageType /= "codeSigning"
+extendedKeyUsageType /= "emailProtection"
+extendedKeyUsageType /= "timeStamping"
+extendedKeyUsageType /= "OCSPSigning"
+

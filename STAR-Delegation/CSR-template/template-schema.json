@@ -40,7 +40,12 @@
           "const": "RSA"
         },
         "PublicKeyLength": {
-          "type": "integer"
+          "type": "string",
+          "enum": [
+            "2048",
+            "4096",
+            "8192"
+          ]
         },
         "SignatureType": {
           "type": "string",
