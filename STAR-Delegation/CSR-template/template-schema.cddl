@@ -8,16 +8,19 @@ mandatory-wildcard = "**"
 optional-wildcard = "*"
 wildcard = mandatory-wildcard / optional-wildcard
 
-text-or-wildcard = text / wildcard
+; regtext matches all text strings but "*" and "**"
+regtext = text .regexp "^([^\*].*)|([\*][^\*].*)|([\*][\*].+)"
+
+regtext-or-wildcard = regtext / wildcard
 
 distinguishedName = {
-  ? country: text-or-wildcard
-  ? stateOrProvince: text-or-wildcard
-  ? locality: text-or-wildcard
-  ? organization: text-or-wildcard
-  ? organizationalUnit: text-or-wildcard
-  ? emailAddress: text-or-wildcard
-  ? commonName: text-or-wildcard
+  ? country: regtext-or-wildcard
+  ? stateOrProvince: regtext-or-wildcard
+  ? locality: regtext-or-wildcard
+  ? organization: regtext-or-wildcard
+  ? organizationalUnit: regtext-or-wildcard
+  ? emailAddress: regtext-or-wildcard
+  ? commonName: regtext-or-wildcard
 }
 
 rsaKeyType = {
@@ -43,9 +46,9 @@ $ecCurve /= "secp521r1"
 $ecSignatureType /= "ecdsa-with-SHA256"
 
 subjectaltname = {
-  ? DNS: [ 1* text ]
-  ? IP: [ 1* text-or-wildcard ]
-  ? Email: [ 1* text ]
+  ? DNS: [ 1* regtext ]
+  ? IP: [ 1* regtext-or-wildcard ]
+  ? Email: [ 1* regtext ]
 }
 
 extensions = {
