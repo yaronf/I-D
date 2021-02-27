@@ -1,5 +1,5 @@
 csr-template-schema = {
-  ? keyTypes: [* rsaKeyType / ecKeyType] ; XXX(tho) could IdO specify multiple keyTypes?
+  ? keyTypes: [ 1* $keyType ]
   ? subject: distinguishedName
   ? extensions: extensions
 }
@@ -22,6 +22,9 @@ distinguishedName = {
   ? emailAddress: regtext-or-wildcard
   ? commonName: regtext-or-wildcard
 }
+
+$keyType /= rsaKeyType
+$keyType /= ecKeyType
 
 rsaKeyType = {
   ? PublicKeyType: "RSA"
