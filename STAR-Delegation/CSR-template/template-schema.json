@@ -49,6 +49,11 @@
           ]
         }
       },
+      "required": [
+	"PublicKeyType",
+	"PublicKeyLength",
+	"SignatureType"
+      ],
       "additionalProperties": false
     },
     "ecKeyTYpe": {
@@ -72,6 +77,11 @@
           ]
         }
       },
+      "required": [
+	"PublicKeyType",
+	"Curve",
+	"SignatureType"
+      ],
       "additionalProperties": false
     }
   },
@@ -79,6 +89,7 @@
   "properties": {
     "keyTypes": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "oneOf": [
           {
@@ -148,7 +159,11 @@
                   {
                     "type": "string",
                     "format": "ipv6"
-                  }
+                  },
+		  {
+		    "type": "string",
+		    "enum": ["*", "**"]
+		  }
                 ]
               }
             },
@@ -163,8 +178,15 @@
           "additionalProperties": false
         }
       },
+      "required": [
+	"subjectAltName"
+      ],
       "additionalProperties": false
     }
   },
+  "required": [
+    "extensions",
+    "keyTypes"
+  ],
   "additionalProperties": false
 }
