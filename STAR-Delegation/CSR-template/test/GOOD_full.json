@@ -2,7 +2,7 @@
   "keyTypes": [
     {
       "PublicKeyType": "RSA",
-      "PublicKeyLength": 4096,
+      "PublicKeyLength": 2048,
       "SignatureType": "sha256WithRSAEncryption"
     }
   ],
@@ -15,19 +15,20 @@
   "extensions": {
     "subjectAltName": {
       "DNS": [
-        "client1.ndc.ido.example"
+        "cache.ndc.ido.example"
       ],
       "IP": [
-        "192.0.2.1",
-        "2001:db8::1"
+        "*"
+      ],
+      "Email": [
+        "admin@ndc.ido.example"
       ]
     },
     "keyUsage": [
       "digitalSignature"
     ],
     "extendedKeyUsage": [
-      "serverAuth",
-      "timeStamping"
+      "serverAuth"
     ]
   }
 }

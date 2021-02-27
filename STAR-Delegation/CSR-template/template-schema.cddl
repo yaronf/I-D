@@ -27,19 +27,19 @@ $keyType /= rsaKeyType
 $keyType /= ecKeyType
 
 rsaKeyType = {
-  ? PublicKeyType: "RSA"
-  ? PublicKeyLength: $rsaKeySize / mandatory-wildcard
+  PublicKeyType: "RSA"
+  ? PublicKeyLength: $rsaKeySize
   ? SignatureType: $signatureType / mandatory-wildcard
 }
 
-$rsaKeySize /= "2048"
-$rsaKeySize /= "4096"
-$rsaKeySize /= "8192"
+$rsaKeySize /= 2048
+$rsaKeySize /= 4096
+$rsaKeySize /= 8192
 
 $signatureType /= "sha256WithRSAEncryption"
 
 ecKeyType = {
-  ? PublicKeyType: "ecPublicKey"
+  PublicKeyType: "ecPublicKey"
   ? Curve: $ecCurve
   ? SignatureType: $ecSignatureType
 }
@@ -52,6 +52,7 @@ subjectaltname = {
   ? DNS: [ 1* regtext ]
   ? IP: [ 1* regtext-or-wildcard ]
   ? Email: [ 1* regtext ]
+  ? URI: [ 1* regtext ]
 }
 
 extensions = {
