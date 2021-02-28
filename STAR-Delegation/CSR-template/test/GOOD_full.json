@@ -18,7 +18,7 @@
         "cache.ndc.ido.example"
       ],
       "URI": [
-        "https://cache.ndc.ido.example"
+        "sip:voice.ndc.ido.example"
       ],
       "Email": [
         "admin@ndc.ido.example"

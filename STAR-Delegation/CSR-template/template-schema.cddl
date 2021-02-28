@@ -40,19 +40,24 @@ $signatureType /= "sha256WithRSAEncryption"
 
 ecKeyType = {
   PublicKeyType: "ecPublicKey"
-  Curve: $ecCurve
+  ? Curve: $ecCurve
   SignatureType: $ecSignatureType
 }
 
 $ecCurve /= "secp521r1"
 
 $ecSignatureType /= "ecdsa-with-SHA256"
+$ecSignatureType /= "Ed25519"
 
 subjectaltname = {
   ? DNS: [ 1* regtext-or-wildcard ] ; TODO(tho) add checking wildcard to sec cons
   ? Email: [ 1* regtext ]
   ? URI: [ 1* regtext ]
   * $$subjectaltname-extension
+  ; To extend this type to add an IP field, do:
+  ; $$subjectaltname-extension //= (
+  ;   ? IP: [ 1* regtext ]
+  ; )
 }
 
 extensions = {
