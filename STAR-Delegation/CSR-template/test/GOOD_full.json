@@ -17,8 +17,8 @@
       "DNS": [
         "cache.ndc.ido.example"
       ],
-      "IP": [
-        "*"
+      "URI": [
+        "https://cache.ndc.ido.example"
       ],
       "Email": [
         "admin@ndc.ido.example"

@@ -167,6 +167,13 @@
                 "type": "string",
                 "format": "email"
               }
+            },
+            "URI": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "url"
+              }
             }
           },
           "additionalProperties": false

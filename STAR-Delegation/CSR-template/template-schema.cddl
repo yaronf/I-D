@@ -28,8 +28,8 @@ $keyType /= ecKeyType
 
 rsaKeyType = {
   PublicKeyType: "RSA"
-  ? PublicKeyLength: $rsaKeySize
-  ? SignatureType: $signatureType / mandatory-wildcard
+  PublicKeyLength: $rsaKeySize
+  SignatureType: $signatureType / mandatory-wildcard
 }
 
 $rsaKeySize /= 2048
@@ -40,8 +40,8 @@ $signatureType /= "sha256WithRSAEncryption"
 
 ecKeyType = {
   PublicKeyType: "ecPublicKey"
-  ? Curve: $ecCurve
-  ? SignatureType: $ecSignatureType
+  Curve: $ecCurve
+  SignatureType: $ecSignatureType
 }
 
 $ecCurve /= "secp521r1"
@@ -49,16 +49,16 @@ $ecCurve /= "secp521r1"
 $ecSignatureType /= "ecdsa-with-SHA256"
 
 subjectaltname = {
-  ? DNS: [ 1* regtext ]
-  ? IP: [ 1* regtext-or-wildcard ]
+  ? DNS: [ 1* regtext-or-wildcard ] ; TODO(tho) add checking wildcard to sec cons
   ? Email: [ 1* regtext ]
   ? URI: [ 1* regtext ]
+  * $$subjectaltname-extension
 }
 
 extensions = {
   ? keyUsage: [ 1* keyUsageType ]
   ? extendedKeyUsage: [ 1* extendedKeyUsageType ]
-  ? subjectAltName: subjectaltname
+  subjectAltName: subjectaltname
 }
 
 keyUsageType /= "digitalSignature"
