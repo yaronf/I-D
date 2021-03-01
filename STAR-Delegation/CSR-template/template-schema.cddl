@@ -54,10 +54,6 @@ subjectaltname = {
   ? Email: [ 1* regtext ]
   ? URI: [ 1* regtext ]
   * $$subjectaltname-extension
-  ; To extend this type to add an IP field, do:
-  ; $$subjectaltname-extension //= (
-  ;   ? IP: [ 1* regtext ]
-  ; )
 }
 
 extensions = {
