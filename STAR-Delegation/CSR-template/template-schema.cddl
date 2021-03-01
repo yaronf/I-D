@@ -1,7 +1,7 @@
 csr-template-schema = {
-  ? keyTypes: [ 1* $keyType ]
+  keyTypes: [ 1* $keyType ]
   ? subject: distinguishedName
-  ? extensions: extensions
+  extensions: extensions
 }
 
 mandatory-wildcard = "**"
@@ -40,7 +40,7 @@ $signatureType /= "sha256WithRSAEncryption"
 
 ecKeyType = {
   PublicKeyType: "ecPublicKey"
-  ? Curve: $ecCurve
+  ? Curve: $ecCurve ; not populated for Ed25519
   SignatureType: $ecSignatureType
 }
 

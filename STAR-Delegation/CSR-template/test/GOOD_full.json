@@ -4,6 +4,15 @@
       "PublicKeyType": "RSA",
       "PublicKeyLength": 2048,
       "SignatureType": "sha256WithRSAEncryption"
+    },
+    {
+      "PublicKeyType": "ecPublicKey",
+      "SignatureType": "Ed25519"
+    },
+    {
+      "PublicKeyType": "ecPublicKey",
+      "Curve": "secp521r1",
+      "SignatureType": "ecdsa-with-SHA256"
     }
   ],
   "subject": {

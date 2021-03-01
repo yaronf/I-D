@@ -54,6 +54,11 @@
           ]
         }
       },
+      "required": [
+        "PublicKeyType",
+        "PublicKeyLength",
+        "SignatureType"
+      ],
       "additionalProperties": false
     },
     "ecKeyTYpe": {
@@ -73,10 +78,15 @@
         "SignatureType": {
           "type": "string",
           "enum": [
-            "ecdsa-with-SHA256"
+            "ecdsa-with-SHA256",
+            "Ed25519"
           ]
         }
       },
+      "required": [
+        "PublicKeyType",
+        "SignatureType"
+      ],
       "additionalProperties": false
     }
   },
@@ -179,8 +189,15 @@
           "additionalProperties": false
         }
       },
+      "required": [
+        "subjectAltName"
+      ],
       "additionalProperties": false
     }
   },
+  "required": [
+    "extensions",
+    "keyTypes"
+  ],
   "additionalProperties": false
 }
