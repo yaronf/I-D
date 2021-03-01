@@ -24,37 +24,51 @@ distinguishedName = {
 }
 
 $keyType /= rsaKeyType
-$keyType /= ecKeyType
+$keyType /= ecdsaKeyType
 
 rsaKeyType = {
-  PublicKeyType: "RSA"
-  PublicKeyLength: $rsaKeySize
-  SignatureType: $signatureType / mandatory-wildcard
+  PublicKeyType: "rsaEncryption" ; OID: 1.2.840.113549.1.1.1
+  PublicKeyLength: rsaKeySize
+  SignatureType: $rsaSignatureType
 }
 
-$rsaKeySize /= 2048
-$rsaKeySize /= 4096
-$rsaKeySize /= 8192
+rsaKeySize = int .ge 2048
 
-$signatureType /= "sha256WithRSAEncryption"
+; RSASSA-PKCS1-v1_5 with SHA-256
+$rsaSignatureType /= "sha256WithRSAEncryption"
+; RSASSA-PCKS1-v1_5 with SHA-384
+$rsaSignatureType /= "sha384WithRSAEncryption"
+; RSASSA-PCKS1-v1_5 with SHA-512
+$rsaSignatureType /= "sha512WithRSAEncryption"
+; RSASSA-PSS with SHA-256, MGF-1 with SHA-256, and a salt length of 32 bytes
+$rsaSignatureType /= "sha256WithRSAandMGF1"
+; RSASSA-PSS with SHA-384, MGF-1 with SHA-384, and a salt length of 48 bytes
+$rsaSignatureType /= "sha384WithRSAandMGF1"
+; RSASSA-PSS with SHA-512, MGF-1 with SHA-512, and a salt length of 64 bytes
+$rsaSignatureType /= "sha512WithRSAandMGF1"
 
-ecKeyType = {
-  PublicKeyType: "ecPublicKey"
-  ? Curve: $ecCurve ; not populated for Ed25519
-  SignatureType: $ecSignatureType
+ecdsaKeyType = {
+  PublicKeyType: "id-ecPublicKey" ; OID: 1.2.840.10045.2.1
+  namedCurve: $ecdsaCurve
+  SignatureType: $ecdsaSignatureType
 }
 
-$ecCurve /= "secp521r1"
+$ecdsaCurve /= "secp256r1" ; OID: 1.2.840.10045.3.1.7
+$ecdsaCurve /= "secp384r1" ; OID: 1.3.132.0.34
+$ecdsaCurve /= "secp521r1" ; OID: 1.3.132.0.3
 
-$ecSignatureType /= "ecdsa-with-SHA256"
-$ecSignatureType /= "Ed25519"
+$ecdsaSignatureType /= "ecdsa-with-SHA256" ; paired with secp256r1
+$ecdsaSignatureType /= "ecdsa-with-SHA384" ; paired with secp384r1
+$ecdsaSignatureType /= "ecdsa-with-SHA512" ; paired with secp521r1
 
 subjectaltname = {
   ? DNS: [ 1* regtext-or-wildcard ] ; TODO(tho) add checking wildcard to sec cons
   ? Email: [ 1* regtext ]
-  ? URI: [ 1* regtext ]
+  ? URI: [ 1* uriType ]
   * $$subjectaltname-extension
 }
+
+uriType = text .regexp '(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?'
 
 extensions = {
   ? keyUsage: [ 1* keyUsageType ]
@@ -78,4 +92,3 @@ extendedKeyUsageType /= "codeSigning"
 extendedKeyUsageType /= "emailProtection"
 extendedKeyUsageType /= "timeStamping"
 extendedKeyUsageType /= "OCSPSigning"
-

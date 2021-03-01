@@ -37,20 +37,22 @@
       "properties": {
         "PublicKeyType": {
           "type": "string",
-          "const": "RSA"
+          "const": "rsaEncryption"
         },
         "PublicKeyLength": {
           "type": "integer",
-          "enum": [
-            2048,
-            4096,
-            8192
-          ]
+          "minimum": 2048,
+          "multipleOf": 8
         },
         "SignatureType": {
           "type": "string",
           "enum": [
-            "sha256WithRSAEncryption"
+            "sha256WithRSAEncryption",
+            "sha384WithRSAEncryption",
+            "sha512WithRSAEncryption",
+            "sha256WithRSAandMGF1",
+            "sha384WithRSAandMGF1",
+            "sha512WithRSAandMGF1"
           ]
         }
       },
@@ -61,17 +63,19 @@
       ],
       "additionalProperties": false
     },
-    "ecKeyTYpe": {
-      "$id": "#ecKeyType",
+    "ecdsaKeyType": {
+      "$id": "#ecdsaKeyType",
       "type": "object",
       "properties": {
         "PublicKeyType": {
           "type": "string",
-          "const": "ecPublicKey"
+          "const": "id-ecPublicKey"
         },
-        "Curve": {
+        "namedCurve": {
           "type": "string",
           "enum": [
+            "secp256r1",
+            "secp384r1",
             "secp521r1"
           ]
         },
@@ -79,12 +83,14 @@
           "type": "string",
           "enum": [
             "ecdsa-with-SHA256",
-            "Ed25519"
+            "ecdsa-with-SHA384",
+            "ecdsa-with-SHA512"
           ]
         }
       },
       "required": [
         "PublicKeyType",
+        "namedCurve",
         "SignatureType"
       ],
       "additionalProperties": false
@@ -100,7 +106,7 @@
             "$ref": "#rsaKeyType"
           },
           {
-            "$ref": "#ecKeyType"
+            "$ref": "#ecdsaKeyType"
           }
         ]
       }
