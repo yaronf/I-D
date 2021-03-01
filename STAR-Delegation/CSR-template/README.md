@@ -21,3 +21,17 @@ Now:
 ``ajv validate --spec=draft7 -c ajv-formats -s template-schema.json -d example-template.json``
 
 Note: changed incorrect ``$def`` to ``$defs``.
+
+# CDDL
+
+Install Carsten's cddl tool:
+
+```
+$ gem install cddl
+```
+
+Now:
+
+```
+$ cddl template-schema.cddl validate example-template.json
+```

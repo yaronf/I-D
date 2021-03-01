@@ -37,41 +37,62 @@
       "properties": {
         "PublicKeyType": {
           "type": "string",
-          "const": "RSA"
+          "const": "rsaEncryption"
         },
         "PublicKeyLength": {
-          "type": "integer"
+          "type": "integer",
+          "minimum": 2048,
+          "multipleOf": 8
         },
         "SignatureType": {
           "type": "string",
           "enum": [
-            "sha256WithRSAEncryption"
+            "sha256WithRSAEncryption",
+            "sha384WithRSAEncryption",
+            "sha512WithRSAEncryption",
+            "sha256WithRSAandMGF1",
+            "sha384WithRSAandMGF1",
+            "sha512WithRSAandMGF1"
           ]
         }
       },
+      "required": [
+        "PublicKeyType",
+        "PublicKeyLength",
+        "SignatureType"
+      ],
       "additionalProperties": false
     },
-    "ecKeyTYpe": {
-      "$id": "#ecKeyType",
+    "ecdsaKeyType": {
+      "$id": "#ecdsaKeyType",
       "type": "object",
       "properties": {
         "PublicKeyType": {
           "type": "string",
-          "const": "ecPublicKey"
+          "const": "id-ecPublicKey"
         },
-        "Curve": {
+        "namedCurve": {
           "type": "string",
           "enum": [
+            "secp256r1",
+            "secp384r1",
             "secp521r1"
           ]
         },
         "SignatureType": {
           "type": "string",
           "enum": [
-            "ecdsa-with-SHA256"
+            "ecdsa-with-SHA256",
+            "ecdsa-with-SHA384",
+            "ecdsa-with-SHA512"
           ]
         }
       },
+      "required": [
+        "PublicKeyType",
+        "namedCurve",
+        "SignatureType"
+      ],
       "additionalProperties": false
     }
   },
@@ -85,7 +106,7 @@
             "$ref": "#rsaKeyType"
           },
           {
-            "$ref": "#ecKeyType"
+            "$ref": "#ecdsaKeyType"
           }
         ]
       }
@@ -148,6 +169,10 @@
                   {
                     "type": "string",
                     "format": "ipv6"
+                  },
+                  {
+                    "type": "string",
+                    "enum": [ "*", "**" ]
                   }
                 ]
               }
@@ -158,13 +183,27 @@
                 "type": "string",
                 "format": "email"
               }
+            },
+            "URI": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uri"
+              }
             }
           },
           "additionalProperties": false
         }
       },
+      "required": [
+        "subjectAltName"
+      ],
       "additionalProperties": false
     }
   },
+  "required": [
+    "extensions",
+    "keyTypes"
+  ],
   "additionalProperties": false
 }

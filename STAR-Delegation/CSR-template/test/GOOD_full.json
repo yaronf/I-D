@@ -7,8 +7,8 @@
     },
     {
       "PublicKeyType": "id-ecPublicKey",
-      "namedCurve": "secp256r1",
-      "SignatureType": "ecdsa-with-SHA256"
+      "namedCurve": "secp521r1",
+      "SignatureType": "ecdsa-with-SHA512"
     }
   ],
   "subject": {
@@ -20,15 +20,20 @@
   "extensions": {
     "subjectAltName": {
       "DNS": [
-        "client1.ndc.ido.example"
+        "cache.ndc.ido.example"
+      ],
+      "URI": [
+        "sip:voice.ndc.ido.example"
+      ],
+      "Email": [
+        "admin@ndc.ido.example"
       ]
     },
     "keyUsage": [
       "digitalSignature"
     ],
     "extendedKeyUsage": [
-      "serverAuth",
-      "clientAuth"
+      "serverAuth"
     ]
   }
 }

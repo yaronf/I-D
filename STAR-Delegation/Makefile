@@ -35,6 +35,8 @@ next := $(draft)-$(next_ver)
 # CSR templates
 csr_dir := $(root)CSR-template
 csr_src := $(wildcard $(csr_dir)/*.json)
+csr_src += $(wildcard $(csr_dir)/*.cddl)
+csr_src += $(wildcard $(csr_dir)/test/*.json)
 
 # UTF-8/ASCII diagrams
 art_dir := $(root)art
@@ -42,9 +44,12 @@ art_src := $(wildcard $(art_dir)/*.ascii-art)
 
 COMMIT=origin/master
 
-.PHONY: all latest submit clean
+.PHONY: all latest submit clean checks
 
-all latest: $(draft).txt $(draft).html
+all latest: checks $(draft).txt $(draft).html
+
+checks: $(csr_src)
+	$(MAKE) -C $(csr_dir) check-example test
 
 submit: $(next).xml $(next).txt
 
