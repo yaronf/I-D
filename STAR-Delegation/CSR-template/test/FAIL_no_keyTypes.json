@@ -1,0 +1,9 @@
+{
+  "extensions": {
+    "subjectAltName": {
+      "DNS": [
+        "cache.ndc.ido.example"
+      ]
+    }
+  }
+}

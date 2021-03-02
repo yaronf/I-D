@@ -1,0 +1,22 @@
+{
+  "keyTypes": [
+    {
+      "PublicKeyType": "rsaEncryption",
+      "PublicKeyLength": 2048,
+      "SignatureType": "bonkers"
+    }
+  ],
+  "extensions": {
+    "subjectAltName": {
+      "DNS": [
+        "cache.ndc.ido.example"
+      ]
+    },
+    "keyUsage": [
+      "digitalSignature"
+    ],
+    "extendedKeyUsage": [
+      "serverAuth"
+    ]
+  }
+}
