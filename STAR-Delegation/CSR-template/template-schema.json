@@ -6,6 +6,7 @@
     "distinguished-name": {
       "$id": "#distinguished-name",
       "type": "object",
+      "minProperties": 1,
       "properties": {
         "country": {
           "type": "string"
@@ -119,6 +120,7 @@
       "properties": {
         "keyUsage": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "string",
             "enum": [
@@ -136,6 +138,7 @@
         },
         "extendedKeyUsage": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "string",
             "enum": [
@@ -150,35 +153,19 @@
         },
         "subjectAltName": {
           "type": "object",
+          "minProperties": 1,
           "properties": {
             "DNS": {
               "type": "array",
+              "minItems": 1,
               "items": {
                 "type": "string",
                 "format": "hostname"
               }
             },
-            "IP": {
-              "type": "array",
-              "items": {
-                "oneOf": [
-                  {
-                    "type": "string",
-                    "format": "ipv4"
-                  },
-                  {
-                    "type": "string",
-                    "format": "ipv6"
-                  },
-                  {
-                    "type": "string",
-                    "enum": [ "*", "**" ]
-                  }
-                ]
-              }
-            },
             "Email": {
               "type": "array",
+              "minItems": 1,
               "items": {
                 "type": "string",
                 "format": "email"
@@ -186,6 +173,7 @@
             },
             "URI": {
               "type": "array",
+              "minItems": 1,
               "items": {
                 "type": "string",
                 "format": "uri"

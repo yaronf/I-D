@@ -1,0 +1,21 @@
+{
+  "keyTypes": [
+    {
+      "PublicKeyType": "rsaEncryption",
+      "PublicKeyLength": 2048
+    }
+  ],
+  "extensions": {
+    "subjectAltName": {
+      "DNS": [
+        "cache.ndc.ido.example"
+      ]
+    },
+    "keyUsage": [
+      "digitalSignature"
+    ],
+    "extendedKeyUsage": [
+      "serverAuth"
+    ]
+  }
+}
