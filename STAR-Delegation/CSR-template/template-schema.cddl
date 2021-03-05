@@ -64,11 +64,9 @@ $ecdsaSignatureType /= "ecdsa-with-SHA512" ; paired with secp521r1
 subjectaltname = {
   ? DNS: [ 1* regtext-or-wildcard ]
   ? Email: [ 1* regtext ]
-  ? URI: [ 1* uriType ]
+  ? URI: [ 1* regtext ]
   * $$subjectaltname-extension
 }
-
-uriType = text .regexp '(([^:\/?#]+):)?(\/\/([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?'
 
 extensions = {
   ? keyUsage: [ 1* keyUsageType ]
