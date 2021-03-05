@@ -1011,9 +1011,6 @@ Following is the normative definition of the CSR template, using CDDL {{RFC8610}
 
 An additional constraint that is not expressed in CDDL but MUST be validated by the recipient is that all objects (e.g. `distinguishedName`) MUST NOT be empty when they are included, even when each separate property is optional.
 
-While the CSR template must follow the syntax defined here, neither the IdO nor
-the NDC are expected to validate it at run-time.
-
 ~~~
 {::include CSR-template/template-schema.cddl}
 ~~~
