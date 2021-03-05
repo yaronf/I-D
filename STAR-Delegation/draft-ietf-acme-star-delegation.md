@@ -823,7 +823,7 @@ Schema document in {{csr-template-schema}}.
 | ---------------- | --------------------------- | ------------------------------------------------------------ |
 | keyUsage         | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.3                                   |
 | extendedKeyUsage | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.12                                  |
-| subjectAltName   | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.6 (note that only specific name formats are allowed: IPv4 address, IPv6 address, DNS name, email address) |
+| subjectAltName   | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.6 (note that only specific name formats are allowed: URI, DNS name, email address) |
 
 # Security Considerations
 
