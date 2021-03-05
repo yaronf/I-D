@@ -579,7 +579,12 @@ The `subject` field and its subfields are mapped into the `subject` field of the
 
 When the CSR is received by the IdO, it MUST verify that the CSR is consistent
 with the template that the IdO sent earlier. The IdO MAY enforce additional
-constraints, e.g. by restricting field lengths.
+constraints, e.g. by restricting field lengths.  In this regard, note that a
+`subjectAltName` of type `DNS` can be specified using the wildcard notation,
+meaning that the NDC can be required (`**`) or offered the possibility (`*`) to
+define the delegated domain name by itself.  If this is the case, the IdO needs
+to have a further layer of checks on top of the control rules already provided
+by the CSR template to fully validate the CSR input.
 
 ## Example
 
