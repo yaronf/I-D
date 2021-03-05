@@ -556,7 +556,7 @@ the registration of further, more specific, attributes to future documents.
 ## Template Syntax
 {: #sec-csr-template-syntax}
 
-The template is a JSON document. Each field denotes one of:
+The template is a JSON document. Each field (with the exception of `keyTypes`, see below) denotes one of:
 
 * A mandatory field, where the template specifies the literal value of that
   field. This is denoted by a literal string, such as
@@ -569,13 +569,13 @@ The template is a JSON document. Each field denotes one of:
 The NDC MUST NOT include in the CSR any fields, including any extensions, unless they are specified in the
 template.
 
-The structure of the template object is described using CDDL {{!RFC8610}} notation:
+The structure of the template object is defined by the CDDL {{!RFC8610}} document in {{csr-template-schema-cddl}}.
 
-~~~
-{::include CSR-template/template-schema.cddl}
-~~~
+An alternative, non-normative JSON Schema syntax is given in {{csr-template-schema}}.
 
 The `subject` field and its subfields are mapped into the `subject` field of the CSR, as per {{RFC5280}}, Sec. 4.1.2.6. Other extension fields of the CSR template are mapped into the CSR according to the table in {{csr-template-registry}}.
+
+The `keyTypes` property is not copied into the CSR. Instead, this property constrains the `SubjectPublicKeyInfo` field of the CSR, which MUST have the type/size defined by one of the array members of the `keyTypes` property.
 
 When the CSR is received by the IdO, it MUST verify that the CSR is consistent
 with the template that the IdO sent earlier. The IdO MAY enforce additional
@@ -590,8 +590,6 @@ governing the delegation exchanges provided in the rest of this document.
 {::include CSR-template/example-template.json}
 ~~~
 {: #fig-csr-template title="Example CSR template"}
-
-The template syntax is defined in {{csr-template-schema}}.
 
 # Further Use Cases
 {: #further-use-cases}
@@ -955,6 +953,10 @@ Internet (MAMI). This support does not imply endorsement.
 
 [[Note to RFC Editor: please remove before publication.]]
 
+## draft-ietf-acme-star-delegation-06
+
+* CDDL schema to address Roman's remaining comments.
+
 ## draft-ietf-acme-star-delegation-05
 
 * Detailed AD review by Roman Danyliw.
@@ -1002,10 +1004,21 @@ Internet (MAMI). This support does not imply endorsement.
 
 - Initial version, some text extracted from draft-sheffer-acme-star-requests-02
 
-# CSR Template Schema
+# CSR Template: CDDL
+{: #csr-template-schema-cddl}
+
+Following is the normative definition of the CSR template, using CDDL {{RFC8610}}. The CSR template MUST be a valid JSON document, compliant with the syntax defined here.
+
+An additional constraint that is not expressed in CDDL but MUST be validated by the recipient is that all objects (e.g. `distinguishedName`) MUST NOT be empty when they are included, even when each separate property is optional.
+
+~~~
+{::include CSR-template/template-schema.cddl}
+~~~
+
+# CSR Template: JSON Schema
 {: #csr-template-schema}
 
-Following is a JSON Schema definition of the CSR template. The syntax used is that of draft 7 of JSON Schema, which is documented in {{json-schema-07}}. Note that later versions of this (now expired) draft describe later versions of the JSON Schema syntax. At the time of writing, a stable reference for this syntax is not yet available, and we have chosen to use the draft version which is currently best supported by tool implementations.
+This appendix includes an alternative, non-normative, JSON Schema definition of the CSR template. The syntax used is that of draft 7 of JSON Schema, which is documented in {{json-schema-07}}. Note that later versions of this (now expired) draft describe later versions of the JSON Schema syntax. At the time of writing, a stable reference for this syntax is not yet available, and we have chosen to use the draft version which is currently best supported by tool implementations.
 
 While the CSR template must follow the syntax defined here, neither the IdO nor
 the NDC are expected to validate it at run-time.

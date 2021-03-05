@@ -13,8 +13,6 @@ regtext = text .regexp "([^\*].*)|([\*][^\*].*)|([\*][\*].+)"
 
 regtext-or-wildcard = regtext / wildcard
 
-; TODO(tho) make explicit in text that DN, if present, can't be empty
-; See test/FAIL_empty_DN.json
 distinguishedName = {
   ? country: regtext-or-wildcard
   ? stateOrProvince: regtext-or-wildcard
@@ -63,11 +61,9 @@ $ecdsaSignatureType /= "ecdsa-with-SHA256" ; paired with secp256r1
 $ecdsaSignatureType /= "ecdsa-with-SHA384" ; paired with secp384r1
 $ecdsaSignatureType /= "ecdsa-with-SHA512" ; paired with secp521r1
 
-; TODO(tho) make explicit in text that SAN can't be empty
-; (See test/FAIL_empty_SAN.json)
 subjectaltname = {
-  ? DNS: [ 1* regtext-or-wildcard ] ; TODO(tho) make syntax explicit in text
-  ? Email: [ 1* regtext ] ; TODO(tho) make syntax explicit in text
+  ? DNS: [ 1* regtext-or-wildcard ]
+  ? Email: [ 1* regtext ]
   ? URI: [ 1* uriType ]
   * $$subjectaltname-extension
 }
