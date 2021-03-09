@@ -49,7 +49,7 @@ COMMIT=origin/master
 all latest: checks $(draft).txt $(draft).html
 
 checks: $(csr_src)
-	$(MAKE) -C $(csr_dir) check-example test
+	$(MAKE) -C $(csr_dir) check-example check-example-object test
 
 submit: $(next).xml $(next).txt
 
@@ -65,6 +65,7 @@ clean:
 	-rm -f $(draft)-[0-9][0-9].txt
 	-rm -f $(draft)-[0-9][0-9].md
 	-rm -f metadata.min.js
+	$(MAKE) -C $(csr_dir) clean
 
 $(draft)-orig.md:
 	-rm -rf $@
