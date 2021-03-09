@@ -2,8 +2,8 @@
   "csr-template": {
     "keyTypes": [
       {
-        "PublicKeyType": "ecPublicKey",
-        "Curve": "secp521r1",
+        "PublicKeyType": "id-ecPublicKey",
+        "namedCurve": "secp256r1",
         "SignatureType": "ecdsa-with-SHA256"
       }
     ],

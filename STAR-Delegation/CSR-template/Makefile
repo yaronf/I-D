@@ -4,6 +4,7 @@ SHELL := /bin/bash
 
 cddl ?= cddl
 ajv ?= npx ajv
+jq ?= jq
 
 CDDL_SCHEMA := template-schema.cddl
 JSON_SCHEMA := template-schema.json
@@ -15,6 +16,17 @@ EXAMPLE := example-template.json
 .PHONY: check-example
 check-example: $(CDDL_SCHEMA) $(EXAMPLE)
 	$(cddl) $< validate $(EXAMPLE)
+
+EX_CFG_OBJ := example-configuration-object.json
+EX_CFG_OBJ_CSR_TMPL := TEMP__config_csr_tmpl__.json
+CLEANFILES += $(EX_CFG_OBJ_CSR_TMPL)
+
+.PHONY: check-example-object
+check-example-object: $(CDDL_SCHEMA) $(EX_CFG_OBJ_CSR_TMPL)
+	$(cddl) $< validate $(EX_CFG_OBJ_CSR_TMPL)
+
+$(EX_CFG_OBJ_CSR_TMPL): $(EX_CFG_OBJ)
+	cat $< | $(jq) '."csr-template"' > $@
 
 test-cddl-schema: $(CDDL_SCHEMA) $(TESTFILES)
 	@echo "## testing against CDDL schema ($<)"
@@ -39,3 +51,6 @@ test-json-schema: $(JSON_SCHEMA) $(TESTFILES)
 test: test-cddl-schema test-json-schema
 
 .PHONY: test
+
+.PHONY: clean
+clean: ; $(RM) $(CLEANFILES)
