@@ -40,11 +40,11 @@ $rsaSignatureType /= "sha256WithRSAEncryption"
 $rsaSignatureType /= "sha384WithRSAEncryption"
 ; RSASSA-PCKS1-v1_5 with SHA-512
 $rsaSignatureType /= "sha512WithRSAEncryption"
-; RSASSA-PSS with SHA-256, MGF-1 with SHA-256, and a salt length of 32 bytes
+; RSASSA-PSS with SHA-256, MGF-1 with SHA-256, and a 32 byte salt
 $rsaSignatureType /= "sha256WithRSAandMGF1"
-; RSASSA-PSS with SHA-384, MGF-1 with SHA-384, and a salt length of 48 bytes
+; RSASSA-PSS with SHA-384, MGF-1 with SHA-384, and a 48 byte salt
 $rsaSignatureType /= "sha384WithRSAandMGF1"
-; RSASSA-PSS with SHA-512, MGF-1 with SHA-512, and a salt length of 64 bytes
+; RSASSA-PSS with SHA-512, MGF-1 with SHA-512, and a 64 byte salt
 $rsaSignatureType /= "sha512WithRSAandMGF1"
 
 ecdsaKeyType = {

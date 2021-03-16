@@ -117,7 +117,7 @@ While the primary use case we address is delegation of STAR certificates,
 the mechanism proposed here accommodates any certificate managed with
 the ACME protocol. See {{non-star-delegation}} for details.
 
-We note that other ongoing efforts address the problem of certificate delegation for TLS connections, specifically {{?I-D.ietf-tls-subcerts}} and {{?I-D.mglt-lurk-tls13}}. Compared to these other solutions, the current draft does not introduce additional latency to the TLS connection, nor does it require changes to the TLS network stack of either the client or the server.
+We note that other ongoing efforts address the problem of certificate delegation for TLS connections, specifically {{?I-D.ietf-tls-subcerts}} and {{?I-D.mglt-lurk-tls13}}. Compared to these other solutions, the current document does not introduce additional latency to the TLS connection, nor does it require changes to the TLS network stack of either the client or the server.
 
 ## Terminology
 
@@ -153,7 +153,7 @@ CA
 # Protocol Flow
 
 This section presents the protocol flow.  For completeness, we include the ACME
-profile proposed in this draft as well as the extended ACME protocol described
+profile proposed in this document as well as the extended ACME protocol described
 in {{!RFC8739}}.
 
 ## Preconditions
@@ -191,7 +191,7 @@ The outline of the combined protocol is as follow ({{fig-endtoend}}):
 - IdO verifies the CSR according to the agreed upon CSR template;
 - If the CSR verification fails, Order1 is moved to an `invalid` state and
   everything stops;
-- If the CSR verification is successful, IdO moves  Order1 to state
+- If the CSR verification is successful, IdO moves Order1 to state
   `processing`, and sends a new Order2 (using its own account) for the delegated
   identifier to the CA;
 - If the ACME STAR protocol fails, Order2 moves to `invalid` and the same state
@@ -489,7 +489,7 @@ The following differences exist between STAR and non-STAR certificate delegation
 When delegating a non-STAR certificate, standard certificate revocation still
 applies. The ACME certificate revocation endpoint is explicitly unavailable for
 STAR certificates but it is available for all other certificates. We note that
-according to Sec. 7.6 of {{RFC8555}}, the revocation endpoint can be used with
+according to Section 7.6 of {{RFC8555}}, the revocation endpoint can be used with
 either the account keypair, or the certificate keypair. In other words, the NDC
 would be able to revoke the certificate. However, given the trust relationship
 between NDC and IdO expected by the delegation trust model
@@ -573,7 +573,7 @@ The structure of the template object is defined by the CDDL {{!RFC8610}} documen
 
 An alternative, non-normative JSON Schema syntax is given in {{csr-template-schema}}.
 
-The `subject` field and its subfields are mapped into the `subject` field of the CSR, as per {{RFC5280}}, Sec. 4.1.2.6. Other extension fields of the CSR template are mapped into the CSR according to the table in {{csr-template-registry}}.
+The `subject` field and its subfields are mapped into the `subject` field of the CSR, as per {{RFC5280}}, Section 4.1.2.6. Other extension fields of the CSR template are mapped into the CSR according to the table in {{csr-template-registry}}.
 
 The `keyTypes` property is not copied into the CSR. Instead, this property constrains the `SubjectPublicKeyInfo` field of the CSR, which MUST have the type/size defined by one of the array members of the `keyTypes` property.
 
