@@ -91,7 +91,7 @@ identity.
 In the primary use case the IdO is a content provider, and we consider a Content Delivery Network (CDN) provider contracted to
 serve the content over HTTPS.  The CDN terminates the HTTPS connection at
 one of its edge cache servers and needs to present its clients (browsers,
-mobile apps, set-top-boxes) a certificate whose name matches the authority of
+mobile apps, set-top-boxes) a certificate whose name matches the domain name of
 the URL that is requested, i.e., that of the IdO.  Understandably, some IdOs may balk at sharing their long-term private keys with another organization and,
 equally, delegates would rather not have to handle other parties' long-term
 secrets. Other relevant use cases are discussed in {{further-use-cases}}.
