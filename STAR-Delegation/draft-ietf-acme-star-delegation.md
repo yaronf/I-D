@@ -1,6 +1,6 @@
 ---
-title: An ACME Profile for Generating Delegated STAR Certificates
-abbrev: ACME STAR Delegation
+title: An ACME Profile for Generating Delegated Certificates
+abbrev: ACME Delegation
 docname: draft-ietf-acme-star-delegation-latest
 category: std
 
@@ -71,9 +71,7 @@ identifier (e.g., a domain name) to delegate to a third party access to a
 certificate associated with said identifier.  A primary use case is that of a
 Content Delivery Network (CDN, the third party) terminating TLS sessions on behalf of a content provider
 (the owner of a domain name).  The presented mechanism allows the owner of the
-identifier to retain control over the delegation and revoke it at any time by
-cancelling the associated Short-Term, Automatically Renewed (STAR)
-certificate renewal with the ACME CA.  Another
+identifier to retain control over the delegation and revoke it at any time.  A
 key property of this mechanism is it does not require any modification to the
 deployed TLS ecosystem.
 
@@ -115,9 +113,13 @@ installed in the IdO's DNS zone to enable the aliasing of the delegated name,
 thus allowing the complete name delegation workflow to be handled using a
 single interface.
 
-While the primary use case we address is delegation of STAR certificates,
-the mechanism proposed here accommodates any certificate managed with
-the ACME protocol. See {{non-star-delegation}} for details.
+While the primary use case we address is delegation of STAR certificates, the
+mechanism proposed here accommodates also long-lived certificate managed with
+the ACME protocol. The most noticeable difference between long-lived and STAR
+certificates is the way the termination of the delegation is managed.  In case
+of long-lived certificates, the IdO uses the revokeCert URL exposed by the ACME
+CA and waits for the explicit revocation based on CRL and OCSP to propagate
+to the relying parties.  See {{non-star-delegation}} for details.
 
 We note that other ongoing efforts address the problem of certificate delegation for TLS connections, specifically {{?I-D.ietf-tls-subcerts}} and {{?I-D.mglt-lurk-tls13}}. Compared to these other solutions, the current document does not introduce additional latency to the TLS connection, nor does it require changes to the TLS network stack of either the client or the server.
 
