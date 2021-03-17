@@ -100,18 +100,12 @@ This document describes a profile of the ACME protocol {{!RFC8555}} that allows
 the NDC to request from the IdO, acting as a profiled ACME server, a certificate for
 a delegated identity - i.e., one belonging to the IdO.  The IdO then uses the
 ACME protocol (with the extensions described in {{!RFC8739}}) to request
-issuance of a STAR certificate for the same delegated identity.  The generated
+issuance of a Short-Term, Automatically Renewed (STAR) certificate for the same delegated identity.  The generated
 short-term certificate is automatically renewed by the ACME Certification
 Authority (CA), periodically fetched by the NDC and used to terminate HTTPS
 connections in lieu of the IdO.  The IdO can end the delegation at any time by
 simply instructing the CA to stop the automatic renewal and letting the
 certificate expire shortly thereafter.
-
-In case the delegated identity is a domain name, this document also provides a
-way for the NDC to inform the IdO about the CNAME mappings that need to be
-installed in the IdO's DNS zone to enable the aliasing of the delegated name,
-thus allowing the complete name delegation workflow to be handled using a
-single interface.
 
 While the primary use case we address is delegation of STAR certificates, the
 mechanism proposed here accommodates also long-lived certificate managed with
@@ -120,6 +114,12 @@ certificates is the way the termination of the delegation is managed.  In case
 of long-lived certificates, the IdO uses the revokeCert URL exposed by the ACME
 CA and waits for the explicit revocation based on CRL and OCSP to propagate
 to the relying parties.  See {{non-star-delegation}} for details.
+
+In case the delegated identity is a domain name, this document also provides a
+way for the NDC to inform the IdO about the CNAME mappings that need to be
+installed in the IdO's DNS zone to enable the aliasing of the delegated name,
+thus allowing the complete name delegation workflow to be handled using a
+single interface.
 
 We note that other ongoing efforts address the problem of certificate delegation for TLS connections, specifically {{?I-D.ietf-tls-subcerts}} and {{?I-D.mglt-lurk-tls13}}. Compared to these other solutions, the current document does not introduce additional latency to the TLS connection, nor does it require changes to the TLS network stack of either the client or the server.
 
