@@ -65,13 +65,15 @@ informative:
 
 --- abstract
 
-This memo proposes a profile of the ACME protocol that allows the owner of an
+This memo proposes a profile of the Automatic Certificate Management Environment (ACME)
+protocol that allows the owner of an
 identifier (e.g., a domain name) to delegate to a third party access to a
 certificate associated with said identifier.  A primary use case is that of a
-CDN (the third party) terminating TLS sessions on behalf of a content provider
+Content Delivery Network (CDN, the third party) terminating TLS sessions on behalf of a content provider
 (the owner of a domain name).  The presented mechanism allows the owner of the
 identifier to retain control over the delegation and revoke it at any time by
-cancelling the associated STAR certificate renewal with the ACME CA.  Another
+cancelling the associated Short-Term, Automatically Renewed (STAR)
+certificate renewal with the ACME CA.  Another
 key property of this mechanism is it does not require any modification to the
 deployed TLS ecosystem.
 
@@ -140,11 +142,19 @@ STAR
 : Short-Term, Automatically Renewed X.509 certificates.
 
 ACME
-: The IETF Automated Certificate Management Environment, a
-  certificate management protocol.
+: Automated Certificate Management Environment, a
+  certificate management protocol {{RFC8555}}.
 
 CA
-: A Certificate Authority that implements the ACME protocol. Synonymous with "ACME server".
+: A Certification Authority that implements the ACME protocol. In this document, the term is synonymous with "ACME server".
+
+CSR
+
+: A PKCS#10 {{!RFC2986}} Certificate Signing Request, as supported by ACME.
+
+FQDN
+
+: Fully Qualified Domain Name.
 
 ## Conventions used in this document
 
@@ -168,7 +178,7 @@ The protocol assumes the following preconditions are met:
   subject name (e.g., `somesite.example.com`), requested algorithms and key
   length, key usage, extensions (e.g., TNAuthList). The NDC is required to use
   this template for every CSR created under the same delegation;
-- IdO has registered an ACME account with the Certificate Authority (CA)
+- IdO has registered an ACME account with the Certification Authority (CA)
 
 Note that even if the IdO implements the ACME server role, it is not acting as
 a CA: in fact, from the point of view of the certificate issuance process, the
@@ -602,7 +612,7 @@ governing the delegation exchanges provided in the rest of this document.
 This non-normative section describes additional use cases that use STAR certificate
 delegation in non-trivial ways.
 
-## CDNI
+## CDN Interconnection (CDNI)
 
 {{?I-D.ietf-cdni-interfaces-https-delegation}} discusses several solutions
 addressing different delegation requirements for the CDNI (CDN Interconnection)
@@ -695,10 +705,12 @@ uCDN is configured to delegate to dCDN, and CP is configured to delegate to uCDN
 
 Note that 9. and 10. repeat until the delegation expires or is terminated.
 
-## STIR
+## Secure Telephone Identity Revisited (STIR)
 
 As a second use case, we consider the delegation of credentials in the STIR
 ecosystem  {{?I-D.ietf-stir-cert-delegation}}.
+
+This section uses STIR terminology. The term PASSPorT is defined in {{?RFC8225}}, and "TNAuthList" in {{?RFC8226}}.
 
 In the STIR `delegated` mode, a service provider SP2 - the NDC - needs to sign
 PASSPorT’s {{?RFC8225}} for telephone numbers (e.g., TN=+123) belonging to
@@ -821,9 +833,9 @@ Schema document in {{csr-template-schema}}.
 
 | Extension Name   | Extension Syntax            | Mapping to X.509 Certificate Extension                       |
 | ---------------- | --------------------------- | ------------------------------------------------------------ |
-| keyUsage         | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.3                                   |
-| extendedKeyUsage | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.12                                  |
-| subjectAltName   | See {{csr-template-schema}} | {{!RFC5280}}, Sec. 4.2.1.6 (note that only specific name formats are allowed: URI, DNS name, email address) |
+| keyUsage         | See {{csr-template-schema}} | {{!RFC5280}}, Section 4.2.1.3                                |
+| extendedKeyUsage | See {{csr-template-schema}} | {{!RFC5280}}, Section 4.2.1.12                               |
+| subjectAltName   | See {{csr-template-schema}} | {{!RFC5280}}, Section 4.2.1.6 (note that only specific name formats are allowed: URI, DNS name, email address) |
 
 # Security Considerations
 
