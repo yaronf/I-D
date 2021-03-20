@@ -475,6 +475,9 @@ Potentially, since it holds the STAR certificate's private key, it could request
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
 
+Shortly after the automatic renewal process is stopped by the IdO, the last
+issued STAR certificate expires and the delegation terminates.
+
 ## Delegation of Non-STAR Certificates
 {: #non-star-delegation}
 
