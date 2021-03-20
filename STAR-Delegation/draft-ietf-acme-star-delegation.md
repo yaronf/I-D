@@ -484,10 +484,10 @@ issued STAR certificate expires and the delegation terminates.
 The mechanism defined here can be used to delegate regular ACME certificates
 whose expiry is not "short term".
 
-To allow delegation of non-STAR certificates, this document allows use of
+To enable delegation of non-STAR certificates, this document allows use of
 `allow-certificate-get` directly in the Order object and independently of the
 `auto-renewal` object, so that the NDC can fetch the certificate without having
-to authenticate into the ACME server.
+to authenticate to the ACME server.
 
 The following differences exist between STAR and non-STAR certificate delegation:
 
@@ -502,13 +502,14 @@ The following differences exist between STAR and non-STAR certificate delegation
 When delegating a non-STAR certificate, standard certificate revocation still
 applies. The ACME certificate revocation endpoint is explicitly unavailable for
 STAR certificates but it is available for all other certificates. We note that
-according to Section 7.6 of {{RFC8555}}, the revocation endpoint can be used with
-either the account keypair, or the certificate keypair. In other words, the NDC
-would be able to revoke the certificate. However, given the trust relationship
-between NDC and IdO expected by the delegation trust model
-({{sec-trust-model}}) as well as the lack of incentives for the NDC - which,
-doing so, would create a self-inflicted DoS - this does not represent a
-security risk.
+according to Section 7.6 of {{RFC8555}}, the revocation endpoint can be used
+with either the account keypair, or the certificate keypair. In other words, an
+NDC that learns the revokeCert URL of the CA (which is publicly available via
+the CA's Directory object) would be able to revoke the certificate using the
+associated private key. However, given the trust relationship between NDC and
+IdO expected by the delegation trust model ({{sec-trust-model}}), as well as
+the lack of incentives for the NDC to prematurely terminate the delegation,
+this does not represent a security risk.
 
 ## Proxy Behavior
 
