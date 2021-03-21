@@ -1064,7 +1064,7 @@ Internet (MAMI). This support does not imply endorsement.
 ## draft-ietf-acme-star-delegation-07
 
 * SecDir comments by Russ Housley.
-* In particular, reorganized some parts of the document to clarify handling of non-STAR certificaes.
+* In particular, reorganized some parts of the document to clarify handling of non-STAR certificates.
 * And changed the document's title accordingly.
 
 ## draft-ietf-acme-star-delegation-06
