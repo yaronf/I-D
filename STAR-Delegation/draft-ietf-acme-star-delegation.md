@@ -676,8 +676,8 @@ The `subject` field and its subfields are mapped into the `subject` field of the
 
 The `keyTypes` property is not copied into the CSR. Instead, this property constrains the `SubjectPublicKeyInfo` field of the CSR, which MUST have the type/size defined by one of the array members of the `keyTypes` property.
 
-When the CSR is received by the IdO, it MUST verify that the CSR is consistent
-with the template that the IdO sent earlier. The IdO MAY enforce additional
+When the IdO receives the CSR, it MUST verify that the CSR is consistent
+with the template contained in the `delegation` object referenced in the Order. The IdO MAY enforce additional
 constraints, e.g. by restricting field lengths.  In this regard, note that a
 `subjectAltName` of type `DNS` can be specified using the wildcard notation,
 meaning that the NDC can be required (`**`) or offered the possibility (`*`) to
