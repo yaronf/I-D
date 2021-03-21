@@ -90,3 +90,6 @@ extendedKeyUsageType /= "codeSigning"
 extendedKeyUsageType /= "emailProtection"
 extendedKeyUsageType /= "timeStamping"
 extendedKeyUsageType /= "OCSPSigning"
+extendedKeyUsageType /= oid
+
+oid = text .regexp "^[0-9]+(\\.[0-9]+)*$"
