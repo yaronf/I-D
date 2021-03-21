@@ -1046,7 +1046,9 @@ capabilities and authorisation flows supported by the selected CAs.
 
 # Acknowledgments
 
-We would like to thank the following people who contributed significantly to this document with their review comments and design proposals: Roman Danyliw, <contact fullname="Frédéric" asciiFullname="Frederic"/> Fieau, Sanjay Mishra, Jon Peterson, Ryan Sleevi, Emile Stephan.
+We would like to thank the following people who contributed significantly to this document with their review comments and design proposals: Roman Danyliw, <contact fullname="Frédéric" asciiFullname="Frederic"/> Fieau,
+Russ Housley,
+Sanjay Mishra, Jon Peterson, Ryan Sleevi, Emile Stephan.
 
 This work is partially supported by the European Commission under Horizon 2020
 grant agreement no. 688421 Measurement and Architecture for a Middleboxed
@@ -1058,6 +1060,12 @@ Internet (MAMI). This support does not imply endorsement.
 # Document History
 
 [[Note to RFC Editor: please remove before publication.]]
+
+## draft-ietf-acme-star-delegation-07
+
+* SecDir comments by Russ Housley.
+* In particular, reorganized some parts of the document to clarify handling of non-STAR certificaes.
+* And changed the document's title accordingly.
 
 ## draft-ietf-acme-star-delegation-06
 
