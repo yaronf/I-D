@@ -565,6 +565,8 @@ setting of the `auto-renewal` flag.
 
 ### Terminating the Delegation
 
+Identity delegation is terminated differently, depending on whether this is a STAR certificate or not.
+
 #### By Cancellation (STAR)
 
 The IdO can terminate the delegation of a STAR certificate by requesting its
