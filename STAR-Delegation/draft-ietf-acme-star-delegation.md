@@ -109,9 +109,9 @@ simply instructing the CA to stop the automatic renewal and letting the
 certificate expire shortly thereafter.
 
 While the primary use case we address is delegation of STAR certificates, the
-mechanism proposed here accommodates also long-lived certificate managed with
+mechanism proposed here accommodates also long-lived certificates managed with
 the ACME protocol. The most noticeable difference between long-lived and STAR
-certificates is the way the termination of the delegation is managed.  In case
+certificates is the way the termination of the delegation is managed.  In the case
 of long-lived certificates, the IdO uses the revokeCert URL exposed by the ACME
 CA and waits for the explicit revocation based on CRL and OCSP to propagate
 to the relying parties.  See {{non-star-delegation}} for details.
