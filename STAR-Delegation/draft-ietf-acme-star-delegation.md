@@ -114,7 +114,7 @@ the ACME protocol. The most noticeable difference between long-lived and STAR
 certificates is the way the termination of the delegation is managed.  In the case
 of long-lived certificates, the IdO uses the revokeCert URL exposed by the ACME
 CA and waits for the explicit revocation based on CRL and OCSP to propagate
-to the relying parties.  See {{non-star-delegation}} for details.
+to the relying parties.
 
 In case the delegated identity is a domain name, this document also provides a
 way for the NDC to inform the IdO about the CNAME mappings that need to be
@@ -290,7 +290,7 @@ An example delegation object is shown in {{fig-configuration-object}}.
 
 In order to indicate which specific delegation applies to the requested
 certificate a new `delegation` attribute is added to the identifier in the
-Order object on the NDC-IdO side (see {{sec-profile-order-journey}}).  The
+Order object on the NDC-IdO side (see {{fig-star-ndc-neworder}}).  The
 value of this attribute is the URL pointing to the delegation configuration
 object that is to be used for this certificate request.  If the `delegation`
 attribute in the Order object contains a URL that does not correspond to a
@@ -298,16 +298,14 @@ configuration available to the requesting NDC, the IdO MUST return an error
 response with status code 403 (Forbidden) and type
 `urn:ietf:params:acme:error:unknownDelegation`.
 
-### Order Object Transmitted from NDC to IdO and to ACME Server
-{: #sec-profile-order-journey}
+### Order Object Transmitted from NDC to IdO and to ACME Server (STAR)
+{: #sec-profile-star-order-journey}
 
-The Order object created by the NDC:
+If the delegation is for a STAR certificate, the Order object created by the
+NDC:
 
 - MUST have the delegated name as the identifier value with a `delegation`
   attribute indicating the configuration used for the identifier.
-
-Besides, when delegation is for a STAR certificate, the Order:
-
 - MUST NOT contain the `notBefore` and `notAfter` fields;
 - MUST contain an `auto-renewal` object and inside it, the fields
   listed in Section 3.1.1 of {{!RFC8739}}.
@@ -342,15 +340,13 @@ Content-Type: application/jose+json
   "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
 }
 ~~~
+{: #fig-star-ndc-neworder title="New STAR Order from NDC"}
 
 The Order object that is created on the IdO:
 
 - MUST start in the `ready` state;
 - MUST contain an `authorizations` array with zero elements;
 - MUST contain the indicated `delegation` configurations.
-
-Besides, when delegation is for a STAR certificate, the Order:
-
 - MUST NOT contain the `notBefore` and `notAfter` fields.
 
 ~~~
@@ -378,6 +374,7 @@ Besides, when delegation is for a STAR certificate, the Order:
   "finalize": "https://acme.ido.example/acme/order/TO8rfgo/finalize"
 }
 ~~~
+{: #fig-star-ido-order-resource-created title="STAR Order Resource Created on IdO"}
 
 The Order is then finalized by the NDC supplying the CSR containing the
 delegated identifiers.  The IdO checks the provided CSR against the template
@@ -394,31 +391,16 @@ The Order object created by the IdO:
 
 - MUST copy the identifiers sent by the NDC and strip the `delegation`
   attribute;
-
-Besides, when delegation is for a STAR certificate, the Order:
-
 - MUST carry a copy of the `auto-renewal` object sent by the NDC and augment it
   with an `allow-certificate-get` attribute set to true.
-
-Instead, when the delegation is for a non-STAR certificate, the Order:
-
-- MUST include the `allow-certificate-get` attribute set to true.
 
 When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
 - MUST move its Order resource status to `valid`.
-
-Besides, when delegation is for a STAR certificate, the IdO:
-
 - MUST copy the `star-certificate` field from the STAR Order.  The latter
   indirectly includes (via the NotBefore and NotAfter HTTP headers) the renewal
   timers needed by the NDC to inform its certificate reload logic.
-
-Instead, when the delegation is for a non-STAR certificate, the IdO:
-
-- MUST copy the `certificate` field from the Order, as well as `notBefore`
-  and `notAfter` if these fields exist.
 
 ~~~
 {
@@ -447,6 +429,10 @@ Instead, when the delegation is for a non-STAR certificate, the IdO:
   "star-certificate": "https://acme.ca.example/acme/order/yTr23sSDg9"
 }
 ~~~
+{: #fig-star-ido-order-resource-updated title="STAR Order Resource Updated on IdO"}
+
+#### CNAME Installation
+{: #sec-cname-installation}
 
 If an identifier object of type `dns` was included, the IdO can add the
 corresponding CNAME records to its zone, e.g.:
@@ -454,6 +440,115 @@ corresponding CNAME records to its zone, e.g.:
 ~~~
    abc.ndc.ido.example. CNAME abc.ndc.example.
 ~~~
+
+### Order Object Transmitted from NDC to IdO and to ACME Server (non-STAR)
+{: #sec-profile-non-star-order-journey}
+
+If the delegation is for a non-STAR certificate, the Order object created by
+the NDC:
+
+- MUST have the delegated name as the identifier value with a `delegation`
+  attribute indicating the configuration used for the identifier.
+
+~~~
+POST /acme/new-order HTTP/1.1
+Host: acme.ido.example
+Content-Type: application/jose+json
+
+{
+  "protected": base64url({
+    "alg": "ES256",
+    "kid": "https://acme.ido.example/acme/acct/evOfKhNU60wg",
+    "nonce": "IYBkoQfaCS80UcCn9qH8Gt",
+    "url": "https://acme.ido.example/acme/new-order"
+  }),
+  "payload": base64url({
+    "identifiers": [
+      {
+        "type": "dns",
+        "value": "abc.ndc.ido.example.",
+        "delegation":
+           "https://acme.ido.example/acme/delegations/adFqoz/2"
+      }
+    ]
+  }),
+  "signature": "H6ZyWqg8aaKEkYca...dudoz4igiMvUBJ9j"
+}
+~~~
+{: #fig-non-star-ndc-neworder title="New Non-STAR Order from NDC"}
+
+The Order object that is created on the IdO:
+
+- MUST start in the `ready` state;
+- MUST contain an `authorizations` array with zero elements;
+- MUST contain the indicated `delegation` configurations.
+
+~~~
+{
+  "status": "ready",
+  "expires": "2019-05-01T00:00:00Z",
+
+  "identifiers": [
+   {
+     "type": "dns",
+     "value": "abc.ndc.ido.example.",
+     "delegation":
+        "https://acme.ido.example/acme/delegations/adFqoz/2"
+   }
+  ],
+
+  "authorizations": [],
+
+  "finalize": "https://acme.ido.example/acme/order/to8RFGO/finalize"
+}
+~~~
+{: #fig-non-star-ido-order-resource-created title="Non-STAR Order Resource Created on IdO"}
+
+The Order finalization by the NDC and the subsequent validation of the CSR by
+the IdO proceed in the same way as for the STAR case.  If the CSR is
+successfully validated, the Order object status moves to `processing` and the
+twin ACME protocol instance is initiated on the IdO-CA side.
+
+The Order object created by the IdO:
+
+- MUST copy the identifiers sent by the NDC and strip the `delegation`
+  attribute;
+- MUST include the `allow-certificate-get` attribute set to true.
+
+When the validation of the identifiers has been successfully completed and the
+certificate has been issued by the CA, the IdO:
+
+- MUST move its Order resource status to `valid`.
+- MUST copy the `certificate` field from the Order, as well as `notBefore`
+  and `notAfter` if these fields exist.
+
+~~~
+{
+  "status": "valid",
+  "expires": "2019-05-01T00:00:00Z",
+
+  "identifiers": [
+   {
+     "type": "dns",
+     "value": "abc.ndc.ido.example.",
+     "delegation":
+        "https://acme.ido.example/acme/delegations/adFqoz/2"
+   }
+  ],
+
+  "allow-certificate-get": true,
+
+  "authorizations": [],
+
+  "finalize": "https://acme.ido.example/acme/order/to8RFGO/finalize",
+
+  "certificate": "https://acme.ca.example/acme/order/YtR23SsdG9"
+}
+~~~
+{: #fig-non-star-ido-order-resource-updated title="Non-STAR Order Resource Updated on IdO"}
+
+At this point of the protocol flow, the same considerations as in
+{{sec-cname-installation}} apply.
 
 ### Capability Discovery
 
@@ -464,16 +559,22 @@ field:
 - delegation-enabled: boolean flag indicating support for the profile
   specified in this memo.  An ACME server that supports this delegation profile
   MUST include this key, and MUST set it to true.
-  
 
 The `delegation-enabled` flag may be specified regardless of the existence or
 setting of the `auto-renewal` flag.
 
-### On Cancellation
+### Terminating the Delegation
 
-It is worth noting that cancellation of the ACME STAR certificate is a
+Identity delegation is terminated differently, depending on whether this is a STAR certificate or not.
+
+#### By Cancellation (STAR)
+
+The IdO can terminate the delegation of a STAR certificate by requesting its
+cancellation (see Section 3.1.2 of {{!RFC8739}}).
+
+Cancellation of the ACME STAR certificate is a
 prerogative of the IdO.  The NDC does not own the relevant account key on the
-ACME server, therefore it can't issue a cancellation request for the STAR cert.
+ACME server, therefore it can't issue a cancellation request for the STAR certificate.
 Potentially, since it holds the STAR certificate's private key, it could request the
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
@@ -481,31 +582,12 @@ revokeCert interface.
 Shortly after the automatic renewal process is stopped by the IdO, the last
 issued STAR certificate expires and the delegation terminates.
 
-## Delegation of Non-STAR Certificates
-{: #non-star-delegation}
+#### By Revocation (non-STAR)
 
-The mechanism defined here can be used to delegate regular ACME certificates
-whose expiry is not "short term".
+The IdO can terminate the delegation of a non-STAR certificate by requesting it
+to be revoked using the revokeCert URL exposed by the ACME server.
 
-To enable delegation of non-STAR certificates, this document allows use of
-`allow-certificate-get` directly in the Order object and independently of the
-`auto-renewal` object, so that the NDC can fetch the certificate without having
-to authenticate to the ACME server.
-
-The following differences exist between STAR and non-STAR certificate delegation:
-
-* With STAR certificates, the `star-certificate` field is copied by the IdO;
-  with non-STAR certificates, the `certificate` field is copied.
-* The `auto-renewal` object is not used (either in the request or response) for
-  non-STAR certificates. The field `allow-certificate-get` MUST be included in
-  the order object, and its value MUST be `true`.
-* The `notBefore` and `notAfter` order fields are omitted only in STAR
-  certificates.
-
-When delegating a non-STAR certificate, standard certificate revocation still
-applies. The ACME certificate revocation endpoint is explicitly unavailable for
-STAR certificates but it is available for all other certificates. We note that
-according to Section 7.6 of {{RFC8555}}, the revocation endpoint can be used
+According to Section 7.6 of {{RFC8555}}, the revocation endpoint can be used
 with either the account keypair, or the certificate keypair. In other words, an
 NDC that learns the revokeCert URL of the CA (which is publicly available via
 the CA's Directory object) would be able to revoke the certificate using the
