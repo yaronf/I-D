@@ -67,7 +67,8 @@ informative:
 
 This memo proposes a profile of the Automatic Certificate Management Environment (ACME)
 protocol that allows the owner of an
-identifier (e.g., a domain name) to delegate to a third party access to a
+identifier (e.g., a domain name) to delegate to a third party the ability
+to request and own a
 certificate associated with said identifier.  A primary use case is that of a
 Content Delivery Network (CDN, the third party) terminating TLS sessions on behalf of a content provider
 (the owner of a domain name).  The presented mechanism allows the owner of the
