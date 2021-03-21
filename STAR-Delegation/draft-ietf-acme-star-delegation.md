@@ -193,7 +193,7 @@ server.
 
 The interaction between the NDC and the IdO is governed by the profiled ACME
 workflow detailed in {{sec-profile}}.  The interaction between the IdO and the
-CA is ruled by ACME STAR {{!RFC8739}} as well as any other ACME extension that
+CA is ruled by ACME {{!RFC8555}}, ACME STAR {{!RFC8739}} as well as any other ACME extension that
 applies (e.g., {{?I-D.ietf-acme-authority-token-tnauthlist}} for STIR).
 
 The outline of the combined protocol is as follow ({{fig-endtoend}}):
