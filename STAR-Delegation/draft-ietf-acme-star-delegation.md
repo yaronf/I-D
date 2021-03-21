@@ -627,7 +627,8 @@ ACME Delegation process:
 * Get Order response:
   * The `status`, `expires`, `authorizations`, `identifiers` and `auto-renewal`
     attributes/objects MUST be copied as-is.
-  * Similarly, the `star-certificate` URL MUST be copied as-is.
+  * Similarly, the `star-certificate` URL (or the `certificate` URL in case of
+    non-STAR requests) MUST be copied as-is.
   * The `finalize` URL is rewritten, so that the `finalize` request will be
     made to the proxy.
   * The `Location` header MUST be rewritten to point to an Order object on the proxy.
