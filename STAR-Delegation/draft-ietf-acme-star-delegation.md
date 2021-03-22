@@ -191,12 +191,16 @@ server.
 
 ## Overview
 
+For clarity, the protocol overview presented here covers the main use case of this protocol,
+namely delegation of STAR certificates. Protocol behavior for non-STAR certificates is similar,
+and the detailed differences are listed in the following sections.
+
 The interaction between the NDC and the IdO is governed by the profiled ACME
 workflow detailed in {{sec-profile}}.  The interaction between the IdO and the
 CA is ruled by ACME {{!RFC8555}}, ACME STAR {{!RFC8739}} as well as any other ACME extension that
 applies (e.g., {{?I-D.ietf-acme-authority-token-tnauthlist}} for STIR).
 
-The outline of the combined protocol is as follow ({{fig-endtoend}}):
+The outline of the combined protocol for STAR certificates is as follow ({{fig-endtoend}}):
 
 - NDC sends an order Order1 for the delegated identifier to IdO;
 - IdO creates an Order1 resource in state `ready` with a `finalize` URL;
@@ -238,6 +242,9 @@ and IdO.
 
 ### Delegation Configuration
 {: #sec-profile-dele-config}
+
+The IdO must be preconfigured to recognize one or more NDCs, and present them with
+details about certificate delegations that apply to each one.
 
 #### Account Object Extensions
 
