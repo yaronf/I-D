@@ -68,8 +68,9 @@ informative:
 This memo proposes a profile of the Automatic Certificate Management Environment (ACME)
 protocol that allows the owner of an
 identifier (e.g., a domain name) to delegate to a third party the ability
-to request and own a
-certificate associated with said identifier.  A primary use case is that of a
+to request a certificate that associates said identifier with a private key
+under the sole control of the third party.
+A primary use case is that of a
 Content Delivery Network (CDN, the third party) terminating TLS sessions on behalf of a content provider
 (the owner of a domain name).  The presented mechanism allows the owner of the
 identifier to retain control over the delegation and revoke it at any time.  A
@@ -682,6 +683,12 @@ An alternative, non-normative JSON Schema syntax is given in {{csr-template-sche
 
 The `subject` field and its subfields are mapped into the `subject` field of the CSR, as per {{RFC5280}}, Section 4.1.2.6. Other extension fields of the CSR template are mapped into the CSR according to the table in {{csr-template-registry}}.
 
+The `subjectAltName` field is currently defined for the following identifiers:
+DNS names, email addresses, and URIs.  New identifier types may be added in the
+future by documents that extend this specification.  Each new identifier type
+SHALL have an associated identifier validation challenge that the ACME CA can
+use to obtain proof of the requester's control over it.
+
 The `keyTypes` property is not copied into the CSR. Instead, this property constrains the `SubjectPublicKeyInfo` field of the CSR, which MUST have the type/size defined by one of the array members of the `keyTypes` property.
 
 When the IdO receives the CSR, it MUST verify that the CSR is consistent
@@ -925,14 +932,14 @@ Each extension registered must specify:
 * An extension syntax, as a reference to a JSON Schema document that defines this extension.
 * The extension's mapping into an X.509 certificate extension.
 
-The initial contents of this registry are the extensions defined by the JSON
-Schema document in {{csr-template-schema}}.
+The initial contents of this registry are the extensions defined by the CDDL
+in {{csr-template-schema-cddl}}.
 
-| Extension Name   | Extension Syntax            | Mapping to X.509 Certificate Extension                       |
-| ---------------- | --------------------------- | ------------------------------------------------------------ |
-| keyUsage         | See {{csr-template-schema}} | {{!RFC5280}}, Section 4.2.1.3                                |
-| extendedKeyUsage | See {{csr-template-schema}} | {{!RFC5280}}, Section 4.2.1.12                               |
-| subjectAltName   | See {{csr-template-schema}} | {{!RFC5280}}, Section 4.2.1.6 (note that only specific name formats are allowed: URI, DNS name, email address) |
+| Extension Name   | Extension Syntax                 | Mapping to X.509 Certificate Extension                       |
+| ---------------- | -------------------------------- | ------------------------------------------------------------ |
+| keyUsage         | See {{csr-template-schema-cddl}} | {{!RFC5280}}, Section 4.2.1.3                                |
+| extendedKeyUsage | See {{csr-template-schema-cddl}} | {{!RFC5280}}, Section 4.2.1.12                               |
+| subjectAltName   | See {{csr-template-schema-cddl}} | {{!RFC5280}}, Section 4.2.1.6 (note that only specific name formats are allowed: URI, DNS name, email address) |
 
 # Security Considerations
 
