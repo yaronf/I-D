@@ -68,9 +68,9 @@ informative:
 
 This memo defines a profile of the Automatic Certificate Management Environment
 (ACME) protocol by which the owner of an identifier (e.g., a domain name) can
-allow a third party to obtain a certificate whose subject is the delegated
-identifier, while the certified public key corresponds to a private key
-controlled by the third party.
+allow a third party to obtain an X.509 certificate such that: the certificate
+subject is the delegated identifier while the certified public key corresponds
+to a private key controlled by the third party.
 A primary use case is that of a Content Delivery Network (CDN, the third party)
 terminating TLS sessions on behalf of a content provider (the owner of a domain
 name).  The presented mechanism allows the owner of the identifier to retain
