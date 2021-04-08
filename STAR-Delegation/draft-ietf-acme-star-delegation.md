@@ -407,8 +407,10 @@ When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
 - MUST move its Order resource status to `valid`.
-- MUST copy the `star-certificate` field from the STAR Order.  The latter
-  indirectly includes (via the NotBefore and NotAfter HTTP headers) the renewal
+- MUST copy the `star-certificate` field from the STAR Order to the order
+  resource on the IdO.  The latter
+  indirectly includes (via the Cert-Not-Before and Cert-Not-After HTTP
+  header fields) the renewal
   timers needed by the NDC to inform its certificate reload logic.
 
 ~~~
@@ -562,7 +564,7 @@ At this point of the protocol flow, the same considerations as in
 ### Capability Discovery
 
 In order to help a client to discover support for this profile, the directory
-object of an ACME server MUST contain the following attribute in the `meta`
+object of an ACME server contains the following attribute in the `meta`
 field:
 
 - delegation-enabled: boolean flag indicating support for the profile
@@ -574,7 +576,7 @@ setting of the `auto-renewal` flag.
 
 ### Terminating the Delegation
 
-Identity delegation is terminated differently, depending on whether this is a STAR certificate or not.
+Identity delegation is terminated differently depending on whether this is a STAR certificate or not.
 
 #### By Cancellation (STAR)
 
@@ -603,7 +605,7 @@ the CA's Directory object) would be able to revoke the certificate using the
 associated private key. However, given the trust relationship between NDC and
 IdO expected by the delegation trust model ({{sec-trust-model}}), as well as
 the lack of incentives for the NDC to prematurely terminate the delegation,
-this does not represent a security risk.
+this does not represent a significant security risk.
 
 ## Proxy Behavior
 
@@ -632,7 +634,7 @@ ACME Delegation process:
   * The `finalize` URL is rewritten, so that the `finalize` request will be
     made to the proxy.
   * Similarly, the `Location` header MUST be rewritten to point to an Order object on the proxy.
-  * And similarly, any `Link` relations.
+  * Any `Link` relations MUST be rewritten to point to the proxy.
 * Get Order response:
   * The `status`, `expires`, `authorizations`, `identifiers` and `auto-renewal`
     attributes/objects MUST be copied as-is.
@@ -997,7 +999,7 @@ thus entirely blocking any further interaction.
 The fifth is covered by two different mechanisms, depending on the nature of
 the certificate.  For STAR, the IdO shall use the cancellation interface
 defined in Section 2.3 of {{RFC8739}}. For non-STAR, the certificate revocation
-interface defined in Section 7.6 of {{RFC8555}}).
+interface defined in Section 7.6 of {{RFC8555}}) is used.
 
 ## New ACME Channels
 
@@ -1039,7 +1041,7 @@ whether the CNAME mechanisms defined in the current document is used or not.
 
 In some cases, this is the desired behavior: the domain holder trusts the CDN to
 have full control of the cryptographic credentials for the site. The current
-document however assumes that the domain holder only wants to delegate
+document however assumes a scenario where the domain holder only wants to delegate
 restricted control, and wishes to retain the capability to cancel the CDN's
 credentials at a short notice.
 
