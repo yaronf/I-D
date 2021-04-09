@@ -1062,9 +1062,15 @@ capabilities and authorisation flows supported by the selected CAs.
 
 # Acknowledgments
 
-We would like to thank the following people who contributed significantly to this document with their review comments and design proposals: Roman Danyliw, <contact fullname="Frédéric" asciiFullname="Frederic"/> Fieau,
+We would like to thank the following people who contributed significantly to this document with their review comments and design proposals:
+Carsten Bormann,
+Roman Danyliw,
+<contact fullname="Frédéric" asciiFullname="Frederic"/> Fieau,
 Russ Housley,
-Sanjay Mishra, Jon Peterson, Ryan Sleevi, Emile Stephan.
+Sanjay Mishra,
+Jon Peterson,
+Ryan Sleevi,
+Emile Stephan.
 
 This work is partially supported by the European Commission under Horizon 2020
 grant agreement no. 688421 Measurement and Architecture for a Middleboxed
@@ -1139,7 +1145,9 @@ Internet (MAMI). This support does not imply endorsement.
 
 Following is the normative definition of the CSR template, using CDDL {{RFC8610}}. The CSR template MUST be a valid JSON document, compliant with the syntax defined here.
 
-An additional constraint that is not expressed in CDDL but MUST be validated by the recipient is that all objects (e.g. `distinguishedName`) MUST NOT be empty when they are included, even when each separate property is optional.
+An additional constraint that is not expressed in CDDL but MUST be validated by
+the recipient is that each subjectAltName entry has a value compatible with its
+type.
 
 ~~~
 {::include CSR-template/template-schema.cddl}
