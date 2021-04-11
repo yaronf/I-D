@@ -1145,9 +1145,11 @@ Internet (MAMI). This support does not imply endorsement.
 
 Following is the normative definition of the CSR template, using CDDL {{RFC8610}}. The CSR template MUST be a valid JSON document, compliant with the syntax defined here.
 
-An additional constraint that is not expressed in CDDL but MUST be validated by
-the recipient is that each subjectAltName entry has a value compatible with its
-type.
+There are additional constraints not expressed in CDDL that MUST be validated
+by the recipient, including:
+
+* The value of each `subjectAltName` entry is compatible with its type;
+* The parameters in each `keyTypes` entry form an acceptable combination.
 
 ~~~
 {::include CSR-template/template-schema.cddl}
