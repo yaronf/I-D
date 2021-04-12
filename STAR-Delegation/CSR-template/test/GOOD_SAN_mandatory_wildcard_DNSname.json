@@ -1,0 +1,22 @@
+{
+  "keyTypes": [
+    {
+      "PublicKeyType": "id-ecPublicKey",
+      "namedCurve": "secp521r1",
+      "SignatureType": "ecdsa-with-SHA512"
+    }
+  ],
+  "extensions": {
+    "subjectAltName": {
+      "DNS": [
+        "**"
+      ]
+    },
+    "keyUsage": [
+      "digitalSignature"
+    ],
+    "extendedKeyUsage": [
+      "serverAuth"
+    ]
+  }
+}
