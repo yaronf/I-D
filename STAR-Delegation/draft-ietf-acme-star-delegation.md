@@ -855,37 +855,6 @@ extension to the CSR template.
 
 [[RFC Editor: please replace XXXX below by the RFC number.]]
 
-## New ACME Identifier Object Fields
-
-This document requests that IANA create the following new registry under the
-Automated Certificate Management Environment (ACME) Protocol:
-
-* ACME Identifier Object Fields
-
-This registry is administered under a Specification Required policy
-{{!RFC8126}}.
-
-The "ACME Identifier Object Fields" registry lists field names that are
-defined for use in the ACME identifier object.
-
-Template:
-
-* Field name: The string to be used as a field name in the JSON object
-* Field type: The type of value to be provided, e.g., string, boolean, array of
-  string
-* Reference: Where this field is defined
-
-| Field Name | Field Type | Reference |
-|------------|------------|-----------|
-| type | string | Section 7.1.3 of RFC 8555 |
-| value | string | Section 7.1.3 of RFC 8555 |
-| delegation | string | RFC XXXX |
-
-Note: this registry was not created at the time {{RFC8555}} was standardized
-likely because it was not anticipated that the identifier object would be
-extended.  It is retrospectively introduced to record the status quo and allow
-controlled extensibility of the identifier object.
-
 ## New Fields in the "meta" Object within a Directory Object
 
 This document adds the following entries to the ACME Directory Metadata Fields registry:
@@ -925,12 +894,12 @@ This document adds the following entries to the ACME Error Type registry:
 {: #csr-template-registry }
 
 IANA is requested to establish a registry "STAR Delegation CSR Template
-Extensions", with "Expert Review" as its registration procedure.
+Extensions", with "Specification Required" as its registration procedure.
 
 Each extension registered must specify:
 
 * An extension name.
-* An extension syntax, as a reference to a JSON Schema document that defines this extension.
+* An extension syntax, as a reference to a CDDL document that defines this extension.
 * The extension's mapping into an X.509 certificate extension.
 
 The initial contents of this registry are the extensions defined by the CDDL
@@ -941,6 +910,12 @@ in {{csr-template-schema-cddl}}.
 | keyUsage         | See {{csr-template-schema-cddl}} | {{!RFC5280}}, Section 4.2.1.3                                |
 | extendedKeyUsage | See {{csr-template-schema-cddl}} | {{!RFC5280}}, Section 4.2.1.12                               |
 | subjectAltName   | See {{csr-template-schema-cddl}} | {{!RFC5280}}, Section 4.2.1.6 (note that only specific name formats are allowed: URI, DNS name, email address) |
+
+When evaluating a request for an assignment in this registry, the designated expert should follow this guidance:
+
+- The definition must include a full CDDL definition, which the expert will validate.
+- The definition must include both positive and negative test cases.
+- Additional requirements that are not captured by the CDDL definition are allowed but must be explicitly specified.
 
 # Security Considerations
 
