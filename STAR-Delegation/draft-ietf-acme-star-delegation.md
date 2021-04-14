@@ -113,10 +113,11 @@ certificate expire shortly thereafter.
 While the primary use case we address is delegation of STAR certificates, the
 mechanism proposed here accommodates also long-lived certificates managed with
 the ACME protocol. The most noticeable difference between long-lived and STAR
-certificates is the way the termination of the delegation is managed.  In the case
-of long-lived certificates, the IdO uses the revokeCert URL exposed by the ACME
-CA and waits for the explicit revocation based on CRL and OCSP to propagate
-to the relying parties.
+certificates is the way the termination of the delegation is managed.  In the
+case of long-lived certificates, the IdO uses the revokeCert URL exposed by the
+ACME CA and waits for the explicit revocation based on Certificate Revocation
+List (CRL) and Online Certificate Status Protocol (OCSP) to propagate to the
+relying parties.
 
 In case the delegated identity is a domain name, this document also provides a
 way for the NDC to inform the IdO about the CNAME mappings that need to be
@@ -258,7 +259,8 @@ As shown in {{fig-account-object}}, the ACME account resource on the IdO is
 extended with a new `delegations` attribute:
 
 - delegations (required, string): A URL from which a list of delegations
-  configured for this account can be fetched via a POST-as-GET request.
+  configured for this account ({{sec-delegation-objects}}) can be fetched via a
+  POST-as-GET request.
 
 ~~~
 {
@@ -274,6 +276,7 @@ extended with a new `delegations` attribute:
 {: #fig-account-object title="Example Account object with delegations"}
 
 #### Delegation Objects
+{: #sec-delegation-objects}
 
 This profile extends the ACME resource model with a new read-only delegation
 object that represents a delegation configuration that applies to a given NDC.
@@ -290,7 +293,8 @@ delegated identifiers.  Its structure is as follows:
   entity.  Both names and values MUST be FQDNs with a terminating '.'.
   This field is only meaningful for identifiers of type `dns`.
 
-An example delegation object is shown in {{fig-configuration-object}}.
+An example delegation object in JSON format is shown in
+{{fig-configuration-object}}.
 
 ~~~
 {::include CSR-template/example-configuration-object.json}
@@ -304,8 +308,8 @@ value of this attribute is the URL pointing to the delegation configuration
 object that is to be used for this certificate request.  If the `delegation`
 attribute in the Order object contains a URL that does not correspond to a
 configuration available to the requesting NDC, the IdO MUST return an error
-response with status code 403 (Forbidden) and type
-`urn:ietf:params:acme:error:unknownDelegation`.
+response with status code 403 (Forbidden), providing a problem document
+{{!RFC7807}} with type `urn:ietf:params:acme:error:unknownDelegation`.
 
 ### Order Object Transmitted from NDC to IdO and to ACME Server (STAR)
 {: #sec-profile-star-order-journey}
@@ -406,10 +410,11 @@ The Order object created by the IdO:
 When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
-- MUST move its Order resource status to `valid`.
-- MUST copy the `star-certificate` field from the STAR Order.  The latter
-  indirectly includes (via the NotBefore and NotAfter HTTP headers) the renewal
-  timers needed by the NDC to inform its certificate reload logic.
+- MUST move its Order resource status to `valid`;
+- MUST copy the `star-certificate` field from the STAR Order returned by the CA
+  into its Order resource.  When dereferenced, the `star-certificate` URL
+  includes (via the NotBefore and NotAfter HTTP headers) the renewal timers
+  needed by the NDC to inform its certificate reload logic.
 
 ~~~
 {
@@ -527,9 +532,9 @@ The Order object created by the IdO:
 When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
-- MUST move its Order resource status to `valid`.
-- MUST copy the `certificate` field from the Order, as well as `notBefore`
-  and `notAfter` if these fields exist.
+- MUST move its Order resource status to `valid`;
+- MUST copy the `certificate` field from the Order returned by the CA into its
+  Order resource, as well as `notBefore` and `notAfter` if these fields exist.
 
 ~~~
 {
@@ -773,10 +778,11 @@ CNAME-based aliasing chain as illustrated in {{fig-cdni-dns-redirection}}.
 Unlike HTTP based redirection, where the original URL is supplanted by the one
 found in the Location header of the 302 response, DNS redirection is completely
 transparent to the User Agent.  As a result, the TLS connection to the dCDN
-edge is done with an SNI equal to the `host` in the original URI - in the
-example, `video.cp.example`.  So, in order to successfully complete the
-handshake, the landing dCDN node has to be configured with a certificate whose
-subjectAltName matches `video.cp.example`, i.e., a Content Provider's name.
+edge is done with a Server Name Indication (SNI) equal to the `host` in the
+original URI - in the example, `video.cp.example`.  So, in order to
+successfully complete the handshake, the landing dCDN node has to be configured
+with a certificate whose subjectAltName matches `video.cp.example`, i.e., a
+Content Provider's name.
 
 {{fig-cdni-flow}} illustrates the cascaded delegation flow that allows dCDN to
 obtain a STAR certificate that bears a name belonging to the Content Provider
