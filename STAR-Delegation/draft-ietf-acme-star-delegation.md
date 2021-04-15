@@ -1049,6 +1049,7 @@ Roman Danyliw,
 <contact fullname="Frédéric" asciiFullname="Frederic"/> Fieau,
 Russ Housley,
 Sanjay Mishra,
+Francesca Palombini,
 Jon Peterson,
 Ryan Sleevi,
 Emile Stephan.
