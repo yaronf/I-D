@@ -275,6 +275,32 @@ extended with a new `delegations` attribute:
 ~~~
 {: #fig-account-object title="Example Account object with delegations"}
 
+##### Delegation Lists
+
+Each account object includes a `delegations` URL from which a list of
+delegation configurations created by the IdO can be fetched via POST-as-GET
+request.  The result of the request MUST be a JSON object whose `delegations`
+field is an array of URLs, each identifying a delegation configuration made
+available to the NDC account ({{sec-delegation-objects}}).  The server MAY
+return an incomplete list, along with a Link header field with a `next` link
+relation indicating where further entries can be acquired.
+
+~~~
+HTTP/1.1 200 OK
+Content-Type: application/json
+Link: <https://acme.ido.example/acme/directory>;rel="index"
+Link: <https://acme.ido.example/acme/delegations/adFqoz?cursor=2>;rel="next"
+
+{
+  "delegations": [
+    "https://acme.ido.example/acme/delegation/ogfr8EcolOT",
+    "https://acme.ido.example/acme/delegation/wSi5Lbb61E4",
+    /* more URLs not shown for example brevity */
+    "https://acme.ido.example/acme/delegation/gm0wfLYHBen"
+  ]
+}
+~~~
+
 #### Delegation Objects
 {: #sec-delegation-objects}
 
