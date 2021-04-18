@@ -328,7 +328,7 @@ An example delegation object in JSON format is shown in
 {: #fig-configuration-object title="Example Delegation Configuration object"}
 
 In order to indicate which specific delegation applies to the requested
-certificate a new `delegation` attribute is added to the identifier in the
+certificate a new `delegation` attribute is added to the
 Order object on the NDC-IdO side (see {{fig-star-ndc-neworder}}).  The
 value of this attribute is the URL pointing to the delegation configuration
 object that is to be used for this certificate request.  If the `delegation`
@@ -343,8 +343,10 @@ response with status code 403 (Forbidden), providing a problem document
 If the delegation is for a STAR certificate, the Order object created by the
 NDC:
 
-- MUST have the delegated name as the identifier value with a `delegation`
-  attribute indicating the configuration used for the identifier.
+- MUST have a `delegation` attribute indicating the preconfigured delegation
+  that applies to this Order;
+- MUST have entries in the `identifiers` field for each delegated name
+  present in the configuration;
 - MUST NOT contain the `notBefore` and `notAfter` fields;
 - MUST contain an `auto-renewal` object and inside it, the fields
   listed in Section 3.1.1 of {{!RFC8739}}.
@@ -365,16 +367,16 @@ Content-Type: application/jose+json
     "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.ido.example.",
-        "delegation":
-           "https://acme.ido.example/acme/delegations/adFqoz/2"
+        "value": "abc.ndc.ido.example"
       }
     ],
     "auto-renewal": {
       "end-date": "2020-04-20T00:00:00Z",
       "lifetime": 345600,          // 4 days
       "allow-certificate-get": true
-    }
+    },
+    "delegation":
+      "https://acme.ido.example/acme/delegations/adFqoz/2"
   }),
   "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
 }
@@ -385,7 +387,7 @@ The Order object that is created on the IdO:
 
 - MUST start in the `ready` state;
 - MUST contain an `authorizations` array with zero elements;
-- MUST contain the indicated `delegation` configurations.
+- MUST contain the indicated `delegation` configuration;
 - MUST NOT contain the `notBefore` and `notAfter` fields.
 
 ~~~
@@ -396,9 +398,7 @@ The Order object that is created on the IdO:
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.ido.example.",
-     "delegation":
-        "https://acme.ido.example/acme/delegations/adFqoz/2"
+     "value": "abc.ndc.ido.example"
    }
   ],
 
@@ -407,6 +407,9 @@ The Order object that is created on the IdO:
     "lifetime": 345600,
     "allow-certificate-get": true
   },
+
+  "delegation":
+    "https://acme.ido.example/acme/delegations/adFqoz/2",
 
   "authorizations": [],
 
@@ -417,7 +420,7 @@ The Order object that is created on the IdO:
 
 The Order is then finalized by the NDC supplying the CSR containing the
 delegated identifiers.  The IdO checks the provided CSR against the template
-that applies to each delegated identifier, as described in
+contained in the delegation object that applies to this request, as described in
 {{sec-csr-template-syntax}}.  If the CSR fails validation for any of the
 identifiers, the IdO MUST return an error response with status code 403
 (Forbidden) and an appropriate type, e.g., `rejectedIdentifier` or `badCSR`.
@@ -426,10 +429,10 @@ for each failed identifier.  If the CSR is successfully validated, the Order
 object status moves to `processing` and the twin ACME protocol instance is
 initiated on the IdO-CA side.
 
-The Order object created by the IdO:
+The Order object created by the IdO in its request to the ACME Server:
 
-- MUST copy the identifiers sent by the NDC and strip the `delegation`
-  attribute;
+- MUST copy the identifiers sent by the NDC;
+- MUST strip the `delegation` attribute;
 - MUST carry a copy of the `auto-renewal` object sent by the NDC and augment it
   with an `allow-certificate-get` attribute set to true.
 
@@ -450,9 +453,7 @@ certificate has been issued by the CA, the IdO:
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.ido.example.",
-     "delegation":
-        "https://acme.ido.example/acme/delegations/adFqoz/2"
+     "value": "abc.ndc.ido.example"
    }
   ],
 
@@ -461,6 +462,9 @@ certificate has been issued by the CA, the IdO:
     "lifetime": 345600,
     "allow-certificate-get": true
   },
+
+  "delegation":
+    "https://acme.ido.example/acme/delegations/adFqoz/2",
 
   "authorizations": [],
 
@@ -487,8 +491,10 @@ corresponding CNAME records to its zone, e.g.:
 If the delegation is for a non-STAR certificate, the Order object created by
 the NDC:
 
-- MUST have the delegated name as the identifier value with a `delegation`
-  attribute indicating the configuration used for the identifier.
+- MUST have a `delegation` attribute indicating the preconfigured delegation
+  that applies to this Order;
+- MUST have entries in the `identifiers` field for each delegated name
+  present in the configuration;
 
 ~~~
 POST /acme/new-order HTTP/1.1
@@ -506,11 +512,11 @@ Content-Type: application/jose+json
     "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.ido.example.",
-        "delegation":
-           "https://acme.ido.example/acme/delegations/adFqoz/2"
+        "value": "abc.ndc.ido.example"
       }
-    ]
+    ],
+    "delegation":
+      "https://acme.ido.example/acme/delegations/adFqoz/2"
   }),
   "signature": "H6ZyWqg8aaKEkYca...dudoz4igiMvUBJ9j"
 }
@@ -521,7 +527,7 @@ The Order object that is created on the IdO:
 
 - MUST start in the `ready` state;
 - MUST contain an `authorizations` array with zero elements;
-- MUST contain the indicated `delegation` configurations.
+- MUST contain the indicated `delegation` configuration.
 
 ~~~
 {
@@ -531,11 +537,12 @@ The Order object that is created on the IdO:
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.ido.example.",
-     "delegation":
-        "https://acme.ido.example/acme/delegations/adFqoz/2"
+     "value": "abc.ndc.ido.example"
    }
   ],
+
+  "delegation":
+    "https://acme.ido.example/acme/delegations/adFqoz/2",
 
   "authorizations": [],
 
@@ -549,10 +556,10 @@ the IdO proceed in the same way as for the STAR case.  If the CSR is
 successfully validated, the Order object status moves to `processing` and the
 twin ACME protocol instance is initiated on the IdO-CA side.
 
-The Order object created by the IdO:
+The Order object created by the IdO in its request to the ACME Server:
 
-- MUST copy the identifiers sent by the NDC and strip the `delegation`
-  attribute;
+- MUST copy the identifiers sent by the NDC;
+- MUST strip the `delegation` attribute;
 - MUST include the `allow-certificate-get` attribute set to true.
 
 When the validation of the identifiers has been successfully completed and the
@@ -570,11 +577,12 @@ certificate has been issued by the CA, the IdO:
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.ido.example.",
-     "delegation":
-        "https://acme.ido.example/acme/delegations/adFqoz/2"
+     "value": "abc.ndc.ido.example"
    }
   ],
+
+  "delegation":
+    "https://acme.ido.example/acme/delegations/adFqoz/2",
 
   "allow-certificate-get": true,
 
@@ -902,6 +910,7 @@ This document adds the following entries to the ACME Order Object Fields registr
 | Field Name | Field Type | Configurable | Reference |
 |------------|------------|--------------|-----------|
 | allow-certificate-get | boolean | true | RFC XXXX |
+| delegation | string | true | RFC XXXX |
 
 ## New Fields in the Account Object
 
