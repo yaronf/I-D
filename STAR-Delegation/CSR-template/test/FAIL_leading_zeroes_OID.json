@@ -1,0 +1,40 @@
+{
+  "keyTypes": [
+    {
+      "PublicKeyType": "rsaEncryption",
+      "PublicKeyLength": 2048,
+      "SignatureType": "sha256WithRSAEncryption"
+    },
+    {
+      "PublicKeyType": "id-ecPublicKey",
+      "namedCurve": "secp521r1",
+      "SignatureType": "ecdsa-with-SHA512"
+    }
+  ],
+  "subject": {
+    "country": "CA",
+    "stateOrProvince": "**",
+    "locality": "**",
+    "commonName": "**"
+  },
+  "extensions": {
+    "subjectAltName": {
+      "DNS": [
+        "cache.ndc.ido.example"
+      ],
+      "URI": [
+        "sip:voice.ndc.ido.example"
+      ],
+      "Email": [
+        "admin@ndc.ido.example"
+      ]
+    },
+    "keyUsage": [
+      "digitalSignature"
+    ],
+    "extendedKeyUsage": [
+      "serverAuth",
+      "00.00.00"
+    ]
+  }
+}

@@ -113,10 +113,11 @@ certificate expire shortly thereafter.
 While the primary use case we address is delegation of STAR certificates, the
 mechanism proposed here accommodates also long-lived certificates managed with
 the ACME protocol. The most noticeable difference between long-lived and STAR
-certificates is the way the termination of the delegation is managed.  In the case
-of long-lived certificates, the IdO uses the revokeCert URL exposed by the ACME
-CA and waits for the explicit revocation based on CRL and OCSP to propagate
-to the relying parties.
+certificates is the way the termination of the delegation is managed.  In the
+case of long-lived certificates, the IdO uses the revokeCert URL exposed by the
+ACME CA and waits for the explicit revocation based on Certificate Revocation
+List (CRL) and Online Certificate Status Protocol (OCSP) to propagate to the
+relying parties.
 
 In case the delegated identity is a domain name, this document also provides a
 way for the NDC to inform the IdO about the CNAME mappings that need to be
@@ -258,7 +259,8 @@ As shown in {{fig-account-object}}, the ACME account resource on the IdO is
 extended with a new `delegations` attribute:
 
 - delegations (required, string): A URL from which a list of delegations
-  configured for this account can be fetched via a POST-as-GET request.
+  configured for this account ({{sec-delegation-objects}}) can be fetched via a
+  POST-as-GET request.
 
 ~~~
 {
@@ -274,6 +276,7 @@ extended with a new `delegations` attribute:
 {: #fig-account-object title="Example Account object with delegations"}
 
 #### Delegation Objects
+{: #sec-delegation-objects}
 
 This profile extends the ACME resource model with a new read-only delegation
 object that represents a delegation configuration that applies to a given NDC.
@@ -290,7 +293,8 @@ delegated identifiers.  Its structure is as follows:
   entity.  Both names and values MUST be FQDNs with a terminating '.'.
   This field is only meaningful for identifiers of type `dns`.
 
-An example delegation object is shown in {{fig-configuration-object}}.
+An example delegation object in JSON format is shown in
+{{fig-configuration-object}}.
 
 ~~~
 {::include CSR-template/example-configuration-object.json}
@@ -304,8 +308,8 @@ value of this attribute is the URL pointing to the delegation configuration
 object that is to be used for this certificate request.  If the `delegation`
 attribute in the Order object contains a URL that does not correspond to a
 configuration available to the requesting NDC, the IdO MUST return an error
-response with status code 403 (Forbidden) and type
-`urn:ietf:params:acme:error:unknownDelegation`.
+response with status code 403 (Forbidden), providing a problem document
+{{!RFC7807}} with type `urn:ietf:params:acme:error:unknownDelegation`.
 
 ### Order Object Transmitted from NDC to IdO and to ACME Server (STAR)
 {: #sec-profile-star-order-journey}
@@ -406,12 +410,11 @@ The Order object created by the IdO:
 When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
-- MUST move its Order resource status to `valid`.
-- MUST copy the `star-certificate` field from the STAR Order to the order
-  resource on the IdO.  The latter
-  indirectly includes (via the Cert-Not-Before and Cert-Not-After HTTP
-  header fields) the renewal
-  timers needed by the NDC to inform its certificate reload logic.
+- MUST move its Order resource status to `valid`;
+- MUST copy the `star-certificate` field from the STAR Order returned by the CA
+  into its Order resource.  When dereferenced, the `star-certificate` URL
+  includes (via the Cert-Not-Before and Cert-Not-After HTTP header fields) the renewal timers
+  needed by the NDC to inform its certificate reload logic.
 
 ~~~
 {
@@ -529,9 +532,9 @@ The Order object created by the IdO:
 When the validation of the identifiers has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
-- MUST move its Order resource status to `valid`.
-- MUST copy the `certificate` field from the Order, as well as `notBefore`
-  and `notAfter` if these fields exist.
+- MUST move its Order resource status to `valid`;
+- MUST copy the `certificate` field from the Order returned by the CA into its
+  Order resource, as well as `notBefore` and `notAfter` if these fields exist.
 
 ~~~
 {
@@ -775,10 +778,11 @@ CNAME-based aliasing chain as illustrated in {{fig-cdni-dns-redirection}}.
 Unlike HTTP based redirection, where the original URL is supplanted by the one
 found in the Location header of the 302 response, DNS redirection is completely
 transparent to the User Agent.  As a result, the TLS connection to the dCDN
-edge is done with an SNI equal to the `host` in the original URI - in the
-example, `video.cp.example`.  So, in order to successfully complete the
-handshake, the landing dCDN node has to be configured with a certificate whose
-subjectAltName matches `video.cp.example`, i.e., a Content Provider's name.
+edge is done with a Server Name Indication (SNI) equal to the `host` in the
+original URI - in the example, `video.cp.example`.  So, in order to
+successfully complete the handshake, the landing dCDN node has to be configured
+with a certificate whose subjectAltName matches `video.cp.example`, i.e., a
+Content Provider's name.
 
 {{fig-cdni-flow}} illustrates the cascaded delegation flow that allows dCDN to
 obtain a STAR certificate that bears a name belonging to the Content Provider
@@ -857,37 +861,6 @@ extension to the CSR template.
 
 [[RFC Editor: please replace XXXX below by the RFC number.]]
 
-## New ACME Identifier Object Fields
-
-This document requests that IANA create the following new registry under the
-Automated Certificate Management Environment (ACME) Protocol:
-
-* ACME Identifier Object Fields
-
-This registry is administered under a Specification Required policy
-{{!RFC8126}}.
-
-The "ACME Identifier Object Fields" registry lists field names that are
-defined for use in the ACME identifier object.
-
-Template:
-
-* Field name: The string to be used as a field name in the JSON object
-* Field type: The type of value to be provided, e.g., string, boolean, array of
-  string
-* Reference: Where this field is defined
-
-| Field Name | Field Type | Reference |
-|------------|------------|-----------|
-| type | string | Section 7.1.3 of RFC 8555 |
-| value | string | Section 7.1.3 of RFC 8555 |
-| delegation | string | RFC XXXX |
-
-Note: this registry was not created at the time {{RFC8555}} was standardized
-likely because it was not anticipated that the identifier object would be
-extended.  It is retrospectively introduced to record the status quo and allow
-controlled extensibility of the identifier object.
-
 ## New Fields in the "meta" Object within a Directory Object
 
 This document adds the following entries to the ACME Directory Metadata Fields registry:
@@ -927,12 +900,12 @@ This document adds the following entries to the ACME Error Type registry:
 {: #csr-template-registry }
 
 IANA is requested to establish a registry "STAR Delegation CSR Template
-Extensions", with "Expert Review" as its registration procedure.
+Extensions", with "Specification Required" as its registration procedure.
 
 Each extension registered must specify:
 
 * An extension name.
-* An extension syntax, as a reference to a JSON Schema document that defines this extension.
+* An extension syntax, as a reference to a CDDL document that defines this extension.
 * The extension's mapping into an X.509 certificate extension.
 
 The initial contents of this registry are the extensions defined by the CDDL
@@ -943,6 +916,12 @@ in {{csr-template-schema-cddl}}.
 | keyUsage         | See {{csr-template-schema-cddl}} | {{!RFC5280}}, Section 4.2.1.3                                |
 | extendedKeyUsage | See {{csr-template-schema-cddl}} | {{!RFC5280}}, Section 4.2.1.12                               |
 | subjectAltName   | See {{csr-template-schema-cddl}} | {{!RFC5280}}, Section 4.2.1.6 (note that only specific name formats are allowed: URI, DNS name, email address) |
+
+When evaluating a request for an assignment in this registry, the designated expert should follow this guidance:
+
+- The definition must include a full CDDL definition, which the expert will validate.
+- The definition must include both positive and negative test cases.
+- Additional requirements that are not captured by the CDDL definition are allowed but must be explicitly specified.
 
 # Security Considerations
 
@@ -1064,9 +1043,16 @@ capabilities and authorisation flows supported by the selected CAs.
 
 # Acknowledgments
 
-We would like to thank the following people who contributed significantly to this document with their review comments and design proposals: Roman Danyliw, <contact fullname="Frédéric" asciiFullname="Frederic"/> Fieau,
+We would like to thank the following people who contributed significantly to this document with their review comments and design proposals:
+Carsten Bormann,
+Roman Danyliw,
+<contact fullname="Frédéric" asciiFullname="Frederic"/> Fieau,
 Russ Housley,
-Sanjay Mishra, Jon Peterson, Ryan Sleevi, Emile Stephan.
+Sanjay Mishra,
+Francesca Palombini,
+Jon Peterson,
+Ryan Sleevi,
+Emile Stephan.
 
 This work is partially supported by the European Commission under Horizon 2020
 grant agreement no. 688421 Measurement and Architecture for a Middleboxed
@@ -1141,7 +1127,11 @@ Internet (MAMI). This support does not imply endorsement.
 
 Following is the normative definition of the CSR template, using CDDL {{RFC8610}}. The CSR template MUST be a valid JSON document, compliant with the syntax defined here.
 
-An additional constraint that is not expressed in CDDL but MUST be validated by the recipient is that all objects (e.g. `distinguishedName`) MUST NOT be empty when they are included, even when each separate property is optional.
+There are additional constraints not expressed in CDDL that MUST be validated
+by the recipient, including:
+
+* The value of each `subjectAltName` entry is compatible with its type;
+* The parameters in each `keyTypes` entry form an acceptable combination.
 
 ~~~
 {::include CSR-template/template-schema.cddl}
@@ -1151,6 +1141,9 @@ An additional constraint that is not expressed in CDDL but MUST be validated by 
 {: #csr-template-schema}
 
 This appendix includes an alternative, non-normative, JSON Schema definition of the CSR template. The syntax used is that of draft 7 of JSON Schema, which is documented in {{json-schema-07}}. Note that later versions of this (now expired) draft describe later versions of the JSON Schema syntax. At the time of writing, a stable reference for this syntax is not yet available, and we have chosen to use the draft version which is currently best supported by tool implementations.
+
+The same considerations about additional constraints checking discussed in
+{{csr-template-schema-cddl}} apply here as well.
 
 While the CSR template must follow the syntax defined here, neither the IdO nor
 the NDC are expected to validate it at run-time.

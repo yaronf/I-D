@@ -1,15 +1,15 @@
 {
   "keyTypes": [
     {
-      "PublicKeyType": "rsaEncryption",
-      "PublicKeyLength": 1024,
-      "SignatureType": "sha256WithRSAEncryption"
+      "PublicKeyType": "id-ecPublicKey",
+      "namedCurve": "secp521r1",
+      "SignatureType": "ecdsa-with-SHA512"
     }
   ],
   "extensions": {
     "subjectAltName": {
       "DNS": [
-        "cache.ndc.ido.example"
+        "*"
       ]
     },
     "keyUsage": [
