@@ -317,9 +317,9 @@ response with status code 403 (Forbidden), providing a problem document
 If the delegation is for a STAR certificate, the Order object created by the
 NDC:
 
-- MUST have a `delegation` attribute indicating the configuration delegation
+- MUST have a `delegation` attribute indicating the preconfigured delegation
   that applies to this Order;
-- MUST have entries in the `identifiers` field for each delegated name(s)
+- MUST have entries in the `identifiers` field for each delegated name
   present in the configuration;
 - MUST NOT contain the `notBefore` and `notAfter` fields;
 - MUST contain an `auto-renewal` object and inside it, the fields
@@ -403,7 +403,7 @@ for each failed identifier.  If the CSR is successfully validated, the Order
 object status moves to `processing` and the twin ACME protocol instance is
 initiated on the IdO-CA side.
 
-The Order object created by the IdO:
+The Order object created by the IdO in its request to the ACME Server:
 
 - MUST copy the identifiers sent by the NDC;
 - MUST strip the `delegation` attribute;
@@ -465,9 +465,9 @@ corresponding CNAME records to its zone, e.g.:
 If the delegation is for a non-STAR certificate, the Order object created by
 the NDC:
 
-- MUST have a `delegation` attribute indicating the configuration delegation
+- MUST have a `delegation` attribute indicating the preconfigured delegation
   that applies to this Order;
-- MUST have entries in the `identifiers` field for each delegated name(s)
+- MUST have entries in the `identifiers` field for each delegated name
   present in the configuration;
 
 ~~~
@@ -530,7 +530,7 @@ the IdO proceed in the same way as for the STAR case.  If the CSR is
 successfully validated, the Order object status moves to `processing` and the
 twin ACME protocol instance is initiated on the IdO-CA side.
 
-The Order object created by the IdO:
+The Order object created by the IdO in its request to the ACME Server:
 
 - MUST copy the identifiers sent by the NDC;
 - MUST strip the `delegation` attribute;
