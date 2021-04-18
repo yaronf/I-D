@@ -125,7 +125,7 @@ installed in the IdO's DNS zone to enable the aliasing of the delegated name,
 thus allowing the complete name delegation workflow to be handled using a
 single interface.
 
-We note that other ongoing efforts address the problem of certificate delegation for TLS connections, specifically {{?I-D.ietf-tls-subcerts}} and {{?I-D.mglt-lurk-tls13}}. Compared to these other solutions, the current document does not introduce additional latency to the TLS connection, nor does it require changes to the TLS network stack of either the client or the server.
+We note that other standardization efforts address the problem of certificate delegation for TLS connections, specifically {{?I-D.ietf-tls-subcerts}} and {{?I-D.mglt-lurk-tls13}}. The former extends the TLS certificate chain with a customer-owned signing certificate; the latter separates the server's private key into a dedicated, more secure component. Compared to these other approaches, the current document does not require changes to the TLS network stack of the client or the server, nor does it introduce additional latency to the TLS connection.
 
 ## Terminology
 
@@ -699,7 +699,7 @@ The `keyTypes` property is not copied into the CSR. Instead, this property const
 
 When the IdO receives the CSR, it MUST verify that the CSR is consistent
 with the template contained in the `delegation` object referenced in the Order. The IdO MAY enforce additional
-constraints, e.g. by restricting field lengths.  In this regard, note that a
+constraints, e.g., by restricting field lengths.  In this regard, note that a
 `subjectAltName` of type `DNS` can be specified using the wildcard notation,
 meaning that the NDC can be required (`**`) or offered the possibility (`*`) to
 define the delegated domain name by itself.  If this is the case, the IdO needs
@@ -729,7 +729,7 @@ addressing different delegation requirements for the CDNI (CDN Interconnection)
 environment.  This section discusses two of the stated requirements in the
 context of the STAR delegation workflow.
 
-This section uses specifically CDNI terminology, e.g. "uCDN" and "dCDN", as defined in {{?RFC7336}}.
+This section uses specifically CDNI terminology, e.g., "uCDN" and "dCDN", as defined in {{?RFC7336}}.
 
 ### Multiple Parallel Delegates
 
@@ -775,7 +775,7 @@ CNAME-based aliasing chain as illustrated in {{fig-cdni-dns-redirection}}.
 ~~~
 {: #fig-cdni-dns-redirection title="DNS Redirection"}
 
-Unlike HTTP based redirection, where the original URL is supplanted by the one
+Unlike HTTP-based redirection, where the original URL is supplanted by the one
 found in the Location header of the 302 response, DNS redirection is completely
 transparent to the User Agent.  As a result, the TLS connection to the dCDN
 edge is done with a Server Name Indication (SNI) equal to the `host` in the
