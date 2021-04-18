@@ -413,7 +413,7 @@ certificate has been issued by the CA, the IdO:
 - MUST move its Order resource status to `valid`;
 - MUST copy the `star-certificate` field from the STAR Order returned by the CA
   into its Order resource.  When dereferenced, the `star-certificate` URL
-  includes (via the NotBefore and NotAfter HTTP headers) the renewal timers
+  includes (via the Cert-Not-Before and Cert-Not-After HTTP headers) the renewal timers
   needed by the NDC to inform its certificate reload logic.
 
 ~~~
