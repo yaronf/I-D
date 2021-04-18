@@ -275,7 +275,7 @@ extended with a new `delegations` attribute:
 ~~~
 {: #fig-account-object title="Example Account object with delegations"}
 
-##### Delegation Lists
+#### Delegation Lists
 
 Each account object includes a `delegations` URL from which a list of
 delegation configurations created by the IdO can be fetched via POST-as-GET
