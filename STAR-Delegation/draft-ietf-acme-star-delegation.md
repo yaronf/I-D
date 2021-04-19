@@ -169,7 +169,7 @@ FQDN
 # Protocol Flow
 
 This section presents the protocol flow.  For completeness, we include the ACME
-profile proposed in this document as well as the extended ACME protocol described
+profile proposed in this document as well as the ACME STAR protocol described
 in {{!RFC8739}}.
 
 ## Preconditions
@@ -227,10 +227,14 @@ expires or the IdO decides to cancel the automatic renewal process with the CA.
 Note that the interactive identifier authorization phase described in Section
 7.5 of {{RFC8555}} is suppressed on the NDC-IdO side because the delegated
 identity contained in the CSR presented to the IdO is validated against the
-configured CSR template ({{sec-profile-dele-config}}).  Therefore, the NDC
+configured CSR template ({{sec-csr-template-syntax}}).  Therefore, the NDC
 sends the finalize request, including the CSR, to the IdO immediately after
 Order1 has been acknowledged.  The IdO SHALL buffer a (valid) CSR until the
 Validation phase completes successfully.
+
+Also note that the successful negotiation of the "unauthenticated GET" (Section
+3.4 of {{!RFC8793}}) is required in order to allow the NDC to access the
+`star-certificate` URL on the ACME server.
 
 ~~~ goat
 {::include art/e2e-flow.ascii-art}
@@ -269,7 +273,7 @@ extended with a new `delegations` attribute:
     "mailto:delegation-admin@ido.example"
   ],
   "termsOfServiceAgreed": true,
-  "orders": "https://example.com/acme/orders/rzGoeA",
+  "orders": "https://example.com/acme/orders/saHpfB",
   "delegations": "https://acme.ido.example/acme/delegations/adFqoz"
 }
 ~~~
@@ -314,7 +318,7 @@ delegated identifiers.  Its structure is as follows:
 - csr-template (required, object): CSR template as defined in
   {{sec-csr-template}}.
 - cname-map (optional, object): a map of FQDN pairs.  In each pair, the name is
-  the delegated identifier, the value is the corresponding IdO name that is
+  the delegated identifier, the value is the corresponding NDC name that is
   aliased in the IdO's zone file to redirect the resolvers to the delegated
   entity.  Both names and values MUST be FQDNs with a terminating '.'.
   This field is only meaningful for identifiers of type `dns`.
@@ -333,14 +337,14 @@ Order object on the NDC-IdO side (see {{fig-star-ndc-neworder}}).  The
 value of this attribute is the URL pointing to the delegation configuration
 object that is to be used for this certificate request.  If the `delegation`
 attribute in the Order object contains a URL that does not correspond to a
-configuration available to the requesting NDC, the IdO MUST return an error
+configuration available to the requesting ACME account, the IdO MUST return an error
 response with status code 403 (Forbidden), providing a problem document
 {{!RFC7807}} with type `urn:ietf:params:acme:error:unknownDelegation`.
 
 ### Order Object Transmitted from NDC to IdO and to ACME Server (STAR)
 {: #sec-profile-star-order-journey}
 
-If the delegation is for a STAR certificate, the Order object created by the
+If the delegation is for a STAR certificate, the request object created by the
 NDC:
 
 - MUST have a `delegation` attribute indicating the preconfigured delegation
@@ -349,7 +353,8 @@ NDC:
   present in the configuration;
 - MUST NOT contain the `notBefore` and `notAfter` fields;
 - MUST contain an `auto-renewal` object and inside it, the fields
-  listed in Section 3.1.1 of {{!RFC8739}}.
+  listed in Section 3.1.1 of {{!RFC8739}}.  In particular, the
+  `allow-certificate-get` attribute MUST be present and set to true.
 
 ~~~
 POST /acme/new-order HTTP/1.1
@@ -360,25 +365,25 @@ Content-Type: application/jose+json
   "protected": base64url({
     "alg": "ES256",
     "kid": "https://acme.ido.example/acme/acct/evOfKhNU60wg",
-    "nonce": "5XJ1L3lEkMG7tR6pA00clA",
+    "nonce": "Alc00Ap6Rt7GMkEl3L1JX5",
     "url": "https://acme.ido.example/acme/new-order"
   }),
   "payload": base64url({
     "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.ido.example"
+        "value": "abc.ido.example"
       }
     ],
     "auto-renewal": {
-      "end-date": "2020-04-20T00:00:00Z",
+      "end-date": "2021-04-20T00:00:00Z",
       "lifetime": 345600,          // 4 days
       "allow-certificate-get": true
     },
     "delegation":
       "https://acme.ido.example/acme/delegations/adFqoz/2"
   }),
-  "signature": "H6ZXtGjTZyUnPeKn...wEA4TklBdh3e454g"
+  "signature": "g454e3hdBlkT4AEw...nKePnUyZTjGtXZ6H"
 }
 ~~~
 {: #fig-star-ndc-neworder title="New STAR Order from NDC"}
@@ -393,17 +398,17 @@ The Order object that is created on the IdO:
 ~~~
 {
   "status": "ready",
-  "expires": "2019-05-01T00:00:00Z",
+  "expires": "2021-05-01T00:00:00Z",
 
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.ido.example"
+     "value": "abc.ido.example"
    }
   ],
 
   "auto-renewal": {
-    "end-date": "2020-04-20T00:00:00Z",
+    "end-date": "2021-04-20T00:00:00Z",
     "lifetime": 345600,
     "allow-certificate-get": true
   },
@@ -429,14 +434,13 @@ for each failed identifier.  If the CSR is successfully validated, the Order
 object status moves to `processing` and the twin ACME protocol instance is
 initiated on the IdO-CA side.
 
-The Order object created by the IdO in its request to the ACME Server:
+The request object created by the IdO:
 
 - MUST copy the identifiers sent by the NDC;
 - MUST strip the `delegation` attribute;
-- MUST carry a copy of the `auto-renewal` object sent by the NDC and augment it
-  with an `allow-certificate-get` attribute set to true.
+- MUST carry a copy of the `auto-renewal` object sent by the NDC.
 
-When the validation of the identifiers has been successfully completed and the
+When the identifiers authorization has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
 - MUST move its Order resource status to `valid`;
@@ -448,17 +452,17 @@ certificate has been issued by the CA, the IdO:
 ~~~
 {
   "status": "valid",
-  "expires": "2019-05-01T00:00:00Z",
+  "expires": "2021-05-01T00:00:00Z",
 
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.ido.example"
+     "value": "abc.ido.example"
    }
   ],
 
   "auto-renewal": {
-    "end-date": "2020-04-20T00:00:00Z",
+    "end-date": "2021-04-20T00:00:00Z",
     "lifetime": 345600,
     "allow-certificate-get": true
   },
@@ -479,22 +483,22 @@ certificate has been issued by the CA, the IdO:
 {: #sec-cname-installation}
 
 If an identifier object of type `dns` was included, the IdO can add the
-corresponding CNAME records to its zone, e.g.:
+CNAME records specified in the delegation object to its zone, e.g.:
 
 ~~~
-   abc.ndc.ido.example. CNAME abc.ndc.example.
+   abc.ido.example. CNAME abc.ndc.example.
 ~~~
 
 ### Order Object Transmitted from NDC to IdO and to ACME Server (non-STAR)
 {: #sec-profile-non-star-order-journey}
 
-If the delegation is for a non-STAR certificate, the Order object created by
+If the delegation is for a non-STAR certificate, the request object created by
 the NDC:
 
 - MUST have a `delegation` attribute indicating the preconfigured delegation
   that applies to this Order;
 - MUST have entries in the `identifiers` field for each delegated name
-  present in the configuration;
+  present in the configuration.
 
 ~~~
 POST /acme/new-order HTTP/1.1
@@ -512,13 +516,13 @@ Content-Type: application/jose+json
     "identifiers": [
       {
         "type": "dns",
-        "value": "abc.ndc.ido.example"
+        "value": "abc.ido.example"
       }
     ],
     "delegation":
       "https://acme.ido.example/acme/delegations/adFqoz/2"
   }),
-  "signature": "H6ZyWqg8aaKEkYca...dudoz4igiMvUBJ9j"
+  "signature": "j9JBUvMigi4zodud...acYkEKaa8gqWyZ6H"
 }
 ~~~
 {: #fig-non-star-ndc-neworder title="New Non-STAR Order from NDC"}
@@ -532,12 +536,12 @@ The Order object that is created on the IdO:
 ~~~
 {
   "status": "ready",
-  "expires": "2019-05-01T00:00:00Z",
+  "expires": "2021-05-01T00:00:00Z",
 
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.ido.example"
+     "value": "abc.ido.example"
    }
   ],
 
@@ -546,7 +550,7 @@ The Order object that is created on the IdO:
 
   "authorizations": [],
 
-  "finalize": "https://acme.ido.example/acme/order/to8RFGO/finalize"
+  "finalize": "https://acme.ido.example/acme/order/3ZDlhYy/finalize"
 }
 ~~~
 {: #fig-non-star-ido-order-resource-created title="Non-STAR Order Resource Created on IdO"}
@@ -556,13 +560,13 @@ the IdO proceed in the same way as for the STAR case.  If the CSR is
 successfully validated, the Order object status moves to `processing` and the
 twin ACME protocol instance is initiated on the IdO-CA side.
 
-The Order object created by the IdO in its request to the ACME Server:
+The request object created by the IdO:
 
 - MUST copy the identifiers sent by the NDC;
 - MUST strip the `delegation` attribute;
 - MUST include the `allow-certificate-get` attribute set to true.
 
-When the validation of the identifiers has been successfully completed and the
+When the identifiers authorization has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
 - MUST move its Order resource status to `valid`;
@@ -572,12 +576,12 @@ certificate has been issued by the CA, the IdO:
 ~~~
 {
   "status": "valid",
-  "expires": "2019-05-01T00:00:00Z",
+  "expires": "2021-05-01T00:00:00Z",
 
   "identifiers": [
    {
      "type": "dns",
-     "value": "abc.ndc.ido.example"
+     "value": "abc.ido.example"
    }
   ],
 
@@ -588,7 +592,7 @@ certificate has been issued by the CA, the IdO:
 
   "authorizations": [],
 
-  "finalize": "https://acme.ido.example/acme/order/to8RFGO/finalize",
+  "finalize": "https://acme.ido.example/acme/order/3ZDlhYy/finalize",
 
   "certificate": "https://acme.ca.example/acme/order/YtR23SsdG9"
 }
@@ -707,8 +711,7 @@ the registration of further, more specific, attributes to future documents.
 The template is a JSON document. Each field (with the exception of `keyTypes`, see below) denotes one of:
 
 * A mandatory field, where the template specifies the literal value of that
-  field. This is denoted by a literal string, such as
-  `client1.ndc.ido.example.com`.
+  field. This is denoted by a literal string, such as `abc.ido.example`.
 * A mandatory field, where the content of the field is defined by the client.
   This is denoted by `**`.
 * An optional field, where the client decides whether the field is included in
@@ -791,7 +794,7 @@ the parties.
 A mechanism is necessary at the interface between uCDN and dCDN by which the
 uCDN can advertise:
 
-- The namespace that is made available to the dCDN to mint its delegated names;
+- The names that the dCDN is allowed to use;
 - The policy for creating the key material (allowed algorithms, minimum key
   lengths, key usage, etc.) that the dCDN needs to satisfy.
 
@@ -872,14 +875,16 @@ In details ({{fig-stir-flow}}):
    extension with the list of TNs that SP1 delegates to SP2.  (Note that the
    CSR sent by SP2 to SP1 needs to be validated against the CSR template
    agreed upon in step 1.);
-3. SP1 sends an Order for the CSR to the CA;
+3. SP1 sends an order for the CSR to the CA.  The order also requests
+   unauthenticated access to the certificate resource;
 4. Subsequently, after the required TNAuthList authorizations are successfully
-   completed, the CA moves the Order to a "valid" state; at the same
-   time the star-certificate endpoint is populated.
-5. The Order contents are forwarded from SP1 to SP2 by means of the paired
-   "delegation" Order.
-6. SP2 dereferences the star-certificate URL in the Order to fetch the rolling
-   STAR certificate bearing the delegated identifiers.
+   completed, the CA moves the order to a "valid" state; at the same
+   time the star-certificate endpoint is populated;
+5. The order contents are forwarded from SP1 to SP2 by means of the paired
+   "delegation" order;
+6. SP2 dereferences the star-certificate URL in the order to fetch the rolling
+   STAR certificate bearing the delegated identifiers;
+7. The STAR certificate is returned to SP2.
 
 ~~~ goat
 {::include art/stir-delegation.ascii-art}
@@ -970,7 +975,8 @@ between each of the nodes in the delegation chain; for example, in case of
 cascading CDNs this is contractually defined.  Note that using standard
 {{?RFC6125}} identity verification there are no mechanisms available to the IdO
 to restrict the use of the delegated name once the name has been handed over to
-the first NDC.
+the first NDC.  It is therefore expected that contractual measures are in place
+to get some assurance that re-delegation is not being performed.
 
 ## Delegation Security Goal
 
@@ -1014,6 +1020,14 @@ The fifth is covered by two different mechanisms, depending on the nature of
 the certificate.  For STAR, the IdO shall use the cancellation interface
 defined in Section 2.3 of {{RFC8739}}. For non-STAR, the certificate revocation
 interface defined in Section 7.6 of {{RFC8555}}) is used.
+
+The ACME account associated with the delegation plays a crucial role in the
+overall security of the presented protocol.  This, in turn, means that in
+delegation scenarios the security requirements and verification associated with
+an ACME account may be more stringent than in traditional ACME, since the
+out-of-band configuration of delegations that an account is authorized to use,
+combined with account authentication, takes the place of the normal ACME
+authorization challenge procedures.
 
 ## New ACME Channels
 
