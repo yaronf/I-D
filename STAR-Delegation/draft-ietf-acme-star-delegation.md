@@ -721,8 +721,9 @@ The NDC MUST NOT include in the CSR any fields, including any extensions, unless
 template.
 
 The structure of the template object is defined by the CDDL {{!RFC8610}} document in {{csr-template-schema-cddl}}.
-
 An alternative, non-normative JSON Schema syntax is given in {{csr-template-schema}}.
+While the CSR template must follow the syntax defined here, neither the IdO nor
+the NDC are expected to validate it at run-time.
 
 The `subject` field and its subfields are mapped into the `subject` field of the CSR, as per {{RFC5280}}, Section 4.1.2.6. Other extension fields of the CSR template are mapped into the CSR according to the table in {{csr-template-registry}}.
 
@@ -739,9 +740,10 @@ with the template contained in the `delegation` object referenced in the Order. 
 constraints, e.g., by restricting field lengths.  In this regard, note that a
 `subjectAltName` of type `DNS` can be specified using the wildcard notation,
 meaning that the NDC can be required (`**`) or offered the possibility (`*`) to
-define the delegated domain name by itself.  If this is the case, the IdO needs
-to have a further layer of checks on top of the control rules already provided
-by the CSR template to fully validate the CSR input.
+define the delegated domain name by itself.  If this is the case, the IdO MUST
+apply application-specific checks on top of the control rules already provided
+by the CSR template to ensure the requested domain name is legitimate according
+to its local policy.
 
 ## Example
 
@@ -1080,15 +1082,17 @@ rogue CDN cannot issue unauthorized certificates:
   the domain.  The domain holder should ensure it is the only entity authorized
   to modify the DNS zone. Typically, it establishes a CNAME resource record
   from a subdomain into a CDN-managed domain.
-- The domain holder uses a CAA record {{!RFC8659}} to restrict certificate
+- The domain holder uses a CAA record {{?RFC8659}} to restrict certificate
   issuance for the domain to specific CAs that comply with ACME and are known
-  to implement {{!RFC8657}}.
-- The domain holder uses the ACME-specific CAA mechanism {{!RFC8657}} to
+  to implement {{?RFC8657}}.
+- The domain holder uses the ACME-specific CAA mechanism {{?RFC8657}} to
   restrict issuance to a specific account key which is controlled by it, and
   MUST require "dns-01" as the sole validation method.
 
 We note that the above solution may need to be tweaked depending on the exact
 capabilities and authorisation flows supported by the selected CAs.
+In addition, this mitigation may be bypassed if a malicious or misconfigured CA
+does not comply with CAA restrictions.
 
 # Acknowledgments
 
@@ -1193,9 +1197,6 @@ This appendix includes an alternative, non-normative, JSON Schema definition of 
 
 The same considerations about additional constraints checking discussed in
 {{csr-template-schema-cddl}} apply here as well.
-
-While the CSR template must follow the syntax defined here, neither the IdO nor
-the NDC are expected to validate it at run-time.
 
 ~~~
 {::include CSR-template/template-schema.json}
