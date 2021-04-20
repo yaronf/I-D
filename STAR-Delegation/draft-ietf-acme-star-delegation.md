@@ -131,7 +131,9 @@ We note that other standardization efforts address the problem of certificate de
 
 IdO
 : Identifier Owner, the holder (current owner) of an identifier (e.g., a domain
-  name) that needs to be delegated.
+  name) that needs to be delegated.  Depending on the context, the term IdO may
+  also used to designate the (profiled) ACME server deployed by the Identity
+  holder.
 
 NDC
 : Name Delegation Consumer, the entity to which the domain name is
