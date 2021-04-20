@@ -132,14 +132,16 @@ We note that other standardization efforts address the problem of certificate de
 IdO
 : Identifier Owner, the holder (current owner) of an identifier (e.g., a domain
   name) that needs to be delegated.  Depending on the context, the term IdO may
-  also used to designate the (profiled) ACME server deployed by the Identity
-  holder.
+  also be used to designate the (profiled) ACME server deployed by the Identifier
+  Owner or the ACME client used by the Identifier Owner to interact with the CA.
 
 NDC
 : Name Delegation Consumer, the entity to which the domain name is
   delegated for a limited time.  This is a CDN in the primary use
   case (in fact, readers may note the symmetry of the two
-  acronyms).
+  acronyms).  Depending on the context, the term NDC may
+  also be used to designate the (profiled) ACME client used by the Name
+  Delegation Consumer.
 
 CDN
 : Content Delivery Network, a widely distributed network that
