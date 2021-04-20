@@ -84,7 +84,7 @@ ecosystem.
 
 This document is a companion document to {{!RFC8739}}.  To avoid duplication,
 we give here a bare-bones description of the motivation for this solution.  For
-more details and further use cases, please refer to the introductory sections
+more details, please refer to the introductory sections
 of {{!RFC8739}}.
 
 An Identifier Owner (IdO) has agreements
@@ -115,7 +115,7 @@ mechanism proposed here accommodates also long-lived certificates managed with
 the ACME protocol. The most noticeable difference between long-lived and STAR
 certificates is the way the termination of the delegation is managed.  In the
 case of long-lived certificates, the IdO uses the revokeCert URL exposed by the
-ACME CA and waits for the explicit revocation based on Certificate Revocation
+CA and waits for the explicit revocation based on Certificate Revocation
 List (CRL) and Online Certificate Status Protocol (OCSP) to propagate to the
 relying parties.
 
@@ -152,14 +152,12 @@ ACME
   certificate management protocol {{RFC8555}}.
 
 CA
-: A Certification Authority that implements the ACME protocol. In this document, the term is synonymous with "ACME server".
+: A Certification Authority that implements the ACME protocol. In this document, the term is synonymous with "ACME server deployed by the Certification Authority".
 
 CSR
-
 : A PKCS#10 {{!RFC2986}} Certificate Signing Request, as supported by ACME.
 
 FQDN
-
 : Fully Qualified Domain Name.
 
 ## Conventions used in this document
@@ -181,16 +179,15 @@ The protocol assumes the following preconditions are met:
   management interface;
 - The NDC has registered an ACME account with the IdO;
 - NDC and IdO have agreed on a "CSR template" to use, including at a minimum:
-  subject name (e.g., `somesite.example.com`), requested algorithms and key
-  length, key usage, extensions (e.g., TNAuthList). The NDC is required to use
+  subject name (e.g., `abc.ido.example`), requested algorithms and key
+  length, key usage, extensions.  The NDC is required to use
   this template for every CSR created under the same delegation;
 - IdO has registered an ACME account with the Certification Authority (CA)
 
 Note that even if the IdO implements the ACME server role, it is not acting as
 a CA: in fact, from the point of view of the certificate issuance process, the
 IdO only works as a "policing" forwarder of the NDC's key-pair and is
-responsible for completing the identity verification process towards the ACME
-server.
+responsible for completing the identity verification process towards the CA.
 
 ## Overview
 
@@ -234,7 +231,7 @@ Validation phase completes successfully.
 
 Also note that the successful negotiation of the "unauthenticated GET" (Section
 3.4 of {{!RFC8793}}) is required in order to allow the NDC to access the
-`star-certificate` URL on the ACME server.
+`star-certificate` URL on the CA.
 
 ~~~ goat
 {::include art/e2e-flow.ascii-art}
@@ -626,7 +623,7 @@ cancellation (see Section 3.1.2 of {{!RFC8739}}).
 
 Cancellation of the ACME STAR certificate is a
 prerogative of the IdO.  The NDC does not own the relevant account key on the
-ACME server, therefore it can't issue a cancellation request for the STAR certificate.
+CA, therefore it can't issue a cancellation request for the STAR certificate.
 Potentially, since it holds the STAR certificate's private key, it could request the
 revocation of a single STAR certificate.  However, STAR explicitly disables the
 revokeCert interface.
@@ -637,7 +634,7 @@ issued STAR certificate expires and the delegation terminates.
 #### By Revocation (non-STAR)
 
 The IdO can terminate the delegation of a non-STAR certificate by requesting it
-to be revoked using the revokeCert URL exposed by the ACME server.
+to be revoked using the revokeCert URL exposed by the CA.
 
 According to Section 7.6 of {{RFC8555}}, the revocation endpoint can be used
 with either the account keypair, or the certificate keypair. In other words, an
@@ -658,7 +655,7 @@ An entity implementing the IdO server role - an "ACME Delegation server" - can
 decide, on a per-identity case, whether to act as a proxy into another ACME
 Delegation server, or to behave as an IdO and obtain a certificate directly.
 The determining factor is whether it can successfully be authorized by
-the ACME server for the identity associated with the certificate request.
+the next-hop ACME server for the identity associated with the certificate request.
 
 The identities supported by each server and the disposition for each of them
 are preconfigured.
@@ -730,7 +727,7 @@ The `subject` field and its subfields are mapped into the `subject` field of the
 The `subjectAltName` field is currently defined for the following identifiers:
 DNS names, email addresses, and URIs.  New identifier types may be added in the
 future by documents that extend this specification.  Each new identifier type
-SHALL have an associated identifier validation challenge that the ACME CA can
+SHALL have an associated identifier validation challenge that the CA can
 use to obtain proof of the requester's control over it.
 
 The `keyTypes` property is not copied into the CSR. Instead, this property constrains the `SubjectPublicKeyInfo` field of the CSR, which MUST have the type/size defined by one of the array members of the `keyTypes` property.
@@ -848,8 +845,7 @@ uCDN is configured to delegate to dCDN, and CP is configured to delegate to uCDN
    star-certificate URL;
 8. uCDN forwards the information to dCDN.  At this point the ACME signalling is
    complete;
-9. dCDN requests the STAR certificate using unauthenticated GET from the ACME
-   server;
+9. dCDN requests the STAR certificate using unauthenticated GET from the CA;
 10. the CA returns the certificate.  Now dCDN is fully configured to handle
     HTTPS traffic in-lieu of the Content Provider.
 
@@ -1010,7 +1006,7 @@ all security relevant.
 
 The third part builds on the trust relationship between NDC and IdO that is
 responsible for correctly forwarding the certificate URL from the Order
-returned by the ACME server.
+returned by the CA.
 
 The fourth part is associated with the ability of the IdO to unilaterally
 remove the delegation object associated with the revoked identity, therefore
@@ -1043,18 +1039,18 @@ the interactions of the basic delegation workflow as shown in
 {: #fig-sec-channels title="Delegation Channels Topology"}
 
 The considerations regarding the security of the ACME Channel and Validation
-Channel discussed in {{!RFC8555}} apply verbatim to the IdO/ACME server leg.
-The same can be said for the ACME channel on the NDC/IdO leg.  A slightly
-different set of considerations apply to the ACME Channel between NDC and ACME
-server, which consists of a subset of the ACME interface comprising two API
+Channel discussed in {{!RFC8555}} apply verbatim to the IdO-CA leg.
+The same can be said for the ACME channel on the NDC-IdO leg.  A slightly
+different set of considerations apply to the ACME Channel between NDC and CA,
+which consists of a subset of the ACME interface comprising two API
 endpoints: the unauthenticated certificate retrieval and, potentially, non-STAR
 revocation via certificate private key.  No specific security considerations
 apply to the former, but the privacy considerations in Section 6.3 of
 {{!RFC8739}} do.  With regards to the latter, it should be noted that there is
 currently no means for an IdO to disable authorising revocation based on
 certificate private keys.  So, in theory, an NDC could use the revocation API
-directly with the ACME server, therefore bypassing the IdO.  The NDC SHOULD NOT
-directly use the revocation interface exposed by the ACME server unless failing
+directly with the CA, therefore bypassing the IdO.  The NDC SHOULD NOT
+directly use the revocation interface exposed by the CA unless failing
 to do so would compromise the overall security, for example if the certificate
 private key is compromised and the IdO is not currently reachable.
 
@@ -1090,7 +1086,7 @@ rogue CDN cannot issue unauthorized certificates:
   MUST require "dns-01" as the sole validation method.
 
 We note that the above solution may need to be tweaked depending on the exact
-capabilities and authorisation flows supported by the selected CAs.
+capabilities and authorisation flows supported by the selected CA.
 In addition, this mitigation may be bypassed if a malicious or misconfigured CA
 does not comply with CAA restrictions.
 
