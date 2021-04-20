@@ -1096,16 +1096,7 @@ does not comply with CAA restrictions.
 
 # Acknowledgments
 
-We would like to thank the following people who contributed significantly to this document with their review comments and design proposals:
-Carsten Bormann,
-Roman Danyliw,
-<contact fullname="Frédéric" asciiFullname="Frederic"/> Fieau,
-Russ Housley,
-Sanjay Mishra,
-Francesca Palombini,
-Jon Peterson,
-Ryan Sleevi,
-Emile Stephan.
+We would like to thank the following people who contributed significantly to this document with their review comments and design proposals: Carsten Bormann, Roman Danyliw, <contact fullname="Frédéric" asciiFullname="Frederic"/> Fieau, Russ Housley, Sanjay Mishra, Francesca Palombini, Jon Peterson, Ryan Sleevi, Emile Stephan.
 
 This work is partially supported by the European Commission under Horizon 2020
 grant agreement no. 688421 Measurement and Architecture for a Middleboxed
