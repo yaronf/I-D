@@ -441,7 +441,7 @@ The request object created by the IdO:
 - MUST strip the `delegation` attribute;
 - MUST carry a copy of the `auto-renewal` object sent by the NDC.
 
-When the identifiers authorization has been successfully completed and the
+When the identifiers' authorization has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
 - MUST move its Order resource status to `valid`;
@@ -567,7 +567,7 @@ The request object created by the IdO:
 - MUST strip the `delegation` attribute;
 - MUST include the `allow-certificate-get` attribute set to true.
 
-When the identifiers authorization has been successfully completed and the
+When the identifiers' authorization has been successfully completed and the
 certificate has been issued by the CA, the IdO:
 
 - MUST move its Order resource status to `valid`;
