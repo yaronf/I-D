@@ -1029,7 +1029,11 @@ delegation scenarios the security requirements and verification associated with
 an ACME account may be more stringent than in traditional ACME, since the
 out-of-band configuration of delegations that an account is authorized to use,
 combined with account authentication, takes the place of the normal ACME
-authorization challenge procedures.
+authorization challenge procedures.  Therefore, the IdO MUST ensure that
+each account is associated with the exact policy (via a `delegation` object)
+that defines which domain names can be delegated to the account and how.
+The IdO is expected to use out of band means to pre-register each NDC to
+the corresponding account.
 
 ## New ACME Channels
 
