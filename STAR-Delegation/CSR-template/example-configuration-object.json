@@ -10,13 +10,12 @@
     "subject": {
       "country": "CA",
       "stateOrProvince": "**",
-      "locality": "**",
-      "commonName": "**"
+      "locality": "**"
     },
     "extensions": {
       "subjectAltName": {
         "DNS": [
-          "abc.ndc.ido.example"
+          "abc.ido.example"
         ]
       },
       "keyUsage": [
@@ -28,6 +27,6 @@
     }
   },
   "cname-map": {
-    "abc.ndc.ido.example.": "abc.ndc.example."
+    "abc.ido.example.": "abc.ndc.example."
   }
 }

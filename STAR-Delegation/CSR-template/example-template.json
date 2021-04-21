@@ -14,13 +14,12 @@
   "subject": {
     "country": "CA",
     "stateOrProvince": "**",
-    "locality": "**",
-    "commonName": "**"
+    "locality": "**"
   },
   "extensions": {
     "subjectAltName": {
       "DNS": [
-        "client1.ndc.ido.example"
+        "abc.ido.example"
       ]
     },
     "keyUsage": [
