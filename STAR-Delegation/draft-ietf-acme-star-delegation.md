@@ -673,7 +673,7 @@ If the server accepts the request, it MUST reflect the attribute setting in the
 resulting order object.
 
 Note that even when the use of unauthenticated GET has been agreed upon, the
-server MUST also allow POST-as-GET requests to the star-certificate resource.
+server MUST also allow POST-as-GET requests to the certificate resource.
 
 ### Terminating the Delegation
 
