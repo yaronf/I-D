@@ -480,6 +480,18 @@ certificate has been issued by the CA, the IdO:
 ~~~
 {: #fig-star-ido-order-resource-updated title="STAR Order Resource Updated on IdO"}
 
+Before forwarding the Order request to the CA, the IdO SHOULD ensure that the
+selected CA supports "unauthenticated GET" by inspecting the relevant settings
+in the CA's `directory` object, as per Section 3.4 of {{!RFC8739}}.  If the CA
+does not support "unauthenticated GET" of STAR certificates, the IdO MUST NOT
+forward the Order request.  Instead, it MUST move the Order status to `invalid`
+and set the `allow-certificate-get` in the `auto-renewal` object to `false`.
+The same occurs in case the Order request is forwarded and the CA does not
+reflect the `allow-certificate-get` setting in its Order resource.  The
+combination of `invalid` status and denied `allow-certificate-get` in the Order
+resource at the IdO provides an unambiguous (asynchronous) signal to the NDC
+about the failure reason.
+
 #### CNAME Installation
 {: #sec-cname-installation}
 
@@ -603,18 +615,65 @@ certificate has been issued by the CA, the IdO:
 At this point of the protocol flow, the same considerations as in
 {{sec-cname-installation}} apply.
 
+Before forwarding the Order request to the CA, the IdO SHOULD ensure that the
+selected CA supports "unauthenticated GET" by inspecting the relevant settings
+in the CA's `directory` object, as per {{sec-nego-allow-cert-get}}.  If the CA
+does not support "unauthenticated GET" of certificate resources, the IdO MUST
+NOT forward the Order request.  Instead, it MUST move the Order status to
+`invalid` and set the `allow-certificate-get` to `false`.  The same occurs in
+case the Order request is forwarded and the CA does not reflect the
+`allow-certificate-get` setting in its Order resource.  The combination of
+`invalid` status and denied `allow-certificate-get` in the Order resource at
+the IdO provides an unambiguous (asynchronous) signal to the NDC about the
+failure reason.
+
 ### Capability Discovery
 
 In order to help a client to discover support for this profile, the directory
-object of an ACME server contains the following attribute in the `meta`
-field:
+object of an ACME server (typically, one deployed by the IdO) contains the
+following attribute in the `meta` field:
 
-- delegation-enabled: boolean flag indicating support for the profile
-  specified in this memo.  An ACME server that supports this delegation profile
-  MUST include this key, and MUST set it to true.
+- delegation-enabled (optional, boolean): Boolean flag indicating support for
+  the profile specified in this memo.  An ACME server that supports this
+  delegation profile MUST include this key, and MUST set it to true.
 
 The `delegation-enabled` flag may be specified regardless of the existence or
 setting of the `auto-renewal` flag.
+
+In order to help a client to discover support for certificate fetching using
+unauthenticated HTTP GET, the directory object of an ACME server (typically,
+one deployed by the CA) contains the following attribute in the `meta` field:
+
+- allow-certificate-get (optional, boolean): See {{sec-nego-allow-cert-get}}.
+
+### Negotiating an Unauthenticated GET
+{: #sec-nego-allow-cert-get}
+
+In order to enable the name delegation of non-STAR certificates, this document
+defines a mechanism that allows a server to advertise support for accessing
+certificate resources via unauthenticated GET (in addition to
+POST-as-GET), and a client to enable this service with per-Order granularity.
+
+Specifically, a server states its availability to grant unauthenticated access
+to a client's Order certificate by setting the `allow-certificate-get`
+attribute to `true` in the `meta` field inside the directory object:
+
+- allow-certificate-get (optional, boolean): If this field is present and set
+  to `true`, the server allows GET (and HEAD) requests to certificate URLs.
+
+A client states its desire to access the issued certificate via unauthenticated
+GET by adding an `allow-certificate-get` attribute to the payload of its
+newOrder request and setting it to `true`.
+
+- allow-certificate-get (optional, boolean): If this field is present and set
+  to `true`, the client requests the server to allow unauthenticated GET (and
+  HEAD) to the certificate associated with this Order.
+
+If the server accepts the request, it MUST reflect the attribute setting in the
+resulting order object.
+
+Note that even when the use of unauthenticated GET has been agreed upon, the
+server MUST also allow POST-as-GET requests to the star-certificate resource.
 
 ### Terminating the Delegation
 
@@ -909,6 +968,7 @@ This document adds the following entries to the ACME Directory Metadata Fields r
 | Field Name | Field Type | Reference |
 |------------|------------|-----------|
 | delegation-enabled | boolean | RFC XXXX |
+| allow-certificate-get | boolean | RFC XXXX |
 
 ## New Fields in the Order Object
 
