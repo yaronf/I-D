@@ -480,17 +480,21 @@ certificate has been issued by the CA, the IdO:
 ~~~
 {: #fig-star-ido-order-resource-updated title="STAR Order Resource Updated on IdO"}
 
-Before forwarding the Order request to the CA, the IdO SHOULD ensure that the
-selected CA supports "unauthenticated GET" by inspecting the relevant settings
-in the CA's `directory` object, as per Section 3.4 of {{!RFC8739}}.  If the CA
-does not support "unauthenticated GET" of STAR certificates, the IdO MUST NOT
-forward the Order request.  Instead, it MUST move the Order status to `invalid`
-and set the `allow-certificate-get` in the `auto-renewal` object to `false`.
-The same occurs in case the Order request is forwarded and the CA does not
-reflect the `allow-certificate-get` setting in its Order resource.  The
-combination of `invalid` status and denied `allow-certificate-get` in the Order
-resource at the IdO provides an unambiguous (asynchronous) signal to the NDC
-about the failure reason.
+This delegation protocol is predicated on the NDC being able to fetch
+certificates periodically using an unauthenticated HTTP GET, since in general
+the NDC does not possess an account on the CA and therefore cannot issue the
+standard POST-as-GET ACME request. Therefore, before forwarding the Order
+request to the CA, the IdO SHOULD ensure that the selected CA supports
+"unauthenticated GET" by inspecting the relevant settings in the CA's
+`directory` object, as per Section 3.4 of {{!RFC8739}}.  If the CA does not
+support "unauthenticated GET" of STAR certificates, the IdO MUST NOT forward
+the Order request.  Instead, it MUST move the Order status to `invalid` and set
+the `allow-certificate-get` in the `auto-renewal` object to `false`.  The same
+occurs in case the Order request is forwarded and the CA does not reflect the
+`allow-certificate-get` setting in its Order resource.  The combination of
+`invalid` status and denied `allow-certificate-get` in the Order resource at
+the IdO provides an unambiguous (asynchronous) signal to the NDC about the
+failure reason.
 
 #### CNAME Installation
 {: #sec-cname-installation}
