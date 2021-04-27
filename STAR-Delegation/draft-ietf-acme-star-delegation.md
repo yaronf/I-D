@@ -658,9 +658,17 @@ defines a mechanism that allows a server to advertise support for accessing
 certificate resources via unauthenticated GET (in addition to
 POST-as-GET), and a client to enable this service with per-Order granularity.
 
-Specifically, a server states its availability to grant unauthenticated access
-to a client's Order certificate by setting the `allow-certificate-get`
-attribute to `true` in the `meta` field inside the directory object:
+It is worth pointing out that the protocol elements described in this section
+have the same names and semantics as those introduced in Section 3.4 of
+{{!RFC8739}} for the STAR use case (except, of course, they apply to the
+certificate resource rather than the star-certificate resource).  However, they
+differ in terms of their position in the directory meta and order objects:
+rather than being wrapped in an auto-renewal sub-object they are located at the
+top-level.
+
+A server states its availability to grant unauthenticated access to a client's
+Order certificate by setting the `allow-certificate-get` attribute to `true` in
+the `meta` field inside the directory object:
 
 - allow-certificate-get (optional, boolean): If this field is present and set
   to `true`, the server allows GET (and HEAD) requests to certificate URLs.
