@@ -169,6 +169,7 @@ FQDN
 {::boilerplate bcp14}
 
 # Protocol Flow
+{: #sec-protocol-flow}
 
 This section presents the protocol flow.  For completeness, we include the ACME
 profile proposed in this document as well as the ACME STAR protocol described
@@ -667,6 +668,7 @@ differ in terms of their position in the directory meta and order objects:
 rather than being wrapped in an auto-renewal sub-object they are located at the
 top-level.
 
+{: #capability-metadata}
 A server states its availability to grant unauthenticated access to a client's
 Order certificate by setting the `allow-certificate-get` attribute to `true` in
 the `meta` field inside the directory object:
@@ -765,6 +767,11 @@ ACME Delegation process:
 
 We note that all the above messages are authenticated, and therefore each proxy
 must be able to authenticate any subordinate server.
+
+# CA Behavior
+{: #sec-ca-behavior}
+
+Although most of this document, and in particular {{sec-protocol-flow}} is focused on the protocol between the NDC and to IdO, the protocol does affect the ACME server running in the CA. A CA that wishes to support certificate delegation MUST also support unauthenticated certificate fetching, which it declares using `allow-certificate-get` ({{capability-metadata}}).
 
 # CSR Template
 {: #sec-csr-template}
