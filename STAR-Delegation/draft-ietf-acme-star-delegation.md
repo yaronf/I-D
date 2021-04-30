@@ -169,6 +169,7 @@ FQDN
 {::boilerplate bcp14}
 
 # Protocol Flow
+{: #sec-protocol-flow}
 
 This section presents the protocol flow.  For completeness, we include the ACME
 profile proposed in this document as well as the ACME STAR protocol described
@@ -766,6 +767,11 @@ ACME Delegation process:
 We note that all the above messages are authenticated, and therefore each proxy
 must be able to authenticate any subordinate server.
 
+# CA Behavior
+{: #sec-ca-behavior}
+
+Although most of this document, and in particular {{sec-protocol-flow}} is focused on the protocol between the NDC and to IdO, the protocol does affect the ACME server running in the CA. A CA that wishes to support certificate delegation MUST also support unauthenticated certificate fetching, which it declares using `allow-certificate-get` ({{capability-metadata}}).
+
 # CSR Template
 {: #sec-csr-template}
 
@@ -975,6 +981,7 @@ extension to the CSR template.
 [[RFC Editor: please replace XXXX below by the RFC number.]]
 
 ## New Fields in the "meta" Object within a Directory Object
+{: #capability-metadata}
 
 This document adds the following entries to the ACME Directory Metadata Fields registry:
 
