@@ -668,6 +668,7 @@ differ in terms of their position in the directory meta and order objects:
 rather than being wrapped in an auto-renewal sub-object they are located at the
 top-level.
 
+{: #capability-metadata}
 A server states its availability to grant unauthenticated access to a client's
 Order certificate by setting the `allow-certificate-get` attribute to `true` in
 the `meta` field inside the directory object:
@@ -981,7 +982,6 @@ extension to the CSR template.
 [[RFC Editor: please replace XXXX below by the RFC number.]]
 
 ## New Fields in the "meta" Object within a Directory Object
-{: #capability-metadata}
 
 This document adds the following entries to the ACME Directory Metadata Fields registry:
 
