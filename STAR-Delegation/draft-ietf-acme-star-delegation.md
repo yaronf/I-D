@@ -641,8 +641,9 @@ following attribute in the `meta` field:
   the profile specified in this memo.  An ACME server that supports this
   delegation profile MUST include this key, and MUST set it to true.
 
-The `delegation-enabled` flag may be specified regardless of the existence or
-setting of the `auto-renewal` flag.
+The IdO MUST declare its support for delegation using `delegation-enabled`
+regardless of whether it supports delegation of STAR certificates, non-STAR
+certificates or both.
 
 In order to help a client to discover support for certificate fetching using
 unauthenticated HTTP GET, the directory object of an ACME server (typically,
