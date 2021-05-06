@@ -395,6 +395,7 @@ The Order object that is created on the IdO:
 - MUST start in the `ready` state;
 - MUST contain an `authorizations` array with zero elements;
 - MUST contain the indicated `delegation` configuration;
+- MUST contain the indicated `auto-renewal` settings;
 - MUST NOT contain the `notBefore` and `notAfter` fields.
 
 ~~~
@@ -516,7 +517,8 @@ the NDC:
 - MUST have a `delegation` attribute indicating the preconfigured delegation
   that applies to this Order;
 - MUST have entries in the `identifiers` field for each delegated name
-  present in the configuration.
+  present in the configuration;
+- MUST have the `allow-certificate-get` attribute set to true.
 
 ~~~
 POST /acme/new-order HTTP/1.1
@@ -538,7 +540,8 @@ Content-Type: application/jose+json
       }
     ],
     "delegation":
-      "https://acme.ido.example/acme/delegations/adFqoz/2"
+      "https://acme.ido.example/acme/delegations/adFqoz/2",
+    "allow-certificate-get": true
   }),
   "signature": "j9JBUvMigi4zodud...acYkEKaa8gqWyZ6H"
 }
@@ -549,7 +552,8 @@ The Order object that is created on the IdO:
 
 - MUST start in the `ready` state;
 - MUST contain an `authorizations` array with zero elements;
-- MUST contain the indicated `delegation` configuration.
+- MUST contain the indicated `delegation` configuration;
+- MUST contain the indicated `allow-certificate-get` setting.
 
 ~~~
 {
@@ -565,6 +569,8 @@ The Order object that is created on the IdO:
 
   "delegation":
     "https://acme.ido.example/acme/delegations/adFqoz/2",
+
+  "allow-certificate-get": true,
 
   "authorizations": [],
 
@@ -582,7 +588,7 @@ The request object created by the IdO:
 
 - MUST copy the identifiers sent by the NDC;
 - MUST strip the `delegation` attribute;
-- MUST include the `allow-certificate-get` attribute set to true.
+- MUST copy the `allow-certificate-get` attribute.
 
 When the identifiers' authorization has been successfully completed and the
 certificate has been issued by the CA, the IdO:
@@ -625,8 +631,8 @@ selected CA supports "unauthenticated GET" by inspecting the relevant settings
 in the CA's `directory` object, as per {{sec-nego-allow-cert-get}}.  If the CA
 does not support "unauthenticated GET" of certificate resources, the IdO MUST
 NOT forward the Order request.  Instead, it MUST move the Order status to
-`invalid` and set the `allow-certificate-get` to `false`.  The same occurs in
-case the Order request is forwarded and the CA does not reflect the
+`invalid` and set the `allow-certificate-get` attribute to `false`.  The same
+occurs in case the Order request is forwarded and the CA does not reflect the
 `allow-certificate-get` setting in its Order resource.  The combination of
 `invalid` status and denied `allow-certificate-get` in the Order resource at
 the IdO provides an unambiguous (asynchronous) signal to the NDC about the
