@@ -185,7 +185,7 @@ The protocol assumes the following preconditions are met:
 - The NDC has registered an ACME account with the IdO;
 - NDC and IdO have agreed on a "CSR template" to use, including at a minimum:
   subject name (e.g., `abc.ido.example`), requested algorithms and key
-  length, key usage, extensions.  The NDC is required to use
+  length, key usage, extensions.  The NDC will use
   this template for every CSR created under the same delegation;
 - IdO has registered an ACME account with the Certification Authority (CA)
 
