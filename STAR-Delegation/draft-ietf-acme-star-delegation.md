@@ -66,7 +66,7 @@ informative:
 --- abstract
 
 
-This memo defines a profile of the Automatic Certificate Management Environment
+This document defines a profile of the Automatic Certificate Management Environment
 (ACME) protocol by which the holder of an identifier (e.g., a domain name) can
 allow a third party to obtain an X.509 certificate such that the certificate
 subject is the delegated identifier while the certified public key corresponds
@@ -76,7 +76,7 @@ terminating TLS sessions on behalf of a content provider (the holder of a domain
 name).  The presented mechanism allows the holder of the identifier to retain
 control over the delegation and revoke it at any time.  A key property of this
 mechanism is it does not require any modification to the deployed TLS
-ecosystem.
+clients and servers.
 
 --- middle
 
