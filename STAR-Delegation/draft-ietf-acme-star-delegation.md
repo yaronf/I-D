@@ -1199,6 +1199,20 @@ Internet (MAMI). This support does not imply endorsement.
 
 [[Note to RFC Editor: please remove before publication.]]
 
+## draft-ietf-acme-star-delegation-08
+
+Extensive reviews by multiple IETF contributors and IESG members (many thanks to all involved, your names are in the Acknowledgments). Specifically:
+
+* More clarity in the Terminology, and correct distinction between CA and ACME server.
+* Explicit description of "delegations list", the object returned by the `delegations` URL.
+* The `delegation` is no longer part of the identifier, rather it is a property of the order.
+* Clarified the negotiation of unauthenticated GET for fetching certificates. This includes some normative changes.
+* Explicit description of the changes required on the CA: support for unauthenticated GET.
+* Some changes to IANA registrations and a change to the registration policy of a new registry.
+* More detail about security considerations related to pre-registration of the NDC as an ACME account on IdO.
+* Minor changes to the CSR Template schemas.
+* Many editorial changes.
+
 ## draft-ietf-acme-star-delegation-07
 
 * SecDir comments by Russ Housley.
