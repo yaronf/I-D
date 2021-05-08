@@ -74,15 +74,15 @@ to a private key controlled by the third party.
 A primary use case is that of a Content Delivery Network (CDN, the third party)
 terminating TLS sessions on behalf of a content provider (the holder of a domain
 name).  The presented mechanism allows the holder of the identifier to retain
-control over the delegation and revoke it at any time.  A key property of this
-mechanism is it does not require any modification to the deployed TLS
+control over the delegation and revoke it at any time.  Importantly, this
+mechanism does not require any modification to the deployed TLS
 clients and servers.
 
 --- middle
 
 # Introduction
 
-This document is a companion document to {{!RFC8739}}.  To avoid duplication,
+This document is related to {{!RFC8739}}, in that some important use cases require both documents to be implemented. To avoid duplication,
 we give here a bare-bones description of the motivation for this solution.  For
 more details, please refer to the introductory sections
 of {{!RFC8739}}.
@@ -138,7 +138,7 @@ IdO
 NDC
 : Name Delegation Consumer, the entity to which the domain name is
   delegated for a limited time.  This is a CDN in the primary use
-  case (in fact, readers may note the symmetry of the two
+  case (in fact, readers may note the similarity of the two
   acronyms).  Depending on the context, the term NDC may
   also be used to designate the (profiled) ACME client used by the Name
   Delegation Consumer.
