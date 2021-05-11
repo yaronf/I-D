@@ -235,7 +235,7 @@ Order1 has been acknowledged.  The IdO SHALL buffer a (valid) CSR until the
 Validation phase completes successfully.
 
 Also note that the successful negotiation of the "unauthenticated GET" (Section
-3.4 of {{!RFC8793}}) is required in order to allow the NDC to access the
+3.4 of {{!RFC8739}}) is required in order to allow the NDC to access the
 `star-certificate` URL on the CA.
 
 ~~~ goat
