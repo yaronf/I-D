@@ -1,4 +1,5 @@
 ---
+
 title: Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)
 abbrev: TLS Recommendations
 docname: draft-ietf-uta-rfc7525bis-latest
@@ -163,8 +164,8 @@ informative:
 
   Boeck2016:
     author:
-    - ins: H. Boeck
-      name: Hanno Boeck
+    - ins: H. B&ouml;ck
+      name: Hanno B&ouml;ck
     - ins: A. Zauner
       name: Aaron Zauner
     - ins: S. Devlin
