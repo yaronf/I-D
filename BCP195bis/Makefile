@@ -56,10 +56,10 @@ $(next).md: $(draft).md
 	$(kramdown-rfc2629) $< > $@
 
 %.txt: %.xml
-	$(xml2rfc) $< $@
+	$(xml2rfc) $< -o $@
 
 %.html: %.xml
-	$(xml2rfc) --html $< $@
+	$(xml2rfc) --html $< -o $@
 
 upload: $(draft).html $(draft).txt
 	python upload-draft.py $(draft).html
