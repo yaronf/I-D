@@ -43,6 +43,11 @@ author:
     name: Peter Saint-Andre
     organization: Mozilla
     email: stpeter@mozilla.com
+ -
+    ins: T. Fossati
+    name: Thomas Fossati
+    organization: arm
+    email: thomas.fossati@arm.com
 
 normative:
 
