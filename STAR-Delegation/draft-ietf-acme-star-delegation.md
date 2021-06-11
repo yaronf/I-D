@@ -335,7 +335,8 @@ An example delegation object in JSON format is shown in
 
 In order to indicate which specific delegation applies to the requested
 certificate a new `delegation` attribute is added to the
-Order object on the NDC-IdO side (see {{fig-star-ndc-neworder}}).  The
+request object on the NDC-IdO side (see {{fig-star-ndc-neworder}}
+and {{fig-non-star-ndc-neworder}}).  The
 value of this attribute is the URL pointing to the delegation configuration
 object that is to be used for this certificate request.  If the `delegation`
 attribute in the Order object contains a URL that does not correspond to a
@@ -383,7 +384,7 @@ Content-Type: application/jose+json
       "allow-certificate-get": true
     },
     "delegation":
-      "https://acme.ido.example/acme/delegations/adFqoz/2"
+      "https://acme.ido.example/acme/delegation/gm0wfLYHBen"
   }),
   "signature": "g454e3hdBlkT4AEw...nKePnUyZTjGtXZ6H"
 }
@@ -417,7 +418,7 @@ The Order object that is created on the IdO:
   },
 
   "delegation":
-    "https://acme.ido.example/acme/delegations/adFqoz/2",
+    "https://acme.ido.example/acme/delegation/gm0wfLYHBen",
 
   "authorizations": [],
 
@@ -471,7 +472,7 @@ certificate has been issued by the CA, the IdO:
   },
 
   "delegation":
-    "https://acme.ido.example/acme/delegations/adFqoz/2",
+    "https://acme.ido.example/acme/delegation/gm0wfLYHBen",
 
   "authorizations": [],
 
@@ -540,7 +541,7 @@ Content-Type: application/jose+json
       }
     ],
     "delegation":
-      "https://acme.ido.example/acme/delegations/adFqoz/2",
+      "https://acme.ido.example/acme/delegation/gm0wfLYHBen",
     "allow-certificate-get": true
   }),
   "signature": "j9JBUvMigi4zodud...acYkEKaa8gqWyZ6H"
@@ -568,7 +569,7 @@ The Order object that is created on the IdO:
   ],
 
   "delegation":
-    "https://acme.ido.example/acme/delegations/adFqoz/2",
+    "https://acme.ido.example/acme/delegation/gm0wfLYHBen",
 
   "allow-certificate-get": true,
 
@@ -610,7 +611,7 @@ certificate has been issued by the CA, the IdO:
   ],
 
   "delegation":
-    "https://acme.ido.example/acme/delegations/adFqoz/2",
+    "https://acme.ido.example/acme/delegation/gm0wfLYHBen",
 
   "allow-certificate-get": true,
 
@@ -1116,8 +1117,8 @@ an ACME account may be more stringent than in traditional ACME, since the
 out-of-band configuration of delegations that an account is authorized to use,
 combined with account authentication, takes the place of the normal ACME
 authorization challenge procedures.  Therefore, the IdO MUST ensure that
-each account is associated with the exact policy (via a `delegation` object)
-that defines which domain names can be delegated to the account and how.
+each account is associated with the exact policies (via their matching `delegation` objects)
+that define which domain names can be delegated to the account and how.
 The IdO is expected to use out of band means to pre-register each NDC to
 the corresponding account.
 
