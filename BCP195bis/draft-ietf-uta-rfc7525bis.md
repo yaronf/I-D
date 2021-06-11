@@ -586,10 +586,6 @@ There are several important scenarios in which the use of TLS is optional, i.e.,
 
 In these scenarios, some of the recommendations in this document might be too strict, since adhering to them could cause fallback to cleartext, a worse outcome than using TLS with an outdated protocol version or cipher suite.
 
-This document specifies best practices for TLS in general.  A separate document containing recommendations for the use of TLS with opportunistic security is to be completed in the future.
-        
-      
-
 
 # Security Considerations
 {: #sec}
