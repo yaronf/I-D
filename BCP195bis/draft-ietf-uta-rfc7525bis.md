@@ -359,9 +359,11 @@ For use in HTTP-over-TLS, readers are referred to {{?RFC8470}} for guidance.
 For QUIC-on-TLS, refer to Sec. 9.2 of {{?RFC9001}}.
 
 For other protocols, generic guidance is given in Sec. 8 and Appendix E.5
-of {{RFC8446}}. Given the complexity, we RECOMMEND to avoid this feature
-altogether unless an explicit specification exists for the protocol in question.
-
+of {{RFC8446}}.
+Given the complexity, we RECOMMEND to avoid this feature altogether unless
+an explicit specification exists for the protocol in question to clarify
+when 0-RTT is appropriate and secure. This can take the form of an IETF RFC,
+a non-IETF standard, or even documentation associated with a non-standard protocol.
 
 # Recommendations: Cipher Suites
 {: #detail}
@@ -734,6 +736,7 @@ The authors gratefully acknowledge the assistance of Leif Johansson and Orit Lev
 * Similar changes to DTLS, pending publication of DTLS 1.3.
 * Fallback SCSV as a MUST for TLS 1.2.
 * Added mention of TLS Encrypted Client Hello, but no recommendation to use yet.
+* New TLS 1.3 capabilities: 0-RTT.
 
 # Document History
 
