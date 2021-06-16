@@ -23,7 +23,7 @@ pi:
   inline: yes
   text-list-symbols: o-*+
   compact: yes
-  subcompact: yes
+  subcompact: no
 
 author:
  -
@@ -210,35 +210,35 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 
 * Implementations MUST NOT negotiate SSL version 2.
-               <vspace blankLines='1'/>
-Rationale: Today, SSLv2 is considered insecure {{!RFC6176}}.
-            
+
+  Rationale: Today, SSLv2 is considered insecure {{!RFC6176}}.
 
 * Implementations MUST NOT negotiate SSL version 3.
-               <vspace blankLines='1'/>
-Rationale: SSLv3 {{?RFC6101}} was an improvement over SSLv2 and plugged some significant security holes but did not support strong cipher suites. SSLv3 does not support TLS extensions, some of which (e.g., renegotiation_info {{!RFC5746}}) are security-critical.  In addition, with the emergence of the POODLE attack {{POODLE}}, SSLv3 is now widely recognized as fundamentally insecure.  See {{DEP-SSLv3}} for further details.
+
+  Rationale: SSLv3 {{?RFC6101}} was an improvement over SSLv2 and plugged some significant security holes but did not support strong cipher suites. SSLv3 does not support TLS extensions, some of which (e.g., renegotiation_info {{!RFC5746}}) are security-critical.  In addition, with the emergence of the POODLE attack {{POODLE}}, SSLv3 is now widely recognized as fundamentally insecure.  See {{DEP-SSLv3}} for further details.
 
 * Implementations MUST NOT negotiate TLS version 1.0 {{?RFC2246}}.
-               <vspace blankLines='1'/>
-Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. This and other recommendations in this section are in line with {{!RFC8996}}.
-               <vspace blankLines='1'/>
+
+  Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. This and other recommendations in this section are in line with {{!RFC8996}}.
 
 * Implementations MUST NOT negotiate TLS version 1.1 {{?RFC4346}}.
-               <vspace blankLines='1'/>
-Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
-               <vspace blankLines='1'/>
 
+
+  Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
+
+  NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
+            
 * Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
-               <vspace blankLines='1'/>
-Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are only available in this version.
+
+  Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are only available in this version.
 
 * Implementations SHOULD support TLS 1.3 {{!RFC8446}} and if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
-               <vspace blankLines='1'/>
-Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers MUST still follow all the recommendations in this document.
+               
+  Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers MUST still follow all the recommendations in this document.
 
 * Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done {{?RFC9001}}) include TLS 1.3.
-               <vspace blankLines='1'/>
-Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.
+
+  Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.
 
 This BCP applies to TLS 1.2, 1.3 and to earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
@@ -247,18 +247,17 @@ This BCP applies to TLS 1.2, 1.3 and to earlier versions. It is not safe for rea
 DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was published.  The following are the recommendations with respect to DTLS:
 
 * Implementations MUST NOT negotiate DTLS version 1.0 {{?RFC4347}}.
-<vspace blankLines='1'/>
+
   Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
-<vspace blankLines='1'/>
 
 * Implementations MUST support and (unless a higher version is available) MUST prefer to negotiate DTLS version 1.2 {{!RFC6347}} 
 
-<vspace blankLines='1'/>
+
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
   
 * Implementations SHOULD support and, if available, MUST prefer to negotiate DTLS version 1.3 as specified in {{!I-D.ietf-tls-dtls13}}.
-<vspace blankLines='1'/>
+
   Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).
 
 ### Fallback to Lower Versions
@@ -382,21 +381,20 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 
 
 
-* Implementations MUST NOT negotiate the cipher suites with 
-               NULL encryption.
-               <vspace blankLines='1'/>
-               Rationale: The NULL cipher suites do not encrypt traffic and 
+* Implementations MUST NOT negotiate the cipher suites with NULL encryption.
+               
+  Rationale: The NULL cipher suites do not encrypt traffic and 
                so provide no confidentiality services. Any entity in the 
                network with access to the connection can view the plaintext 
                of contents being exchanged by the client and server.  
-               (Nevertheless, this document does not discourage software from
+               Nevertheless, this document does not discourage software from
                implementing NULL cipher suites, since they can be useful for 
-               testing and debugging.) 
+               testing and debugging. 
             
 
 * Implementations MUST NOT negotiate RC4 cipher suites. 
-               <vspace blankLines='1'/>
-               Rationale: The RC4 stream cipher has a variety of cryptographic 
+               
+  Rationale: The RC4 stream cipher has a variety of cryptographic 
                weaknesses, as documented in {{!RFC7465}}.
        Note that DTLS specifically forbids the use of RC4 already.
             
@@ -404,8 +402,8 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 * Implementations MUST NOT negotiate cipher suites offering less 
                than 112 bits of security, including so-called "export-level" 
                encryption (which provide 40 or 56 bits of security).
-               <vspace blankLines='1'/>
-               Rationale: Based on {{!RFC3766}}, at least 112 bits 
+
+  Rationale: Based on {{!RFC3766}}, at least 112 bits 
                of security is needed.  40-bit and 56-bit security are considered 
                insecure today.  TLS 1.1 and 1.2 never negotiate 40-bit or 56-bit 
                export ciphers.
@@ -413,8 +411,8 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 
 * Implementations SHOULD NOT negotiate cipher suites that use 
                algorithms offering less than 128 bits of security.
-               <vspace blankLines='1'/>
-               Rationale: Cipher suites that offer between 112-bits and 128-bits 
+
+  Rationale: Cipher suites that offer between 112-bits and 128-bits 
                of security are not considered weak at this time; however, it is 
                expected that their useful lifespan is short enough to justify 
                supporting stronger cipher suites at this time.  128-bit ciphers 
@@ -430,8 +428,8 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 
 * Implementations SHOULD NOT negotiate cipher suites based on 
                RSA key transport, a.k.a. "static RSA".
-               <vspace blankLines='1'/>
-               Rationale: These cipher suites, which have assigned values starting 
+
+  Rationale: These cipher suites, which have assigned values starting 
                with the string "TLS_RSA_WITH_*", have several drawbacks, especially
                the fact that they do not support forward secrecy.
             
@@ -440,14 +438,13 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                offering forward secrecy, such as those in the Ephemeral 
                Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
                and "ECDHE") families.
-               <vspace blankLines='1'/>
-               Rationale: Forward secrecy (sometimes called "perfect forward 
+
+  Rationale: Forward secrecy (sometimes called "perfect forward 
                secrecy") prevents the recovery of information that was encrypted 
                with older session keys, thus limiting the amount of time during 
                which attacks can be successful. See {{sec-pfs}} for 
                a detailed discussion.
             
-
 ## Recommended Cipher Suites
 {: #rec-cipher}
 
@@ -602,9 +599,6 @@ There are several important scenarios in which the use of TLS is optional, i.e.,
 In these scenarios, some of the recommendations in this document might be too strict, since adhering to them could cause fallback to cleartext, a worse outcome than using TLS with an outdated protocol version or cipher suite.
 
 This document specifies best practices for TLS in general.  A separate document containing recommendations for the use of TLS with opportunistic security is to be completed in the future.
-        
-      
-
 
 # Security Considerations
 {: #sec}
