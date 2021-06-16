@@ -219,11 +219,10 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * Implementations MUST NOT negotiate TLS version 1.0 {{?RFC2246}}.
 
-  Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. 
-               
-  NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
+  Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. This and other recommendations in this section are in line with {{!RFC8996}}.
 
 * Implementations MUST NOT negotiate TLS version 1.1 {{?RFC4346}}.
+
 
   Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
 
@@ -237,7 +236,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
                
   Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers MUST still follow all the recommendations in this document.
 
-* Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done {{?I-D.ietf-quic-tls}}) include TLS 1.3.
+* Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done {{?RFC9001}}) include TLS 1.3.
 
   Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.
 
@@ -250,8 +249,6 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 * Implementations MUST NOT negotiate DTLS version 1.0 {{?RFC4347}}.
 
   Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
-
-  NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
 
 * Implementations MUST support and (unless a higher version is available) MUST prefer to negotiate DTLS version 1.2 {{!RFC6347}} 
 
@@ -343,6 +340,25 @@ Rationale: SNI supports deployment of multiple TLS-protected virtual servers on 
       by allowing each one to have its own certificate. However, SNI also leaks the 
       target domain for a given connection; this information leak will be plugged by 
       use of TLS Encrypted Client Hello.
+
+## Zero Round Trip Time (0-RTT) Data in TLS 1.3
+
+The 0-RTT early data feature is new in TLS 1.3. It provides improved latency
+when TLS connections are resumed, at the potential cost of security.
+As a result, it requires special attention from implementers on both
+the server and the client side. Typically this extends to both the
+TLS library as well as protocol layers above it.
+
+For use in HTTP-over-TLS, readers are referred to {{?RFC8470}} for guidance.
+
+For QUIC-on-TLS, refer to Sec. 9.2 of {{?RFC9001}}.
+
+For other protocols, generic guidance is given in Sec. 8 and Appendix E.5
+of {{RFC8446}}.
+Given the complexity, we RECOMMEND to avoid this feature altogether unless
+an explicit specification exists for the application protocol in question to clarify
+when 0-RTT is appropriate and secure. This can take the form of an IETF RFC,
+a non-IETF standard, or even documentation associated with a non-standard protocol.
 
 # Recommendations: Cipher Suites
 {: #detail}
@@ -710,6 +726,7 @@ The authors gratefully acknowledge the assistance of Leif Johansson and Orit Lev
 * Similar changes to DTLS, pending publication of DTLS 1.3.
 * Fallback SCSV as a MUST for TLS 1.2.
 * Added mention of TLS Encrypted Client Hello, but no recommendation to use yet.
+* New TLS 1.3 capabilities: 0-RTT.
 
 # Document History
 
