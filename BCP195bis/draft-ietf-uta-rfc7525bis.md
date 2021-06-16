@@ -220,16 +220,13 @@ Rationale: SSLv3 {{?RFC6101}} was an improvement over SSLv2 and plugged some sig
 
 * Implementations MUST NOT negotiate TLS version 1.0 {{?RFC2246}}.
                <vspace blankLines='1'/>
-Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. 
+Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. This and other recommendations in this section are in line with {{!RFC8996}}.
                <vspace blankLines='1'/>
-NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
 
 * Implementations MUST NOT negotiate TLS version 1.1 {{?RFC4346}}.
                <vspace blankLines='1'/>
 Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
                <vspace blankLines='1'/>
-NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
-            
 
 * Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
                <vspace blankLines='1'/>
@@ -239,7 +236,7 @@ Rationale: Several stronger cipher suites are available only with TLS 1.2 (publi
                <vspace blankLines='1'/>
 Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers MUST still follow all the recommendations in this document.
 
-* Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done {{?I-D.ietf-quic-tls}}) include TLS 1.3.
+* Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done {{?RFC9001}}) include TLS 1.3.
                <vspace blankLines='1'/>
 Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.
 
@@ -253,7 +250,6 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 <vspace blankLines='1'/>
   Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
 <vspace blankLines='1'/>
-NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
 
 * Implementations MUST support and (unless a higher version is available) MUST prefer to negotiate DTLS version 1.2 {{!RFC6347}} 
 
