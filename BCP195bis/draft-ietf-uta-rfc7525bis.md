@@ -662,7 +662,7 @@ Host name validation typically applies only to the leaf "end entity" certificate
 
 The existence of deployed TLS stacks that mistakenly reuse the AES-GCM nonce is
 documented in {{Boeck2016}}, showing there is an actual risk of AES-GCM getting
-implemented in an insecure way, making TLS sessions that use an AES-GCM
+implemented in an insecure way, and thus making TLS sessions that use an AES-GCM
 ciphersuite vulnerable to attacks such as {{Joux2006}}.
 
 While this problem has been fixed in TLS 1.3, which enforces a deterministic
@@ -798,4 +798,3 @@ The authors gratefully acknowledge the assistance of Leif Johansson and Orit Lev
 
 - Initial release, the RFC 7525 text as-is, with some minor editorial
 changes to the references.
-
