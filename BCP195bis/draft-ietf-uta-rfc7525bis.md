@@ -191,6 +191,13 @@ informative:
     target: https://csrc.nist.gov/csrc/media/projects/block-cipher-techniques/documents/bcm/comments/800-38-series-drafts/gcm/joux_comments.pdf
     title: Authentication Failures in NIST version of GCM
 
+  CVE:
+    author:
+    - org: MITRE
+    date: false
+    target: https://cve.mitre.org
+    title: Common Vulnerabilities and Exposures
+
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
 
@@ -662,8 +669,9 @@ Host name validation typically applies only to the leaf "end entity" certificate
 
 The existence of deployed TLS stacks that mistakenly reuse the AES-GCM nonce is
 documented in {{Boeck2016}}, showing there is an actual risk of AES-GCM getting
-implemented in an insecure way, and thus making TLS sessions that use an AES-GCM
-ciphersuite vulnerable to attacks such as {{Joux2006}}.
+implemented in an insecure way and thus making TLS sessions that use an
+AES-GCM ciphersuite vulnerable to attacks such as {{Joux2006}}.  (See {{CVE}}
+records: CVE-2016-0270, CVE-2016-10213, CVE-2016-10212, CVE-2017-5933.)
 
 While this problem has been fixed in TLS 1.3, which enforces a deterministic
 method to generate nonces from record sequence numbers and shared secrets for
