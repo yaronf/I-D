@@ -63,13 +63,6 @@ informative:
 
   TLS-XMPP: RFC7590
 
-  BETTERCRYPTO:
-    author:
-    - org: bettercrypto.org
-    date: April 2015
-    target: https://bettercrypto.org/static/applied-crypto-hardening.pdf
-    title: 'Applied Crypto Hardening'
-
   CAB-Baseline:
     author:
     - org: CA/Browser Forum
@@ -139,7 +132,7 @@ informative:
     author:
     - org: bettercrypto.org
     date: April 2015
-    target: https://bettercrypto.org/static/applied-crypto-hardening.pdf
+    target: https://bettercrypto.org/
     title: Applied Crypto Hardening
 
   NIST.SP.800-56A:
