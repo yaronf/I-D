@@ -378,13 +378,15 @@ Rationale: SNI supports deployment of multiple TLS-protected virtual servers on 
       target domain for a given connection; this information leak will be plugged by 
       use of TLS Encrypted Client Hello.
 
-In order to prevent the attacks described in {{ALPACA}}, a receiver who does
-not recognize the presented server name SHOULD NOT continue the handshake and
+In order to prevent the attacks described in {{ALPACA}}, a server who does not
+recognize the presented server name SHOULD NOT continue the handshake and
 instead fail with a fatal-level `unrecognized_name(112)` alert.  Note that this
 recommendation updates Section 3 of {{!RFC6066}}: "If the server understood the
 ClientHello extension but does not recognize the server name, the server SHOULD
 take one of two actions: either abort the handshake by sending a fatal-level
-`unrecognized_name(112)` alert or continue the handshake."
+`unrecognized_name(112)` alert or continue the handshake." It is also
+RECOMMENDED that clients abort the handshake if the server acknowledges the SNI
+hostname with a different hostname than the one sent by the client.
 
 ## Application-Layer Protocol Negotiation
 
@@ -392,11 +394,13 @@ TLS implementations MUST support the Application-Layer Protocol Negotiation
 (ALPN) extension {{!RFC7301}}.
 
 In order to prevent "cross-protocol" attacks resulting from failure to ensure
-that a message intended for use in one protocol can not be mistaken for a
+that a message intended for use in one protocol cannot be mistaken for a
 message for use in another protocol, servers should strictly enforce the
 behaviour prescribed in Section 3.2 of {{!RFC7301}}: "In the event that the
 server supports no protocols that the client advertises, then the server SHALL
-respond with a fatal `no_application_protocol` alert."  Failure to do so can
+respond with a fatal `no_application_protocol` alert."  It is also RECOMMENDED
+that clients abort the handshake if the server acknowledges the ALPN extension,
+but does not select a protocol from the client list.  Failure to do so can
 result in attacks such those described in {{ALPACA}}.
 
 ## Zero Round Trip Time (0-RTT) Data in TLS 1.3
