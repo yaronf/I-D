@@ -93,12 +93,7 @@ informative:
 
   Kleinjung2010: DOI.10.1007/978-3-642-14623-7_18
 
-  IANA_TLS:
-    author:
-    - org: IANA
-    target: http://www.iana.org/assignments/tls-parameters
-    title: Transport Layer Security (TLS) Parameters
-    date: false
+  IANA_TLS: IANA.tls-parameters
 
   Smith2013:
     author:
@@ -484,8 +479,9 @@ information on the use of MODP Diffie-Hellman in TLS.
 
 As noted in {{?RFC3766}}, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.
 
-With regard to ECDH keys, the IANA "EC Named Curve Registry" (within the
-   "Transport Layer Security (TLS) Parameters" registry {{IANA_TLS}}) contains 160-bit
+With regard to ECDH keys, the IANA "Supported Groups Registry" (former "EC Named Curve
+Registry"), within the
+   "Transport Layer Security (TLS) Parameters" registry {{IANA_TLS}} contains 160-bit
 elliptic curves that are considered to be roughly equivalent to only an 80-bit
 symmetric key {{ECRYPT-II}}.   Curves of less than 192 bits SHOULD NOT be used.
 
@@ -737,4 +733,3 @@ The authors gratefully acknowledge the assistance of Leif Johansson and Orit Lev
 
 - Initial release, the RFC 7525 text as-is, with some minor editorial
 changes to the references.
-
