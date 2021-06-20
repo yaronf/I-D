@@ -157,7 +157,7 @@ informative:
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
 
 This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, we believe new guidance is needed.
- 
+
 --- middle
 
 # Introduction
@@ -186,8 +186,6 @@ Community knowledge about the strength of various algorithms and feasible attack
 A number of security-related terms in this document are used in the sense defined in {{!RFC4949}}.
 
 {::boilerplate bcp14}
-
-    
 
 # General Recommendations
 {: #rec}
@@ -248,7 +246,7 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
-  
+
 * Implementations SHOULD support and, if available, MUST prefer to negotiate DTLS version 1.3 as specified in {{!I-D.ietf-tls-dtls13}}.
 
   Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).
@@ -356,7 +354,6 @@ a non-IETF standard, or even documentation associated with a non-standard protoc
 # Recommendations: Cipher Suites
 {: #detail}
 
-
 TLS and its implementations provide considerable flexibility in the
          selection of cipher suites. Unfortunately, some available cipher
          suites are insecure, some do not provide the targeted security
@@ -453,7 +450,7 @@ Given the foregoing considerations, implementation and deployment of the followi
 * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         
 
-These cipher suites are supported only in TLS 1.2 because they are authenticated encryption (AEAD) algorithms {{?RFC5116}}.
+These cipher suites are supported only in TLS 1.2 and not in earlier protocol versions, because they are authenticated encryption (AEAD) algorithms {{?RFC5116}}.
 
 Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software. (See {{BETTERCRYPTO}} for helpful deployment guidelines, but note that its recommendations differ from the current document in some details.)  It would be ideal if server software implementations were to prefer these suites by default.
 
@@ -473,6 +470,11 @@ This document does not change the mandatory-to-implement TLS cipher suite(s) pre
 Note that some profiles of TLS 1.2 use different cipher suites. For example, {{?RFC6460}} defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.
 
 {{!RFC4492}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC4492}}.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve {{!RFC4492}}. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".
+
+## Cipher Suites for TLS 1.3
+
+This document does not specify any cipher suites for TLS 1.3. Readers
+are referred to Sec. 9.1 of {{RFC8446}} for cipher suite recommendations.
 
 ## Public Key Length
 {: #rec-keylength}
@@ -508,6 +510,7 @@ Not all TLS implementations support both modular exponential (MODP) and elliptic
 
 1. TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters
         
+
 Rationale: Although Elliptic Curve Cryptography is widely deployed, there are some communities where its adoption has been limited for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved {{?RFC6090}}).  Note that ECDHE cipher suites exist for both RSA and ECDSA certificates, so moving to ECDHE cipher suites does not require moving away from RSA-based certificates.  On the other hand, there are two related issues hindering effective use of MODP Diffie-Hellman cipher suites in TLS:
 
 * There are no standardized, widely implemented protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.
