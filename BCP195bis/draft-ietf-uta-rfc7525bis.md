@@ -135,21 +135,7 @@ informative:
     target: https://bettercrypto.org/
     title: Applied Crypto Hardening
 
-  NIST.SP.800-56A:
-    author:
-    - ins: E. Barker
-      name: Elaine Barker
-    - ins: L. Chen
-      name: Lily Chen
-    - ins: A. Roginsky
-      name: Allen Roginsky
-    - ins: M. Smid
-      name: Miles Smid
-    date: '2013'
-    seriesinfo:
-      NIST Special Publication: 800-56A
-    target: http://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-56Ar2.pdf
-    title: Recommendation for Pair-Wise Key Establishment Schemes Using Discrete Logarithm Cryptography
+  NIST.SP.800-56A: DOI.10.6028/NIST.SP.800-56Ar3
 
   DEP-SSLv3: RFC7568
 
@@ -486,7 +472,15 @@ When using the cipher suites recommended in this document, two public keys are
 
 With a key exchange based on modular exponential (MODP) Diffie-Hellman groups ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.
 
- Rationale: For various reasons, in practice, DH keys are typically generated in lengths that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits). Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key {{?RFC3766}}, it is better to use keys longer than that for the "DHE" family of cipher suites. A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key {{?RFC3766}} and a DH key of 2048 bits might be sufficient for at least the next 10 years {{NIST.SP.800-56A}}. See {{detail-alt}} for additional information on the use of MODP Diffie-Hellman in TLS.
+ Rationale: For various reasons, in practice, DH keys are typically generated in lengths
+ that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits).
+ Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key
+{{?RFC3766}}, it is better to use keys longer than that for the "DHE" family of cipher suites.
+A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key {{?RFC3766}}.
+A DH key of 2048 bits (equivalent to a 112-bit symmetric key) 
+is allowed by the latest revision of {{NIST.SP.800-56A}} (see in particular Appendix D).
+See {{detail-alt}} for additional
+information on the use of MODP Diffie-Hellman in TLS.
 
 As noted in {{?RFC3766}}, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.
 
