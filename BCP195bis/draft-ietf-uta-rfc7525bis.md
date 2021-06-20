@@ -480,8 +480,8 @@ information on the use of MODP Diffie-Hellman in TLS.
 As noted in {{?RFC3766}}, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.
 
 With regard to ECDH keys, the IANA "Supported Groups Registry" (former "EC Named Curve
-Registry", within the
-   "Transport Layer Security (TLS) Parameters" registry {{IANA_TLS}}) contains 160-bit
+Registry"), within the
+   "Transport Layer Security (TLS) Parameters" registry {{IANA_TLS}} contains 160-bit
 elliptic curves that are considered to be roughly equivalent to only an 80-bit
 symmetric key {{ECRYPT-II}}.   Curves of less than 192 bits SHOULD NOT be used.
 
@@ -733,4 +733,3 @@ The authors gratefully acknowledge the assistance of Leif Johansson and Orit Lev
 
 - Initial release, the RFC 7525 text as-is, with some minor editorial
 changes to the references.
-
