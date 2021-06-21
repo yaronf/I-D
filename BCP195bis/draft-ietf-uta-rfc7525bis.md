@@ -390,8 +390,8 @@ hostname with a different hostname than the one sent by the client.
 
 ## Application-Layer Protocol Negotiation
 
-TLS implementations MUST support the Application-Layer Protocol Negotiation
-(ALPN) extension {{!RFC7301}}.
+TLS implementations (both client- and server-side) MUST support the
+Application-Layer Protocol Negotiation (ALPN) extension {{!RFC7301}}.
 
 In order to prevent "cross-protocol" attacks resulting from failure to ensure
 that a message intended for use in one protocol cannot be mistaken for a
