@@ -5,7 +5,7 @@ abbrev: TLS Recommendations
 docname: draft-ietf-uta-rfc7525bis-latest
 category: bcp
 obsoletes: 7525
-updates: 5288
+updates: 5288, 6066
 
 ipr: trust200902
 area: Applications
@@ -171,6 +171,32 @@ informative:
     date: false
     target: https://cve.mitre.org
     title: Common Vulnerabilities and Exposures
+
+  ALPACA:
+    author:
+    - ins: M. Brinkmann
+      name: Marcus Brinkmann
+    - ins: C. Dresen
+      name: Christian Dresen
+    - ins: R. Merget
+      name: Robert Merget
+    - ins: D. Poddebniak
+      name: Damian Poddebniak
+    - ins: J. M&uuml;ller
+      name: Jens M&uuml;ller
+    - ins: J. Somorovsky
+      name: Juraj Somorovsky
+    - ins: J. Schwenk
+      name: J&ouml;rg Schwenk
+    - ins: S. Schinzel
+      name: Sebastian Schinzel
+    date: '2021'
+    target:
+      https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann
+    title:
+      'ALPACA: Application Layer Protocol Confusion - Analyzing and Mitigating
+      Cracks in TLS Authentication'
+    seriesinfo: '30th USENIX Security Symposium (USENIX Security 21)'
 
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
@@ -350,6 +376,31 @@ Rationale: SNI supports deployment of multiple TLS-protected virtual servers on 
       by allowing each one to have its own certificate. However, SNI also leaks the 
       target domain for a given connection; this information leak will be plugged by 
       use of TLS Encrypted Client Hello.
+
+In order to prevent the attacks described in {{ALPACA}}, a server that does not
+recognize the presented server name SHOULD NOT continue the handshake and
+instead fail with a fatal-level `unrecognized_name(112)` alert.  Note that this
+recommendation updates Section 3 of {{!RFC6066}}: "If the server understood the
+ClientHello extension but does not recognize the server name, the server SHOULD
+take one of two actions: either abort the handshake by sending a fatal-level
+`unrecognized_name(112)` alert or continue the handshake." It is also
+RECOMMENDED that clients abort the handshake if the server acknowledges the SNI
+hostname with a different hostname than the one sent by the client.
+
+## Application-Layer Protocol Negotiation
+
+TLS implementations (both client- and server-side) MUST support the
+Application-Layer Protocol Negotiation (ALPN) extension {{!RFC7301}}.
+
+In order to prevent "cross-protocol" attacks resulting from failure to ensure
+that a message intended for use in one protocol cannot be mistaken for a
+message for use in another protocol, servers should strictly enforce the
+behaviour prescribed in Section 3.2 of {{!RFC7301}}: "In the event that the
+server supports no protocols that the client advertises, then the server SHALL
+respond with a fatal `no_application_protocol` alert."  It is also RECOMMENDED
+that clients abort the handshake if the server acknowledges the ALPN extension,
+but does not select a protocol from the client list.  Failure to do so can
+result in attacks such those described in {{ALPACA}}.
 
 ## Zero Round Trip Time (0-RTT) Data in TLS 1.3
 
