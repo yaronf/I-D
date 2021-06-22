@@ -160,6 +160,8 @@ informative:
 
   DEP-SSLv3: RFC7568
 
+  TLS-HTTP2: RFC8740
+
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
 
@@ -333,6 +335,10 @@ Where handshake renegotiation is implemented, both clients and servers MUST impl
 The most secure option for countering the Triple Handshake attack is to refuse any change of certificates during renegotiation.  In addition, TLS clients SHOULD apply the same validation policy for all certificates received over a connection.  The {{triple-handshake}} document suggests several other possible countermeasures, such as binding the master secret to the full handshake (see {{SESSION-HASH}}) and binding the abbreviated session resumption handshake to the original full handshake.  Although the latter two techniques are still under development and thus do not qualify as current practices, those who implement and deploy TLS are advised to watch for further development of appropriate countermeasures.
       
       
+## Post-Handshake Authentication
+
+Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in {{!RFC8740}}.
+
 
 ## Server Name Indication
 
