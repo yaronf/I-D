@@ -1,9 +1,11 @@
 ---
+
 title: Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)
 abbrev: TLS Recommendations
 docname: draft-ietf-uta-rfc7525bis-latest
 category: bcp
 obsoletes: 7525
+updates: 5288
 
 ipr: trust200902
 area: Applications
@@ -41,6 +43,11 @@ author:
     name: Peter Saint-Andre
     organization: Mozilla
     email: stpeter@mozilla.com
+ -
+    ins: T. Fossati
+    name: Thomas Fossati
+    organization: arm
+    email: thomas.fossati@arm.com
 
 normative:
 
@@ -133,6 +140,37 @@ informative:
   NIST.SP.800-56A: DOI.10.6028/NIST.SP.800-56Ar3
 
   DEP-SSLv3: RFC7568
+
+  Boeck2016:
+    author:
+    - ins: H. B&ouml;ck
+      name: Hanno B&ouml;ck
+    - ins: A. Zauner
+      name: Aaron Zauner
+    - ins: S. Devlin
+      name: Sean Devlin
+    - ins: J. Somorovsky
+      name: Juraj Somorovsky
+    - ins: P. Jovanovic
+      name: Philipp Jovanovic
+    date: 'May 2016'
+    target: https://eprint.iacr.org/2016/475.pdf
+    title: 'Nonce-Disrespecting Adversaries: Practical Forgery Attacks on GCM in TLS'
+
+  Joux2006:
+    author:
+    - ins: A. Joux
+      name: Antoine Joux
+    date: '2006'
+    target: https://csrc.nist.gov/csrc/media/projects/block-cipher-techniques/documents/bcm/comments/800-38-series-drafts/gcm/joux_comments.pdf
+    title: Authentication Failures in NIST version of GCM
+
+  CVE:
+    author:
+    - org: MITRE
+    date: false
+    target: https://cve.mitre.org
+    title: Common Vulnerabilities and Exposures
 
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
@@ -612,6 +650,28 @@ Host name validation typically applies only to the leaf "end entity" certificate
 {: #sec-aes}
 
 {{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to Section 11 of {{RFC5246}} for general security considerations when using TLS 1.2, and to Section 6 of {{!RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
+
+### Nonce Reuse in TLS 1.2
+
+The existence of deployed TLS stacks that mistakenly reuse the AES-GCM nonce is
+documented in {{Boeck2016}}, showing there is an actual risk of AES-GCM getting
+implemented in an insecure way and thus making TLS sessions that use an
+AES-GCM ciphersuite vulnerable to attacks such as {{Joux2006}}.  (See {{CVE}}
+records: CVE-2016-0270, CVE-2016-10213, CVE-2016-10212, CVE-2017-5933.)
+
+While this problem has been fixed in TLS 1.3, which enforces a deterministic
+method to generate nonces from record sequence numbers and shared secrets for
+all of its AEAD cipher suites (including AES-GCM), TLS 1.2 implementations
+could still choose their own (potentially insecure) nonce generation methods.
+
+It is therefore RECOMMENDED that TLS 1.2 implementations use the 64-bit
+sequence number to populate the `nonce_explicit` part of the GCM nonce, as
+described in the first two paragraphs of Section 5.3 of {{!RFC8446}}.  Note
+that this recommendation updates Section 3 of {{!RFC5288}}: "The nonce_explicit
+MAY be the 64-bit sequence number."
+
+We note that at the time of writing there are no ciphersuites defined for nonce
+reuse resistant algorithms such as AES-GCM-SIV {{?RFC8452}}.
       
 ## Forward Secrecy
 {: #sec-pfs}
@@ -683,7 +743,6 @@ With regard to common public key certificates, servers SHOULD support the follow
       
 
 The considerations in this section do not apply to scenarios where the DANE-TLSA resource record {{?RFC6698}} is used to signal to a client which certificate a server considers valid and good to use for TLS connections.
-
 
 # Acknowledgments
 {: #d1e1127}
