@@ -559,13 +559,13 @@ has reached the limit, an implementation SHOULD perform a new handshake (or in T
 a Key Update) to rotate the session key.
 
 For all AES-GCM cipher suites recommended for TLS 1.2 in this document, the limit
-for one connection is 2^24.5 full-size records (about 24 million).
+for one connection is 2<sup>24.5</sup> full-size records (about 24 million).
 This is the same number as for TLS 1.3 with the equivalent cipher suites.
 
 [[TODO: refer to {{?I-D.irtf-cfrg-aead-limits}} once they have added the derivation
 for TLS 1.2, which is different from TLS 1.3. Different derivation, same numbers.]]
 
-For all TLS 1.3 cipher suites, readers are referred to Sec. 5.5 of {{RFC8446}}.
+For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}}.
 
 ## Public Key Length
 {: #rec-keylength}
