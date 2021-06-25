@@ -349,9 +349,9 @@ Implementers should note that compression at higher protocol levels can allow an
 Session resumption drastically reduces the number of TLS handshakes and thus is an essential
 performance feature for most deployments.
 
-Stateless session resumption with session tickets is a popular strategy. It is specified in
-{{?RFC5077}} for TLS 1.2,
-and the equivalent PSK-based mechanism for TLS 1.3, Section 4.6.1 of {{RFC8446}}.
+Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
+{{?RFC5077}}.  For TLS 1.3, an equivalent PSK-based mechanism is described in
+Section 4.6.1 of {{RFC8446}}.
 When it is used, the resumption information MUST
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
 Further recommendations apply to session tickets:
@@ -366,7 +366,7 @@ Rationale: session resumption is another kind of TLS handshake, and therefore mu
 
 TLS 1.3 provides the powerful option of forward secrecy even within a long-lived connection
 that is periodically resumed. Section 2.2 of {{RFC8446}} recommends that clients SHOULD
-send an "key_share" when initiating session resumption.
+send a "key_share" when initiating session resumption.
 In order to gain forward secrecy, this document recommends that server implementations SHOULD
 respond with a "key_share", to complete an ECDHE exchange on each session resumption.
 
