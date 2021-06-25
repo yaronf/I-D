@@ -367,10 +367,10 @@ Rationale: session resumption is another kind of TLS handshake, and therefore mu
 TLS 1.3 provides the powerful option of forward secrecy even within a long-lived connection
 that is periodically resumed. Section 2.2 of {{RFC8446}} recommends that clients SHOULD
 send an "key_share" when initiating session resumption.
-In order to gain forward secrecy, we recommend that server implementations SHOULD
+In order to gain forward secrecy, this document recommends that server implementations SHOULD
 respond with a "key_share", to complete an ECDHE exchange on each session resumption.
 
-TLS session resumption introduces potential privacy issues, where the server is able
+TLS session resumption introduces potential privacy issues where the server is able
 to track the client, in some cases indefinitely. See {{Sy2018}} for more details.
 
 ## TLS Renegotiation
