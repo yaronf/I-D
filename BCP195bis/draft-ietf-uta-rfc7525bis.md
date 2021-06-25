@@ -200,6 +200,27 @@ informative:
       Cracks in TLS Authentication'
     seriesinfo: '30th USENIX Security Symposium (USENIX Security 21)'
 
+  RACCOON:
+    author:
+    - ins: R. Merget
+      name: Robert Merget
+    - ins: M. Brinkmann
+      name: Marcus Brinkmann
+    - ins: N. Aviram
+      name: Nimrod Aviram
+    - ins: J. Somorovsky
+      name: Juraj Somorovsky
+    - ins: J. Mittmann
+      name: Johannes Mittmann
+    - ins: J. Schwenk
+      name: J&ouml;rg Schwenk
+    date: '2021'
+    target:
+      https://www.usenix.org/conference/usenixsecurity21/presentation/merget
+    title:
+      'Raccoon Attack: Finding and Exploiting Most-Significant-Bit-Oracles in TLS-DH(E)'
+    seriesinfo: '30th USENIX Security Symposium (USENIX Security 21)'
+
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
 
@@ -798,11 +819,16 @@ Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forw
 
 For performance reasons, many TLS implementations reuse Diffie-Hellman and Elliptic Curve Diffie-Hellman exponents across multiple connections. Such reuse can result in major security issues:
 
-* If exponents are reused for too long (e.g., even more than a few hours), an attacker      who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.
+* If exponents are reused for too long (e.g., even more than a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.
 
 * TLS implementations that reuse exponents should test the DH public key they receive for group membership, in order to avoid some known attacks. These tests are not standardized in TLS at the time of writing. See {{?RFC6989}} for recipient tests required of IKEv2 implementations that reuse DH exponents.
-      
-      
+
+* Under certain conditions, the use of static DH keys, or of ephemeral DH keys that are reused across multiple connections, can lead to timing attacks (such as those described in {{RACCOON}}) on the shared secrets used in Diffie-Hellman key exchange.
+
+To address these concerns, TLS implementations SHOULD NOT use static DH keys and SHOULD NOT reuse ephemeral DH keys across multiple connections.
+
+[[ TODO: revisit when draft-bartle-tls-deprecate-ffdhe becomes a TLS WG item, since it specifies MUST NOT rather than SHOULD NOT. ]]
+
 ## Certificate Revocation
 
 The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates {{RFC5280}}:
