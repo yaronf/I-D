@@ -794,6 +794,8 @@ For performance reasons, many TLS implementations reuse Diffie-Hellman and Ellip
 
 To address these concerns, TLS implementations SHOULD NOT use static DH keys and SHOULD NOT reuse ephemeral DH keys across multiple connections.
 
+[[ TODO: revisit when draft-bartle-tls-deprecate-ffdhe becomes a TLS WG item, since it specifies MUST NOT rather than SHOULD NOT. ]]
+
 ## Certificate Revocation
 
 The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates {{RFC5280}}:
