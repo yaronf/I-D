@@ -566,6 +566,23 @@ Note that some profiles of TLS 1.2 use different cipher suites. For example, {{?
 This document does not specify any cipher suites for TLS 1.3. Readers
 are referred to Sec. 9.1 of {{RFC8446}} for cipher suite recommendations.
 
+## Limits on Key Usage
+
+All ciphers have an upper limit on the amount of traffic that can be securely encrypted
+with any given key. In the case of AEAD cipher suites, the limit is typically determined
+by the cipher's integrity guarantees. When the amount of traffic for a particular connection
+has reached the limit, an implementation SHOULD perform a new handshake (or in TLS 1.3,
+a Key Update) to rotate the session key.
+
+For all AES-GCM cipher suites recommended for TLS 1.2 in this document, the limit
+for one connection is 2<sup>24.5</sup> full-size records (about 24 million).
+This is the same number as for TLS 1.3 with the equivalent cipher suites.
+
+[[TODO: refer to {{?I-D.irtf-cfrg-aead-limits}} once they have added the derivation
+for TLS 1.2, which is different from TLS 1.3. Different derivation, same numbers.]]
+
+For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}}.
+
 ## Public Key Length
 {: #rec-keylength}
 
