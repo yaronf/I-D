@@ -92,6 +92,8 @@ informative:
     seriesinfo:
       Usenix Security Symposium: '2012'
 
+  Sy2018: DOI.10.1145/3274694.3274708
+
   DANE-SMTP: RFC7672
 
   PatersonRS11: DOI.10.1007/978-3-642-25385-0_20
@@ -344,7 +346,15 @@ Implementers should note that compression at higher protocol levels can allow an
 ## TLS Session Resumption
 {: #rec-resume}
 
-If TLS session resumption is used in the context of TLS 1.2, care ought to be taken to do so safely. In particular, when using session tickets {{?RFC5077}}, the resumption information MUST be authenticated and encrypted to prevent modification or eavesdropping by an attacker. Further recommendations apply to session tickets:
+Session resumption drastically reduces the number of TLS handshakes and thus is an essential
+performance feature for most deployments.
+
+Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
+{{?RFC5077}}.  For TLS 1.3, an equivalent PSK-based mechanism is described in
+Section 4.6.1 of {{RFC8446}}.
+When it is used, the resumption information MUST
+be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
+Further recommendations apply to session tickets:
 
 * A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
 
@@ -352,10 +362,16 @@ If TLS session resumption is used in the context of TLS 1.2, care ought to be ta
 
 * For similar reasons, session ticket validity SHOULD be limited to a reasonable duration (e.g., half as long as ticket key validity).
 
-
-
 Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document ({{detail}}) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.
 
+TLS 1.3 provides the powerful option of forward secrecy even within a long-lived connection
+that is periodically resumed. Section 2.2 of {{RFC8446}} recommends that clients SHOULD
+send a "key_share" when initiating session resumption.
+In order to gain forward secrecy, this document recommends that server implementations SHOULD
+respond with a "key_share", to complete an ECDHE exchange on each session resumption.
+
+TLS session resumption introduces potential privacy issues where the server is able
+to track the client, in some cases indefinitely. See {{Sy2018}} for more details.
 
 ## TLS Renegotiation
 
