@@ -54,7 +54,7 @@ jobs:
           sudo gem install kramdown-rfc2629
           sudo pip3 install xml2rfc
           sudo pip3 install svgcheck
-          go install github.com/blampe/goat
+          go get github.com/blampe/goat
           # Add to system path
           echo "$HOME/go/bin" >> $GITHUB_PATH
 
