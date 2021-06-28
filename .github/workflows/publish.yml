@@ -55,6 +55,8 @@ jobs:
           sudo pip3 install xml2rfc
           sudo pip3 install svgcheck
           go get github.com/blampe/goat
+          echo at $HOME/go/bin
+          ls $HOME/go/bin
           # Add to system path
           echo "$HOME/go/bin" >> $GITHUB_PATH
 
