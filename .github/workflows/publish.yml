@@ -87,5 +87,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
-          destination_dir: ./docs
+          destination_dir: .
           keep_files: true
