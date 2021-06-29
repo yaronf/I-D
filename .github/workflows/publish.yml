@@ -53,10 +53,13 @@ jobs:
         run: |
           sudo gem install kramdown-rfc2629
           sudo pip3 install xml2rfc
+          # Only kramdown-rfc2629 and xml2rfc are generic.
+          # The rest is fancy stuff for STAR Delegation
           sudo pip3 install svgcheck
           go get github.com/blampe/goat
-          echo at $HOME/go/bin
-          ls $HOME/go/bin
+          sudo gem install cddl
+          sudo npm install -g ajv
+          sudo npm install -g ajv-formats
           # Add to system path
           echo "$HOME/go/bin" >> $GITHUB_PATH
 
