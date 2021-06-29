@@ -83,9 +83,13 @@ jobs:
 
       # Publish to Github Pages
       - name: Publish
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
-          keep_files: true
-          disable_nojekyll: true
+        uses: rdarida/simple-github-pages-deploy-action@v1
+        with: 
+          git-base-folder: ./docs
+          branch: 'gh-pages'
+#        uses: peaceiris/actions-gh-pages@v3
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ./docs
+#          keep_files: true
+#          disable_nojekyll: true
