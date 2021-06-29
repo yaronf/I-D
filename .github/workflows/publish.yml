@@ -71,11 +71,15 @@ jobs:
         run: |
           cd $ID_PATH
           make
+          echo "After make:"
+          ls
 
       # Create output
       - name: Create output
         run: |
           mv $ID_PATH/*.html docs/
+          echo "Generated output:"
+          ls docs/*
 
       # Publish to Github Pages
       - name: Publish
