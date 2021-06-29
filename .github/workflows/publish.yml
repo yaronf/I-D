@@ -83,10 +83,20 @@ jobs:
 
       # Publish to Github Pages
       - name: Publish
-        uses: rdarida/simple-github-pages-deploy-action@v1
-        with: 
-          git-base-folder: ./docs
-          branch: 'gh-pages'
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: docs # The folder the action should deploy.
+          target-folder: docs
+          clean: false # keep old files
+
+# This works fine (to root dir of gh-pages)
+# but does not keep old files
+#        uses: rdarida/simple-github-pages-deploy-action@v1
+#        with: 
+#          git-base-folder: ./docs
+#          branch: 'gh-pages'
+# This worked on the test repo, but not here :-(
 #        uses: peaceiris/actions-gh-pages@v3
 #        with:
 #          github_token: ${{ secrets.GITHUB_TOKEN }}
