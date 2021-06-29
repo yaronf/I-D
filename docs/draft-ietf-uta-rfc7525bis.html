@@ -1,0 +1,2573 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)</title>
+<meta content="Yaron Sheffer" name="author">
+<meta content="Ralph Holz" name="author">
+<meta content="Peter Saint-Andre" name="author">
+<meta content="Thomas Fossati" name="author">
+<meta content="
+       Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases. 
+       This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, we believe new guidance is needed. 
+    " name="description">
+<meta content="xml2rfc 3.9.1" name="generator">
+<meta content="Internet-Draft" name="keyword">
+<meta content="draft-ietf-uta-rfc7525bis-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.9.1
+    Python 3.8.5
+    appdirs 1.4.4
+    ConfigArgParse 1.5
+    google-i18n-address 2.4.0
+    html5lib 1.1
+    intervaltree 3.1.0
+    Jinja2 2.11.3
+    kitchen 1.2.6
+    lxml 4.6.3
+    pycountry 20.7.3
+    pyflakes 2.3.1
+    PyYAML 5.3.1
+    requests 2.22.0
+    setuptools 45.2.0
+    six 1.14.0
+-->
+<link href="draft-ietf-uta-rfc7525bis.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">/*
+
+  NOTE: Changes at the bottom of this file overrides some earlier settings.
+
+  Once the style has stabilized and has been adopted as an official RFC style,
+  this can be consolidated so that style settings occur only in one place, but
+  for now the contents of this file consists first of the initial CSS work as
+  provided to the RFC Formatter (xml2rfc) work, followed by itemized and
+  commented changes found necssary during the development of the v3
+  formatters.
+
+*/
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
+
+@viewport {
+  zoom: 1.0;
+  width: extend-to-zoom;
+}
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+/* general and mobile first */
+html {
+}
+body {
+  max-width: 90%;
+  margin: 1.5em auto;
+  color: #222;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+.ears {
+  display: none;
+}
+
+/* headings */
+#title, h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.5em;
+  font-weight: bold;
+  line-height: 1.3;
+}
+#title {
+  clear: both;
+  border-bottom: 1px solid #ddd;
+  margin: 0 0 0.5em 0;
+  padding: 1em 0 0.5em;
+}
+.author {
+  padding-bottom: 4px;
+}
+h1 {
+  font-size: 26px;
+  margin: 1em 0;
+}
+h2 {
+  font-size: 22px;
+  margin-top: -20px;  /* provide offset for in-page anchors */
+  padding-top: 33px;
+}
+h3 {
+  font-size: 18px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h4 {
+  font-size: 16px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h5, h6 {
+  font-size: 14px;
+}
+#n-copyright-notice {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+}
+/* general structure */
+p {
+  padding: 0;
+  margin: 0 0 1em 0;
+  text-align: left;
+}
+div, span {
+  position: relative;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+.alignCenter.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 1em 2em;
+}
+ol ol, ul ul, ol ul, ul ol {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+ul.ulBare, li.ulBare {
+  margin-left: 0em !important;
+}
+ul.compact, .ulCompact,
+ol.compact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+/* 
+dl.nohang > dt {
+  float: none;
+}
+*/
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+dl.compact > dd, .dlCompact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* links */
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #22e; /* Arlen: WCAG 2019 */
+}
+a[href]:hover {
+  background-color: #f2f2f2;
+}
+figcaption a[href],
+a[href].selfRef {
+  color: #222;
+}
+/* XXX probably not this:
+a.selfRef:hover {
+  background-color: transparent;
+  cursor: default;
+} */
+
+/* Figures */
+tt, code, pre, code {
+  background-color: #f9f9f9;
+  font-family: 'Roboto Mono', monospace;
+}
+pre {
+  border: 1px solid #eee;
+  margin: 0;
+  padding: 1em;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption {
+  font-style: italic;
+  margin: 0 0 1em 0;
+}
+@media screen {
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
+    max-width: calc(100% - 22px);
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 1.2em 2em;
+}
+blockquote {
+  background-color: #f9f9f9;
+  color: #111; /* Arlen: WCAG 2019 */
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+th {
+  text-align: left;
+  background-color: #e9e9e9;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f5f5f5;
+}
+table caption {
+  font-style: italic;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+table p {
+  /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
+     be allowed within tables more generally, it would be far better to select on a class. */
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  color: #666; /* Arlen: AHDJ 2019 */
+  text-decoration: none;
+  visibility: hidden;
+  user-select: none;
+  -ms-user-select: none;
+  -o-user-select:none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media screen {
+  aside:hover > a.pilcrow,
+  p:hover > a.pilcrow,
+  blockquote:hover > a.pilcrow,
+  div:hover > a.pilcrow,
+  li:hover > a.pilcrow,
+  pre:hover > a.pilcrow {
+    visibility: visible;
+  }
+  a.pilcrow:hover {
+    background-color: transparent;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+.bcp14 {
+  font-variant: small-caps;
+}
+
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: 0.9em;
+}
+#identifiers dt {
+  width: 3em;
+  clear: left;
+}
+#identifiers dd {
+  float: left;
+  margin-bottom: 0;
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #666; /* Arlen: WCAG 2019 */
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc  {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+nav.toc ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+nav.toc li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+.index ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.index ul ul {
+  margin: 0;
+}
+.index li {
+  margin: 0;
+  text-indent: -2em;
+  padding-left: 2em;
+  padding-bottom: 5px;
+}
+.indexIndex {
+  margin: 0.5em 0 1em;
+}
+.index a {
+  font-weight: 700;
+}
+/* make the index two-column on all but the smallest screens */
+@media (min-width: 600px) {
+  .index ul {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+  }
+  .index ul ul {
+    -moz-column-count: 1;
+    -moz-column-gap: 0;
+  }
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  font-family: "Noto Sans",Arial,Helvetica,sans-serif;
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+
+/* temporary notes */
+.rfcEditorRemove::before {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.2em;
+  content: "The RFC Editor will remove this note";
+  color: #9e2a00; /* Arlen: WCAG 2019 */
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+}
+.rfcEditorRemove {
+  position: relative;
+  padding-top: 1.8em;
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  border-radius: 3px;
+}
+.cref {
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 1023px) {
+  body {
+    padding-top: 2em;
+  }
+  #title {
+    padding: 1em 0;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: -18px;  /* provide offset for in-page anchors */
+    padding-top: 38px;
+  }
+  #identifiers dd {
+    max-width: 60%;
+  }
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    border-bottom: 1px solid #ccc;
+  }
+  #toc h2 {
+    margin: -1px 0 0 0;
+    padding: 4px 0 4px 6px;
+    padding-right: 1em;
+    min-width: 190px;
+    font-size: 1.1em;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 6px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 1024px) {
+  body {
+    max-width: 724px;
+    margin: 42px auto;
+    padding-left: 1.5em;
+    padding-right: 29em;
+  }
+  #toc {
+    position: fixed;
+    top: 42px;
+    right: 42px;
+    width: 25%;
+    margin: 0;
+    padding: 0 1em;
+    z-index: 1;
+  }
+  #toc h2 {
+    border-top: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 0;
+    overflow: auto;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+/* This is commented out here, as the string-set: doesn't
+   pass W3C validation currently */
+/*
+.ears thead .left {
+  string-set: ears-top-left content();
+}
+
+.ears thead .center {
+  string-set: ears-top-center content();
+}
+
+.ears thead .right {
+  string-set: ears-top-right content();
+}
+
+.ears tfoot .left {
+  string-set: ears-bottom-left content();
+}
+
+.ears tfoot .center {
+  string-set: ears-bottom-center content();
+}
+
+.ears tfoot .right {
+  string-set: ears-bottom-right content();
+}
+*/
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+  /* The follwing is commented out here, but set appropriately by in code, as
+     the content depends on the document */
+  /*
+  @top-left {
+    content: 'Internet-Draft';
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-left {
+    content: string(ears-top-left);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-center {
+    content: string(ears-top-center);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-right {
+    content: string(ears-top-right);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @bottom-left {
+    content: string(ears-bottom-left);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-center {
+    content: string(ears-bottom-center);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-right {
+      content: '[Page ' counter(page) ']';
+      vertical-align: top;
+      border-top: solid 1px #ccc;
+  }
+  */
+
+}
+
+/* Changes introduced to fix issues found during implementation */
+/* Make sure links are clickable even if overlapped by following H* */
+a {
+  z-index: 2;
+}
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Leave room in document info to show Internet-Draft on one line */
+#identifiers dt {
+  width: 8em;
+}
+
+/* Don't waste quite as much whitespace between label and value in doc info */
+#identifiers dd {
+  margin-left: 1em;
+}
+
+/* Give floating toc a background color (needed when it's a div inside section */
+#toc {
+  background-color: white;
+}
+
+/* Make the collapsed ToC header render white on gray also when it's a link */
+@media screen and (max-width: 1023px) {
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+}
+
+/* Give the bottom of the ToC some whitespace */
+@media screen and (min-width: 1024px) {
+  #toc {
+    padding: 0 0 1em 1em;
+  }
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* prevent monospace from becoming overly large */
+tt, code, pre, code {
+  font-size: 95%;
+}
+
+/* Fix the height/width aspect for ascii art*/
+pre.sourcecode,
+.art-text pre {
+  line-height: 1.12;
+}
+
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin-right: 0.5em;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table td.text-left,
+table th.text-left {
+  text-align: left;
+}
+table td.text-center,
+table th.text-center {
+  text-align: center;
+}
+table td.text-right,
+table th.text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact informatio look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 30em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Provide table alignment support.  We can't use the alignX classes above
+   since they do unwanted things with caption and other styling. */
+table.right {
+ margin-left: auto;
+ margin-right: 0;
+}
+table.center {
+ margin-left: auto;
+ margin-right: auto;
+}
+table.left {
+ margin-left: 0;
+ margin-right: auto;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+caption a[href] {
+  color: #222;
+}
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+/* Tweak the bcp14 keyword presentation */
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+/* Tweak the invisible space above H* in order not to overlay links in text above */
+ h2 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 31px;
+ }
+ h3 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+ h4 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+/* Float artwork pilcrow to the right */
+@media screen {
+  .artwork a.pilcrow {
+    display: block;
+    line-height: 0.7;
+    margin-top: 0.15em;
+  }
+}
+/* Make pilcrows on dd visible */
+@media screen {
+  dd:hover > a.pilcrow {
+    visibility: visible;
+  }
+}
+/* Make the placement of figcaption match that of a table's caption
+   by removing the figure's added bottom margin */
+.alignLeft.art-text,
+.alignCenter.art-text,
+.alignRight.art-text {
+   margin-bottom: 0;
+}
+.alignLeft,
+.alignCenter,
+.alignRight {
+  margin: 1em 0 0 0;
+}
+/* In print, the pilcrow won't show on hover, so prevent it from taking up space,
+   possibly even requiring a new line */
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+/* Styling for the external metadata */
+div#external-metadata {
+  background-color: #eee;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  display: none;
+}
+div#internal-metadata {
+  padding: 0.5em;                       /* to match the external-metadata padding */
+}
+/* Styling for title RFC Number */
+h1#rfcnum {
+  clear: both;
+  margin: 0 0 -1em;
+  padding: 1em 0 0 0;
+}
+/* Make .olPercent look the same as <ol><li> */
+dl.olPercent > dd {
+  margin-bottom: 0.25em;
+  min-height: initial;
+}
+/* Give aside some styling to set it apart */
+aside {
+  border-left: 1px solid #ddd;
+  margin: 1em 0 1em 2em;
+  padding: 0.2em 2em;
+}
+aside > dl,
+aside > ol,
+aside > ul,
+aside > table,
+aside > p {
+  margin-bottom: 0.5em;
+}
+/* Additional page break settings */
+@media print {
+  figcaption, table caption {
+    page-break-before: avoid;
+  }
+}
+/* Font size adjustments for print */
+@media print {
+  body  { font-size: 10pt;      line-height: normal; max-width: 96%; }
+  h1    { font-size: 1.72em;    padding-top: 1.5em; } /* 1*1.2*1.2*1.2 */
+  h2    { font-size: 1.44em;    padding-top: 1.5em; } /* 1*1.2*1.2 */
+  h3    { font-size: 1.2em;     padding-top: 1.5em; } /* 1*1.2 */
+  h4    { font-size: 1em;       padding-top: 1.5em; }
+  h5, h6 { font-size: 1em;      margin: initial; padding: 0.5em 0 0.3em; }
+}
+/* Sourcecode margin in print, when there's no pilcrow */
+@media print {
+  .artwork,
+  .sourcecode {
+    margin-bottom: 1em;
+  }
+}
+/* Avoid narrow tables forcing too narrow table captions, which may render badly */
+table {
+  min-width: 20em;
+}
+/* ol type a */
+ol.type-a { list-style-type: lower-alpha; }
+ol.type-A { list-style-type: upper-alpha; }
+ol.type-i { list-style-type: lower-roman; }
+ol.type-I { list-style-type: lower-roman; }
+/* Apply the print table and row borders in general, on request from the RPC,
+and increase the contrast between border and odd row background sligthtly */
+table {
+  border: 1px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f8f8f8;
+}
+/* Use style rules to govern display of the TOC. */
+@media screen and (max-width: 1023px) {
+  #toc nav { display: none; }
+  #toc.active nav { display: block; }
+}
+/* Add support for keepWithNext */
+.keepWithNext {
+  break-after: avoid-page;
+  break-after: avoid-page;
+}
+/* Add support for keepWithPrevious */
+.keepWithPrevious {
+  break-before: avoid-page;
+}
+/* Change the approach to avoiding breaks inside artwork etc. */
+figure, pre, table, .artwork, .sourcecode  {
+  break-before: avoid-page;
+  break-after: auto;
+}
+/* Avoid breaks between <dt> and <dd> */
+dl {
+  break-before: auto;
+  break-inside: auto;
+}
+dt {
+  break-before: auto;
+  break-after: avoid-page;
+}
+dd {
+  break-before: avoid-page;
+  break-after: auto;
+  orphans: 3;
+  widows: 3
+}
+span.break, dd.break {
+  margin-bottom: 0;
+  min-height: 0;
+  break-before: auto;
+  break-inside: auto;
+  break-after: auto;
+}
+/* Undo break-before ToC */
+@media print {
+  #toc {
+    break-before: auto;
+  }
+}
+/* Text in compact lists should not get extra bottim margin space,
+   since that would makes the list not compact */
+ul.compact p, .ulCompact p,
+ol.compact p, .olCompact p {
+ margin: 0;
+}
+/* But the list as a whole needs the extra space at the end */
+section ul.compact,
+section .ulCompact,
+section ol.compact,
+section .olCompact {
+  margin-bottom: 1em;                    /* same as p not within ul.compact etc. */
+}
+/* The tt and code background above interferes with for instance table cell
+   backgrounds.  Changed to something a bit more selective. */
+tt, code {
+  background-color: transparent;
+}
+p tt, p code, li tt, li code {
+  background-color: #f8f8f8;
+}
+/* Tweak the pre margin -- 0px doesn't come out well */
+pre {
+   margin-top: 0.5px;
+}
+/* Tweak the comact list text */
+ul.compact, .ulCompact,
+ol.compact, .olCompact,
+dl.compact, .dlCompact {
+  line-height: normal;
+}
+/* Don't add top margin for nested lists */
+li > ul, li > ol, li > dl,
+dd > ul, dd > ol, dd > dl,
+dl > dd > dl {
+  margin-top: initial;
+}
+/* Elements that should not be rendered on the same line as a <dt> */
+/* This should match the element list in writer.text.TextWriter.render_dl() */
+dd > div.artwork:first-child,
+dd > aside:first-child,
+dd > figure:first-child,
+dd > ol:first-child,
+dd > div:first-child > pre.sourcecode,
+dd > table:first-child,
+dd > ul:first-child {
+  clear: left;
+}
+/* fix for weird browser behaviour when <dd/> is empty */
+dt+dd:empty::before{
+  content: "\00a0";
+}
+/* Make paragraph spacing inside <li> smaller than in body text, to fit better within the list */
+li > p {
+  margin-bottom: 0.5em
+}
+/* Don't let p margin spill out from inside list items */
+li > p:last-of-type {
+  margin-bottom: 0;
+}
+</style>
+<link href="rfc-local.css" rel="stylesheet" type="text/css">
+<script type="application/javascript">async function addMetadata(){try{const e=document.styleSheets[0].cssRules;for(let t=0;t<e.length;t++)if(/#identifiers/.exec(e[t].selectorText)){const a=e[t].cssText.replace("#identifiers","#external-updates");document.styleSheets[0].insertRule(a,document.styleSheets[0].cssRules.length)}}catch(e){console.log(e)}const e=document.getElementById("external-metadata");if(e)try{var t,a="",o=function(e){const t=document.getElementsByTagName("meta");for(let a=0;a<t.length;a++)if(t[a].getAttribute("name")===e)return t[a].getAttribute("content");return""}("rfc.number");if(o){t="https://www.rfc-editor.org/rfc/rfc"+o+".json";try{const e=await fetch(t);a=await e.json()}catch(e){t=document.URL.indexOf("html")>=0?document.URL.replace(/html$/,"json"):document.URL+".json";const o=await fetch(t);a=await o.json()}}if(!a)return;e.style.display="block";const s="",d="https://datatracker.ietf.org/doc",n="https://datatracker.ietf.org/ipr/search",c="https://www.rfc-editor.org/info",l=a.doc_id.toLowerCase(),i=a.doc_id.slice(0,3).toLowerCase(),f=a.doc_id.slice(3).replace(/^0+/,""),u={status:"Status",obsoletes:"Obsoletes",obsoleted_by:"Obsoleted By",updates:"Updates",updated_by:"Updated By",see_also:"See Also",errata_url:"Errata"};let h="<dl style='overflow:hidden' id='external-updates'>";["status","obsoletes","obsoleted_by","updates","updated_by","see_also","errata_url"].forEach(e=>{if("status"==e){a[e]=a[e].toLowerCase();var t=a[e].split(" "),o=t.length,w="",p=1;for(let e=0;e<o;e++)p<o?w=w+r(t[e])+" ":w+=r(t[e]),p++;a[e]=w}else if("obsoletes"==e||"obsoleted_by"==e||"updates"==e||"updated_by"==e){var g,m="",b=1;g=a[e].length;for(let t=0;t<g;t++)a[e][t]&&(a[e][t]=String(a[e][t]).toLowerCase(),m=b<g?m+"<a href='"+s+"/rfc/".concat(a[e][t])+"'>"+a[e][t].slice(3)+"</a>, ":m+"<a href='"+s+"/rfc/".concat(a[e][t])+"'>"+a[e][t].slice(3)+"</a>",b++);a[e]=m}else if("see_also"==e){var y,L="",C=1;y=a[e].length;for(let t=0;t<y;t++)if(a[e][t]){a[e][t]=String(a[e][t]);var _=a[e][t].slice(0,3),v=a[e][t].slice(3).replace(/^0+/,"");L=C<y?"RFC"!=_?L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+_+" "+v+"</a>, ":L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+v+"</a>, ":"RFC"!=_?L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+_+" "+v+"</a>":L+"<a href='"+s+"/info/"+_.toLowerCase().concat(v.toLowerCase())+"'>"+v+"</a>",C++}a[e]=L}else if("errata_url"==e){var R="";R=a[e]?R+"<a href='"+a[e]+"'>Errata exist</a> | <a href='"+d+"/"+l+"'>Datatracker</a>| <a href='"+n+"/?"+i+"="+f+"&submit="+i+"'>IPR</a> | <a href='"+c+"/"+l+"'>Info page</a>":"<a href='"+d+"/"+l+"'>Datatracker</a> | <a href='"+n+"/?"+i+"="+f+"&submit="+i+"'>IPR</a> | <a href='"+c+"/"+l+"'>Info page</a>",a[e]=R}""!=a[e]?"Errata"==u[e]?h+=`<dt>More info:</dt><dd>${a[e]}</dd>`:h+=`<dt>${u[e]}:</dt><dd>${a[e]}</dd>`:"Errata"==u[e]&&(h+=`<dt>More info:</dt><dd>${a[e]}</dd>`)}),h+="</dl>",e.innerHTML=h}catch(e){console.log(e)}else console.log("Could not locate metadata <div> element");function r(e){return e.charAt(0).toUpperCase()+e.slice(1)}}window.removeEventListener("load",addMetadata),window.addEventListener("load",addMetadata);</script>
+</head>
+<body>
+<script src="metadata.min.js"></script>
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">TLS Recommendations</td>
+<td class="right">June 2021</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Sheffer, et al.</td>
+<td class="center">Expires 31 December 2021</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">UTA Working Group</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-ietf-uta-rfc7525bis-latest</dd>
+<dt class="label-obsoletes">Obsoletes:</dt>
+<dd class="obsoletes">
+<a href="https://www.rfc-editor.org/rfc/rfc7525" class="eref">7525</a> (if approved)</dd>
+<dt class="label-updates">Updates:</dt>
+<dd class="updates">
+<a href="https://www.rfc-editor.org/rfc/rfc5288" class="eref">5288</a>, <a href="https://www.rfc-editor.org/rfc/rfc6066" class="eref">6066</a> (if approved)</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2021-06-29" class="published">29 June 2021</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Best Current Practice</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2021-12-31">31 December 2021</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">Y. Sheffer</div>
+<div class="org">Intuit</div>
+</div>
+<div class="author">
+      <div class="author-name">R. Holz</div>
+<div class="org">University of Twente</div>
+</div>
+<div class="author">
+      <div class="author-name">P. Saint-Andre</div>
+<div class="org">Mozilla</div>
+</div>
+<div class="author">
+      <div class="author-name">T. Fossati</div>
+<div class="org">arm</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, we believe new guidance is needed.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 31 December 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2021 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Simplified BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Simplified BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="toc ulBare compact ulEmpty">
+<li class="toc ulBare compact ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a></p>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="xref">2</a>.  <a href="#name-terminology" class="xref">Terminology</a></p>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-general-recommendations" class="xref">General Recommendations</a></p>
+<ul class="ulBare compact toc ulEmpty">
+<li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-protocol-versions" class="xref">Protocol Versions</a></p>
+<ul class="ulBare compact toc ulEmpty">
+<li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.1.2.1">
+                    <p id="section-toc.1-1.3.2.1.2.1.1" class="keepWithNext"><a href="#section-3.1.1" class="xref">3.1.1</a>.  <a href="#name-ssl-tls-protocol-versions" class="xref">SSL/TLS Protocol Versions</a></p>
+</li>
+                  <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.1.2.2">
+                    <p id="section-toc.1-1.3.2.1.2.2.1"><a href="#section-3.1.2" class="xref">3.1.2</a>.  <a href="#name-dtls-protocol-versions" class="xref">DTLS Protocol Versions</a></p>
+</li>
+                  <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.1.2.3">
+                    <p id="section-toc.1-1.3.2.1.2.3.1"><a href="#section-3.1.3" class="xref">3.1.3</a>.  <a href="#name-fallback-to-lower-versions" class="xref">Fallback to Lower Versions</a></p>
+</li>
+                </ul>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-strict-tls" class="xref">Strict TLS</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.3">
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="xref">3.3</a>.  <a href="#name-compression" class="xref">Compression</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.4">
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="xref">3.4</a>.  <a href="#name-tls-session-resumption" class="xref">TLS Session Resumption</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.5">
+                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="xref">3.5</a>.  <a href="#name-tls-renegotiation" class="xref">TLS Renegotiation</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.6">
+                <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="xref">3.6</a>.  <a href="#name-post-handshake-authenticati" class="xref">Post-Handshake Authentication</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.7">
+                <p id="section-toc.1-1.3.2.7.1"><a href="#section-3.7" class="xref">3.7</a>.  <a href="#name-server-name-indication" class="xref">Server Name Indication</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.8">
+                <p id="section-toc.1-1.3.2.8.1"><a href="#section-3.8" class="xref">3.8</a>.  <a href="#name-application-layer-protocol-" class="xref">Application-Layer Protocol Negotiation</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.3.2.9">
+                <p id="section-toc.1-1.3.2.9.1"><a href="#section-3.9" class="xref">3.9</a>.  <a href="#name-zero-round-trip-time-0-rtt-" class="xref">Zero Round Trip Time (0-RTT) Data in TLS 1.3</a></p>
+</li>
+            </ul>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-recommendations-cipher-suit" class="xref">Recommendations: Cipher Suites</a></p>
+<ul class="ulBare compact toc ulEmpty">
+<li class="ulBare compact toc ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-general-guidelines" class="xref">General Guidelines</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-recommended-cipher-suites" class="xref">Recommended Cipher Suites</a></p>
+<ul class="ulBare compact toc ulEmpty">
+<li class="ulBare compact toc ulEmpty" id="section-toc.1-1.4.2.2.2.1">
+                    <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="xref">4.2.1</a>.  <a href="#name-implementation-details" class="xref">Implementation Details</a></p>
+</li>
+                </ul>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-cipher-suites-for-tls-13" class="xref">Cipher Suites for TLS 1.3</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="xref">4.4</a>.  <a href="#name-limits-on-key-usage" class="xref">Limits on Key Usage</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.4.2.5">
+                <p id="section-toc.1-1.4.2.5.1"><a href="#section-4.5" class="xref">4.5</a>.  <a href="#name-public-key-length" class="xref">Public Key Length</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.4.2.6">
+                <p id="section-toc.1-1.4.2.6.1"><a href="#section-4.6" class="xref">4.6</a>.  <a href="#name-modular-exponential-vs-elli" class="xref">Modular Exponential vs. Elliptic Curve DH Cipher Suites</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.4.2.7">
+                <p id="section-toc.1-1.4.2.7.1"><a href="#section-4.7" class="xref">4.7</a>.  <a href="#name-truncated-hmac" class="xref">Truncated HMAC</a></p>
+</li>
+            </ul>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-applicability-statement" class="xref">Applicability Statement</a></p>
+<ul class="ulBare compact toc ulEmpty">
+<li class="ulBare compact toc ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-security-services" class="xref">Security Services</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-opportunistic-security" class="xref">Opportunistic Security</a></p>
+</li>
+            </ul>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a></p>
+<ul class="ulBare compact toc ulEmpty">
+<li class="ulBare compact toc ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-host-name-validation" class="xref">Host Name Validation</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="xref">6.2</a>.  <a href="#name-aes-gcm" class="xref">AES-GCM</a></p>
+<ul class="ulBare compact toc ulEmpty">
+<li class="ulBare compact toc ulEmpty" id="section-toc.1-1.6.2.2.2.1">
+                    <p id="section-toc.1-1.6.2.2.2.1.1"><a href="#section-6.2.1" class="xref">6.2.1</a>.  <a href="#name-nonce-reuse-in-tls-12" class="xref">Nonce Reuse in TLS 1.2</a></p>
+</li>
+                </ul>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="xref">6.3</a>.  <a href="#name-forward-secrecy" class="xref">Forward Secrecy</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.6.2.4">
+                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="xref">6.4</a>.  <a href="#name-diffie-hellman-exponent-reu" class="xref">Diffie-Hellman Exponent Reuse</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.6.2.5">
+                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="xref">6.5</a>.  <a href="#name-certificate-revocation" class="xref">Certificate Revocation</a></p>
+</li>
+            </ul>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-acknowledgments" class="xref">Acknowledgments</a></p>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-references" class="xref">References</a></p>
+<ul class="ulBare compact toc ulEmpty">
+<li class="ulBare compact toc ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="xref">8.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="xref">8.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="xref">Appendix A</a>.  <a href="#name-differences-from-rfc-7525" class="xref">Differences from RFC 7525</a></p>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="xref">Appendix B</a>.  <a href="#name-document-history" class="xref">Document History</a></p>
+<ul class="ulBare compact toc ulEmpty">
+<li class="ulBare compact toc ulEmpty" id="section-toc.1-1.10.2.1">
+                <p id="section-toc.1-1.10.2.1.1"><a href="#appendix-B.1" class="xref">B.1</a>.  <a href="#name-draft-ietf-uta-rfc7525bis-0" class="xref">draft-ietf-uta-rfc7525bis-00</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.10.2.2">
+                <p id="section-toc.1-1.10.2.2.1"><a href="#appendix-B.2" class="xref">B.2</a>.  <a href="#name-draft-sheffer-uta-rfc7525bi" class="xref">draft-sheffer-uta-rfc7525bis-00</a></p>
+</li>
+              <li class="ulBare compact toc ulEmpty" id="section-toc.1-1.10.2.3">
+                <p id="section-toc.1-1.10.2.3.1"><a href="#appendix-B.3" class="xref">B.3</a>.  <a href="#name-draft-sheffer-uta-bcp195bis" class="xref">draft-sheffer-uta-bcp195bis-00</a></p>
+</li>
+            </ul>
+</li>
+          <li class="toc ulBare compact ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">Transport Layer Security (TLS) <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> and Datagram Transport Security Layer (DTLS) <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC <span>[<a href="#RFC3602" class="xref">RFC3602</a>]</span> and RC4 <span>[<a href="#RFC7465" class="xref">RFC7465</a>]</span> encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span> provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">The TLS community reacted to these attacks in two ways:<a href="#section-1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1-3.1">Detailed guidance was published on the use of TLS 1.2 and earlier protocol versions. This guidance is included in the original <span>[<a href="#RFC7525" class="xref">RFC7525</a>]</span> and mostly retained in this revised version.<a href="#section-1-3.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-1-3.2">A new protocol version was released, TLS 1.3 <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>, which largely mitigates or resolves these attacks.<a href="#section-1-3.2" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="section-1-4">Those who implement and deploy TLS and DTLS, in particular versions 1.2 or earlier of these protocols, need guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in environments defined in <a href="#applicability" class="xref">Section 5</a>. Concerning deployment, this document targets a wide audience - namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless it is explicitly called out that a recommendation applies to TLS alone or to DTLS alone, each recommendation applies to both TLS and DTLS.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. This document is being republished with this in mind, and with an explicit goal to migrate most uses of TLS 1.2 into TLS 1.3.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-7">These are minimum recommendations for the use of TLS in the vast majority of implementation and deployment scenarios, with the exception of unauthenticated TLS (see <a href="#applicability" class="xref">Section 5</a>). Other specifications that reference this document can have stricter requirements related to one or more aspects of the protocol, based on their particular circumstances (e.g., for use with a particular application protocol); when that is the case, implementers are advised to adhere to those stricter requirements. Furthermore, this document provides a floor, not a ceiling, so stronger options are always allowed (e.g., depending on differing evaluations of the importance of cryptographic strength vs. computational load).<a href="#section-1-7" class="pilcrow">¶</a></p>
+<p id="section-1-8">Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a Best Current Practice (BCP) document about security is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.<a href="#section-1-8" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="terminology">
+<section id="section-2">
+      <h2 id="name-terminology">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+      </h2>
+<p id="section-2-1">A number of security-related terms in this document are used in the sense defined in <span>[<a href="#RFC4949" class="xref">RFC4949</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
+"MAY", and "OPTIONAL" in this document are to be interpreted as
+described in BCP 14 <span>[<a href="#RFC2119" class="xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="xref">RFC8174</a>]</span> when, and only when, they
+appear in all capitals, as shown here.<a href="#section-2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="rec">
+<section id="section-3">
+      <h2 id="name-general-recommendations">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-general-recommendations" class="section-name selfRef">General Recommendations</a>
+      </h2>
+<p id="section-3-1">This section provides general recommendations on the secure use of TLS. Recommendations related to cipher suites are discussed in the following section.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<div id="protocol-versions">
+<section id="section-3.1">
+        <h3 id="name-protocol-versions">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-protocol-versions" class="section-name selfRef">Protocol Versions</a>
+        </h3>
+<div id="rec-versions">
+<section id="section-3.1.1">
+          <h4 id="name-ssl-tls-protocol-versions">
+<a href="#section-3.1.1" class="section-number selfRef">3.1.1. </a><a href="#name-ssl-tls-protocol-versions" class="section-name selfRef">SSL/TLS Protocol Versions</a>
+          </h4>
+<p id="section-3.1.1-1">It is important both to stop using old, less secure versions of SSL/TLS and to start using modern, more secure versions; therefore, the following are the recommendations concerning TLS/SSL protocol versions:<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.1.1-2.1">
+              <p id="section-3.1.1-2.1.1">Implementations MUST NOT negotiate SSL version 2.<a href="#section-3.1.1-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2.1.2">
+Rationale: Today, SSLv2 is considered insecure <span>[<a href="#RFC6176" class="xref">RFC6176</a>]</span>.<a href="#section-3.1.1-2.1.2" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.1-2.2">
+              <p id="section-3.1.1-2.2.1">Implementations MUST NOT negotiate SSL version 3.<a href="#section-3.1.1-2.2.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2.2.2">
+Rationale: SSLv3 <span>[<a href="#RFC6101" class="xref">RFC6101</a>]</span> was an improvement over SSLv2 and plugged some significant security holes but did not support strong cipher suites. SSLv3 does not support TLS extensions, some of which (e.g., renegotiation_info <span>[<a href="#RFC5746" class="xref">RFC5746</a>]</span>) are security-critical.  In addition, with the emergence of the POODLE attack <span>[<a href="#POODLE" class="xref">POODLE</a>]</span>, SSLv3 is now widely recognized as fundamentally insecure.  See <span>[<a href="#DEP-SSLv3" class="xref">DEP-SSLv3</a>]</span> for further details.<a href="#section-3.1.1-2.2.2" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.1-2.3">
+              <p id="section-3.1.1-2.3.1">Implementations MUST NOT negotiate TLS version 1.0 <span>[<a href="#RFC2246" class="xref">RFC2246</a>]</span>.<a href="#section-3.1.1-2.3.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2.3.2">
+Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. This and other recommendations in this section are in line with <span>[<a href="#RFC8996" class="xref">RFC8996</a>]</span>.<a href="#section-3.1.1-2.3.2" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.1-2.4">
+              <p id="section-3.1.1-2.4.1">Implementations MUST NOT negotiate TLS version 1.1 <span>[<a href="#RFC4346" class="xref">RFC4346</a>]</span>.<a href="#section-3.1.1-2.4.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2.4.2">
+Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.<a href="#section-3.1.1-2.4.2" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2.4.3">
+NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that <span>[<a href="#I-D.ietf-tls-oldversions-deprecate" class="xref">I-D.ietf-tls-oldversions-deprecate</a>]</span> will be published as an RFC before this document.<a href="#section-3.1.1-2.4.3" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.1-2.5">
+              <p id="section-3.1.1-2.5.1">Implementations MUST support TLS 1.2 <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.<a href="#section-3.1.1-2.5.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2.5.2">
+Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 (<a href="#rec-cipher" class="xref">Section 4.2</a> below) are only available in this version.<a href="#section-3.1.1-2.5.2" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.1-2.6">
+              <p id="section-3.1.1-2.6.1">Implementations SHOULD support TLS 1.3 <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> and if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.<a href="#section-3.1.1-2.6.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2.6.2">
+Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers MUST still follow all the recommendations in this document.<a href="#section-3.1.1-2.6.2" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.1-2.7">
+              <p id="section-3.1.1-2.7.1">Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done <span>[<a href="#RFC9001" class="xref">RFC9001</a>]</span>) include TLS 1.3.<a href="#section-3.1.1-2.7.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2.7.2">
+Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.<a href="#section-3.1.1-2.7.2" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-3.1.1-3">This BCP applies to TLS 1.2, 1.3 and to earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="dtls-protocol-versions">
+<section id="section-3.1.2">
+          <h4 id="name-dtls-protocol-versions">
+<a href="#section-3.1.2" class="section-number selfRef">3.1.2. </a><a href="#name-dtls-protocol-versions" class="section-name selfRef">DTLS Protocol Versions</a>
+          </h4>
+<p id="section-3.1.2-1">DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was published.  The following are the recommendations with respect to DTLS:<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.1.2-2.1">
+              <p id="section-3.1.2-2.1.1">Implementations MUST NOT negotiate DTLS version 1.0 <span>[<a href="#RFC4347" class="xref">RFC4347</a>]</span>.<a href="#section-3.1.2-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.2-2.1.2">
+Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).<a href="#section-3.1.2-2.1.2" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.2-2.2">
+              <p id="section-3.1.2-2.2.1">Implementations MUST support and (unless a higher version is available) MUST prefer to negotiate DTLS version 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span><a href="#section-3.1.2-2.2.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.2-2.2.2">
+Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
+(There is no version 1.1 of DTLS.)<a href="#section-3.1.2-2.2.2" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-3.1.2-2.3">
+              <p id="section-3.1.2-2.3.1">Implementations SHOULD support and, if available, MUST prefer to negotiate DTLS version 1.3 as specified in <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-3.1.2-2.3.1" class="pilcrow">¶</a></p>
+<p id="section-3.1.2-2.3.2">
+Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#section-3.1.2-2.3.2" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</section>
+</div>
+<div id="rec-fallback">
+<section id="section-3.1.3">
+          <h4 id="name-fallback-to-lower-versions">
+<a href="#section-3.1.3" class="section-number selfRef">3.1.3. </a><a href="#name-fallback-to-lower-versions" class="section-name selfRef">Fallback to Lower Versions</a>
+          </h4>
+<p id="section-3.1.3-1">Clients that "fall back" to lower versions of the protocol after the server rejects higher versions of the protocol MUST NOT fall back to SSLv3 or earlier. Implementations of TLS/DTLS 1.2 or earlier MUST implement the Fallback SCSV mechanism <span>[<a href="#RFC7507" class="xref">RFC7507</a>]</span> to prevent
+such fallback being forced by an attacker.<a href="#section-3.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.1.3-2">Rationale: Some client implementations revert to lower versions of TLS or even to SSLv3 if the server rejected higher versions of the protocol. This fallback can be forced by a man-in-the-middle (MITM) attacker. TLS 1.0 and SSLv3 are significantly less secure than TLS 1.2 but at least TLS 1.0 is still allowed by many web servers. As of this writing, the Fallback SCSV solution is widely deployed and proven as a robust solution to this problem.<a href="#section-3.1.3-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="strict-tls">
+<section id="section-3.2">
+        <h3 id="name-strict-tls">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-strict-tls" class="section-name selfRef">Strict TLS</a>
+        </h3>
+<p id="section-3.2-1">The following recommendations are provided to help prevent SSL Stripping (an attack that is summarized in Section 2.1 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>):<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.2-2.1">In cases where an application protocol allows implementations or deployments a choice between strict TLS configuration and dynamic upgrade from unencrypted to TLS-protected traffic (such as STARTTLS), clients and servers SHOULD prefer strict TLS configuration.<a href="#section-3.2-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.2-2.2">Application protocols typically provide a way for the server to offer TLS during an initial protocol exchange, and sometimes also provide a way for the server to advertise support for TLS (e.g., through a flag indicating that TLS is required); unfortunately, these indications are sent before the communication channel is encrypted. A client SHOULD attempt to negotiate TLS even if these indications are not communicated by the server.<a href="#section-3.2-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.2-2.3">HTTP client and server implementations MUST support the HTTP Strict Transport
+    Security (HSTS) header <span>[<a href="#RFC6797" class="xref">RFC6797</a>]</span>, in order to allow Web servers to 
+    advertise that they are
+    willing to accept TLS-only clients.<a href="#section-3.2-2.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.2-2.4">Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in Section 11.3 of <span>[<a href="#RFC6797" class="xref">RFC6797</a>]</span>).<a href="#section-3.2-2.4" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-3.2-3">Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="rec-compress">
+<section id="section-3.3">
+        <h3 id="name-compression">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-compression" class="section-name selfRef">Compression</a>
+        </h3>
+<p id="section-3.3-1">In order to help prevent compression-related attacks (summarized in Section 2.6 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>), when using TLS 1.2 implementations and deployments SHOULD disable TLS-level compression (Section 6.2.2 of <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span>), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">Rationale: TLS compression has been subject to security attacks, such as the CRIME attack.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside of TLS and are thus outside the scope of this document. See Section 2.6 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span> for further details.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="rec-resume">
+<section id="section-3.4">
+        <h3 id="name-tls-session-resumption">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-tls-session-resumption" class="section-name selfRef">TLS Session Resumption</a>
+        </h3>
+<p id="section-3.4-1">Session resumption drastically reduces the number of TLS handshakes and thus is an essential
+performance feature for most deployments.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
+<span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span>.  For TLS 1.3, an equivalent PSK-based mechanism is described in
+Section 4.6.1 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.
+When it is used, the resumption information MUST
+be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
+Further recommendations apply to session tickets:<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.4-3.1">A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).<a href="#section-3.4-3.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.4-3.2">Ticket keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see <a href="#sec-pfs" class="xref">Section 6.3</a> for details on forward secrecy).<a href="#section-3.4-3.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.4-3.3">For similar reasons, session ticket validity SHOULD be limited to a reasonable duration (e.g., half as long as ticket key validity).<a href="#section-3.4-3.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-3.4-4">Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document (<a href="#detail" class="xref">Section 4</a>) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
+<p id="section-3.4-5">TLS 1.3 provides the powerful option of forward secrecy even within a long-lived connection
+that is periodically resumed. Section 2.2 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> recommends that clients SHOULD
+send a "key_share" when initiating session resumption.
+In order to gain forward secrecy, this document recommends that server implementations SHOULD
+respond with a "key_share", to complete an ECDHE exchange on each session resumption.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
+<p id="section-3.4-6">TLS session resumption introduces potential privacy issues where the server is able
+to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" class="xref">Sy2018</a>]</span> for more details.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="tls-renegotiation">
+<section id="section-3.5">
+        <h3 id="name-tls-renegotiation">
+<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-tls-renegotiation" class="section-name selfRef">TLS Renegotiation</a>
+        </h3>
+<p id="section-3.5-1">Where handshake renegotiation is implemented, both clients and servers MUST implement the renegotiation_info extension, as defined in <span>[<a href="#RFC5746" class="xref">RFC5746</a>]</span>. Note: this recommendation applies to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5-2">The most secure option for countering the Triple Handshake attack is to refuse any change of certificates during renegotiation.  In addition, TLS clients SHOULD apply the same validation policy for all certificates received over a connection.  The <span>[<a href="#triple-handshake" class="xref">triple-handshake</a>]</span> document suggests several other possible countermeasures, such as binding the master secret to the full handshake (see <span>[<a href="#SESSION-HASH" class="xref">SESSION-HASH</a>]</span>) and binding the abbreviated session resumption handshake to the original full handshake.  Although the latter two techniques are still under development and thus do not qualify as current practices, those who implement and deploy TLS are advised to watch for further development of appropriate countermeasures.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="post-handshake-authentication">
+<section id="section-3.6">
+        <h3 id="name-post-handshake-authenticati">
+<a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-post-handshake-authenticati" class="section-name selfRef">Post-Handshake Authentication</a>
+        </h3>
+<p id="section-3.6-1">Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in <span>[<a href="#RFC8740" class="xref">RFC8740</a>]</span>.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="server-name-indication">
+<section id="section-3.7">
+        <h3 id="name-server-name-indication">
+<a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-server-name-indication" class="section-name selfRef">Server Name Indication</a>
+        </h3>
+<p id="section-3.7-1">TLS implementations MUST support the Server Name Indication (SNI) extension defined in Section 3 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello (formerly called Encrypted SNI) once <span>[<a href="#I-D.ietf-tls-esni" class="xref">I-D.ietf-tls-esni</a>]</span> has been standardized.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
+<p id="section-3.7-2">Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
+      address, and therefore enables fine-grained security for these virtual servers,
+      by allowing each one to have its own certificate. However, SNI also leaks the 
+      target domain for a given connection; this information leak will be plugged by 
+      use of TLS Encrypted Client Hello.<a href="#section-3.7-2" class="pilcrow">¶</a></p>
+<p id="section-3.7-3">In order to prevent the attacks described in <span>[<a href="#ALPACA" class="xref">ALPACA</a>]</span>, a server that does not
+recognize the presented server name SHOULD NOT continue the handshake and
+instead fail with a fatal-level <code>unrecognized_name(112)</code> alert.  Note that this
+recommendation updates Section 3 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>: "If the server understood the
+ClientHello extension but does not recognize the server name, the server SHOULD
+take one of two actions: either abort the handshake by sending a fatal-level
+<code>unrecognized_name(112)</code> alert or continue the handshake." It is also
+RECOMMENDED that clients abort the handshake if the server acknowledges the SNI
+hostname with a different hostname than the one sent by the client.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="application-layer-protocol-negotiation">
+<section id="section-3.8">
+        <h3 id="name-application-layer-protocol-">
+<a href="#section-3.8" class="section-number selfRef">3.8. </a><a href="#name-application-layer-protocol-" class="section-name selfRef">Application-Layer Protocol Negotiation</a>
+        </h3>
+<p id="section-3.8-1">TLS implementations (both client- and server-side) MUST support the
+Application-Layer Protocol Negotiation (ALPN) extension <span>[<a href="#RFC7301" class="xref">RFC7301</a>]</span>.<a href="#section-3.8-1" class="pilcrow">¶</a></p>
+<p id="section-3.8-2">In order to prevent "cross-protocol" attacks resulting from failure to ensure
+that a message intended for use in one protocol cannot be mistaken for a
+message for use in another protocol, servers should strictly enforce the
+behaviour prescribed in Section 3.2 of <span>[<a href="#RFC7301" class="xref">RFC7301</a>]</span>: "In the event that the
+server supports no protocols that the client advertises, then the server SHALL
+respond with a fatal <code>no_application_protocol</code> alert."  It is also RECOMMENDED
+that clients abort the handshake if the server acknowledges the ALPN extension,
+but does not select a protocol from the client list.  Failure to do so can
+result in attacks such those described in <span>[<a href="#ALPACA" class="xref">ALPACA</a>]</span>.<a href="#section-3.8-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="zero-round-trip-time-0-rtt-data-in-tls-13">
+<section id="section-3.9">
+        <h3 id="name-zero-round-trip-time-0-rtt-">
+<a href="#section-3.9" class="section-number selfRef">3.9. </a><a href="#name-zero-round-trip-time-0-rtt-" class="section-name selfRef">Zero Round Trip Time (0-RTT) Data in TLS 1.3</a>
+        </h3>
+<p id="section-3.9-1">The 0-RTT early data feature is new in TLS 1.3. It provides improved latency
+when TLS connections are resumed, at the potential cost of security.
+As a result, it requires special attention from implementers on both
+the server and the client side. Typically this extends to both the
+TLS library as well as protocol layers above it.<a href="#section-3.9-1" class="pilcrow">¶</a></p>
+<p id="section-3.9-2">For use in HTTP-over-TLS, readers are referred to <span>[<a href="#RFC8470" class="xref">RFC8470</a>]</span> for guidance.<a href="#section-3.9-2" class="pilcrow">¶</a></p>
+<p id="section-3.9-3">For QUIC-on-TLS, refer to Sec. 9.2 of <span>[<a href="#RFC9001" class="xref">RFC9001</a>]</span>.<a href="#section-3.9-3" class="pilcrow">¶</a></p>
+<p id="section-3.9-4">For other protocols, generic guidance is given in Sec. 8 and Appendix E.5
+of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.
+Given the complexity, we RECOMMEND to avoid this feature altogether unless
+an explicit specification exists for the application protocol in question to clarify
+when 0-RTT is appropriate and secure. This can take the form of an IETF RFC,
+a non-IETF standard, or even documentation associated with a non-standard protocol.<a href="#section-3.9-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="detail">
+<section id="section-4">
+      <h2 id="name-recommendations-cipher-suit">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-recommendations-cipher-suit" class="section-name selfRef">Recommendations: Cipher Suites</a>
+      </h2>
+<p id="section-4-1">TLS and its implementations provide considerable flexibility in the
+         selection of cipher suites. Unfortunately, some available cipher
+         suites are insecure, some do not provide the targeted security
+         services, and some no longer provide enough security.  Incorrectly
+         configuring a server leads to no or reduced security.  This section
+         includes recommendations on the selection and negotiation of
+         cipher suites.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<div id="rec-cipher-guidelines">
+<section id="section-4.1">
+        <h3 id="name-general-guidelines">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-general-guidelines" class="section-name selfRef">General Guidelines</a>
+        </h3>
+<p id="section-4.1-1">Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms that were once considered strong become weak. Such algorithms need to be phased out over time and replaced with more secure cipher suites. This helps to ensure that the desired security properties still hold. SSL/TLS has been in existence for almost 20 years and many of the cipher suites that have been recommended in various versions of SSL/TLS are now considered weak or at least not as strong as desired. Therefore, this section modernizes the recommendations concerning cipher suite selection.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-2.1">
+            <p id="section-4.1-2.1.1">Implementations MUST NOT negotiate the cipher suites with NULL encryption.<a href="#section-4.1-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2.1.2">
+Rationale: The NULL cipher suites do not encrypt traffic and 
+             so provide no confidentiality services. Any entity in the 
+             network with access to the connection can view the plaintext 
+             of contents being exchanged by the client and server.<a href="#section-4.1-2.1.2" class="pilcrow">¶</a></p>
+<p id="section-4.1-2.1.3">
+             Nevertheless, this document does not discourage software from
+             implementing NULL cipher suites, since they can be useful for 
+             testing and debugging.<a href="#section-4.1-2.1.3" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-2.2">
+            <p id="section-4.1-2.2.1">Implementations MUST NOT negotiate RC4 cipher suites.<a href="#section-4.1-2.2.1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2.2.2">
+Rationale: The RC4 stream cipher has a variety of cryptographic 
+             weaknesses, as documented in <span>[<a href="#RFC7465" class="xref">RFC7465</a>]</span>.
+     Note that DTLS specifically forbids the use of RC4 already.<a href="#section-4.1-2.2.2" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-2.3">
+            <p id="section-4.1-2.3.1">Implementations MUST NOT negotiate cipher suites offering less 
+             than 112 bits of security, including so-called "export-level" 
+             encryption (which provide 40 or 56 bits of security).<a href="#section-4.1-2.3.1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2.3.2">
+Rationale: Based on <span>[<a href="#RFC3766" class="xref">RFC3766</a>]</span>, at least 112 bits 
+             of security is needed.  40-bit and 56-bit security are considered 
+             insecure today.  TLS 1.1 and 1.2 never negotiate 40-bit or 56-bit 
+             export ciphers.<a href="#section-4.1-2.3.2" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-2.4">
+            <p id="section-4.1-2.4.1">Implementations SHOULD NOT negotiate cipher suites that use 
+             algorithms offering less than 128 bits of security.<a href="#section-4.1-2.4.1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2.4.2">
+Rationale: Cipher suites that offer between 112-bits and 128-bits 
+             of security are not considered weak at this time; however, it is 
+             expected that their useful lifespan is short enough to justify 
+             supporting stronger cipher suites at this time.  128-bit ciphers 
+             are expected to remain secure for at least several years, and 
+             256-bit ciphers until the next fundamental technology 
+             breakthrough.  Note that, because of so-called 
+             "meet-in-the-middle" attacks <span>[<a href="#Multiple-Encryption" class="xref">Multiple-Encryption</a>]</span>,
+             some legacy cipher suites (e.g., 168-bit 3DES) have an effective 
+             key length that is smaller than their nominal key length (112 
+             bits in the case of 3DES).  Such cipher suites should be 
+             evaluated according to their effective key length.<a href="#section-4.1-2.4.2" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-2.5">
+            <p id="section-4.1-2.5.1">Implementations SHOULD NOT negotiate cipher suites based on 
+             RSA key transport, a.k.a. "static RSA".<a href="#section-4.1-2.5.1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2.5.2">
+Rationale: These cipher suites, which have assigned values starting 
+             with the string "TLS_RSA_WITH_*", have several drawbacks, especially
+             the fact that they do not support forward secrecy.<a href="#section-4.1-2.5.2" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-2.6">
+            <p id="section-4.1-2.6.1">Implementations MUST support and prefer to negotiate cipher suites 
+             offering forward secrecy, such as those in the Ephemeral 
+             Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
+             and "ECDHE") families.<a href="#section-4.1-2.6.1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2.6.2">
+Rationale: Forward secrecy (sometimes called "perfect forward 
+             secrecy") prevents the recovery of information that was encrypted 
+             with older session keys, thus limiting the amount of time during 
+             which attacks can be successful. See <a href="#sec-pfs" class="xref">Section 6.3</a> for 
+             a detailed discussion.<a href="#section-4.1-2.6.2" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="rec-cipher">
+<section id="section-4.2">
+        <h3 id="name-recommended-cipher-suites">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-recommended-cipher-suites" class="section-name selfRef">Recommended Cipher Suites</a>
+        </h3>
+<p id="section-4.2-1">Given the foregoing considerations, implementation and deployment of the following cipher suites is RECOMMENDED:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-2.1">TLS_DHE_RSA_WITH_AES_128_GCM_SHA256<a href="#section-4.2-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-4.2-2.2">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256<a href="#section-4.2-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-4.2-2.3">TLS_DHE_RSA_WITH_AES_256_GCM_SHA384<a href="#section-4.2-2.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-4.2-2.4">TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384<a href="#section-4.2-2.4" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-4.2-3">These cipher suites are supported only in TLS 1.2 and not in earlier protocol versions, because they are authenticated encryption (AEAD) algorithms <span>[<a href="#RFC5116" class="xref">RFC5116</a>]</span>.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software. (See <span>[<a href="#BETTERCRYPTO" class="xref">BETTERCRYPTO</a>]</span> for helpful deployment guidelines, but note that its recommendations differ from the current document in some details.)  It would be ideal if server software implementations were to prefer these suites by default.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but they are out of scope entirely.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<div id="detail-neg">
+<section id="section-4.2.1">
+          <h4 id="name-implementation-details">
+<a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-implementation-details" class="section-name selfRef">Implementation Details</a>
+          </h4>
+<p id="section-4.2.1-1">Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-2">Servers MUST prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-3">Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-4">This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here. (The GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS <span>[<a href="#Krawczyk2001" class="xref">Krawczyk2001</a>]</span>, since it uses an AEAD mode of operation.) Implementers should consider the interoperability gain against the loss in security when deploying the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).<a href="#section-4.2.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-5">Note that some profiles of TLS 1.2 use different cipher suites. For example, <span>[<a href="#RFC6460" class="xref">RFC6460</a>]</span> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.<a href="#section-4.2.1-5" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-6"><span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span>.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve <span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span>. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".<a href="#section-4.2.1-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="cipher-suites-for-tls-13">
+<section id="section-4.3">
+        <h3 id="name-cipher-suites-for-tls-13">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-cipher-suites-for-tls-13" class="section-name selfRef">Cipher Suites for TLS 1.3</a>
+        </h3>
+<p id="section-4.3-1">This document does not specify any cipher suites for TLS 1.3. Readers
+are referred to Sec. 9.1 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> for cipher suite recommendations.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="limits-on-key-usage">
+<section id="section-4.4">
+        <h3 id="name-limits-on-key-usage">
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-limits-on-key-usage" class="section-name selfRef">Limits on Key Usage</a>
+        </h3>
+<p id="section-4.4-1">All ciphers have an upper limit on the amount of traffic that can be securely encrypted
+with any given key. In the case of AEAD cipher suites, the limit is typically determined
+by the cipher's integrity guarantees. When the amount of traffic for a particular connection
+has reached the limit, an implementation SHOULD perform a new handshake (or in TLS 1.3,
+a Key Update) to rotate the session key.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.4-2">For all AES-GCM cipher suites recommended for TLS 1.2 in this document, the limit
+for one connection is 2<sup>24.5</sup> full-size records (about 24 million).
+This is the same number as for TLS 1.3 with the equivalent cipher suites.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.4-3">[[TODO: refer to <span>[<a href="#I-D.irtf-cfrg-aead-limits" class="xref">I-D.irtf-cfrg-aead-limits</a>]</span> once they have added the derivation
+for TLS 1.2, which is different from TLS 1.3. Different derivation, same numbers.]]<a href="#section-4.4-3" class="pilcrow">¶</a></p>
+<p id="section-4.4-4">For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.<a href="#section-4.4-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="rec-keylength">
+<section id="section-4.5">
+        <h3 id="name-public-key-length">
+<a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-public-key-length" class="section-name selfRef">Public Key Length</a>
+        </h3>
+<p id="section-4.5-1">When using the cipher suites recommended in this document, two public keys are 
+      normally used in the TLS handshake: one for the Diffie-Hellman key agreement
+      and one for server authentication. Where a client certificate is used, a third 
+      public key is added.<a href="#section-4.5-1" class="pilcrow">¶</a></p>
+<p id="section-4.5-2">With a key exchange based on modular exponential (MODP) Diffie-Hellman groups ("DHE" cipher suites), DH key lengths of at least 2048 bits are RECOMMENDED.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
+<p id="section-4.5-3">Rationale: For various reasons, in practice, DH keys are typically generated in lengths
+ that are powers of two (e.g., 2^10 = 1024 bits, 2^11 = 2048 bits, 2^12 = 4096 bits).
+ Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key
+<span>[<a href="#RFC3766" class="xref">RFC3766</a>]</span>, it is better to use keys longer than that for the "DHE" family of cipher suites.
+A DH key of 1926 bits would be roughly equivalent to a 100-bit symmetric key <span>[<a href="#RFC3766" class="xref">RFC3766</a>]</span>.
+A DH key of 2048 bits (equivalent to a 112-bit symmetric key) 
+is allowed by the latest revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]</span> (see in particular Appendix D).
+See <a href="#detail-alt" class="xref">Section 4.6</a> for additional
+information on the use of MODP Diffie-Hellman in TLS.<a href="#section-4.5-3" class="pilcrow">¶</a></p>
+<p id="section-4.5-4">As noted in <span>[<a href="#RFC3766" class="xref">RFC3766</a>]</span>, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.<a href="#section-4.5-4" class="pilcrow">¶</a></p>
+<p id="section-4.5-5">With regard to ECDH keys, the IANA "Supported Groups Registry" (former "EC Named Curve
+Registry"), within the
+   "Transport Layer Security (TLS) Parameters" registry <span>[<a href="#IANA_TLS" class="xref">IANA_TLS</a>]</span> contains 160-bit
+elliptic curves that are considered to be roughly equivalent to only an 80-bit
+symmetric key <span>[<a href="#ECRYPT-II" class="xref">ECRYPT-II</a>]</span>.   Curves of less than 192 bits SHOULD NOT be used.<a href="#section-4.5-5" class="pilcrow">¶</a></p>
+<p id="section-4.5-6">When using RSA, servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED (see <span>[<a href="#CAB-Baseline" class="xref">CAB-Baseline</a>]</span> for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="detail-alt">
+<section id="section-4.6">
+        <h3 id="name-modular-exponential-vs-elli">
+<a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-modular-exponential-vs-elli" class="section-name selfRef">Modular Exponential vs. Elliptic Curve DH Cipher Suites</a>
+        </h3>
+<p id="section-4.6-1">[[TODO: revise after Logjam?]]<a href="#section-4.6-1" class="pilcrow">¶</a></p>
+<p id="section-4.6-2">Not all TLS implementations support both modular exponential (MODP) and elliptic curve (EC) Diffie-Hellman groups, as required by <a href="#rec-cipher" class="xref">Section 4.2</a>. Some implementations are severely limited in the length of DH values. When such implementations need to be accommodated, the following are RECOMMENDED (in priority order):<a href="#section-4.6-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.6-3">
+<li id="section-4.6-3.1">Elliptic Curve DHE with appropriately negotiated parameters (e.g., the curve to be used) and a Message Authentication Code (MAC) algorithm stronger than HMAC-SHA1 <span>[<a href="#RFC5289" class="xref">RFC5289</a>]</span><a href="#section-4.6-3.1" class="pilcrow">¶</a>
+</li>
+          <li id="section-4.6-3.2">TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 <span>[<a href="#RFC5288" class="xref">RFC5288</a>]</span>, with 2048-bit Diffie-Hellman parameters<a href="#section-4.6-3.2" class="pilcrow">¶</a>
+</li>
+          <li id="section-4.6-3.3">TLS_DHE_RSA_WITH_AES_128_GCM_SHA256, with 1024-bit parameters<a href="#section-4.6-3.3" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-4.6-4">Rationale: Although Elliptic Curve Cryptography is widely deployed, there are some communities where its adoption has been limited for several reasons, including its complexity compared to modular arithmetic and longstanding perceptions of IPR concerns (which, for the most part, have now been resolved <span>[<a href="#RFC6090" class="xref">RFC6090</a>]</span>).  Note that ECDHE cipher suites exist for both RSA and ECDSA certificates, so moving to ECDHE cipher suites does not require moving away from RSA-based certificates.  On the other hand, there are two related issues hindering effective use of MODP Diffie-Hellman cipher suites in TLS:<a href="#section-4.6-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.6-5.1">There are no standardized, widely implemented protocol mechanisms to negotiate the DH groups or parameter lengths supported by client and server.<a href="#section-4.6-5.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-4.6-5.2">Many servers choose DH parameters of 1024 bits or fewer.<a href="#section-4.6-5.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-4.6-5.3">There are widely deployed client implementations that reject received DH parameters if they are longer than 1024 bits.  In addition, several implementations do not perform appropriate validation of group parameters and are vulnerable to attacks referenced in Section 2.9 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>.<a href="#section-4.6-5.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-4.6-6">Note that with DHE and ECDHE cipher suites, the TLS master key only depends on the Diffie-Hellman parameters and not on the strength of the RSA certificate; moreover, 1024 bit MODP DH parameters are generally considered insufficient at this time.<a href="#section-4.6-6" class="pilcrow">¶</a></p>
+<p id="section-4.6-7">With MODP ephemeral DH, deployers ought to carefully evaluate interoperability vs. security considerations when configuring their TLS endpoints.<a href="#section-4.6-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="truncated-hmac">
+<section id="section-4.7">
+        <h3 id="name-truncated-hmac">
+<a href="#section-4.7" class="section-number selfRef">4.7. </a><a href="#name-truncated-hmac" class="section-name selfRef">Truncated HMAC</a>
+        </h3>
+<p id="section-4.7-1">Implementations MUST NOT use the Truncated HMAC extension, defined in Section 7 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>.<a href="#section-4.7-1" class="pilcrow">¶</a></p>
+<p id="section-4.7-2">Rationale: the extension does not apply to the AEAD
+      cipher suites recommended above. However it does apply to most other TLS cipher suites. Its use
+      has been shown to be insecure in <span>[<a href="#PatersonRS11" class="xref">PatersonRS11</a>]</span>.<a href="#section-4.7-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="applicability">
+<section id="section-5">
+      <h2 id="name-applicability-statement">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-applicability-statement" class="section-name selfRef">Applicability Statement</a>
+      </h2>
+<p id="section-5-1">The recommendations of this document primarily apply to the implementation and deployment of application protocols that are most commonly used with TLS and DTLS on the Internet today.  Examples include, but are not limited to:<a href="#section-5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-2.1">Web software and services that wish to protect HTTP traffic with TLS.<a href="#section-5-2.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-5-2.2">Email software and services that wish to protect IMAP, POP3, or SMTP traffic with TLS.<a href="#section-5-2.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-5-2.3">Instant-messaging software and services that wish to protect Extensible Messaging and Presence Protocol (XMPP) or Internet Relay Chat (IRC) traffic with TLS.<a href="#section-5-2.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-5-2.4">Realtime media software and services that wish to protect Secure Realtime Transport Protocol (SRTP) traffic with DTLS.<a href="#section-5-2.4" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="section-5-3">This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS. If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to explicitly update the existing application protocol definition (one example is <span>[<a href="#TLS-XMPP" class="xref">TLS-XMPP</a>]</span>, which updates <span>[<a href="#RFC6120" class="xref">RFC6120</a>]</span>).<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-4">Designers of new application protocols developed through the Internet
+  Standards Process <span>[<a href="#RFC2026" class="xref">RFC2026</a>]</span> are expected at minimum to conform to the best
+  practices recommended here, unless they provide documentation of
+  compelling reasons that would prevent such conformance (e.g.,
+  widespread deployment on constrained devices that lack support for
+  the necessary algorithms).<a href="#section-5-4" class="pilcrow">¶</a></p>
+<div id="security-services">
+<section id="section-5.1">
+        <h3 id="name-security-services">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-security-services" class="section-name selfRef">Security Services</a>
+        </h3>
+<p id="section-5.1-1">This document provides recommendations for an audience that wishes to secure their communication with TLS to achieve the following:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.1-2.1">Confidentiality: all application-layer communication is encrypted with the goal that no party should be able to decrypt it except the intended receiver.<a href="#section-5.1-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.1-2.2">Data integrity: any changes made to the communication in transit are detectable by the receiver.<a href="#section-5.1-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.1-2.3">Authentication: an endpoint of the TLS communication is authenticated as the intended entity to communicate with.<a href="#section-5.1-2.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-5.1-3">With regard to authentication, TLS enables authentication of one or both endpoints in the communication.  In the context of opportunistic security <span>[<a href="#RFC7435" class="xref">RFC7435</a>]</span>, TLS is sometimes used without authentication. As discussed in <a href="#oppsec" class="xref">Section 5.2</a>, considerations for opportunistic security are not in scope for this document.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.1-4">If deployers deviate from the recommendations given in this document, they need to be aware that they might lose access to one of the foregoing security services.<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1-5">This document applies only to environments where confidentiality is required. It recommends algorithms and configuration options that enforce secrecy of the data in transit.<a href="#section-5.1-5" class="pilcrow">¶</a></p>
+<p id="section-5.1-6">This document also assumes that data integrity protection is always one of the goals of a deployment. In cases where integrity is not required, it does not make sense to employ TLS in the first place. There are attacks against confidentiality-only protection that utilize the lack of integrity to also break confidentiality (see, for instance, <span>[<a href="#DegabrieleP07" class="xref">DegabrieleP07</a>]</span> in the context of IPsec).<a href="#section-5.1-6" class="pilcrow">¶</a></p>
+<p id="section-5.1-7">This document addresses itself to application protocols that are most commonly used on the Internet with TLS and DTLS. Typically, all communication between TLS clients and TLS servers requires all three of the above security services. This is particularly true where TLS clients are user agents like Web browsers or email software.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
+<p id="section-5.1-8">This document does not address the rarer deployment scenarios where one of the above three properties is not desired, such as the use case described in <a href="#oppsec" class="xref">Section 5.2</a> below.  As another scenario where confidentiality is not needed, consider a monitored network where the authorities in charge of the respective traffic domain require full access to unencrypted (plaintext) traffic, and where users collaborate and send their traffic in the clear.<a href="#section-5.1-8" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="oppsec">
+<section id="section-5.2">
+        <h3 id="name-opportunistic-security">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-opportunistic-security" class="section-name selfRef">Opportunistic Security</a>
+        </h3>
+<p id="section-5.2-1">There are several important scenarios in which the use of TLS is optional, i.e., the client decides dynamically ("opportunistically") whether to use TLS with a particular server or to connect in the clear.  This practice, often called "opportunistic security", is described at length in <span>[<a href="#RFC7435" class="xref">RFC7435</a>]</span> and is often motivated by a desire for backward compatibility with legacy deployments.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">In these scenarios, some of the recommendations in this document might be too strict, since adhering to them could cause fallback to cleartext, a worse outcome than using TLS with an outdated protocol version or cipher suite.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="sec">
+<section id="section-6">
+      <h2 id="name-security-considerations">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-6-1">This entire document discusses the security practices directly affecting applications
+    using the TLS protocol. This section contains broader security considerations related
+    to technologies used in conjunction with or by TLS.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<div id="host-name-validation">
+<section id="section-6.1">
+        <h3 id="name-host-name-validation">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-host-name-validation" class="section-name selfRef">Host Name Validation</a>
+        </h3>
+<p id="section-6.1-1">Application authors should take note that some TLS implementations
+  do not validate host names.  If the TLS implementation they are
+  using does not validate host names, authors might need to write their
+  own validation code or consider using a different TLS implementation.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Section 3 of <span>[<a href="#RFC2818" class="xref">RFC2818</a>]</span>.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">Readers are referred to <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.1-4">If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an MX or SRV record), it SHOULD NOT be used as a reference identifier <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see <span>[<a href="#DANE-SRV" class="xref">DANE-SRV</a>]</span> and <span>[<a href="#DANE-SMTP" class="xref">DANE-SMTP</a>]</span>).<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+<p id="section-6.1-5">Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with <span>[<a href="#RFC5280" class="xref">RFC5280</a>]</span> (see also 
+        <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span>).<a href="#section-6.1-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-aes">
+<section id="section-6.2">
+        <h3 id="name-aes-gcm">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-aes-gcm" class="section-name selfRef">AES-GCM</a>
+        </h3>
+<p id="section-6.2-1"><a href="#rec-cipher" class="xref">Section 4.2</a> above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to Section 11 of <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> for general security considerations when using TLS 1.2, and to Section 6 of <span>[<a href="#RFC5288" class="xref">RFC5288</a>]</span> for security considerations that apply specifically to AES-GCM when used with TLS.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<div id="nonce-reuse-in-tls-12">
+<section id="section-6.2.1">
+          <h4 id="name-nonce-reuse-in-tls-12">
+<a href="#section-6.2.1" class="section-number selfRef">6.2.1. </a><a href="#name-nonce-reuse-in-tls-12" class="section-name selfRef">Nonce Reuse in TLS 1.2</a>
+          </h4>
+<p id="section-6.2.1-1">The existence of deployed TLS stacks that mistakenly reuse the AES-GCM nonce is
+documented in <span>[<a href="#Boeck2016" class="xref">Boeck2016</a>]</span>, showing there is an actual risk of AES-GCM getting
+implemented in an insecure way and thus making TLS sessions that use an
+AES-GCM ciphersuite vulnerable to attacks such as <span>[<a href="#Joux2006" class="xref">Joux2006</a>]</span>.  (See <span>[<a href="#CVE" class="xref">CVE</a>]</span>
+records: CVE-2016-0270, CVE-2016-10213, CVE-2016-10212, CVE-2017-5933.)<a href="#section-6.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.2.1-2">While this problem has been fixed in TLS 1.3, which enforces a deterministic
+method to generate nonces from record sequence numbers and shared secrets for
+all of its AEAD cipher suites (including AES-GCM), TLS 1.2 implementations
+could still choose their own (potentially insecure) nonce generation methods.<a href="#section-6.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.2.1-3">It is therefore RECOMMENDED that TLS 1.2 implementations use the 64-bit
+sequence number to populate the <code>nonce_explicit</code> part of the GCM nonce, as
+described in the first two paragraphs of Section 5.3 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.  Note
+that this recommendation updates Section 3 of <span>[<a href="#RFC5288" class="xref">RFC5288</a>]</span>: "The nonce_explicit
+MAY be the 64-bit sequence number."<a href="#section-6.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.2.1-4">We note that at the time of writing there are no ciphersuites defined for nonce
+reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="xref">RFC8452</a>]</span>.<a href="#section-6.2.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="sec-pfs">
+<section id="section-6.3">
+        <h3 id="name-forward-secrecy">
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-forward-secrecy" class="section-name selfRef">Forward Secrecy</a>
+        </h3>
+<p id="section-6.3-1">Forward secrecy (also called "perfect forward secrecy" or "PFS" and defined in <span>[<a href="#RFC4949" class="xref">RFC4949</a>]</span>) is a defense against an attacker who records encrypted conversations where the session keys are only encrypted with the communicating parties' long-term keys.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-2">Should the attacker be able to obtain these long-term keys at some point later in time, the session keys and thus the entire conversation could be decrypted.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
+<p id="section-6.3-3">In the context of TLS and DTLS, such compromise of long-term keys is not entirely implausible. It can happen, for example, due to:<a href="#section-6.3-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.3-4.1">A client or server being attacked by some other attack vector, and the private key retrieved.<a href="#section-6.3-4.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.3-4.2">A long-term key retrieved from a device that has been sold or otherwise decommissioned without prior wiping.<a href="#section-6.3-4.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.3-4.3">A long-term key used on a device as a default key <span>[<a href="#Heninger2012" class="xref">Heninger2012</a>]</span>.<a href="#section-6.3-4.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.3-4.4">A key generated by a trusted third party like a CA, and later retrieved from it either by extortion or compromise <span>[<a href="#Soghoian2011" class="xref">Soghoian2011</a>]</span>.<a href="#section-6.3-4.4" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.3-4.5">A cryptographic break-through, or the use of asymmetric keys with insufficient length <span>[<a href="#Kleinjung2010" class="xref">Kleinjung2010</a>]</span>.<a href="#section-6.3-4.5" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.3-4.6">Social engineering attacks against system administrators.<a href="#section-6.3-4.6" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.3-4.7">Collection of private keys from inadequately protected backups.<a href="#section-6.3-4.7" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-6.3-5">Forward secrecy ensures in such cases that it is not feasible for an attacker to determine the session keys even if the attacker has obtained the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys but remains passive during the conversation.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
+<p id="section-6.3-6">Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetics.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
+<p id="section-6.3-7">Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  This document therefore advocates strict use of forward-secrecy-only ciphers.<a href="#section-6.3-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="diffie-hellman-exponent-reuse">
+<section id="section-6.4">
+        <h3 id="name-diffie-hellman-exponent-reu">
+<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-diffie-hellman-exponent-reu" class="section-name selfRef">Diffie-Hellman Exponent Reuse</a>
+        </h3>
+<p id="section-6.4-1">For performance reasons, many TLS implementations reuse Diffie-Hellman and Elliptic Curve Diffie-Hellman exponents across multiple connections. Such reuse can result in major security issues:<a href="#section-6.4-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.4-2.1">If exponents are reused for too long (e.g., even more than a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.<a href="#section-6.4-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.4-2.2">TLS implementations that reuse exponents should test the DH public key they receive for group membership, in order to avoid some known attacks. These tests are not standardized in TLS at the time of writing. See <span>[<a href="#RFC6989" class="xref">RFC6989</a>]</span> for recipient tests required of IKEv2 implementations that reuse DH exponents.<a href="#section-6.4-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.4-2.3">Under certain conditions, the use of static DH keys, or of ephemeral DH keys that are reused across multiple connections, can lead to timing attacks (such as those described in <span>[<a href="#RACCOON" class="xref">RACCOON</a>]</span>) on the shared secrets used in Diffie-Hellman key exchange.<a href="#section-6.4-2.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-6.4-3">To address these concerns, TLS implementations SHOULD NOT use static DH keys and SHOULD NOT reuse ephemeral DH keys across multiple connections.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
+<p id="section-6.4-4">[[ TODO: revisit when draft-bartle-tls-deprecate-ffdhe becomes a TLS WG item, since it specifies MUST NOT rather than SHOULD NOT. ]]<a href="#section-6.4-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="certificate-revocation">
+<section id="section-6.5">
+        <h3 id="name-certificate-revocation">
+<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-certificate-revocation" class="section-name selfRef">Certificate Revocation</a>
+        </h3>
+<p id="section-6.5-1">The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates <span>[<a href="#RFC5280" class="xref">RFC5280</a>]</span>:<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.5-2.1">Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness (despite workarounds such as partitioned CRLs and delta CRLs).<a href="#section-6.5-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.5-2.2">Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond a small number of the most heavily used Web servers.<a href="#section-6.5-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.5-2.3">The On-Line Certification Status Protocol (OCSP) <span>[<a href="#RFC6960" class="xref">RFC6960</a>]</span> presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.)<a href="#section-6.5-2.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.5-2.4">The TLS Certificate Status Request extension (Section 8 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.<a href="#section-6.5-2.4" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.5-2.5">OCSP stapling as defined in <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> does not extend to intermediate certificates used in a certificate chain. Although the Multiple Certificate Status extension <span>[<a href="#RFC6961" class="xref">RFC6961</a>]</span> addresses this shortcoming, it is a recent addition without much deployment.<a href="#section-6.5-2.5" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.5-2.6">Both CRLs and OCSP depend on relatively reliable connectivity to the Internet, which might not be available to certain kinds of nodes (such as newly provisioned devices that need to establish a secure connection in order to boot up for the first time).<a href="#section-6.5-2.6" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-6.5-3">With regard to common public key certificates, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution:<a href="#section-6.5-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-6.5-4">
+<li id="section-6.5-4.1">OCSP <span>[<a href="#RFC6960" class="xref">RFC6960</a>]</span><a href="#section-6.5-4.1" class="pilcrow">¶</a>
+</li>
+          <li id="section-6.5-4.2">Both the status_request extension defined in <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> and the status_request_v2 extension defined in <span>[<a href="#RFC6961" class="xref">RFC6961</a>]</span> (This might enable interoperability with the widest range of clients.)<a href="#section-6.5-4.2" class="pilcrow">¶</a>
+</li>
+          <li id="section-6.5-4.3">The OCSP stapling extension defined in <span>[<a href="#RFC6961" class="xref">RFC6961</a>]</span><a href="#section-6.5-4.3" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-6.5-5">The considerations in this section do not apply to scenarios where the DANE-TLSA resource record <span>[<a href="#RFC6698" class="xref">RFC6698</a>]</span> is used to signal to a client which certificate a server considers valid and good to use for TLS connections.<a href="#section-6.5-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="d1e1127">
+<section id="section-7">
+      <h2 id="name-acknowledgments">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="section-7-1">The following acknowledgements are inherited from <span>[<a href="#RFC7525" class="xref">RFC7525</a>]</span>.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">Thanks to RJ Atkinson, Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks also to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" <span>[<a href="#Smith2013" class="xref">Smith2013</a>]</span>. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">Robert Sparks and Dave Waltermire provided helpful reviews on behalf of the General Area Review Team and the Security Directorate, respectively.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-4">During IESG review, Richard Barnes, Alissa Cooper, Spencer Dawkins, Stephen Farrell, Barry Leiba, Kathleen Moriarty, and Pete Resnick provided comments that led to further improvements.<a href="#section-7-4" class="pilcrow">¶</a></p>
+<p id="section-7-5">Ralph Holz gratefully acknowledges the support by Technische Universitaet Muenchen.<a href="#section-7-5" class="pilcrow">¶</a></p>
+<p id="section-7-6">The authors gratefully acknowledge the assistance of Leif Johansson and Orit Levin as the working group chairs and Pete Resnick as the sponsoring Area Director.<a href="#section-7-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-8">
+      <h2 id="name-references">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<section id="section-8.1">
+        <h3 id="name-normative-references">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-tls-dtls13">[I-D.ietf-tls-dtls13]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refAuthor">Tschofenig, H.</span>, and <span class="refAuthor">N. Modadugu</span>, <span class="refTitle">"The Datagram Transport Layer Security (DTLS) Protocol Version 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-dtls13-43</span>, <time datetime="2021-04-30" class="refDate">30 April 2021</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-tls-dtls13-43.txt">https://www.ietf.org/archive/id/draft-ietf-tls-dtls13-43.txt</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-tls-oldversions-deprecate">[I-D.ietf-tls-oldversions-deprecate]</dt>
+        <dd>
+<span class="refAuthor">Moriarty, K.</span> and <span class="refAuthor">S. Farrell</span>, <span class="refTitle">"Deprecating TLS 1.0 and TLS 1.1"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-oldversions-deprecate-12</span>, <time datetime="2021-01-21" class="refDate">21 January 2021</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-tls-oldversions-deprecate-12.txt">https://www.ietf.org/archive/id/draft-ietf-tls-oldversions-deprecate-12.txt</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2818">[RFC2818]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"HTTP Over TLS"</span>, <span class="seriesInfo">RFC 2818</span>, <span class="seriesInfo">DOI 10.17487/RFC2818</span>, <time datetime="2000-05" class="refDate">May 2000</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2818">https://www.rfc-editor.org/info/rfc2818</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3766">[RFC3766]</dt>
+        <dd>
+<span class="refAuthor">Orman, H.</span> and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Determining Strengths For Public Keys Used For Exchanging Symmetric Keys"</span>, <span class="seriesInfo">BCP 86</span>, <span class="seriesInfo">RFC 3766</span>, <span class="seriesInfo">DOI 10.17487/RFC3766</span>, <time datetime="2004-04" class="refDate">April 2004</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3766">https://www.rfc-editor.org/info/rfc3766</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4492">[RFC4492]</dt>
+        <dd>
+<span class="refAuthor">Blake-Wilson, S.</span>, <span class="refAuthor">Bolyard, N.</span>, <span class="refAuthor">Gupta, V.</span>, <span class="refAuthor">Hawk, C.</span>, and <span class="refAuthor">B. Moeller</span>, <span class="refTitle">"Elliptic Curve Cryptography (ECC) Cipher Suites for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 4492</span>, <span class="seriesInfo">DOI 10.17487/RFC4492</span>, <time datetime="2006-05" class="refDate">May 2006</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc4492">https://www.rfc-editor.org/info/rfc4492</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4949">[RFC4949]</dt>
+        <dd>
+<span class="refAuthor">Shirey, R.</span>, <span class="refTitle">"Internet Security Glossary, Version 2"</span>, <span class="seriesInfo">FYI 36</span>, <span class="seriesInfo">RFC 4949</span>, <span class="seriesInfo">DOI 10.17487/RFC4949</span>, <time datetime="2007-08" class="refDate">August 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc4949">https://www.rfc-editor.org/info/rfc4949</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5246">[RFC5246]</dt>
+        <dd>
+<span class="refAuthor">Dierks, T.</span> and <span class="refAuthor">E. Rescorla</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.2"</span>, <span class="seriesInfo">RFC 5246</span>, <span class="seriesInfo">DOI 10.17487/RFC5246</span>, <time datetime="2008-08" class="refDate">August 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5246">https://www.rfc-editor.org/info/rfc5246</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5288">[RFC5288]</dt>
+        <dd>
+<span class="refAuthor">Salowey, J.</span>, <span class="refAuthor">Choudhury, A.</span>, and <span class="refAuthor">D. McGrew</span>, <span class="refTitle">"AES Galois Counter Mode (GCM) Cipher Suites for TLS"</span>, <span class="seriesInfo">RFC 5288</span>, <span class="seriesInfo">DOI 10.17487/RFC5288</span>, <time datetime="2008-08" class="refDate">August 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5288">https://www.rfc-editor.org/info/rfc5288</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5289">[RFC5289]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"TLS Elliptic Curve Cipher Suites with SHA-256/384 and AES Galois Counter Mode (GCM)"</span>, <span class="seriesInfo">RFC 5289</span>, <span class="seriesInfo">DOI 10.17487/RFC5289</span>, <time datetime="2008-08" class="refDate">August 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5289">https://www.rfc-editor.org/info/rfc5289</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5746">[RFC5746]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refAuthor">Ray, M.</span>, <span class="refAuthor">Dispensa, S.</span>, and <span class="refAuthor">N. Oskov</span>, <span class="refTitle">"Transport Layer Security (TLS) Renegotiation Indication Extension"</span>, <span class="seriesInfo">RFC 5746</span>, <span class="seriesInfo">DOI 10.17487/RFC5746</span>, <time datetime="2010-02" class="refDate">February 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5746">https://www.rfc-editor.org/info/rfc5746</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6066">[RFC6066]</dt>
+        <dd>
+<span class="refAuthor">Eastlake 3rd, D.</span>, <span class="refTitle">"Transport Layer Security (TLS) Extensions: Extension Definitions"</span>, <span class="seriesInfo">RFC 6066</span>, <span class="seriesInfo">DOI 10.17487/RFC6066</span>, <time datetime="2011-01" class="refDate">January 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6066">https://www.rfc-editor.org/info/rfc6066</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6125">[RFC6125]</dt>
+        <dd>
+<span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">J. Hodges</span>, <span class="refTitle">"Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 6125</span>, <span class="seriesInfo">DOI 10.17487/RFC6125</span>, <time datetime="2011-03" class="refDate">March 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6125">https://www.rfc-editor.org/info/rfc6125</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6176">[RFC6176]</dt>
+        <dd>
+<span class="refAuthor">Turner, S.</span> and <span class="refAuthor">T. Polk</span>, <span class="refTitle">"Prohibiting Secure Sockets Layer (SSL) Version 2.0"</span>, <span class="seriesInfo">RFC 6176</span>, <span class="seriesInfo">DOI 10.17487/RFC6176</span>, <time datetime="2011-03" class="refDate">March 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6176">https://www.rfc-editor.org/info/rfc6176</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6347">[RFC6347]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span> and <span class="refAuthor">N. Modadugu</span>, <span class="refTitle">"Datagram Transport Layer Security Version 1.2"</span>, <span class="seriesInfo">RFC 6347</span>, <span class="seriesInfo">DOI 10.17487/RFC6347</span>, <time datetime="2012-01" class="refDate">January 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6347">https://www.rfc-editor.org/info/rfc6347</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7301">[RFC7301]</dt>
+        <dd>
+<span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7301">https://www.rfc-editor.org/info/rfc7301</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7465">[RFC7465]</dt>
+        <dd>
+<span class="refAuthor">Popov, A.</span>, <span class="refTitle">"Prohibiting RC4 Cipher Suites"</span>, <span class="seriesInfo">RFC 7465</span>, <span class="seriesInfo">DOI 10.17487/RFC7465</span>, <time datetime="2015-02" class="refDate">February 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7465">https://www.rfc-editor.org/info/rfc7465</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7507">[RFC7507]</dt>
+        <dd>
+<span class="refAuthor">Moeller, B.</span> and <span class="refAuthor">A. Langley</span>, <span class="refTitle">"TLS Fallback Signaling Cipher Suite Value (SCSV) for Preventing Protocol Downgrade Attacks"</span>, <span class="seriesInfo">RFC 7507</span>, <span class="seriesInfo">DOI 10.17487/RFC7507</span>, <time datetime="2015-04" class="refDate">April 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7507">https://www.rfc-editor.org/info/rfc7507</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+        <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8446">[RFC8446]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8446">https://www.rfc-editor.org/info/rfc8446</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8740">[RFC8740]</dt>
+        <dd>
+<span class="refAuthor">Benjamin, D.</span>, <span class="refTitle">"Using TLS 1.3 with HTTP/2"</span>, <span class="seriesInfo">RFC 8740</span>, <span class="seriesInfo">DOI 10.17487/RFC8740</span>, <time datetime="2020-02" class="refDate">February 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8740">https://www.rfc-editor.org/info/rfc8740</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8996">[RFC8996]</dt>
+      <dd>
+<span class="refAuthor">Moriarty, K.</span> and <span class="refAuthor">S. Farrell</span>, <span class="refTitle">"Deprecating TLS 1.0 and TLS 1.1"</span>, <span class="seriesInfo">BCP 195</span>, <span class="seriesInfo">RFC 8996</span>, <span class="seriesInfo">DOI 10.17487/RFC8996</span>, <time datetime="2021-03" class="refDate">March 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8996">https://www.rfc-editor.org/info/rfc8996</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<section id="section-8.2">
+        <h3 id="name-informative-references">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="ALPACA">[ALPACA]</dt>
+        <dd>
+<span class="refAuthor">Brinkmann, M.</span>, <span class="refAuthor">Dresen, C.</span>, <span class="refAuthor">Merget, R.</span>, <span class="refAuthor">Poddebniak, D.</span>, <span class="refAuthor">Müller, J.</span>, <span class="refAuthor">Somorovsky, J.</span>, <span class="refAuthor">Schwenk, J.</span>, and <span class="refAuthor">S. Schinzel</span>, <span class="refTitle">"ALPACA: Application Layer Protocol Confusion - Analyzing and Mitigating Cracks in TLS Authentication"</span>, <span class="seriesInfo">30th USENIX Security Symposium (USENIX Security 21) </span>, <time datetime="2021" class="refDate">2021</time>, <span>&lt;<a href="https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann">https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="BETTERCRYPTO">[BETTERCRYPTO]</dt>
+        <dd>
+<span class="refAuthor">bettercrypto.org</span>, <span class="refTitle">"Applied Crypto Hardening"</span>, <time datetime="2015-04" class="refDate">April 2015</time>, <span>&lt;<a href="https://bettercrypto.org/">https://bettercrypto.org/</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Boeck2016">[Boeck2016]</dt>
+        <dd>
+<span class="refAuthor">Böck, H.</span>, <span class="refAuthor">Zauner, A.</span>, <span class="refAuthor">Devlin, S.</span>, <span class="refAuthor">Somorovsky, J.</span>, and <span class="refAuthor">P. Jovanovic</span>, <span class="refTitle">"Nonce-Disrespecting Adversaries: Practical Forgery Attacks on GCM in TLS"</span>, <time datetime="2016-05" class="refDate">May 2016</time>, <span>&lt;<a href="https://eprint.iacr.org/2016/475.pdf">https://eprint.iacr.org/2016/475.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="CAB-Baseline">[CAB-Baseline]</dt>
+        <dd>
+<span class="refAuthor">CA/Browser Forum</span>, <span class="refTitle">"Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6"</span>, <time datetime="2013" class="refDate">2013</time>, <span>&lt;<a href="https://www.cabforum.org/documents.html">https://www.cabforum.org/documents.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="CVE">[CVE]</dt>
+        <dd>
+<span class="refAuthor">MITRE</span>, <span class="refTitle">"Common Vulnerabilities and Exposures"</span>, <span>&lt;<a href="https://cve.mitre.org">https://cve.mitre.org</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="DANE-SMTP">[DANE-SMTP]</dt>
+        <dd>
+<span class="refAuthor">Dukhovni, V.</span> and <span class="refAuthor">W. Hardaker</span>, <span class="refTitle">"SMTP Security via Opportunistic DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7672</span>, <span class="seriesInfo">DOI 10.17487/RFC7672</span>, <time datetime="2015-10" class="refDate">October 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7672">https://www.rfc-editor.org/info/rfc7672</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="DANE-SRV">[DANE-SRV]</dt>
+        <dd>
+<span class="refAuthor">Finch, T.</span>, <span class="refAuthor">Miller, M.</span>, and <span class="refAuthor">P. Saint-Andre</span>, <span class="refTitle">"Using DNS-Based Authentication of Named Entities (DANE) TLSA Records with SRV Records"</span>, <span class="seriesInfo">RFC 7673</span>, <span class="seriesInfo">DOI 10.17487/RFC7673</span>, <time datetime="2015-10" class="refDate">October 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7673">https://www.rfc-editor.org/info/rfc7673</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="DegabrieleP07">[DegabrieleP07]</dt>
+        <dd>
+<span class="refAuthor">Degabriele, J.</span> and <span class="refAuthor">K. Paterson</span>, <span class="refTitle">"Attacking the IPsec Standards in Encryption-only Configurations"</span>, <span class="seriesInfo">2007 IEEE Symposium on Security and Privacy (SP '07)</span>, <span class="seriesInfo">DOI 10.1109/sp.2007.8</span>, <time datetime="2007-05" class="refDate">May 2007</time>, <span>&lt;<a href="https://doi.org/10.1109/sp.2007.8">https://doi.org/10.1109/sp.2007.8</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="DEP-SSLv3">[DEP-SSLv3]</dt>
+        <dd>
+<span class="refAuthor">Barnes, R.</span>, <span class="refAuthor">Thomson, M.</span>, <span class="refAuthor">Pironti, A.</span>, and <span class="refAuthor">A. Langley</span>, <span class="refTitle">"Deprecating Secure Sockets Layer Version 3.0"</span>, <span class="seriesInfo">RFC 7568</span>, <span class="seriesInfo">DOI 10.17487/RFC7568</span>, <time datetime="2015-06" class="refDate">June 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7568">https://www.rfc-editor.org/info/rfc7568</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="ECRYPT-II">[ECRYPT-II]</dt>
+        <dd>
+<span class="refAuthor">Smart, N.</span>, <span class="refTitle">"ECRYPT II Yearly Report on Algorithms and Keysizes (2011-2012)"</span>, <time datetime="2012" class="refDate">2012</time>, <span>&lt;<a href="http://www.ecrypt.eu.org/ecrypt2/">http://www.ecrypt.eu.org/ecrypt2/</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Heninger2012">[Heninger2012]</dt>
+        <dd>
+<span class="refAuthor">Heninger, N.</span>, <span class="refAuthor">Durumeric, Z.</span>, <span class="refAuthor">Wustrow, E.</span>, and <span class="refAuthor">J.A. Halderman</span>, <span class="refTitle">"Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices"</span>, <span class="seriesInfo">Usenix Security Symposium 2012</span>, <time datetime="2012" class="refDate">2012</time>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-tls-esni">[I-D.ietf-tls-esni]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refAuthor">Oku, K.</span>, <span class="refAuthor">Sullivan, N.</span>, and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"TLS Encrypted Client Hello"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-esni-11</span>, <time datetime="2021-06-14" class="refDate">14 June 2021</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-tls-esni-11.txt">https://www.ietf.org/archive/id/draft-ietf-tls-esni-11.txt</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.irtf-cfrg-aead-limits">[I-D.irtf-cfrg-aead-limits]</dt>
+        <dd>
+<span class="refAuthor">Günther, F.</span>, <span class="refAuthor">Thomson, M.</span>, and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"Usage Limits on AEAD Algorithms"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-irtf-cfrg-aead-limits-02</span>, <time datetime="2021-02-22" class="refDate">22 February 2021</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-aead-limits-02.txt">https://www.ietf.org/archive/id/draft-irtf-cfrg-aead-limits-02.txt</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="IANA_TLS">[IANA_TLS]</dt>
+        <dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"Transport Layer Security (TLS) Parameters"</span>, <span>&lt;<a href="http://www.iana.org/assignments/tls-parameters">http://www.iana.org/assignments/tls-parameters</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Joux2006">[Joux2006]</dt>
+        <dd>
+<span class="refAuthor">Joux, A.</span>, <span class="refTitle">"Authentication Failures in NIST version of GCM"</span>, <time datetime="2006" class="refDate">2006</time>, <span>&lt;<a href="https://csrc.nist.gov/csrc/media/projects/block-cipher-techniques/documents/bcm/comments/800-38-series-drafts/gcm/joux_comments.pdf">https://csrc.nist.gov/csrc/media/projects/block-cipher-techniques/documents/bcm/comments/800-38-series-drafts/gcm/joux_comments.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Kleinjung2010">[Kleinjung2010]</dt>
+        <dd>
+<span class="refAuthor">Kleinjung, T.</span>, <span class="refAuthor">Aoki, K.</span>, <span class="refAuthor">Franke, J.</span>, <span class="refAuthor">Lenstra, A.</span>, <span class="refAuthor">Thomé, E.</span>, <span class="refAuthor">Bos, J.</span>, <span class="refAuthor">Gaudry, P.</span>, <span class="refAuthor">Kruppa, A.</span>, <span class="refAuthor">Montgomery, P.</span>, <span class="refAuthor">Osvik, D.</span>, <span class="refAuthor">te Riele, H.</span>, <span class="refAuthor">Timofeev, A.</span>, and <span class="refAuthor">P. Zimmermann</span>, <span class="refTitle">"Factorization of a 768-Bit RSA Modulus"</span>, <span class="seriesInfo">Advances in Cryptology - CRYPTO 2010 pp. 333-350</span>, <span class="seriesInfo">DOI 10.1007/978-3-642-14623-7_18</span>, <time datetime="2010" class="refDate">2010</time>, <span>&lt;<a href="https://doi.org/10.1007/978-3-642-14623-7_18">https://doi.org/10.1007/978-3-642-14623-7_18</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Krawczyk2001">[Krawczyk2001]</dt>
+        <dd>
+<span class="refAuthor">Krawczyk, H.</span>, <span class="refTitle">"The Order of Encryption and Authentication for Protecting Communications (Or: How Secure is SSL?)"</span>, <span class="seriesInfo">CRYPTO 01</span>, <time datetime="2001" class="refDate">2001</time>, <span>&lt;<a href="https://www.iacr.org/archive/crypto2001/21390309.pdf">https://www.iacr.org/archive/crypto2001/21390309.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Multiple-Encryption">[Multiple-Encryption]</dt>
+        <dd>
+<span class="refAuthor">Merkle, R.</span> and <span class="refAuthor">M. Hellman</span>, <span class="refTitle">"On the security of multiple encryption"</span>, <span class="seriesInfo">Communications of the ACM Vol. 24, pp. 465-467</span>, <span class="seriesInfo">DOI 10.1145/358699.358718</span>, <time datetime="1981-07" class="refDate">July 1981</time>, <span>&lt;<a href="https://doi.org/10.1145/358699.358718">https://doi.org/10.1145/358699.358718</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="NIST.SP.800-56A">[NIST.SP.800-56A]</dt>
+        <dd>
+<span class="refAuthor">Barker, E.</span>, <span class="refAuthor">Chen, L.</span>, <span class="refAuthor">Roginsky, A.</span>, <span class="refAuthor">Vassilev, A.</span>, and <span class="refAuthor">R. Davis</span>, <span class="refTitle">"Recommendation for pair-wise key-establishment schemes using discrete logarithm cryptography"</span>, <span class="seriesInfo">National Institute of Standards and Technology report</span>, <span class="seriesInfo">DOI 10.6028/nist.sp.800-56ar3</span>, <time datetime="2018-04" class="refDate">April 2018</time>, <span>&lt;<a href="https://doi.org/10.6028/nist.sp.800-56ar3">https://doi.org/10.6028/nist.sp.800-56ar3</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="PatersonRS11">[PatersonRS11]</dt>
+        <dd>
+<span class="refAuthor">Paterson, K.</span>, <span class="refAuthor">Ristenpart, T.</span>, and <span class="refAuthor">T. Shrimpton</span>, <span class="refTitle">"Tag Size Does Matter: Attacks and Proofs for the TLS Record Protocol"</span>, <span class="seriesInfo">Lecture Notes in Computer Science pp. 372-389</span>, <span class="seriesInfo">DOI 10.1007/978-3-642-25385-0_20</span>, <time datetime="2011" class="refDate">2011</time>, <span>&lt;<a href="https://doi.org/10.1007/978-3-642-25385-0_20">https://doi.org/10.1007/978-3-642-25385-0_20</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="POODLE">[POODLE]</dt>
+        <dd>
+<span class="refAuthor">US-CERT</span>, <span class="refTitle">"SSL 3.0 Protocol Vulnerability and POODLE Attack"</span>, <time datetime="2014-10" class="refDate">October 2014</time>, <span>&lt;<a href="https://www.us-cert.gov/ncas/alerts/TA14-290A">https://www.us-cert.gov/ncas/alerts/TA14-290A</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RACCOON">[RACCOON]</dt>
+        <dd>
+<span class="refAuthor">Merget, R.</span>, <span class="refAuthor">Brinkmann, M.</span>, <span class="refAuthor">Aviram, N.</span>, <span class="refAuthor">Somorovsky, J.</span>, <span class="refAuthor">Mittmann, J.</span>, and <span class="refAuthor">J. Schwenk</span>, <span class="refTitle">"Raccoon Attack: Finding and Exploiting Most-Significant-Bit-Oracles in TLS-DH(E)"</span>, <span class="seriesInfo">30th USENIX Security Symposium (USENIX Security 21) </span>, <time datetime="2021" class="refDate">2021</time>, <span>&lt;<a href="https://www.usenix.org/conference/usenixsecurity21/presentation/merget">https://www.usenix.org/conference/usenixsecurity21/presentation/merget</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2026">[RFC2026]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"The Internet Standards Process -- Revision 3"</span>, <span class="seriesInfo">BCP 9</span>, <span class="seriesInfo">RFC 2026</span>, <span class="seriesInfo">DOI 10.17487/RFC2026</span>, <time datetime="1996-10" class="refDate">October 1996</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2026">https://www.rfc-editor.org/info/rfc2026</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2246">[RFC2246]</dt>
+        <dd>
+<span class="refAuthor">Dierks, T.</span> and <span class="refAuthor">C. Allen</span>, <span class="refTitle">"The TLS Protocol Version 1.0"</span>, <span class="seriesInfo">RFC 2246</span>, <span class="seriesInfo">DOI 10.17487/RFC2246</span>, <time datetime="1999-01" class="refDate">January 1999</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2246">https://www.rfc-editor.org/info/rfc2246</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3602">[RFC3602]</dt>
+        <dd>
+<span class="refAuthor">Frankel, S.</span>, <span class="refAuthor">Glenn, R.</span>, and <span class="refAuthor">S. Kelly</span>, <span class="refTitle">"The AES-CBC Cipher Algorithm and Its Use with IPsec"</span>, <span class="seriesInfo">RFC 3602</span>, <span class="seriesInfo">DOI 10.17487/RFC3602</span>, <time datetime="2003-09" class="refDate">September 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3602">https://www.rfc-editor.org/info/rfc3602</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4346">[RFC4346]</dt>
+        <dd>
+<span class="refAuthor">Dierks, T.</span> and <span class="refAuthor">E. Rescorla</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.1"</span>, <span class="seriesInfo">RFC 4346</span>, <span class="seriesInfo">DOI 10.17487/RFC4346</span>, <time datetime="2006-04" class="refDate">April 2006</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc4346">https://www.rfc-editor.org/info/rfc4346</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4347">[RFC4347]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span> and <span class="refAuthor">N. Modadugu</span>, <span class="refTitle">"Datagram Transport Layer Security"</span>, <span class="seriesInfo">RFC 4347</span>, <span class="seriesInfo">DOI 10.17487/RFC4347</span>, <time datetime="2006-04" class="refDate">April 2006</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc4347">https://www.rfc-editor.org/info/rfc4347</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5077">[RFC5077]</dt>
+        <dd>
+<span class="refAuthor">Salowey, J.</span>, <span class="refAuthor">Zhou, H.</span>, <span class="refAuthor">Eronen, P.</span>, and <span class="refAuthor">H. Tschofenig</span>, <span class="refTitle">"Transport Layer Security (TLS) Session Resumption without Server-Side State"</span>, <span class="seriesInfo">RFC 5077</span>, <span class="seriesInfo">DOI 10.17487/RFC5077</span>, <time datetime="2008-01" class="refDate">January 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5077">https://www.rfc-editor.org/info/rfc5077</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5116">[RFC5116]</dt>
+        <dd>
+<span class="refAuthor">McGrew, D.</span>, <span class="refTitle">"An Interface and Algorithms for Authenticated Encryption"</span>, <span class="seriesInfo">RFC 5116</span>, <span class="seriesInfo">DOI 10.17487/RFC5116</span>, <time datetime="2008-01" class="refDate">January 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5116">https://www.rfc-editor.org/info/rfc5116</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5280">[RFC5280]</dt>
+        <dd>
+<span class="refAuthor">Cooper, D.</span>, <span class="refAuthor">Santesson, S.</span>, <span class="refAuthor">Farrell, S.</span>, <span class="refAuthor">Boeyen, S.</span>, <span class="refAuthor">Housley, R.</span>, and <span class="refAuthor">W. Polk</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 5280</span>, <span class="seriesInfo">DOI 10.17487/RFC5280</span>, <time datetime="2008-05" class="refDate">May 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5280">https://www.rfc-editor.org/info/rfc5280</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6090">[RFC6090]</dt>
+        <dd>
+<span class="refAuthor">McGrew, D.</span>, <span class="refAuthor">Igoe, K.</span>, and <span class="refAuthor">M. Salter</span>, <span class="refTitle">"Fundamental Elliptic Curve Cryptography Algorithms"</span>, <span class="seriesInfo">RFC 6090</span>, <span class="seriesInfo">DOI 10.17487/RFC6090</span>, <time datetime="2011-02" class="refDate">February 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6090">https://www.rfc-editor.org/info/rfc6090</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6101">[RFC6101]</dt>
+        <dd>
+<span class="refAuthor">Freier, A.</span>, <span class="refAuthor">Karlton, P.</span>, and <span class="refAuthor">P. Kocher</span>, <span class="refTitle">"The Secure Sockets Layer (SSL) Protocol Version 3.0"</span>, <span class="seriesInfo">RFC 6101</span>, <span class="seriesInfo">DOI 10.17487/RFC6101</span>, <time datetime="2011-08" class="refDate">August 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6101">https://www.rfc-editor.org/info/rfc6101</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6120">[RFC6120]</dt>
+        <dd>
+<span class="refAuthor">Saint-Andre, P.</span>, <span class="refTitle">"Extensible Messaging and Presence Protocol (XMPP): Core"</span>, <span class="seriesInfo">RFC 6120</span>, <span class="seriesInfo">DOI 10.17487/RFC6120</span>, <time datetime="2011-03" class="refDate">March 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6120">https://www.rfc-editor.org/info/rfc6120</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6460">[RFC6460]</dt>
+        <dd>
+<span class="refAuthor">Salter, M.</span> and <span class="refAuthor">R. Housley</span>, <span class="refTitle">"Suite B Profile for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 6460</span>, <span class="seriesInfo">DOI 10.17487/RFC6460</span>, <time datetime="2012-01" class="refDate">January 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6460">https://www.rfc-editor.org/info/rfc6460</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6698">[RFC6698]</dt>
+        <dd>
+<span class="refAuthor">Hoffman, P.</span> and <span class="refAuthor">J. Schlyter</span>, <span class="refTitle">"The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol: TLSA"</span>, <span class="seriesInfo">RFC 6698</span>, <span class="seriesInfo">DOI 10.17487/RFC6698</span>, <time datetime="2012-08" class="refDate">August 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6698">https://www.rfc-editor.org/info/rfc6698</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6797">[RFC6797]</dt>
+        <dd>
+<span class="refAuthor">Hodges, J.</span>, <span class="refAuthor">Jackson, C.</span>, and <span class="refAuthor">A. Barth</span>, <span class="refTitle">"HTTP Strict Transport Security (HSTS)"</span>, <span class="seriesInfo">RFC 6797</span>, <span class="seriesInfo">DOI 10.17487/RFC6797</span>, <time datetime="2012-11" class="refDate">November 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6797">https://www.rfc-editor.org/info/rfc6797</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6960">[RFC6960]</dt>
+        <dd>
+<span class="refAuthor">Santesson, S.</span>, <span class="refAuthor">Myers, M.</span>, <span class="refAuthor">Ankney, R.</span>, <span class="refAuthor">Malpani, A.</span>, <span class="refAuthor">Galperin, S.</span>, and <span class="refAuthor">C. Adams</span>, <span class="refTitle">"X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP"</span>, <span class="seriesInfo">RFC 6960</span>, <span class="seriesInfo">DOI 10.17487/RFC6960</span>, <time datetime="2013-06" class="refDate">June 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6960">https://www.rfc-editor.org/info/rfc6960</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6961">[RFC6961]</dt>
+        <dd>
+<span class="refAuthor">Pettersen, Y.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Multiple Certificate Status Request Extension"</span>, <span class="seriesInfo">RFC 6961</span>, <span class="seriesInfo">DOI 10.17487/RFC6961</span>, <time datetime="2013-06" class="refDate">June 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6961">https://www.rfc-editor.org/info/rfc6961</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6989">[RFC6989]</dt>
+        <dd>
+<span class="refAuthor">Sheffer, Y.</span> and <span class="refAuthor">S. Fluhrer</span>, <span class="refTitle">"Additional Diffie-Hellman Tests for the Internet Key Exchange Protocol Version 2 (IKEv2)"</span>, <span class="seriesInfo">RFC 6989</span>, <span class="seriesInfo">DOI 10.17487/RFC6989</span>, <time datetime="2013-07" class="refDate">July 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6989">https://www.rfc-editor.org/info/rfc6989</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7435">[RFC7435]</dt>
+        <dd>
+<span class="refAuthor">Dukhovni, V.</span>, <span class="refTitle">"Opportunistic Security: Some Protection Most of the Time"</span>, <span class="seriesInfo">RFC 7435</span>, <span class="seriesInfo">DOI 10.17487/RFC7435</span>, <time datetime="2014-12" class="refDate">December 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7435">https://www.rfc-editor.org/info/rfc7435</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7457">[RFC7457]</dt>
+        <dd>
+<span class="refAuthor">Sheffer, Y.</span>, <span class="refAuthor">Holz, R.</span>, and <span class="refAuthor">P. Saint-Andre</span>, <span class="refTitle">"Summarizing Known Attacks on Transport Layer Security (TLS) and Datagram TLS (DTLS)"</span>, <span class="seriesInfo">RFC 7457</span>, <span class="seriesInfo">DOI 10.17487/RFC7457</span>, <time datetime="2015-02" class="refDate">February 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7457">https://www.rfc-editor.org/info/rfc7457</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7525">[RFC7525]</dt>
+        <dd>
+<span class="refAuthor">Sheffer, Y.</span>, <span class="refAuthor">Holz, R.</span>, and <span class="refAuthor">P. Saint-Andre</span>, <span class="refTitle">"Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)"</span>, <span class="seriesInfo">BCP 195</span>, <span class="seriesInfo">RFC 7525</span>, <span class="seriesInfo">DOI 10.17487/RFC7525</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7525">https://www.rfc-editor.org/info/rfc7525</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8452">[RFC8452]</dt>
+        <dd>
+<span class="refAuthor">Gueron, S.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">Y. Lindell</span>, <span class="refTitle">"AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption"</span>, <span class="seriesInfo">RFC 8452</span>, <span class="seriesInfo">DOI 10.17487/RFC8452</span>, <time datetime="2019-04" class="refDate">April 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8452">https://www.rfc-editor.org/info/rfc8452</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8470">[RFC8470]</dt>
+        <dd>
+<span class="refAuthor">Thomson, M.</span>, <span class="refAuthor">Nottingham, M.</span>, and <span class="refAuthor">W. Tarreau</span>, <span class="refTitle">"Using Early Data in HTTP"</span>, <span class="seriesInfo">RFC 8470</span>, <span class="seriesInfo">DOI 10.17487/RFC8470</span>, <time datetime="2018-09" class="refDate">September 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8470">https://www.rfc-editor.org/info/rfc8470</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9001">[RFC9001]</dt>
+        <dd>
+<span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">S. Turner, Ed.</span>, <span class="refTitle">"Using TLS to Secure QUIC"</span>, <span class="seriesInfo">RFC 9001</span>, <span class="seriesInfo">DOI 10.17487/RFC9001</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9001">https://www.rfc-editor.org/info/rfc9001</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SESSION-HASH">[SESSION-HASH]</dt>
+        <dd>
+<span class="refAuthor">Bhargavan, K., Ed.</span>, <span class="refAuthor">Delignat-Lavaud, A.</span>, <span class="refAuthor">Pironti, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">M. Ray</span>, <span class="refTitle">"Transport Layer Security (TLS) Session Hash and Extended Master Secret Extension"</span>, <span class="seriesInfo">RFC 7627</span>, <span class="seriesInfo">DOI 10.17487/RFC7627</span>, <time datetime="2015-09" class="refDate">September 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7627">https://www.rfc-editor.org/info/rfc7627</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Smith2013">[Smith2013]</dt>
+        <dd>
+<span class="refAuthor">Smith, B.</span>, <span class="refTitle">"Proposal to Change the Default TLS Ciphersuites Offered by Browsers."</span>, <time datetime="2013" class="refDate">2013</time>, <span>&lt;<a href="https://briansmith.org/browser-ciphersuites-01.html">https://briansmith.org/browser-ciphersuites-01.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Soghoian2011">[Soghoian2011]</dt>
+        <dd>
+<span class="refAuthor">Soghoian, C.</span> and <span class="refAuthor">S. Stamm</span>, <span class="refTitle">"Certified Lies: Detecting and Defeating Government Interception Attacks Against SSL"</span>, <span class="seriesInfo">SSRN Electronic Journal</span>, <span class="seriesInfo">DOI 10.2139/ssrn.1591033</span>, <time datetime="2010" class="refDate">2010</time>, <span>&lt;<a href="https://doi.org/10.2139/ssrn.1591033">https://doi.org/10.2139/ssrn.1591033</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Sy2018">[Sy2018]</dt>
+        <dd>
+<span class="refAuthor">Sy, E.</span>, <span class="refAuthor">Burkert, C.</span>, <span class="refAuthor">Federrath, H.</span>, and <span class="refAuthor">M. Fischer</span>, <span class="refTitle">"Tracking Users across the Web via TLS Session Resumption"</span>, <span class="seriesInfo">Proceedings of the 34th Annual Computer Security Applications Conference</span>, <span class="seriesInfo">DOI 10.1145/3274694.3274708</span>, <time datetime="2018-12" class="refDate">December 2018</time>, <span>&lt;<a href="https://doi.org/10.1145/3274694.3274708">https://doi.org/10.1145/3274694.3274708</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="TLS-XMPP">[TLS-XMPP]</dt>
+        <dd>
+<span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">T. Alkemade</span>, <span class="refTitle">"Use of Transport Layer Security (TLS) in the Extensible Messaging and Presence Protocol (XMPP)"</span>, <span class="seriesInfo">RFC 7590</span>, <span class="seriesInfo">DOI 10.17487/RFC7590</span>, <time datetime="2015-06" class="refDate">June 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7590">https://www.rfc-editor.org/info/rfc7590</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="triple-handshake">[triple-handshake]</dt>
+      <dd>
+<span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Lavaud, A.</span>, <span class="refAuthor">Fournet, C.</span>, <span class="refAuthor">Pironti, A.</span>, and <span class="refAuthor">P. Strub</span>, <span class="refTitle">"Triple Handshakes and Cookie Cutters: Breaking and Fixing Authentication over TLS"</span>, <span class="seriesInfo">2014 IEEE Symposium on Security and Privacy</span>, <span class="seriesInfo">DOI 10.1109/sp.2014.14</span>, <time datetime="2014-05" class="refDate">May 2014</time>, <span>&lt;<a href="https://doi.org/10.1109/sp.2014.14">https://doi.org/10.1109/sp.2014.14</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</section>
+<div id="differences-from-rfc-7525">
+<section id="appendix-A">
+      <h2 id="name-differences-from-rfc-7525">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-differences-from-rfc-7525" class="section-name selfRef">Differences from RFC 7525</a>
+      </h2>
+<ul class="normal">
+<li class="normal" id="appendix-A-1.1">Clarified some items (e.g. renegotiation) that only apply to TLS 1.2 - many more TBD.<a href="#appendix-A-1.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-1.2">Changed status of TLS 1.0 and 1.1 from SHOULD NOT to MUST NOT.<a href="#appendix-A-1.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-1.3">Added TLS 1.3 at a SHOULD level.<a href="#appendix-A-1.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-1.4">Similar changes to DTLS, pending publication of DTLS 1.3.<a href="#appendix-A-1.4" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-1.5">Fallback SCSV as a MUST for TLS 1.2.<a href="#appendix-A-1.5" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-1.6">Added mention of TLS Encrypted Client Hello, but no recommendation to use yet.<a href="#appendix-A-1.6" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-1.7">New TLS 1.3 capabilities: 0-RTT.<a href="#appendix-A-1.7" class="pilcrow">¶</a>
+</li>
+      </ul>
+</section>
+</div>
+<div id="document-history">
+<section id="appendix-B">
+      <h2 id="name-document-history">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-document-history" class="section-name selfRef">Document History</a>
+      </h2>
+<p id="appendix-B-1">[[Note to RFC Editor: please remove before publication.]]<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<div id="draft-ietf-uta-rfc7525bis-00">
+<section id="appendix-B.1">
+        <h3 id="name-draft-ietf-uta-rfc7525bis-0">
+<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-draft-ietf-uta-rfc7525bis-0" class="section-name selfRef">draft-ietf-uta-rfc7525bis-00</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-B.1-1.1">Renamed: WG document.<a href="#appendix-B.1-1.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="appendix-B.1-1.2">Started populating list of changes from RFC 7525.<a href="#appendix-B.1-1.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="appendix-B.1-1.3">General rewording of abstract and intro for revised version.<a href="#appendix-B.1-1.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="appendix-B.1-1.4">Protocol versions, fallback.<a href="#appendix-B.1-1.4" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="appendix-B.1-1.5">Reference to ECHO.<a href="#appendix-B.1-1.5" class="pilcrow">¶</a>
+</li>
+        </ul>
+</section>
+</div>
+<div id="draft-sheffer-uta-rfc7525bis-00">
+<section id="appendix-B.2">
+        <h3 id="name-draft-sheffer-uta-rfc7525bi">
+<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-draft-sheffer-uta-rfc7525bi" class="section-name selfRef">draft-sheffer-uta-rfc7525bis-00</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-B.2-1.1">Renamed, since the BCP number does not change.<a href="#appendix-B.2-1.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="appendix-B.2-1.2">Added an empty "Differences from RFC 7525" section.<a href="#appendix-B.2-1.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+</section>
+</div>
+<div id="draft-sheffer-uta-bcp195bis-00">
+<section id="appendix-B.3">
+        <h3 id="name-draft-sheffer-uta-bcp195bis">
+<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-draft-sheffer-uta-bcp195bis" class="section-name selfRef">draft-sheffer-uta-bcp195bis-00</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-B.3-1.1">Initial release, the RFC 7525 text as-is, with some minor editorial
+changes to the references.<a href="#appendix-B.3-1.1" class="pilcrow">¶</a>
+</li>
+        </ul>
+</section>
+</div>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Yaron Sheffer</span></div>
+<div dir="auto" class="left"><span class="org">Intuit</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:yaronf.ietf@gmail.com" class="email">yaronf.ietf@gmail.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Ralph Holz</span></div>
+<div dir="auto" class="left"><span class="org">University of Twente</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:ralph.ietf@gmail.com" class="email">ralph.ietf@gmail.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Peter Saint-Andre</span></div>
+<div dir="auto" class="left"><span class="org">Mozilla</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:stpeter@mozilla.com" class="email">stpeter@mozilla.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Thomas Fossati</span></div>
+<div dir="auto" class="left"><span class="org">arm</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:thomas.fossati@arm.com" class="email">thomas.fossati@arm.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
