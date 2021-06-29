@@ -1,6 +1,0 @@
-- Server sends the extension unencrypted.
-- Must ensure that the extensions are covered by both Finished messages.
-- The server can only send the ticket when the master key is ready, i.e. just before it sends ChangeCipherSpec.
-- The secret (ticket_secret) is derived from the master key plus the two randoms. Although for 1.3 we only use xES and xSS?
-- The proof is similar to 1.3.
-- Privacy is different: an exteral observer will see the returned ticket, so will be able to correlate the client's identity. 
