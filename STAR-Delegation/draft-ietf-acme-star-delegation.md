@@ -76,7 +76,7 @@ terminating TLS sessions on behalf of a content provider (the holder of a domain
 name).  The presented mechanism allows the holder of the identifier to retain
 control over the delegation and revoke it at any time.  Importantly, this
 mechanism does not require any modification to the deployed
-TLS clients and servers. 
+TLS clients and servers.
 
 --- middle
 
