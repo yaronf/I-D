@@ -114,14 +114,6 @@ informative:
     target: https://briansmith.org/browser-ciphersuites-01.html
     title: Proposal to Change the Default TLS Ciphersuites Offered by Browsers.
 
-  ECRYPT-II:
-    author:
-    - ins: N. Smart
-      name: Nigel Smart (ed.)
-    date: '2012'
-    target: http://www.ecrypt.eu.org/ecrypt2/
-    title: ECRYPT II Yearly Report on Algorithms and Keysizes (2011-2012)
-
   Krawczyk2001:
     author:
     - ins: H. Krawczyk
@@ -242,6 +234,8 @@ The TLS community reacted to these attacks in two ways:
 Those who implement and deploy TLS and DTLS, in particular versions 1.2 or earlier of these protocols, need guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
 
 The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless it is explicitly called out that a recommendation applies to TLS alone or to DTLS alone, each recommendation applies to both TLS and DTLS.
+
+This document attempts to minimize new guidance to TLS 1.2 implementations, and the overall approach is to encourage systems to move to TLS 1.3. However this is not always practical. Newly discovered attacks, as well as ecosystem changes, necesitated some new requirements that apply to TLS 1.2 environments. Those are summarized in {{diff-rfc}}.
 
 As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. This document is being republished with this in mind, and with an explicit goal to migrate most uses of TLS 1.2 into TLS 1.3.
 
@@ -601,8 +595,8 @@ For all AES-GCM cipher suites recommended for TLS 1.2 in this document, the limi
 for one connection is 2<sup>24.5</sup> full-size records (about 24 million).
 This is the same number as for TLS 1.3 with the equivalent cipher suites.
 
-[[TODO: refer to {{?I-D.irtf-cfrg-aead-limits}} once they have added the derivation
-for TLS 1.2, which is different from TLS 1.3. Different derivation, same numbers.]]
+<cref>TODO: refer to {{?I-D.irtf-cfrg-aead-limits}} once it has added the derivation
+for TLS 1.2, which is different from TLS 1.3. Different derivation, same numbers.</cref>
 
 For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}}.
 
@@ -802,7 +796,7 @@ For performance reasons, many TLS implementations reuse Diffie-Hellman and Ellip
 
 To address these concerns, TLS implementations SHOULD NOT use static DH keys and SHOULD NOT reuse ephemeral DH keys across multiple connections.
 
-[[ TODO: revisit when draft-bartle-tls-deprecate-ffdhe becomes a TLS WG item, since it specifies MUST NOT rather than SHOULD NOT. ]]
+<cref>TODO: revisit when draft-bartle-tls-deprecate-ffdhe becomes a TLS WG item, since it specifies MUST NOT rather than SHOULD NOT.</cref>
 
 ## Certificate Revocation
 
@@ -851,18 +845,45 @@ The authors gratefully acknowledge the assistance of Leif Johansson and Orit Lev
 --- back
 
 # Differences from RFC 7525
+{: #diff-rfc}
 
-* Clarified some items (e.g. renegotiation) that only apply to TLS 1.2 - many more TBD.
-* Changed status of TLS 1.0 and 1.1 from SHOULD NOT to MUST NOT.
-* Added TLS 1.3 at a SHOULD level.
-* Similar changes to DTLS, pending publication of DTLS 1.3.
-* Fallback SCSV as a MUST for TLS 1.2.
-* Added mention of TLS Encrypted Client Hello, but no recommendation to use yet.
-* New TLS 1.3 capabilities: 0-RTT.
+* High level differences:
+  * Clarified items (e.g. renegotiation) that only apply to TLS 1.2.
+  * Changed status of TLS 1.0 and 1.1 from SHOULD NOT to MUST NOT.
+  * Added TLS 1.3 at a SHOULD level.
+  * Similar changes to DTLS, pending publication of DTLS 1.3.
+  * Specific guidance for multiplexed protocols.
+  * MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.
+* Differences specific to TLS 1.2:
+  * Fallback SCSV as a MUST for TLS 1.2.
+  * SHOULD-level guidance on AES-GCM nonce generation in TLS 1.2.
+  * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
+  * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
+* Differences specific to TLS 1.3:
+  * New TLS 1.3 capabilities: 0-RTT.
+  * Removed capabilities: renegotiation, compression.
+  * Added mention of TLS Encrypted Client Hello, but no recommendation to use until it is finalized.
+  * SHOULD-level requirement for forward secrecy in TLS 1.3 session resumption.
+  * Generic SHOULD-level guidance to avoid 0-RTT unless it is documented for the particular protocol.
+
 
 # Document History
 
-[[Note to RFC Editor: please remove before publication.]]
+<cref>Note to RFC Editor: please remove before publication.</cref>
+
+## draft-ietf-uta-rfc7525bis-01
+
+- Many more changes, including:
+  - SHOULD-level requirement for forward secrecy in TLS 1.3 session resumption.
+  - Removed TLS 1.2 capabilities: renegotiation, compression.
+  - Specific guidance for multiplexed protocols.
+  - MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.
+  - Generic SHOULD-level guidance to avoid 0-RTT unless it is documented for the particular protocol.
+  - SHOULD-level guidance on AES-GCM nonce generation in TLS 1.2.
+  - SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
+  - 2048-bit DH now a MUST, ECDH minimal curve size is 224, up from 192.
+
+
 
 ## draft-ietf-uta-rfc7525bis-00
 
