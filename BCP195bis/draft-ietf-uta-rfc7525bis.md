@@ -734,7 +734,7 @@ Host name validation typically applies only to the leaf "end entity" certificate
 The existence of deployed TLS stacks that mistakenly reuse the AES-GCM nonce is
 documented in {{Boeck2016}}, showing there is an actual risk of AES-GCM getting
 implemented in an insecure way and thus making TLS sessions that use an
-AES-GCM ciphersuite vulnerable to attacks such as {{Joux2006}}.  (See {{CVE}}
+AES-GCM cipher suite vulnerable to attacks such as {{Joux2006}}.  (See {{CVE}}
 records: CVE-2016-0270, CVE-2016-10213, CVE-2016-10212, CVE-2017-5933.)
 
 While this problem has been fixed in TLS 1.3, which enforces a deterministic
@@ -748,7 +748,7 @@ described in the first two paragraphs of Section 5.3 of {{!RFC8446}}.  Note
 that this recommendation updates Section 3 of {{!RFC5288}}: "The nonce_explicit
 MAY be the 64-bit sequence number."
 
-We note that at the time of writing there are no ciphersuites defined for nonce
+We note that at the time of writing there are no cipher suites defined for nonce
 reuse resistant algorithms such as AES-GCM-SIV {{?RFC8452}}.
       
 ## Forward Secrecy
@@ -830,7 +830,7 @@ The considerations in this section do not apply to scenarios where the DANE-TLSA
 # Acknowledgments
 {: #d1e1127}
 
-The following acknowledgemnts are inherited from {{?RFC7525}}.
+The following acknowledgments are inherited from {{?RFC7525}}.
 
 Thanks to RJ Atkinson, Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks also to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" {{Smith2013}}. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.
 
