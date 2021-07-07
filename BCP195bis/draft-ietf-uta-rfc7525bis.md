@@ -847,6 +847,9 @@ The authors gratefully acknowledge the assistance of Leif Johansson and Orit Lev
 # Differences from RFC 7525
 {: #diff-rfc}
 
+This revision of the Best Current Practices contains numerous changes, and this section is focused
+on the normative changes.
+
 * High level differences:
   * Clarified items (e.g. renegotiation) that only apply to TLS 1.2.
   * Changed status of TLS 1.0 and 1.1 from SHOULD NOT to MUST NOT.
@@ -854,6 +857,7 @@ The authors gratefully acknowledge the assistance of Leif Johansson and Orit Lev
   * Similar changes to DTLS, pending publication of DTLS 1.3.
   * Specific guidance for multiplexed protocols.
   * MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.
+  * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries"
 * Differences specific to TLS 1.2:
   * Fallback SCSV as a MUST for TLS 1.2.
   * SHOULD-level guidance on AES-GCM nonce generation in TLS 1.2.
