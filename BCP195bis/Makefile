@@ -1,6 +1,6 @@
 xml2rfc ?= xml2rfc --v3
-# kramdown-rfc2629 ?= XML_RESOURCE_ORG_PREFIX=https://unicorn-wg.github.io/idrefs kramdown-rfc2629
-kramdown-rfc2629 ?= kramdown-rfc2629
+# kramdown-rfc2629 includes the kdrfc tool
+kdrfc ?= kdrfc -3c
 idnits ?= idnits
 rfcdiff ?= rfcdiff
 
@@ -30,7 +30,7 @@ clean:
 	-rm -f $(draft)-[0-9][0-9].xml
 	-rm -f $(draft)-[0-9][0-9].txt
 	-rm -f $(draft)-[0-9][0-9].md
-	-rm metadata.min.js
+	-rm -f metadata.min.js
 
 $(draft)-orig.md:
 	-rm -rf $@
@@ -53,7 +53,8 @@ $(next).md: $(draft).md
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@
 
 %.xml: %.md
-	$(kramdown-rfc2629) $< > $@
+	$(kdrfc) $<
+	mv $(basename $<).v2v3.xml $(basename $<).xml
 
 %.txt: %.xml
 	$(xml2rfc) $< -o $@
