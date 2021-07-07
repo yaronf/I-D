@@ -235,7 +235,7 @@ Those who implement and deploy TLS and DTLS, in particular versions 1.2 or earli
 
 The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless it is explicitly called out that a recommendation applies to TLS alone or to DTLS alone, each recommendation applies to both TLS and DTLS.
 
-This document attempts to minimize new guidance to TLS 1.2 implementations, and the overall approach is to encourage systems to move to TLS 1.3. However this is not always practical. Newly discovered attacks, as well as ecosystem changes, necesitated some new requirements that apply to TLS 1.2 environments. Those are summarized in {{diff-rfc}}.
+This document attempts to minimize new guidance to TLS 1.2 implementations, and the overall approach is to encourage systems to move to TLS 1.3. However this is not always practical. Newly discovered attacks, as well as ecosystem changes, necessitated some new requirements that apply to TLS 1.2 environments. Those are summarized in {{diff-rfc}}.
 
 As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. This document is being republished with this in mind, and with an explicit goal to migrate most uses of TLS 1.2 into TLS 1.3.
 
@@ -432,7 +432,7 @@ Application-Layer Protocol Negotiation (ALPN) extension {{!RFC7301}}.
 In order to prevent "cross-protocol" attacks resulting from failure to ensure
 that a message intended for use in one protocol cannot be mistaken for a
 message for use in another protocol, servers should strictly enforce the
-behaviour prescribed in Section 3.2 of {{!RFC7301}}: "In the event that the
+behavior prescribed in Section 3.2 of {{!RFC7301}}: "In the event that the
 server supports no protocols that the client advertises, then the server SHALL
 respond with a fatal `no_application_protocol` alert."  It is also RECOMMENDED
 that clients abort the handshake if the server acknowledges the ALPN extension,
@@ -779,7 +779,7 @@ In the context of TLS and DTLS, such compromise of long-term keys is not entirel
 Forward secrecy ensures in such cases that it is not feasible for an attacker to determine the session keys even if the attacker has obtained the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys but remains passive during the conversation.
 
 
-Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetics.
+Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetic.
 
 Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  This document therefore advocates strict use of forward-secrecy-only ciphers.
       
@@ -830,7 +830,7 @@ The considerations in this section do not apply to scenarios where the DANE-TLSA
 # Acknowledgments
 {: #d1e1127}
 
-The following acknowledgements are inherited from {{?RFC7525}}.
+The following acknowledgemnts are inherited from {{?RFC7525}}.
 
 Thanks to RJ Atkinson, Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks also to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" {{Smith2013}}. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.
 
@@ -838,7 +838,7 @@ Robert Sparks and Dave Waltermire provided helpful reviews on behalf of the Gene
 
 During IESG review, Richard Barnes, Alissa Cooper, Spencer Dawkins, Stephen Farrell, Barry Leiba, Kathleen Moriarty, and Pete Resnick provided comments that led to further improvements.
 
-Ralph Holz gratefully acknowledges the support by Technische Universitaet Muenchen.
+Ralph Holz gratefully acknowledges the support by Technische Universit&auml;t M&uuml;nchen.
 
 The authors gratefully acknowledge the assistance of Leif Johansson and Orit Levin as the working group chairs and Pete Resnick as the sponsoring Area Director.
 
