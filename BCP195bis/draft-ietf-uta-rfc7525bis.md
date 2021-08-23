@@ -439,6 +439,8 @@ that clients abort the handshake if the server acknowledges the ALPN extension,
 but does not select a protocol from the client list.  Failure to do so can
 result in attacks such those described in {{ALPACA}}.
 
+Protocol developers are strongly encouraged to register an ALPN identifier for their protocols. This applies to new protocols, as well as well-established protocols such as SMTP.
+
 ## Zero Round Trip Time (0-RTT) Data in TLS 1.3
 
 The 0-RTT early data feature is new in TLS 1.3. It provides improved latency
