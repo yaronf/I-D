@@ -631,7 +631,7 @@ Registry"), within the
    groups.  Curves of less than 224 bits MUST NOT be used. This recommendation is in-line with the latest
 revision of {{NIST.SP.800-56A}}. 
 
-When using RSA, servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED (see {{CAB-Baseline}} for more details). Clients SHOULD indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. 
+When using RSA, servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED and SHA-1 or MD5 MUST NOT be used (see {{CAB-Baseline}} for more details). Clients MUST indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. 
 
 ## Truncated HMAC
 
@@ -877,6 +877,11 @@ on the normative changes.
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
 
+## draft-ietf-uta-rfc7525bis-02
+
+- Adjusted text about ALPN support in application protocols
+- Incorporated text from draft-ietf-tls-md5-sha1-deprecate
+
 ## draft-ietf-uta-rfc7525bis-01
 
 - Many more changes, including:
@@ -888,8 +893,6 @@ on the normative changes.
   - SHOULD-level guidance on AES-GCM nonce generation in TLS 1.2.
   - SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
   - 2048-bit DH now a MUST, ECDH minimal curve size is 224, up from 192.
-
-
 
 ## draft-ietf-uta-rfc7525bis-00
 
