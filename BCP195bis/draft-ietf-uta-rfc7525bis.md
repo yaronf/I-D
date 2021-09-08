@@ -349,6 +349,44 @@ The following recommendations are provided to help prevent SSL Stripping (an att
 Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear. 
 
 
+## Signature Algorithms
+
+{{Section 4.2.3 of RFC8446}} revamps the signature_algorithms
+extension first defined in {{Section 7.4.1.4.1 of RFC5246}} by
+merging the previously separate SignatureAlgorithm and HashAlgorithm
+into a single (backwards compatible) code point named
+SignatureScheme.  It also introduces the new
+signature_algorithms_cert extension that has the same syntax as
+signature_algorithms but slightly different semantics.  In fact,
+signature_algorithms tells the receiving TLS Endpoint which signature
+algorithms are supported by the TLS stack of the sender, whereas
+signature_algorithms_cert, when present, is used to communicate the
+(potentially distinct) signing capabilities implemented by the
+sender's PKI stack.
+
+A number of new SignatureScheme code-points associated with the
+RSASSA-PSS signature scheme {{!RFC8017}} have been defined, and TLS
+1.3 makes one of these, rsa_pss_rsae_sha256, mandatory-to-implement.
+TLS 1.3 also requires Endpoints that wish to authenticate their peers
+using certificates to send the signature_algorithms extension and
+recommends TLS 1.2 Endpoints to implement the
+signature_algorithms_cert extension too.  Following these
+recommendation allows TLS 1.2 Endpoints to make use of RSASSA-PSS
+signatures on both certificates and handshake messages (i.e.,
+CertificateVerify), therefore extending their reach to certificates
+with an RSASSA-PSS signature key while also employing a more secure
+alternative to RSASSA-PKCS1-v1_5.
+
+If supported by its PKI and/or TLS stacks, a TLS 1.2 Endpoint SHOULD offer
+and/or accept an RSASSA-PSS algorithm in both signature_algorithms and
+signature_algorithms_cert extensions.  When offering, the TLS 1.2 client
+SHOULD prioritise RSASSA-PSS over RSASSA-PKCS1-v1_5 algorithms (i.e., by
+setting the values at a lower index in the list).
+
+Rationale: RSA-PSS provides a provably secure alternative to PKCS#1 v1.5 and,
+when available, it be used instead.  TLS 1.3 made RSA-PSS
+mandatory-to-implement and provided the means to use it with TLS 1.2 also.
+
 ## Compression
 {: #rec-compress}
 
