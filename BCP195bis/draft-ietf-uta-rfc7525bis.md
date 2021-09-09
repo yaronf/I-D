@@ -384,7 +384,7 @@ SHOULD prioritise RSASSA-PSS over RSASSA-PKCS1-v1_5 algorithms (i.e., by
 setting the values at a lower index in the list).
 
 Rationale: RSA-PSS provides a provably secure alternative to PKCS#1 v1.5 and,
-when available, it be used instead.  TLS 1.3 made RSA-PSS
+when available, it should be used instead.  TLS 1.3 made RSA-PSS
 mandatory-to-implement and provided the means to use it with TLS 1.2 also.
 
 ## Compression
