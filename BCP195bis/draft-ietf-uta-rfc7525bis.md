@@ -357,7 +357,7 @@ merging the previously separate SignatureAlgorithm and HashAlgorithm
 into a single (backwards compatible) code point named
 SignatureScheme.  It also introduces the new
 signature_algorithms_cert extension that has the same syntax as
-signature_algorithms but slightly different semantics.  In fact,
+signature_algorithms but slightly different semantics.  Specifically,
 signature_algorithms tells the receiving TLS Endpoint which signature
 algorithms are supported by the TLS stack of the sender, whereas
 signature_algorithms_cert, when present, is used to communicate the
