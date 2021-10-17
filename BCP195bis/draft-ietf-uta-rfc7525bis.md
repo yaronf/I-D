@@ -593,12 +593,13 @@ by the cipher's integrity guarantees. When the amount of traffic for a particula
 has reached the limit, an implementation SHOULD perform a new handshake (or in TLS 1.3,
 a Key Update) to rotate the session key.
 
-For all AES-GCM cipher suites recommended for TLS 1.2 in this document, the limit
-for one connection is 2<sup>24.5</sup> full-size records (about 24 million).
-This is the same number as for TLS 1.3 with the equivalent cipher suites.
-
-<cref>TODO: refer to {{?I-D.irtf-cfrg-aead-limits}} once it has added the derivation
-for TLS 1.2, which is different from TLS 1.3. Different derivation, same numbers.</cref>
+For all AES-GCM cipher suites recommended for TLS 1.2 in this document, the
+limit can be derived by plugging the corresponding parameters into the
+inequalities in Section 6.1 of {{?I-D.irtf-cfrg-aead-limits}} that apply to
+random, partially implicit nonces, i.e., the nonce construction used in TLS
+1.2.  Although the obtained figures are slightly higher than those for TLS 1.3,
+it is RECOMMENDED that the same limit of 2<sup>24.5</sup> is used for both
+versions.
 
 For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}}.
 
