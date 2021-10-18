@@ -601,6 +601,15 @@ random, partially implicit nonces, i.e., the nonce construction used in TLS
 it is RECOMMENDED that the same limit of 2<sup>24.5</sup> records is used for both
 versions.
 
+For DTLS 1.2 where, unlike TLS, the established security context is not torn
+down on the first decryption failure, there is a separate bound for the number
+of forgeries that can be tolerated before the current session keys become
+insecure.  The formulas in Section 6.1 of {{?I-D.irtf-cfrg-aead-limits}}
+related to random, partially implicit nonces, provide an upper bound for the
+number of forgery attempts (i.e., failed AEAD decryption invocations) of
+2<sup>28</sup>.  Note that since this value is higher than the confidentiality
+bound recommended above, the latter can be used instead.
+
 For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}}.
 
 ## Public Key Length
