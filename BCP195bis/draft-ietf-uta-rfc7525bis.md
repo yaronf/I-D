@@ -593,7 +593,7 @@ limits are maintained for each key:
 
 1. Confidentiality limit (CL), i.e., the number of records that can be
    encrypted.
-1. Integrity limit (IL), i.e., the amount of records that can fail
+1. Integrity limit (IL), i.e., the number of records that are allowed to fail
    authentication.
 
 The latter only applies to DTLS since TLS connections are torn down on the
