@@ -591,7 +591,7 @@ All ciphers have an upper limit on the amount of traffic that can be securely
 protected with any given key. In the case of AEAD cipher suites, two separate
 limits are maintained for each key:
 
-1. Confidentiality limit (CL), i.e., the amount of records that can be
+1. Confidentiality limit (CL), i.e., the number of records that can be
    encrypted.
 1. Integrity limit (IL), i.e., the amount of records that can fail
    authentication.
