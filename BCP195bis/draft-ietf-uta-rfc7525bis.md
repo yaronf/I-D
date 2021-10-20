@@ -611,7 +611,7 @@ For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}
 For all DTLS 1.3 cipher suites, readers are referred to Section 4.5.3 of
 {{I-D.ietf-tls-dtls13}}.
 
-For all AES-GCM cipher suites recommended for TLS and DTLS 1.2 in this
+For all AES-GCM cipher suites recommended for TLS 1.2 and DTLS 1.2 in this
 document, CL can be derived by plugging the corresponding parameters into the
 inequalities in Section 6.1 of {{?I-D.irtf-cfrg-aead-limits}} that apply to
 random, partially implicit nonces, i.e., the nonce construction used in TLS
