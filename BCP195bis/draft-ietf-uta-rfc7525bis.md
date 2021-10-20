@@ -587,30 +587,41 @@ are referred to Sec. 9.1 of {{RFC8446}} for cipher suite recommendations.
 
 ## Limits on Key Usage
 
-All ciphers have an upper limit on the amount of traffic that can be securely encrypted
-with any given key. In the case of AEAD cipher suites, the limit is typically determined
-by the cipher's integrity guarantees. When the amount of traffic for a particular connection
-has reached the limit, an implementation SHOULD perform a new handshake (or in TLS 1.3,
-a Key Update) to rotate the session key.
+All ciphers have an upper limit on the amount of traffic that can be securely
+protected with any given key. In the case of AEAD cipher suites, two separate
+limits are maintained for each key:
 
-For all AES-GCM cipher suites recommended for TLS 1.2 in this document, the
-limit can be derived by plugging the corresponding parameters into the
+1. Confidentiality limit (CL), i.e., the amount of records that can be
+   encrypted.
+1. Integrity limit (IL), i.e., the amount of records that can fail
+   authentication.
+
+The latter only applies to DTLS since TLS connections are torn down on the
+first decryption failure.
+
+When a sender is approaching CL, the implementation SHOULD initiate a new
+handshake (or in TLS 1.3, a Key Update) to rotate the session key.
+
+When a receiver has reached IL, the implementation SHOULD close the connection.
+When a receiver is approaching IL, the implementation SHOULD initiate a new
+handshake (or in DTLS 1.3 a Key Update) to rotate the session key.
+
+For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}}.
+
+For all DTLS 1.3 cipher suites, readers are referred to Section 4.5.3 of
+{{I-D.ietf-tls-dtls13}}.
+
+For all AES-GCM cipher suites recommended for TLS and DTLS 1.2 in this
+document, CL can be derived by plugging the corresponding parameters into the
 inequalities in Section 6.1 of {{?I-D.irtf-cfrg-aead-limits}} that apply to
 random, partially implicit nonces, i.e., the nonce construction used in TLS
 1.2.  Although the obtained figures are slightly higher than those for TLS 1.3,
-it is RECOMMENDED that the same limit of 2<sup>24.5</sup> records is used for both
-versions.
+it is RECOMMENDED that the same limit of 2<sup>24.5</sup> records is used for
+both versions.
 
-For DTLS 1.2 where, unlike TLS, the established security context is not torn
-down on the first decryption failure, there is a separate bound for the number
-of forgeries that can be tolerated before the current session keys become
-insecure.  The formulas in Section 6.1 of {{?I-D.irtf-cfrg-aead-limits}}
-related to random, partially implicit nonces, provide an upper bound for the
-number of forgery attempts (i.e., failed AEAD decryption invocations) of
-2<sup>28</sup>.  Note that since this value is higher than the confidentiality
-bound recommended above, the latter can be used instead.
+For all AES-GCM cipher suites recommended for DTLS 1.2, IL (obtained from the
+same inequalities referenced above) is 2<sup>28</sup>.
 
-For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}}.
 
 ## Public Key Length
 {: #rec-keylength}
