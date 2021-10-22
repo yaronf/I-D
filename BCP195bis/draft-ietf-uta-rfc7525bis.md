@@ -603,8 +603,6 @@ When a sender is approaching CL, the implementation SHOULD initiate a new
 handshake (or in TLS 1.3, a Key Update) to rotate the session key.
 
 When a receiver has reached IL, the implementation SHOULD close the connection.
-When a receiver is approaching IL, the implementation SHOULD initiate a new
-handshake (or in DTLS 1.3 a Key Update) to rotate the session key.
 
 For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}}.
 
