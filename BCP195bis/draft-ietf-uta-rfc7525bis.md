@@ -394,9 +394,7 @@ to track the client, in some cases indefinitely. See {{Sy2018}} for more details
 
 Where handshake renegotiation is implemented, both clients and servers MUST implement the `renegotiation_info` extension, as defined in {{!RFC5746}}. Note: this recommendation applies to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.
 
-A related attack resulting from TLS session parameters not properly authenticated is Triple Handshake {{triple-handshake}}. To address this attack, TLS 1.2 implementations SHOULD support the `extended_master_secret` extension defined in {{!RFC7627}}. Unfortunately not all implementations currently support this extension, and therefore the following mitigations are RECOMMENDED.
-
-TLS servers SHOULD refuse any change of certificates during renegotiation.  In addition, TLS clients SHOULD apply the same validation policy for all certificates received over a connection.      
+A related attack resulting from TLS session parameters not properly authenticated is Triple Handshake {{triple-handshake}}. To address this attack, TLS 1.2 implementations SHOULD support the `extended_master_secret` extension defined in {{!RFC7627}}.      
 
 ## Post-Handshake Authentication
 
@@ -860,12 +858,14 @@ on the normative changes.
   * Similar changes to DTLS, pending publication of DTLS 1.3.
   * Specific guidance for multiplexed protocols.
   * MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.
-  * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries"
+  * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".
 * Differences specific to TLS 1.2:
   * Fallback SCSV as a MUST for TLS 1.2.
-  * SHOULD-level guidance on AES-GCM nonce generation in TLS 1.2.
+  * SHOULD-level guidance on AES-GCM nonce generation.
   * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
+  * Support for `extended_master_secret` is a SHOULD.
+  * Clarity on confidentiality and integrity limits for various ciphers.
 * Differences specific to TLS 1.3:
   * New TLS 1.3 capabilities: 0-RTT.
   * Removed capabilities: renegotiation, compression.
@@ -877,6 +877,11 @@ on the normative changes.
 # Document History
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
+
+## draft-ietf-uta-rfc7525bis-03
+
+* Cipher integrity and confidentiality limits.
+* Require `extended_master_secret`.
 
 ## draft-ietf-uta-rfc7525bis-02
 
