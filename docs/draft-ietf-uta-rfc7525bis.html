@@ -1878,18 +1878,17 @@ first decryption failure.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 <p id="section-4.4-4">When a sender is approaching CL, the implementation SHOULD initiate a new
 handshake (or in TLS 1.3, a Key Update) to rotate the session key.<a href="#section-4.4-4" class="pilcrow">¶</a></p>
 <p id="section-4.4-5">When a receiver has reached IL, the implementation SHOULD close the connection.<a href="#section-4.4-5" class="pilcrow">¶</a></p>
-<p id="section-4.4-6">For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.<a href="#section-4.4-6" class="pilcrow">¶</a></p>
-<p id="section-4.4-7">For all DTLS 1.3 cipher suites, readers are referred to Section 4.5.3 of
-<span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-4.4-7" class="pilcrow">¶</a></p>
-<p id="section-4.4-8">For all AES-GCM cipher suites recommended for TLS 1.2 and DTLS 1.2 in this
+<p id="section-4.4-6">For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> for the values of CL and IL. For all DTLS 1.3 cipher suites, readers are referred to Section 4.5.3 of
+<span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-4.4-6" class="pilcrow">¶</a></p>
+<p id="section-4.4-7">For all AES-GCM cipher suites recommended for TLS 1.2 and DTLS 1.2 in this
 document, CL can be derived by plugging the corresponding parameters into the
 inequalities in Section 6.1 of <span>[<a href="#I-D.irtf-cfrg-aead-limits" class="xref">I-D.irtf-cfrg-aead-limits</a>]</span> that apply to
 random, partially implicit nonces, i.e., the nonce construction used in TLS
 1.2.  Although the obtained figures are slightly higher than those for TLS 1.3,
 it is RECOMMENDED that the same limit of 2<sup>24.5</sup> records is used for
-both versions.<a href="#section-4.4-8" class="pilcrow">¶</a></p>
-<p id="section-4.4-9">For all AES-GCM cipher suites recommended for DTLS 1.2, IL (obtained from the
-same inequalities referenced above) is 2<sup>28</sup>.<a href="#section-4.4-9" class="pilcrow">¶</a></p>
+both versions.<a href="#section-4.4-7" class="pilcrow">¶</a></p>
+<p id="section-4.4-8">For all AES-GCM cipher suites recommended for DTLS 1.2, IL (obtained from the
+same inequalities referenced above) is 2<sup>28</sup>.<a href="#section-4.4-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="rec-keylength">
@@ -2465,7 +2464,9 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="appendix-A-2.1.2.6">MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.<a href="#appendix-A-2.1.2.6" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.1.2.7">New attacks since <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".<a href="#appendix-A-2.1.2.7" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.1.2.7">Limits on key usage.<a href="#appendix-A-2.1.2.7" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="appendix-A-2.1.2.8">New attacks since <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".<a href="#appendix-A-2.1.2.8" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
@@ -2481,8 +2482,6 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
             <li class="normal" id="appendix-A-2.2.2.4">2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.<a href="#appendix-A-2.2.2.4" class="pilcrow">¶</a>
 </li>
             <li class="normal" id="appendix-A-2.2.2.5">Support for <code>extended_master_secret</code> is a SHOULD. Also removed other, more complicated, related mitigations.<a href="#appendix-A-2.2.2.5" class="pilcrow">¶</a>
-</li>
-            <li class="normal" id="appendix-A-2.2.2.6">Clarity on confidentiality and integrity limits for various ciphers.<a href="#appendix-A-2.2.2.6" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
