@@ -601,9 +601,7 @@ handshake (or in TLS 1.3, a Key Update) to rotate the session key.
 
 When a receiver has reached IL, the implementation SHOULD close the connection.
 
-For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}}.
-
-For all DTLS 1.3 cipher suites, readers are referred to Section 4.5.3 of
+For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}} for the values of CL and IL. For all DTLS 1.3 cipher suites, readers are referred to Section 4.5.3 of
 {{I-D.ietf-tls-dtls13}}.
 
 For all AES-GCM cipher suites recommended for TLS 1.2 and DTLS 1.2 in this
@@ -875,6 +873,7 @@ on the normative changes.
   * Similar changes to DTLS, pending publication of DTLS 1.3.
   * Specific guidance for multiplexed protocols.
   * MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.
+  * Limits on key usage.
   * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".
 * Differences specific to TLS 1.2:
   * Fallback SCSV as a MUST for TLS 1.2.
@@ -882,7 +881,6 @@ on the normative changes.
   * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
   * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
-  * Clarity on confidentiality and integrity limits for various ciphers.
 * Differences specific to TLS 1.3:
   * New TLS 1.3 capabilities: 0-RTT.
   * Removed capabilities: renegotiation, compression.
