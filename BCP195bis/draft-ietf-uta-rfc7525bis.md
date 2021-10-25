@@ -59,8 +59,6 @@ informative:
 
   Soghoian2011: DOI.10.2139/ssrn.1591033
 
-  SESSION-HASH: RFC7627
-
   Logjam: DOI.10.1145/2810103.2813707
 
   POODLE:
@@ -392,10 +390,9 @@ to track the client, in some cases indefinitely. See {{Sy2018}} for more details
 
 ## TLS Renegotiation
 
-Where handshake renegotiation is implemented, both clients and servers MUST implement the renegotiation_info extension, as defined in {{!RFC5746}}. Note: this recommendation applies to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.
+Where handshake renegotiation is implemented, both clients and servers MUST implement the `renegotiation_info` extension, as defined in {{!RFC5746}}. Note: this recommendation applies to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.
 
-The most secure option for countering the Triple Handshake attack is to refuse any change of certificates during renegotiation.  In addition, TLS clients SHOULD apply the same validation policy for all certificates received over a connection.  The {{triple-handshake}} document suggests several other possible countermeasures, such as binding the master secret to the full handshake (see {{SESSION-HASH}}) and binding the abbreviated session resumption handshake to the original full handshake.  Although the latter two techniques are still under development and thus do not qualify as current practices, those who implement and deploy TLS are advised to watch for further development of appropriate countermeasures.
-      
+A related attack resulting from TLS session parameters not properly authenticated is Triple Handshake {{triple-handshake}}. To address this attack, TLS 1.2 implementations SHOULD support the `extended_master_secret` extension defined in {{!RFC7627}}.      
 
 ## Post-Handshake Authentication
 
@@ -878,12 +875,14 @@ on the normative changes.
   * Similar changes to DTLS, pending publication of DTLS 1.3.
   * Specific guidance for multiplexed protocols.
   * MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.
-  * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries"
+  * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".
 * Differences specific to TLS 1.2:
   * Fallback SCSV as a MUST for TLS 1.2.
-  * SHOULD-level guidance on AES-GCM nonce generation in TLS 1.2.
+  * SHOULD-level guidance on AES-GCM nonce generation.
   * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
+  * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
+  * Clarity on confidentiality and integrity limits for various ciphers.
 * Differences specific to TLS 1.3:
   * New TLS 1.3 capabilities: 0-RTT.
   * Removed capabilities: renegotiation, compression.
@@ -895,6 +894,11 @@ on the normative changes.
 # Document History
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
+
+## draft-ietf-uta-rfc7525bis-03
+
+* Cipher integrity and confidentiality limits.
+* Require `extended_master_secret`.
 
 ## draft-ietf-uta-rfc7525bis-02
 
