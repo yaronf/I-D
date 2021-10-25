@@ -862,7 +862,7 @@ on the normative changes.
   * SHOULD-level guidance on AES-GCM nonce generation.
   * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
-  * Support for `extended_master_secret` is a SHOULD.
+  * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
   * Clarity on confidentiality and integrity limits for various ciphers.
 * Differences specific to TLS 1.3:
   * New TLS 1.3 capabilities: 0-RTT.
