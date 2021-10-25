@@ -59,8 +59,6 @@ informative:
 
   Soghoian2011: DOI.10.2139/ssrn.1591033
 
-  SESSION-HASH: RFC7627
-
   Logjam: DOI.10.1145/2810103.2813707
 
   POODLE:
