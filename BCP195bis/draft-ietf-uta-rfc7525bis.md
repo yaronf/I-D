@@ -316,10 +316,7 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 ### Fallback to Lower Versions
 {: #rec-fallback}
 
-Clients that "fall back" to lower versions of the protocol after the server rejects higher versions of the protocol MUST NOT fall back to SSLv3 or earlier. Implementations of TLS/DTLS 1.2 or earlier MUST implement the Fallback SCSV mechanism {{!RFC7507}} to prevent
-such fallback being forced by an attacker.
-
-Rationale: Some client implementations revert to lower versions of TLS or even to SSLv3 if the server rejected higher versions of the protocol. This fallback can be forced by a man-in-the-middle (MITM) attacker. TLS 1.0 and SSLv3 are significantly less secure than TLS 1.2 but at least TLS 1.0 is still allowed by many web servers. As of this writing, the Fallback SCSV solution is widely deployed and proven as a robust solution to this problem.
+TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those versions have been deprecated {{!RFC8996}}. We note that as a result of that, the SCSV mechanism {{?RFC7507}} is no longer needed for clients. In addition, TLS 1.3 implements a new version negotiation mechanism.
 
 ## Strict TLS
 
@@ -876,7 +873,6 @@ on the normative changes.
   * Limits on key usage.
   * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".
 * Differences specific to TLS 1.2:
-  * Fallback SCSV as a MUST for TLS 1.2.
   * SHOULD-level guidance on AES-GCM nonce generation.
   * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
