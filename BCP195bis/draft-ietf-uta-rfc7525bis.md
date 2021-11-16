@@ -316,7 +316,7 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 ### Fallback to Lower Versions
 {: #rec-fallback}
 
-TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those versions have been deprecated {{!RFC8996}}. We note that as a result of that, the SCSV mechanism {{?RFC7507}} is no longer useful for clients. In addition, TLS 1.3 implements a new version negotiation mechanism.
+TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those versions have been deprecated {{!RFC8996}}. We note that as a result of that, the SCSV mechanism {{?RFC7507}} is no longer needed for clients. In addition, TLS 1.3 implements a new version negotiation mechanism.
 
 ## Strict TLS
 
