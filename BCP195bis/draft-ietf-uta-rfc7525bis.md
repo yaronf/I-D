@@ -889,6 +889,10 @@ on the normative changes.
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
 
+## draft-ietf-uta-rfc7525bis-04
+
+* No version fallback from TLS 1.2 to earlier versions, therefore no SCSV.
+
 ## draft-ietf-uta-rfc7525bis-03
 
 * Cipher integrity and confidentiality limits.
