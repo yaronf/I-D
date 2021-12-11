@@ -34,11 +34,6 @@ author:
     organization: Intuit
     email: yaronf.ietf@gmail.com
  -
-    ins: R. Holz
-    name: Ralph Holz
-    organization: University of Twente
-    email: ralph.ietf@gmail.com
- -
     ins: P. Saint-Andre
     name: Peter Saint-Andre
     organization: Mozilla
@@ -851,9 +846,9 @@ Robert Sparks and Dave Waltermire provided helpful reviews on behalf of the Gene
 
 During IESG review, Richard Barnes, Alissa Cooper, Spencer Dawkins, Stephen Farrell, Barry Leiba, Kathleen Moriarty, and Pete Resnick provided comments that led to further improvements.
 
-Ralph Holz gratefully acknowledges the support by Technische Universit&auml;t M&uuml;nchen.
-
 The authors gratefully acknowledge the assistance of Leif Johansson and Orit Levin as the working group chairs and Pete Resnick as the sponsoring Area Director.
+
+The authors gratefully acknowlege the contribution of Ralph Holz, who was a coauthor of RFC 7525, the previous version of this document.
 
 --- back
 
