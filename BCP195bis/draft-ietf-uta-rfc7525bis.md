@@ -838,17 +838,22 @@ The considerations in this section do not apply to scenarios where the DANE-TLSA
 # Acknowledgments
 {: #d1e1127}
 
-The following acknowledgments are inherited from {{?RFC7525}}.
-
-Thanks to RJ Atkinson, Uri Blumenthal, Viktor Dukhovni, Stephen Farrell, Daniel Kahn Gillmor, Paul Hoffman, Simon Josefsson, Watson Ladd, Orit Levin, Ilari Liusvaara, Johannes Merkle, Bodo Moeller, Yoav Nir, Massimiliano Pala, Kenny Paterson, Patrick Pelletier, Tom Ritter, Joe St. Sauver, Joe Salowey, Rich Salz, Brian Smith, Sean Turner, and Aaron Zauner for their feedback and suggested improvements. Thanks also to Brian Smith, who has provided a great resource in his "Proposal to Change the Default TLS Ciphersuites Offered by Browsers" {{Smith2013}}. Finally, thanks to all others who commented on the TLS, UTA, and other discussion lists but who are not mentioned here by name.
-
-Robert Sparks and Dave Waltermire provided helpful reviews on behalf of the General Area Review Team and the Security Directorate, respectively.
-
-During IESG review, Richard Barnes, Alissa Cooper, Spencer Dawkins, Stephen Farrell, Barry Leiba, Kathleen Moriarty, and Pete Resnick provided comments that led to further improvements.
-
-The authors gratefully acknowledge the assistance of Leif Johansson and Orit Levin as the working group chairs and Pete Resnick as the sponsoring Area Director.
+Thanks to
+Alexey Melnikov,
+Christian Huitema,
+David Benjamin,
+Ilari Liusvaara,
+John R Levine,
+Julien <contact fullname="Élie" asciiFullname="Elie"/>,
+Martin Thomson,
+Nimrod Aviram,
+Sean Turner,
+Valery Smyslov
+for helpful comments and discussions that have shaped this document.
 
 The authors gratefully acknowlege the contribution of Ralph Holz, who was a coauthor of RFC 7525, the previous version of this document.
+
+See {{RFC7525}} for additional acknowledgements for the previous revision of this document.
 
 --- back
 
