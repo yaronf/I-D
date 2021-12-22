@@ -99,14 +99,6 @@ informative:
 
   IANA_TLS: IANA.tls-parameters
 
-  Smith2013:
-    author:
-    - ins: B. Smith
-      name: Brian Smith
-    date: '2013'
-    target: https://briansmith.org/browser-ciphersuites-01.html
-    title: Proposal to Change the Default TLS Ciphersuites Offered by Browsers.
-
   Krawczyk2001:
     author:
     - ins: H. Krawczyk
@@ -853,7 +845,7 @@ for helpful comments and discussions that have shaped this document.
 
 The authors gratefully acknowlege the contribution of Ralph Holz, who was a coauthor of RFC 7525, the previous version of this document.
 
-See {{RFC7525}} for additional acknowledgements for the previous revision of this document.
+See RFC 7525 for additional acknowledgements for the previous revision of this document.
 
 --- back
 
