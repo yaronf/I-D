@@ -803,27 +803,15 @@ To address these concerns, TLS implementations SHOULD NOT use static DH keys and
 The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates {{RFC5280}}:
 
 
-* Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness (despite workarounds such as partitioned CRLs and delta CRLs).
-
+* Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness, despite workarounds such as partitioned CRLs and delta CRLs.
 * Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond a small number of the most heavily used Web servers.
-
 * The On-Line Certification Status Protocol (OCSP) {{?RFC6960}} presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.)
-
 * The TLS Certificate Status Request extension (Section 8 of {{!RFC6066}}), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.
+* OCSP stapling as used in TLS 1.2 does not extend to intermediate certificates within a certificate chain. The Multiple Certificate Status extension {{?RFC6961}} addresses this shortcoming, but it has seen little deployment and had been deprecated by {{RFC8446}}. As a result, we no longer recommend this extension for TLS 1.2.
+* TLS 1.3 (Sec. 4.4.2.1 of {{RFC8446}}) allows the association of OCSP information with intermediate certificates by using an extension to the the CertificateEntry structure. However using this facility remains impractical because many CAs either do not publish OCSP for CA certificates or publish OCSP reports with lifetime that is too long to be useful.
+* Both CRLs and OCSP depend on relatively reliable connectivity to the Internet, which might not be available to certain kinds of nodes (such as newly provisioned devices that need to establish a secure connection in order to boot up for the first time).    
 
-* OCSP stapling as defined in {{!RFC6066}} does not extend to intermediate certificates used in a certificate chain. Although the Multiple Certificate Status extension {{?RFC6961}} addresses this shortcoming, it is a recent addition without much deployment.
-
-* Both CRLs and OCSP depend on relatively reliable connectivity to the Internet, which might not be available to certain kinds of nodes (such as newly provisioned devices that need to establish a secure connection in order to boot up for the first time).
-      
-
-With regard to common public key certificates, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution:
-
-1. OCSP {{?RFC6960}}
-
-1. Both the status\_request extension defined in {{!RFC6066}} and the status_request_v2 extension defined in {{?RFC6961}} (This might enable interoperability with the widest range of clients.)
-
-1. The OCSP stapling extension defined in {{?RFC6961}}
-      
+With regard to common public key certificates, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution: OCSP {{?RFC6960}} and OCSP stapling using the `status_request` extension defined in {{!RFC6066}}. The exact mechanism for embedding the  `status_request` extension differs between TLS 1.2 and 1.3. 
 
 The considerations in this section do not apply to scenarios where the DANE-TLSA resource record {{?RFC6698}} is used to signal to a client which certificate a server considers valid and good to use for TLS connections.
 
@@ -864,6 +852,7 @@ on the normative changes.
   * MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.
   * Limits on key usage.
   * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".
+  * RFC 6961 (OCSP status_request_v2) has been deprecated.
 * Differences specific to TLS 1.2:
   * SHOULD-level guidance on AES-GCM nonce generation.
   * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
