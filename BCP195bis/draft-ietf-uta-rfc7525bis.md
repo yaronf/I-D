@@ -444,13 +444,7 @@ a non-IETF standard, or even documentation associated with a non-standard protoc
 # Recommendations: Cipher Suites
 {: #detail}
 
-TLS and its implementations provide considerable flexibility in the
-         selection of cipher suites. Unfortunately, some available cipher
-         suites are insecure, some do not provide the targeted security
-         services, and some no longer provide enough security.  Incorrectly
-         configuring a server leads to no or reduced security.  This section
-         includes recommendations on the selection and negotiation of
-         cipher suites.
+TLS and its implementations provide considerable flexibility in the selection of cipher suites. Unfortunately, the security of some of these cipher suites has degraded over time to the point where some are known to be insecure. Incorrectly configuring a server leads to no or reduced security.  This section includes recommendations on the selection and negotiation of cipher suites.
          
 
 ## General Guidelines
