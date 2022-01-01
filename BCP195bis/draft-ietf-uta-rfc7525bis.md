@@ -63,8 +63,6 @@ informative:
     target: https://www.us-cert.gov/ncas/alerts/TA14-290A
     title: SSL 3.0 Protocol Vulnerability and POODLE Attack
 
-  TLS-XMPP: RFC7590
-
   CAB-Baseline:
     author:
     - org: CA/Browser Forum
@@ -72,7 +70,7 @@ informative:
     target: https://www.cabforum.org/documents.html
     title: Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6
 
-  Heninger2012:
+  Heninger2012: 
     author:
     - ins: N. Heninger
       name: Nadia Heninger
@@ -99,15 +97,7 @@ informative:
 
   IANA_TLS: IANA.tls-parameters
 
-  Krawczyk2001:
-    author:
-    - ins: H. Krawczyk
-      name: Hugo Krawczyk
-    date: '2001'
-    seriesinfo:
-      CRYPTO: '01'
-    target: https://www.iacr.org/archive/crypto2001/21390309.pdf
-    title: 'The Order of Encryption and Authentication for Protecting Communications (Or: How Secure is SSL?)'
+  Krawczyk2001: DOI.10.1007/3-540-44647-8_19
 
   Multiple-Encryption: DOI.10.1145/358699.358718 
 
@@ -119,6 +109,8 @@ informative:
     title: Applied Crypto Hardening
 
   NIST.SP.800-56A: DOI.10.6028/NIST.SP.800-56Ar3
+
+  Springall16: DOI.10.1145/2987443.2987480
 
   DEP-SSLv3: RFC7568
 
@@ -349,17 +341,17 @@ Session resumption drastically reduces the number of TLS handshakes and thus is 
 performance feature for most deployments.
 
 Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
-{{?RFC5077}}.  For TLS 1.3, an equivalent PSK-based mechanism is described in
-Section 4.6.1 of {{RFC8446}}.
+{{?RFC5077}}.  For TLS 1.3, a more secure PSK-based mechanism is described in
+Section 4.6.1 of {{RFC8446}}. See [this post](https://blog.filippo.io/we-need-to-talk-about-session-tickets/) for a comparison of TLS 1.2 and 1.3 session resumption, and {{Springall16}} for a quantitative study of TLS cryptographic "shortcuts", including session resumption.
+
 When it is used, the resumption information MUST
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
 Further recommendations apply to session tickets:
 
 * A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
-
-* Ticket keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy).
-
+* Ticket keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy). Old ticket keys MUST be destroyed shortly after a new key version is made available.
 * For similar reasons, session ticket validity SHOULD be limited to a reasonable duration (e.g., half as long as ticket key validity).
+* To prevent certain attacks, a TLS 1.2 server SHOULD NOT resume sessions that are too old, e.g. sessions that have been open longer than two ticket key rotation periods. Note that this implies that some server implementations might need to abort sessions after a certain duration.
 
 Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document ({{detail}}) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.
 
@@ -651,7 +643,7 @@ The recommendations of this document primarily apply to the implementation and d
 * Realtime media software and services that wish to protect Secure Realtime Transport Protocol (SRTP) traffic with DTLS.
         
 
-This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS. If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to explicitly update the existing application protocol definition (one example is {{TLS-XMPP}}, which updates {{?RFC6120}}). 
+This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS. If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to explicitly update the existing application protocol definition (one example is {{?RFC7590}}, which updates {{?RFC6120}}). 
 
 
 
@@ -863,6 +855,7 @@ on the normative changes.
   * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
   * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
+  * SHOULD-level restriction on the TLS session duration, depending on the rotation period of an {{RFC5077}} ticket key.
 * Differences specific to TLS 1.3:
   * New TLS 1.3 capabilities: 0-RTT.
   * Removed capabilities: renegotiation, compression.
