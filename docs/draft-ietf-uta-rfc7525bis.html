@@ -1188,11 +1188,11 @@ li > p:last-of-type {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">TLS Recommendations</td>
-<td class="right">December 2021</td>
+<td class="right">January 2022</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 4 July 2022</td>
+<td class="center">Expires 7 July 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1211,12 +1211,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc5288" class="eref">5288</a>, <a href="https://www.rfc-editor.org/rfc/rfc6066" class="eref">6066</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2021-12-31" class="published">31 December 2021</time>
+<time datetime="2022-01-03" class="published">3 January 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-07-04">4 July 2022</time></dd>
+<dd class="expires"><time datetime="2022-07-07">7 July 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1259,7 +1259,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 4 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1268,7 +1268,7 @@ li > p:last-of-type {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2021 IETF Trust and the persons identified as the
+            Copyright (c) 2022 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1478,9 +1478,8 @@ li > p:last-of-type {
 <a href="#section-2" class="section-number selfRef">2. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
       </h2>
 <p id="section-2-1">A number of security-related terms in this document are used in the sense defined in <span>[<a href="#RFC4949" class="xref">RFC4949</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
-NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED",
-"MAY", and "OPTIONAL" in this document are to be interpreted as
+<p id="section-2-2">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+"<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-2-2" class="pilcrow">¶</a></p>
 </section>
@@ -1504,39 +1503,39 @@ appear in all capitals, as shown here.<a href="#section-2-2" class="pilcrow">¶<
 <p id="section-3.1.1-1">It is important both to stop using old, less secure versions of SSL/TLS and to start using modern, more secure versions; therefore, the following are the recommendations concerning TLS/SSL protocol versions:<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.1.1-2.1">
-              <p id="section-3.1.1-2.1.1">Implementations MUST NOT negotiate SSL version 2.<a href="#section-3.1.1-2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.1-2.1.1">Implementations <span class="bcp14">MUST NOT</span> negotiate SSL version 2.<a href="#section-3.1.1-2.1.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.1.2">
 Rationale: Today, SSLv2 is considered insecure <span>[<a href="#RFC6176" class="xref">RFC6176</a>]</span>.<a href="#section-3.1.1-2.1.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.1-2.2">
-              <p id="section-3.1.1-2.2.1">Implementations MUST NOT negotiate SSL version 3.<a href="#section-3.1.1-2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.1-2.2.1">Implementations <span class="bcp14">MUST NOT</span> negotiate SSL version 3.<a href="#section-3.1.1-2.2.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.2.2">
 Rationale: SSLv3 <span>[<a href="#RFC6101" class="xref">RFC6101</a>]</span> was an improvement over SSLv2 and plugged some significant security holes but did not support strong cipher suites. SSLv3 does not support TLS extensions, some of which (e.g., renegotiation_info <span>[<a href="#RFC5746" class="xref">RFC5746</a>]</span>) are security-critical.  In addition, with the emergence of the POODLE attack <span>[<a href="#POODLE" class="xref">POODLE</a>]</span>, SSLv3 is now widely recognized as fundamentally insecure.  See <span>[<a href="#DEP-SSLv3" class="xref">DEP-SSLv3</a>]</span> for further details.<a href="#section-3.1.1-2.2.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.1-2.3">
-              <p id="section-3.1.1-2.3.1">Implementations MUST NOT negotiate TLS version 1.0 <span>[<a href="#RFC2246" class="xref">RFC2246</a>]</span>.<a href="#section-3.1.1-2.3.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.1-2.3.1">Implementations <span class="bcp14">MUST NOT</span> negotiate TLS version 1.0 <span>[<a href="#RFC2246" class="xref">RFC2246</a>]</span>.<a href="#section-3.1.1-2.3.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.3.2">
 Rationale: TLS 1.0 (published in 1999) does not support many modern, strong cipher suites. In addition, TLS 1.0 lacks a per-record Initialization Vector (IV) for CBC-based cipher suites and does not warn against common padding errors. This and other recommendations in this section are in line with <span>[<a href="#RFC8996" class="xref">RFC8996</a>]</span>.<a href="#section-3.1.1-2.3.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.1-2.4">
-              <p id="section-3.1.1-2.4.1">Implementations MUST NOT negotiate TLS version 1.1 <span>[<a href="#RFC4346" class="xref">RFC4346</a>]</span>.<a href="#section-3.1.1-2.4.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.1-2.4.1">Implementations <span class="bcp14">MUST NOT</span> negotiate TLS version 1.1 <span>[<a href="#RFC4346" class="xref">RFC4346</a>]</span>.<a href="#section-3.1.1-2.4.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.4.2">
 Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.<a href="#section-3.1.1-2.4.2" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.4.3">
-NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that <span>[<a href="#I-D.ietf-tls-oldversions-deprecate" class="xref">I-D.ietf-tls-oldversions-deprecate</a>]</span> will be published as an RFC before this document.<a href="#section-3.1.1-2.4.3" class="pilcrow">¶</a></p>
+NOTE: This recommendation has been changed from <span class="bcp14">SHOULD NOT</span> to <span class="bcp14">MUST NOT</span> on the assumption that <span>[<a href="#I-D.ietf-tls-oldversions-deprecate" class="xref">I-D.ietf-tls-oldversions-deprecate</a>]</span> will be published as an RFC before this document.<a href="#section-3.1.1-2.4.3" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.1-2.5">
-              <p id="section-3.1.1-2.5.1">Implementations MUST support TLS 1.2 <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.<a href="#section-3.1.1-2.5.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.1-2.5.1">Implementations <span class="bcp14">MUST</span> support TLS 1.2 <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> and <span class="bcp14">MUST</span> prefer to negotiate TLS version 1.2 over earlier versions of TLS.<a href="#section-3.1.1-2.5.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.5.2">
 Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 (<a href="#rec-cipher" class="xref">Section 4.2</a> below) are only available in this version.<a href="#section-3.1.1-2.5.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.1-2.6">
-              <p id="section-3.1.1-2.6.1">Implementations SHOULD support TLS 1.3 <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> and if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.<a href="#section-3.1.1-2.6.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.1-2.6.1">Implementations <span class="bcp14">SHOULD</span> support TLS 1.3 <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> and if implemented, <span class="bcp14">MUST</span> prefer to negotiate TLS 1.3 over earlier versions of TLS.<a href="#section-3.1.1-2.6.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.6.2">
-Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers MUST still follow all the recommendations in this document.<a href="#section-3.1.1-2.6.2" class="pilcrow">¶</a></p>
+Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers <span class="bcp14">MUST</span> still follow all the recommendations in this document.<a href="#section-3.1.1-2.6.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.1-2.7">
-              <p id="section-3.1.1-2.7.1">Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, SHOULD support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done <span>[<a href="#RFC9001" class="xref">RFC9001</a>]</span>) include TLS 1.3.<a href="#section-3.1.1-2.7.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.1-2.7.1">Implementations of "greenfield" protocols or deployments, where there is no need to support legacy endpoints, <span class="bcp14">SHOULD</span> support TLS 1.3, with no negotiation of earlier versions. Similarly, we RECOMMEND that new protocol designs that embed the TLS mechanisms (such as QUIC has done <span>[<a href="#RFC9001" class="xref">RFC9001</a>]</span>) include TLS 1.3.<a href="#section-3.1.1-2.7.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.7.2">
 Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.<a href="#section-3.1.1-2.7.2" class="pilcrow">¶</a></p>
 </li>
@@ -1552,18 +1551,18 @@ Rationale: secure deployment of TLS 1.3 is significantly easier and less error p
 <p id="section-3.1.2-1">DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was published.  The following are the recommendations with respect to DTLS:<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.1.2-2.1">
-              <p id="section-3.1.2-2.1.1">Implementations MUST NOT negotiate DTLS version 1.0 <span>[<a href="#RFC4347" class="xref">RFC4347</a>]</span>.<a href="#section-3.1.2-2.1.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.2-2.1.1">Implementations <span class="bcp14">MUST NOT</span> negotiate DTLS version 1.0 <span>[<a href="#RFC4347" class="xref">RFC4347</a>]</span>.<a href="#section-3.1.2-2.1.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.2-2.1.2">
 Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).<a href="#section-3.1.2-2.1.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.2-2.2">
-              <p id="section-3.1.2-2.2.1">Implementations MUST support and (unless a higher version is available) MUST prefer to negotiate DTLS version 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span><a href="#section-3.1.2-2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.2-2.2.1">Implementations <span class="bcp14">MUST</span> support and (unless a higher version is available) <span class="bcp14">MUST</span> prefer to negotiate DTLS version 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span><a href="#section-3.1.2-2.2.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.2-2.2.2">
 Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
 (There is no version 1.1 of DTLS.)<a href="#section-3.1.2-2.2.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.2-2.3">
-              <p id="section-3.1.2-2.3.1">Implementations SHOULD support and, if available, MUST prefer to negotiate DTLS version 1.3 as specified in <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-3.1.2-2.3.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.2-2.3.1">Implementations <span class="bcp14">SHOULD</span> support and, if available, <span class="bcp14">MUST</span> prefer to negotiate DTLS version 1.3 as specified in <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-3.1.2-2.3.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.2-2.3.2">
 Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#section-3.1.2-2.3.2" class="pilcrow">¶</a></p>
 </li>
@@ -1575,7 +1574,7 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
           <h4 id="name-fallback-to-lower-versions">
 <a href="#section-3.1.3" class="section-number selfRef">3.1.3. </a><a href="#name-fallback-to-lower-versions" class="section-name selfRef">Fallback to Lower Versions</a>
           </h4>
-<p id="section-3.1.3-1">TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those versions have been deprecated <span>[<a href="#RFC8996" class="xref">RFC8996</a>]</span>. We note that as a result of that, the SCSV mechanism <span>[<a href="#RFC7507" class="xref">RFC7507</a>]</span> is no longer needed for clients. In addition, TLS 1.3 implements a new version negotiation mechanism.<a href="#section-3.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.1.3-1">TLS/DTLS 1.2 clients <span class="bcp14">MUST NOT</span> fall back to earlier TLS versions, since those versions have been deprecated <span>[<a href="#RFC8996" class="xref">RFC8996</a>]</span>. We note that as a result of that, the SCSV mechanism <span>[<a href="#RFC7507" class="xref">RFC7507</a>]</span> is no longer needed for clients. In addition, TLS 1.3 implements a new version negotiation mechanism.<a href="#section-3.1.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1587,16 +1586,16 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
         </h3>
 <p id="section-3.2-1">The following recommendations are provided to help prevent SSL Stripping (an attack that is summarized in Section 2.1 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>):<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.2-2.1">In cases where an application protocol allows implementations or deployments a choice between strict TLS configuration and dynamic upgrade from unencrypted to TLS-protected traffic (such as STARTTLS), clients and servers SHOULD prefer strict TLS configuration.<a href="#section-3.2-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-3.2-2.1">In cases where an application protocol allows implementations or deployments a choice between strict TLS configuration and dynamic upgrade from unencrypted to TLS-protected traffic (such as STARTTLS), clients and servers <span class="bcp14">SHOULD</span> prefer strict TLS configuration.<a href="#section-3.2-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.2-2.2">Application protocols typically provide a way for the server to offer TLS during an initial protocol exchange, and sometimes also provide a way for the server to advertise support for TLS (e.g., through a flag indicating that TLS is required); unfortunately, these indications are sent before the communication channel is encrypted. A client SHOULD attempt to negotiate TLS even if these indications are not communicated by the server.<a href="#section-3.2-2.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.2-2.2">Application protocols typically provide a way for the server to offer TLS during an initial protocol exchange, and sometimes also provide a way for the server to advertise support for TLS (e.g., through a flag indicating that TLS is required); unfortunately, these indications are sent before the communication channel is encrypted. A client <span class="bcp14">SHOULD</span> attempt to negotiate TLS even if these indications are not communicated by the server.<a href="#section-3.2-2.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.2-2.3">HTTP client and server implementations MUST support the HTTP Strict Transport
+          <li class="normal" id="section-3.2-2.3">HTTP client and server implementations <span class="bcp14">MUST</span> support the HTTP Strict Transport
     Security (HSTS) header <span>[<a href="#RFC6797" class="xref">RFC6797</a>]</span>, in order to allow Web servers to 
     advertise that they are
     willing to accept TLS-only clients.<a href="#section-3.2-2.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.2-2.4">Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in Section 11.3 of <span>[<a href="#RFC6797" class="xref">RFC6797</a>]</span>).<a href="#section-3.2-2.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.2-2.4">Web servers <span class="bcp14">SHOULD</span> use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in Section 11.3 of <span>[<a href="#RFC6797" class="xref">RFC6797</a>]</span>).<a href="#section-3.2-2.4" class="pilcrow">¶</a>
 </li>
         </ul>
 <p id="section-3.2-3">Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
@@ -1607,7 +1606,7 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
         <h3 id="name-compression">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-compression" class="section-name selfRef">Compression</a>
         </h3>
-<p id="section-3.3-1">In order to help prevent compression-related attacks (summarized in Section 2.6 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>), when using TLS 1.2 implementations and deployments SHOULD disable TLS-level compression (Section 6.2.2 of <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span>), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-1">In order to help prevent compression-related attacks (summarized in Section 2.6 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>), when using TLS 1.2 implementations and deployments <span class="bcp14">SHOULD</span> disable TLS-level compression (Section 6.2.2 of <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span>), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">Rationale: TLS compression has been subject to security attacks, such as the CRIME attack.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3-3">Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside of TLS and are thus outside the scope of this document. See Section 2.6 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span> for further details.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 </section>
@@ -1622,22 +1621,22 @@ performance feature for most deployments.<a href="#section-3.4-1" class="pilcrow
 <p id="section-3.4-2">Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
 <span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span>.  For TLS 1.3, an equivalent PSK-based mechanism is described in
 Section 4.6.1 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.
-When it is used, the resumption information MUST
+When it is used, the resumption information <span class="bcp14">MUST</span>
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
 Further recommendations apply to session tickets:<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.4-3.1">A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).<a href="#section-3.4-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-3.4-3.1">A strong cipher suite <span class="bcp14">MUST</span> be used when encrypting the ticket (as least as strong as the main TLS cipher suite).<a href="#section-3.4-3.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.4-3.2">Ticket keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see <a href="#sec-pfs" class="xref">Section 6.3</a> for details on forward secrecy).<a href="#section-3.4-3.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.4-3.2">Ticket keys <span class="bcp14">MUST</span> be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see <a href="#sec-pfs" class="xref">Section 6.3</a> for details on forward secrecy).<a href="#section-3.4-3.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.4-3.3">For similar reasons, session ticket validity SHOULD be limited to a reasonable duration (e.g., half as long as ticket key validity).<a href="#section-3.4-3.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.4-3.3">For similar reasons, session ticket validity <span class="bcp14">SHOULD</span> be limited to a reasonable duration (e.g., half as long as ticket key validity).<a href="#section-3.4-3.3" class="pilcrow">¶</a>
 </li>
         </ul>
 <p id="section-3.4-4">Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document (<a href="#detail" class="xref">Section 4</a>) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
 <p id="section-3.4-5">TLS 1.3 provides the powerful option of forward secrecy even within a long-lived connection
-that is periodically resumed. Section 2.2 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> recommends that clients SHOULD
+that is periodically resumed. Section 2.2 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> recommends that clients <span class="bcp14">SHOULD</span>
 send a "key_share" when initiating session resumption.
-In order to gain forward secrecy, this document recommends that server implementations SHOULD
+In order to gain forward secrecy, this document recommends that server implementations <span class="bcp14">SHOULD</span>
 respond with a "key_share", to complete an ECDHE exchange on each session resumption.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
 <p id="section-3.4-6">TLS session resumption introduces potential privacy issues where the server is able
 to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" class="xref">Sy2018</a>]</span> for more details.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
@@ -1648,8 +1647,8 @@ to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" cl
         <h3 id="name-tls-renegotiation">
 <a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-tls-renegotiation" class="section-name selfRef">TLS Renegotiation</a>
         </h3>
-<p id="section-3.5-1">Where handshake renegotiation is implemented, both clients and servers MUST implement the <code>renegotiation_info</code> extension, as defined in <span>[<a href="#RFC5746" class="xref">RFC5746</a>]</span>. Note: this recommendation applies to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
-<p id="section-3.5-2">A related attack resulting from TLS session parameters not properly authenticated is Triple Handshake <span>[<a href="#triple-handshake" class="xref">triple-handshake</a>]</span>. To address this attack, TLS 1.2 implementations SHOULD support the <code>extended_master_secret</code> extension defined in <span>[<a href="#RFC7627" class="xref">RFC7627</a>]</span>.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.5-1">Where handshake renegotiation is implemented, both clients and servers <span class="bcp14">MUST</span> implement the <code>renegotiation_info</code> extension, as defined in <span>[<a href="#RFC5746" class="xref">RFC5746</a>]</span>. Note: this recommendation applies to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5-2">A related attack resulting from TLS session parameters not properly authenticated is Triple Handshake <span>[<a href="#triple-handshake" class="xref">triple-handshake</a>]</span>. To address this attack, TLS 1.2 implementations <span class="bcp14">SHOULD</span> support the <code>extended_master_secret</code> extension defined in <span>[<a href="#RFC7627" class="xref">RFC7627</a>]</span>.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="post-handshake-authentication">
@@ -1657,7 +1656,7 @@ to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" cl
         <h3 id="name-post-handshake-authenticati">
 <a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-post-handshake-authenticati" class="section-name selfRef">Post-Handshake Authentication</a>
         </h3>
-<p id="section-3.6-1">Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in <span>[<a href="#RFC8740" class="xref">RFC8740</a>]</span>.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
+<p id="section-3.6-1">Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols <span class="bcp14">SHOULD</span> follow the advice provided for HTTP/2 in <span>[<a href="#RFC8740" class="xref">RFC8740</a>]</span>.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="server-name-indication">
@@ -1665,20 +1664,20 @@ to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" cl
         <h3 id="name-server-name-indication">
 <a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-server-name-indication" class="section-name selfRef">Server Name Indication</a>
         </h3>
-<p id="section-3.7-1">TLS implementations MUST support the Server Name Indication (SNI) extension defined in Section 3 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello (formerly called Encrypted SNI) once <span>[<a href="#I-D.ietf-tls-esni" class="xref">I-D.ietf-tls-esni</a>]</span> has been standardized.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
+<p id="section-3.7-1">TLS implementations <span class="bcp14">MUST</span> support the Server Name Indication (SNI) extension defined in Section 3 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello (formerly called Encrypted SNI) once <span>[<a href="#I-D.ietf-tls-esni" class="xref">I-D.ietf-tls-esni</a>]</span> has been standardized.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
 <p id="section-3.7-2">Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
       address, and therefore enables fine-grained security for these virtual servers,
       by allowing each one to have its own certificate. However, SNI also leaks the 
       target domain for a given connection; this information leak will be plugged by 
       use of TLS Encrypted Client Hello.<a href="#section-3.7-2" class="pilcrow">¶</a></p>
 <p id="section-3.7-3">In order to prevent the attacks described in <span>[<a href="#ALPACA" class="xref">ALPACA</a>]</span>, a server that does not
-recognize the presented server name SHOULD NOT continue the handshake and
+recognize the presented server name <span class="bcp14">SHOULD NOT</span> continue the handshake and
 instead fail with a fatal-level <code>unrecognized_name(112)</code> alert.  Note that this
 recommendation updates Section 3 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>: "If the server understood the
-ClientHello extension but does not recognize the server name, the server SHOULD
+ClientHello extension but does not recognize the server name, the server <span class="bcp14">SHOULD</span>
 take one of two actions: either abort the handshake by sending a fatal-level
 <code>unrecognized_name(112)</code> alert or continue the handshake." It is also
-RECOMMENDED that clients abort the handshake if the server acknowledges the SNI
+<span class="bcp14">RECOMMENDED</span> that clients abort the handshake if the server acknowledges the SNI
 hostname with a different hostname than the one sent by the client.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1687,14 +1686,14 @@ hostname with a different hostname than the one sent by the client.<a href="#sec
         <h3 id="name-application-layer-protocol-">
 <a href="#section-3.8" class="section-number selfRef">3.8. </a><a href="#name-application-layer-protocol-" class="section-name selfRef">Application-Layer Protocol Negotiation</a>
         </h3>
-<p id="section-3.8-1">TLS implementations (both client- and server-side) MUST support the
+<p id="section-3.8-1">TLS implementations (both client- and server-side) <span class="bcp14">MUST</span> support the
 Application-Layer Protocol Negotiation (ALPN) extension <span>[<a href="#RFC7301" class="xref">RFC7301</a>]</span>.<a href="#section-3.8-1" class="pilcrow">¶</a></p>
 <p id="section-3.8-2">In order to prevent "cross-protocol" attacks resulting from failure to ensure
 that a message intended for use in one protocol cannot be mistaken for a
 message for use in another protocol, servers should strictly enforce the
 behavior prescribed in Section 3.2 of <span>[<a href="#RFC7301" class="xref">RFC7301</a>]</span>: "In the event that the
-server supports no protocols that the client advertises, then the server SHALL
-respond with a fatal <code>no_application_protocol</code> alert."  It is also RECOMMENDED
+server supports no protocols that the client advertises, then the server <span class="bcp14">SHALL</span>
+respond with a fatal <code>no_application_protocol</code> alert."  It is also <span class="bcp14">RECOMMENDED</span>
 that clients abort the handshake if the server acknowledges the ALPN extension,
 but does not select a protocol from the client list.  Failure to do so can
 result in attacks such those described in <span>[<a href="#ALPACA" class="xref">ALPACA</a>]</span>.<a href="#section-3.8-2" class="pilcrow">¶</a></p>
@@ -1737,7 +1736,7 @@ a non-IETF standard, or even documentation associated with a non-standard protoc
 <p id="section-4.1-1">Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms that were once considered strong become weak. Such algorithms need to be phased out over time and replaced with more secure cipher suites. This helps to ensure that the desired security properties still hold. SSL/TLS has been in existence for almost 20 years and many of the cipher suites that have been recommended in various versions of SSL/TLS are now considered weak or at least not as strong as desired. Therefore, this section modernizes the recommendations concerning cipher suite selection.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.1-2.1">
-            <p id="section-4.1-2.1.1">Implementations MUST NOT negotiate the cipher suites with NULL encryption.<a href="#section-4.1-2.1.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-2.1.1">Implementations <span class="bcp14">MUST NOT</span> negotiate the cipher suites with NULL encryption.<a href="#section-4.1-2.1.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.1.2">
 Rationale: The NULL cipher suites do not encrypt traffic and 
              so provide no confidentiality services. Any entity in the 
@@ -1748,14 +1747,14 @@ Rationale: The NULL cipher suites do not encrypt traffic and
              testing and debugging.<a href="#section-4.1-2.1.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.2">
-            <p id="section-4.1-2.2.1">Implementations MUST NOT negotiate RC4 cipher suites.<a href="#section-4.1-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-2.2.1">Implementations <span class="bcp14">MUST NOT</span> negotiate RC4 cipher suites.<a href="#section-4.1-2.2.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.2.2">
 Rationale: The RC4 stream cipher has a variety of cryptographic 
              weaknesses, as documented in <span>[<a href="#RFC7465" class="xref">RFC7465</a>]</span>.
      Note that DTLS specifically forbids the use of RC4 already.<a href="#section-4.1-2.2.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.3">
-            <p id="section-4.1-2.3.1">Implementations MUST NOT negotiate cipher suites offering less 
+            <p id="section-4.1-2.3.1">Implementations <span class="bcp14">MUST NOT</span> negotiate cipher suites offering less 
              than 112 bits of security, including so-called "export-level" 
              encryption (which provide 40 or 56 bits of security).<a href="#section-4.1-2.3.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.3.2">
@@ -1765,7 +1764,7 @@ Rationale: Based on <span>[<a href="#RFC3766" class="xref">RFC3766</a>]</span>, 
              export ciphers.<a href="#section-4.1-2.3.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.4">
-            <p id="section-4.1-2.4.1">Implementations SHOULD NOT negotiate cipher suites that use 
+            <p id="section-4.1-2.4.1">Implementations <span class="bcp14">SHOULD NOT</span> negotiate cipher suites that use 
              algorithms offering less than 128 bits of security.<a href="#section-4.1-2.4.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.4.2">
 Rationale: Cipher suites that offer between 112-bits and 128-bits 
@@ -1782,7 +1781,7 @@ Rationale: Cipher suites that offer between 112-bits and 128-bits
              evaluated according to their effective key length.<a href="#section-4.1-2.4.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.5">
-            <p id="section-4.1-2.5.1">Implementations SHOULD NOT negotiate cipher suites based on 
+            <p id="section-4.1-2.5.1">Implementations <span class="bcp14">SHOULD NOT</span> negotiate cipher suites based on 
              RSA key transport, a.k.a. "static RSA".<a href="#section-4.1-2.5.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.5.2">
 Rationale: These cipher suites, which have assigned values starting 
@@ -1790,7 +1789,7 @@ Rationale: These cipher suites, which have assigned values starting
              the fact that they do not support forward secrecy.<a href="#section-4.1-2.5.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.6">
-            <p id="section-4.1-2.6.1">Implementations MUST support and prefer to negotiate cipher suites 
+            <p id="section-4.1-2.6.1">Implementations <span class="bcp14">MUST</span> support and prefer to negotiate cipher suites 
              offering forward secrecy, such as those in the Ephemeral 
              Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
              and "ECDHE") families.<a href="#section-4.1-2.6.1" class="pilcrow">¶</a></p>
@@ -1809,7 +1808,7 @@ Rationale: Forward secrecy (sometimes called "perfect forward
         <h3 id="name-recommended-cipher-suites">
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-recommended-cipher-suites" class="section-name selfRef">Recommended Cipher Suites</a>
         </h3>
-<p id="section-4.2-1">Given the foregoing considerations, implementation and deployment of the following cipher suites is RECOMMENDED:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-1">Given the foregoing considerations, implementation and deployment of the following cipher suites is <span class="bcp14">RECOMMENDED</span>:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4.2-2.1">TLS_DHE_RSA_WITH_AES_128_GCM_SHA256<a href="#section-4.2-2.1" class="pilcrow">¶</a>
 </li>
@@ -1828,12 +1827,12 @@ Rationale: Forward secrecy (sometimes called "perfect forward
           <h4 id="name-implementation-details">
 <a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-implementation-details" class="section-name selfRef">Implementation Details</a>
           </h4>
-<p id="section-4.2.1-1">Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-2">Servers MUST prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-3">Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-1">Clients <span class="bcp14">SHOULD</span> include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-2">Servers <span class="bcp14">MUST</span> prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-3">Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server <span class="bcp14">SHOULD</span> prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
 <p id="section-4.2.1-4">This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here. (The GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS <span>[<a href="#Krawczyk2001" class="xref">Krawczyk2001</a>]</span>, since it uses an AEAD mode of operation.) Implementers should consider the interoperability gain against the loss in security when deploying the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).<a href="#section-4.2.1-4" class="pilcrow">¶</a></p>
 <p id="section-4.2.1-5">Note that some profiles of TLS 1.2 use different cipher suites. For example, <span>[<a href="#RFC6460" class="xref">RFC6460</a>]</span> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.<a href="#section-4.2.1-5" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-6"><span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension <span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span>.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve <span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span>. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".<a href="#section-4.2.1-6" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-6"><span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers <span class="bcp14">SHOULD</span> include the "Supported Elliptic Curves" extension <span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span>.  For interoperability, clients and servers <span class="bcp14">SHOULD</span> support the NIST P-256 (secp256r1) curve <span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span>. In addition, clients <span class="bcp14">SHOULD</span> send an ec_point_formats extension with a single element, "uncompressed".<a href="#section-4.2.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1865,9 +1864,9 @@ authentication.<a href="#section-4.4-2.2" class="pilcrow">¶</a>
         </ol>
 <p id="section-4.4-3">The latter only applies to DTLS since TLS connections are torn down on the
 first decryption failure.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
-<p id="section-4.4-4">When a sender is approaching CL, the implementation SHOULD initiate a new
+<p id="section-4.4-4">When a sender is approaching CL, the implementation <span class="bcp14">SHOULD</span> initiate a new
 handshake (or in TLS 1.3, a Key Update) to rotate the session key.<a href="#section-4.4-4" class="pilcrow">¶</a></p>
-<p id="section-4.4-5">When a receiver has reached IL, the implementation SHOULD close the connection.<a href="#section-4.4-5" class="pilcrow">¶</a></p>
+<p id="section-4.4-5">When a receiver has reached IL, the implementation <span class="bcp14">SHOULD</span> close the connection.<a href="#section-4.4-5" class="pilcrow">¶</a></p>
 <p id="section-4.4-6">For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> for the values of CL and IL. For all DTLS 1.3 cipher suites, readers are referred to Section 4.5.3 of
 <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-4.4-6" class="pilcrow">¶</a></p>
 <p id="section-4.4-7">For all AES-GCM cipher suites recommended for TLS 1.2 and DTLS 1.2 in this
@@ -1875,7 +1874,7 @@ document, CL can be derived by plugging the corresponding parameters into the
 inequalities in Section 6.1 of <span>[<a href="#I-D.irtf-cfrg-aead-limits" class="xref">I-D.irtf-cfrg-aead-limits</a>]</span> that apply to
 random, partially implicit nonces, i.e., the nonce construction used in TLS
 1.2.  Although the obtained figures are slightly higher than those for TLS 1.3,
-it is RECOMMENDED that the same limit of 2<sup>24.5</sup> records is used for
+it is <span class="bcp14">RECOMMENDED</span> that the same limit of 2<sup>24.5</sup> records is used for
 both versions.<a href="#section-4.4-7" class="pilcrow">¶</a></p>
 <p id="section-4.4-8">For all AES-GCM cipher suites recommended for DTLS 1.2, IL (obtained from the
 same inequalities referenced above) is 2<sup>28</sup>.<a href="#section-4.4-8" class="pilcrow">¶</a></p>
@@ -1890,7 +1889,7 @@ same inequalities referenced above) is 2<sup>28</sup>.<a href="#section-4.4-8" c
       normally used in the TLS handshake: one for the Diffie-Hellman key agreement
       and one for server authentication. Where a client certificate is used, a third 
       public key is added.<a href="#section-4.5-1" class="pilcrow">¶</a></p>
-<p id="section-4.5-2">With a key exchange based on modular exponential (MODP) Diffie-Hellman groups ("DHE" cipher suites), DH key lengths of at least 2048 bits are REQUIRED.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
+<p id="section-4.5-2">With a key exchange based on modular exponential (MODP) Diffie-Hellman groups ("DHE" cipher suites), DH key lengths of at least 2048 bits are <span class="bcp14">REQUIRED</span>.<a href="#section-4.5-2" class="pilcrow">¶</a></p>
 <p id="section-4.5-3">Rationale: For various reasons, in practice, DH keys are typically generated in lengths
  that are powers of two (e.g., 2<sup>10</sup> = 1024 bits, 2<sup>11</sup> = 2048 bits, 2<sup>12</sup> = 4096 bits).
  Because a DH key of 1228 bits would be roughly equivalent to only an 80-bit symmetric key
@@ -1905,9 +1904,9 @@ should be avoided.<a href="#section-4.5-4" class="pilcrow">¶</a></p>
 <p id="section-4.5-5">With regard to ECDH keys, implementers are referred to the IANA "Supported Groups Registry" (former "EC Named Curve
 Registry"), within the
    "Transport Layer Security (TLS) Parameters" registry <span>[<a href="#IANA_TLS" class="xref">IANA_TLS</a>]</span>, and in particular to the "recommended"
-   groups.  Curves of less than 224 bits MUST NOT be used. This recommendation is in-line with the latest
+   groups.  Curves of less than 224 bits <span class="bcp14">MUST NOT</span> be used. This recommendation is in-line with the latest
 revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]</span>.<a href="#section-4.5-5" class="pilcrow">¶</a></p>
-<p id="section-4.5-6">When using RSA, servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED and SHA-1 or MD5 MUST NOT be used (<span>[<a href="#RFC9155" class="xref">RFC9155</a>]</span>, and see <span>[<a href="#CAB-Baseline" class="xref">CAB-Baseline</a>]</span> for more details). Clients MUST indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
+<p id="section-4.5-6">When using RSA, servers <span class="bcp14">SHOULD</span> authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is <span class="bcp14">RECOMMENDED</span> and SHA-1 or MD5 <span class="bcp14">MUST NOT</span> be used (<span>[<a href="#RFC9155" class="xref">RFC9155</a>]</span>, and see <span>[<a href="#CAB-Baseline" class="xref">CAB-Baseline</a>]</span> for more details). Clients <span class="bcp14">MUST</span> indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="truncated-hmac">
@@ -1915,7 +1914,7 @@ revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]<
         <h3 id="name-truncated-hmac">
 <a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-truncated-hmac" class="section-name selfRef">Truncated HMAC</a>
         </h3>
-<p id="section-4.6-1">Implementations MUST NOT use the Truncated HMAC extension, defined in Section 7 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
+<p id="section-4.6-1">Implementations <span class="bcp14">MUST NOT</span> use the Truncated HMAC extension, defined in Section 7 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
 <p id="section-4.6-2">Rationale: the extension does not apply to the AEAD
       cipher suites recommended above. However it does apply to most other TLS cipher suites. Its use
       has been shown to be insecure in <span>[<a href="#PatersonRS11" class="xref">PatersonRS11</a>]</span>.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
@@ -1998,7 +1997,7 @@ revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]<
   own validation code or consider using a different TLS implementation.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <p id="section-6.1-2">It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Sections 4.3.3, 4.3.4 and 4.3.5 of <span>[<a href="#I-D.ietf-httpbis-semantics" class="xref">I-D.ietf-httpbis-semantics</a>]</span>.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 <p id="section-6.1-3">Readers are referred to <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
-<p id="section-6.1-4">If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an MX or SRV record), it SHOULD NOT be used as a reference identifier <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see <span>[<a href="#DANE-SRV" class="xref">DANE-SRV</a>]</span> and <span>[<a href="#DANE-SMTP" class="xref">DANE-SMTP</a>]</span>).<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+<p id="section-6.1-4">If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an MX or SRV record), it <span class="bcp14">SHOULD NOT</span> be used as a reference identifier <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see <span>[<a href="#DANE-SRV" class="xref">DANE-SRV</a>]</span> and <span>[<a href="#DANE-SMTP" class="xref">DANE-SMTP</a>]</span>).<a href="#section-6.1-4" class="pilcrow">¶</a></p>
 <p id="section-6.1-5">Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with <span>[<a href="#RFC5280" class="xref">RFC5280</a>]</span> (see also 
         <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span>).<a href="#section-6.1-5" class="pilcrow">¶</a></p>
 </section>
@@ -2023,11 +2022,11 @@ records: CVE-2016-0270, CVE-2016-10213, CVE-2016-10212, CVE-2017-5933.)<a href="
 method to generate nonces from record sequence numbers and shared secrets for
 all of its AEAD cipher suites (including AES-GCM), TLS 1.2 implementations
 could still choose their own (potentially insecure) nonce generation methods.<a href="#section-6.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-6.2.1-3">It is therefore RECOMMENDED that TLS 1.2 implementations use the 64-bit
+<p id="section-6.2.1-3">It is therefore <span class="bcp14">RECOMMENDED</span> that TLS 1.2 implementations use the 64-bit
 sequence number to populate the <code>nonce_explicit</code> part of the GCM nonce, as
 described in the first two paragraphs of Section 5.3 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.  Note
 that this recommendation updates Section 3 of <span>[<a href="#RFC5288" class="xref">RFC5288</a>]</span>: "The nonce_explicit
-MAY be the 64-bit sequence number."<a href="#section-6.2.1-3" class="pilcrow">¶</a></p>
+<span class="bcp14">MAY</span> be the 64-bit sequence number."<a href="#section-6.2.1-3" class="pilcrow">¶</a></p>
 <p id="section-6.2.1-4">We note that at the time of writing there are no cipher suites defined for nonce
 reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="xref">RFC8452</a>]</span>.<a href="#section-6.2.1-4" class="pilcrow">¶</a></p>
 </section>
@@ -2077,7 +2076,7 @@ reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="
           <li class="normal" id="section-6.4-2.3">Under certain conditions, the use of static DH keys, or of ephemeral DH keys that are reused across multiple connections, can lead to timing attacks (such as those described in <span>[<a href="#RACCOON" class="xref">RACCOON</a>]</span>) on the shared secrets used in Diffie-Hellman key exchange.<a href="#section-6.4-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-6.4-3">To address these concerns, TLS implementations SHOULD NOT use static DH keys and SHOULD NOT reuse ephemeral DH keys across multiple connections.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
+<p id="section-6.4-3">To address these concerns, TLS implementations <span class="bcp14">SHOULD NOT</span> use static DH keys and <span class="bcp14">SHOULD NOT</span> reuse ephemeral DH keys across multiple connections.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
 <p id="section-6.4-4"><span class="cref">TODO: revisit when draft-bartle-tls-deprecate-ffdhe becomes a TLS WG item, since it specifies MUST NOT rather than SHOULD NOT.</span><a href="#section-6.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2101,7 +2100,7 @@ reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="
           <li class="normal" id="section-6.5-2.6">Both CRLs and OCSP depend on relatively reliable connectivity to the Internet, which might not be available to certain kinds of nodes (such as newly provisioned devices that need to establish a secure connection in order to boot up for the first time).<a href="#section-6.5-2.6" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-6.5-3">With regard to common public key certificates, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution:<a href="#section-6.5-3" class="pilcrow">¶</a></p>
+<p id="section-6.5-3">With regard to common public key certificates, servers <span class="bcp14">SHOULD</span> support the following as a best practice given the current state of the art and as a foundation for a possible future solution:<a href="#section-6.5-3" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-6.5-4">
 <li id="section-6.5-4.1">OCSP <span>[<a href="#RFC6960" class="xref">RFC6960</a>]</span><a href="#section-6.5-4.1" class="pilcrow">¶</a>
 </li>
@@ -2452,15 +2451,16 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-A-2.1.2.1">Clarified items (e.g. renegotiation) that only apply to TLS 1.2.<a href="#appendix-A-2.1.2.1" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.1.2.2">Changed status of TLS 1.0 and 1.1 from SHOULD NOT to MUST NOT.<a href="#appendix-A-2.1.2.2" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.1.2.2">Changed status of TLS 1.0 and 1.1 from <span class="bcp14">SHOULD NOT</span> to <span class="bcp14">MUST NOT</span>.<a href="#appendix-A-2.1.2.2" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.1.2.3">Added TLS 1.3 at a SHOULD level.<a href="#appendix-A-2.1.2.3" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.1.2.3">Added TLS 1.3 at a <span class="bcp14">SHOULD</span> level.<a href="#appendix-A-2.1.2.3" class="pilcrow">¶</a>
 </li>
             <li class="normal" id="appendix-A-2.1.2.4">Similar changes to DTLS, pending publication of DTLS 1.3.<a href="#appendix-A-2.1.2.4" class="pilcrow">¶</a>
 </li>
             <li class="normal" id="appendix-A-2.1.2.5">Specific guidance for multiplexed protocols.<a href="#appendix-A-2.1.2.5" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.1.2.6">MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.<a href="#appendix-A-2.1.2.6" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.1.2.6">
+              <span class="bcp14">MUST</span>-level implementation requirement for ALPN, and more specific <span class="bcp14">SHOULD</span>-level guidance for ALPN and SNI.<a href="#appendix-A-2.1.2.6" class="pilcrow">¶</a>
 </li>
             <li class="normal" id="appendix-A-2.1.2.7">Limits on key usage.<a href="#appendix-A-2.1.2.7" class="pilcrow">¶</a>
 </li>
@@ -2471,13 +2471,15 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
         <li class="normal" id="appendix-A-2.2">
           <p id="appendix-A-2.2.1">Differences specific to TLS 1.2:<a href="#appendix-A-2.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-A-2.2.2.1">SHOULD-level guidance on AES-GCM nonce generation.<a href="#appendix-A-2.2.2.1" class="pilcrow">¶</a>
+<li class="normal" id="appendix-A-2.2.2.1">
+              <span class="bcp14">SHOULD</span>-level guidance on AES-GCM nonce generation.<a href="#appendix-A-2.2.2.1" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.2">SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.<a href="#appendix-A-2.2.2.2" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.2">
+              <span class="bcp14">SHOULD NOT</span> use static DH keys or reuse ephemeral DH keys across multiple connections.<a href="#appendix-A-2.2.2.2" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.3">2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.<a href="#appendix-A-2.2.2.3" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.3">2048-bit DH now a <span class="bcp14">MUST</span>, ECDH minimal curve size is 224, vs. 192 previously.<a href="#appendix-A-2.2.2.3" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.4">Support for <code>extended_master_secret</code> is a SHOULD. Also removed other, more complicated, related mitigations.<a href="#appendix-A-2.2.2.4" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.4">Support for <code>extended_master_secret</code> is a <span class="bcp14">SHOULD</span>. Also removed other, more complicated, related mitigations.<a href="#appendix-A-2.2.2.4" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
@@ -2490,9 +2492,10 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="appendix-A-2.3.2.3">Added mention of TLS Encrypted Client Hello, but no recommendation to use until it is finalized.<a href="#appendix-A-2.3.2.3" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.3.2.4">SHOULD-level requirement for forward secrecy in TLS 1.3 session resumption.<a href="#appendix-A-2.3.2.4" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.3.2.4">
+              <span class="bcp14">SHOULD</span>-level requirement for forward secrecy in TLS 1.3 session resumption.<a href="#appendix-A-2.3.2.4" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.3.2.5">Generic SHOULD-level guidance to avoid 0-RTT unless it is documented for the particular protocol.<a href="#appendix-A-2.3.2.5" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.3.2.5">Generic <span class="bcp14">SHOULD</span>-level guidance to avoid 0-RTT unless it is documented for the particular protocol.<a href="#appendix-A-2.3.2.5" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
@@ -2551,21 +2554,25 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <li class="normal" id="appendix-B.4-1.1">
             <p id="appendix-B.4-1.1.1">Many more changes, including:<a href="#appendix-B.4-1.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-B.4-1.1.2.1">SHOULD-level requirement for forward secrecy in TLS 1.3 session resumption.<a href="#appendix-B.4-1.1.2.1" class="pilcrow">¶</a>
+<li class="normal" id="appendix-B.4-1.1.2.1">
+                <span class="bcp14">SHOULD</span>-level requirement for forward secrecy in TLS 1.3 session resumption.<a href="#appendix-B.4-1.1.2.1" class="pilcrow">¶</a>
 </li>
               <li class="normal" id="appendix-B.4-1.1.2.2">Removed TLS 1.2 capabilities: renegotiation, compression.<a href="#appendix-B.4-1.1.2.2" class="pilcrow">¶</a>
 </li>
               <li class="normal" id="appendix-B.4-1.1.2.3">Specific guidance for multiplexed protocols.<a href="#appendix-B.4-1.1.2.3" class="pilcrow">¶</a>
 </li>
-              <li class="normal" id="appendix-B.4-1.1.2.4">MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.<a href="#appendix-B.4-1.1.2.4" class="pilcrow">¶</a>
+              <li class="normal" id="appendix-B.4-1.1.2.4">
+                <span class="bcp14">MUST</span>-level implementation requirement for ALPN, and more specific <span class="bcp14">SHOULD</span>-level guidance for ALPN and SNI.<a href="#appendix-B.4-1.1.2.4" class="pilcrow">¶</a>
 </li>
-              <li class="normal" id="appendix-B.4-1.1.2.5">Generic SHOULD-level guidance to avoid 0-RTT unless it is documented for the particular protocol.<a href="#appendix-B.4-1.1.2.5" class="pilcrow">¶</a>
+              <li class="normal" id="appendix-B.4-1.1.2.5">Generic <span class="bcp14">SHOULD</span>-level guidance to avoid 0-RTT unless it is documented for the particular protocol.<a href="#appendix-B.4-1.1.2.5" class="pilcrow">¶</a>
 </li>
-              <li class="normal" id="appendix-B.4-1.1.2.6">SHOULD-level guidance on AES-GCM nonce generation in TLS 1.2.<a href="#appendix-B.4-1.1.2.6" class="pilcrow">¶</a>
+              <li class="normal" id="appendix-B.4-1.1.2.6">
+                <span class="bcp14">SHOULD</span>-level guidance on AES-GCM nonce generation in TLS 1.2.<a href="#appendix-B.4-1.1.2.6" class="pilcrow">¶</a>
 </li>
-              <li class="normal" id="appendix-B.4-1.1.2.7">SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.<a href="#appendix-B.4-1.1.2.7" class="pilcrow">¶</a>
+              <li class="normal" id="appendix-B.4-1.1.2.7">
+                <span class="bcp14">SHOULD NOT</span> use static DH keys or reuse ephemeral DH keys across multiple connections.<a href="#appendix-B.4-1.1.2.7" class="pilcrow">¶</a>
 </li>
-              <li class="normal" id="appendix-B.4-1.1.2.8">2048-bit DH now a MUST, ECDH minimal curve size is 224, up from 192.<a href="#appendix-B.4-1.1.2.8" class="pilcrow">¶</a>
+              <li class="normal" id="appendix-B.4-1.1.2.8">2048-bit DH now a <span class="bcp14">MUST</span>, ECDH minimal curve size is 224, up from 192.<a href="#appendix-B.4-1.1.2.8" class="pilcrow">¶</a>
 </li>
             </ul>
 </li>
