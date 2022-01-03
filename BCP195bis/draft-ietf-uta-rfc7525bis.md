@@ -234,7 +234,7 @@ Community knowledge about the strength of various algorithms and feasible attack
 
 A number of security-related terms in this document are used in the sense defined in {{!RFC4949}}.
 
-{::boilerplate bcp14}
+{::boilerplate bcp14-tagged}
 
 # General Recommendations
 {: #rec}
