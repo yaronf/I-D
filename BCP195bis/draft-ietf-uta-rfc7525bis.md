@@ -436,7 +436,7 @@ For QUIC-on-TLS, refer to Sec. 9.2 of {{?RFC9001}}.
 
 For other protocols, generic guidance is given in Sec. 8 and Appendix E.5
 of {{RFC8446}}.
-Given the complexity, we RECOMMEND to avoid this feature altogether unless
+To paraphrase Appendix E.5, applications MUST avoid this feature unless
 an explicit specification exists for the application protocol in question to clarify
 when 0-RTT is appropriate and secure. This can take the form of an IETF RFC,
 a non-IETF standard, or even documentation associated with a non-standard protocol.
