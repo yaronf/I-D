@@ -1584,7 +1584,7 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
         <h3 id="name-strict-tls">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-strict-tls" class="section-name selfRef">Strict TLS</a>
         </h3>
-<p id="section-3.2-1">The following recommendations are provided to help prevent SSL Stripping (an attack that is summarized in Section 2.1 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>):<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">The following recommendations are provided to help prevent SSL Stripping (an attack that is summarized in <span><a href="https://rfc-editor.org/rfc/rfc7457#section-2.1" class="relref">Section 2.1</a> of [<a href="#RFC7457" class="xref">RFC7457</a>]</span>):<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-3.2-2.1">In cases where an application protocol allows implementations or deployments a choice between strict TLS configuration and dynamic upgrade from unencrypted to TLS-protected traffic (such as STARTTLS), clients and servers <span class="bcp14">SHOULD</span> prefer strict TLS configuration.<a href="#section-3.2-2.1" class="pilcrow">¶</a>
 </li>
@@ -1595,7 +1595,7 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
     advertise that they are
     willing to accept TLS-only clients.<a href="#section-3.2-2.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.2-2.4">Web servers <span class="bcp14">SHOULD</span> use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in Section 11.3 of <span>[<a href="#RFC6797" class="xref">RFC6797</a>]</span>).<a href="#section-3.2-2.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.2-2.4">Web servers <span class="bcp14">SHOULD</span> use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in <span><a href="https://rfc-editor.org/rfc/rfc6797#section-11.3" class="relref">Section 11.3</a> of [<a href="#RFC6797" class="xref">RFC6797</a>]</span>).<a href="#section-3.2-2.4" class="pilcrow">¶</a>
 </li>
         </ul>
 <p id="section-3.2-3">Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
@@ -1606,9 +1606,9 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
         <h3 id="name-compression">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-compression" class="section-name selfRef">Compression</a>
         </h3>
-<p id="section-3.3-1">In order to help prevent compression-related attacks (summarized in Section 2.6 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>), when using TLS 1.2 implementations and deployments <span class="bcp14">SHOULD</span> disable TLS-level compression (Section 6.2.2 of <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span>), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-1">In order to help prevent compression-related attacks (summarized in <span><a href="https://rfc-editor.org/rfc/rfc7457#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC7457" class="xref">RFC7457</a>]</span>), when using TLS 1.2 implementations and deployments <span class="bcp14">SHOULD</span> disable TLS-level compression (<span><a href="https://rfc-editor.org/rfc/rfc5246#section-6.2.2" class="relref">Section 6.2.2</a> of [<a href="#RFC5246" class="xref">RFC5246</a>]</span>), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">Rationale: TLS compression has been subject to security attacks, such as the CRIME attack.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<p id="section-3.3-3">Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside of TLS and are thus outside the scope of this document. See Section 2.6 of <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span> for further details.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside of TLS and are thus outside the scope of this document. See <span><a href="https://rfc-editor.org/rfc/rfc7457#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC7457" class="xref">RFC7457</a>]</span> for further details.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="rec-resume">
@@ -1620,7 +1620,7 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
 performance feature for most deployments.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <p id="section-3.4-2">Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
 <span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span>.  For TLS 1.3, an equivalent PSK-based mechanism is described in
-Section 4.6.1 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.
+<span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6.1" class="relref">Section 4.6.1</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>.
 When it is used, the resumption information <span class="bcp14">MUST</span>
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
 Further recommendations apply to session tickets:<a href="#section-3.4-2" class="pilcrow">¶</a></p>
@@ -1634,7 +1634,7 @@ Further recommendations apply to session tickets:<a href="#section-3.4-2" class=
         </ul>
 <p id="section-3.4-4">Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document (<a href="#detail" class="xref">Section 4</a>) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
 <p id="section-3.4-5">TLS 1.3 provides the powerful option of forward secrecy even within a long-lived connection
-that is periodically resumed. Section 2.2 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> recommends that clients <span class="bcp14">SHOULD</span>
+that is periodically resumed. <span><a href="https://rfc-editor.org/rfc/rfc8446#section-2.2" class="relref">Section 2.2</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span> recommends that clients <span class="bcp14">SHOULD</span>
 send a "key_share" when initiating session resumption.
 In order to gain forward secrecy, this document recommends that server implementations <span class="bcp14">SHOULD</span>
 respond with a "key_share", to complete an ECDHE exchange on each session resumption.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
@@ -1664,7 +1664,7 @@ to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" cl
         <h3 id="name-server-name-indication">
 <a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-server-name-indication" class="section-name selfRef">Server Name Indication</a>
         </h3>
-<p id="section-3.7-1">TLS implementations <span class="bcp14">MUST</span> support the Server Name Indication (SNI) extension defined in Section 3 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello (formerly called Encrypted SNI) once <span>[<a href="#I-D.ietf-tls-esni" class="xref">I-D.ietf-tls-esni</a>]</span> has been standardized.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
+<p id="section-3.7-1">TLS implementations <span class="bcp14">MUST</span> support the Server Name Indication (SNI) extension defined in <span><a href="https://rfc-editor.org/rfc/rfc6066#section-3" class="relref">Section 3</a> of [<a href="#RFC6066" class="xref">RFC6066</a>]</span> for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello (formerly called Encrypted SNI) once <span>[<a href="#I-D.ietf-tls-esni" class="xref">I-D.ietf-tls-esni</a>]</span> has been standardized.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
 <p id="section-3.7-2">Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
       address, and therefore enables fine-grained security for these virtual servers,
       by allowing each one to have its own certificate. However, SNI also leaks the 
@@ -1673,7 +1673,7 @@ to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" cl
 <p id="section-3.7-3">In order to prevent the attacks described in <span>[<a href="#ALPACA" class="xref">ALPACA</a>]</span>, a server that does not
 recognize the presented server name <span class="bcp14">SHOULD NOT</span> continue the handshake and
 instead <span class="bcp14">SHOULD</span> fail with a fatal-level <code>unrecognized_name(112)</code> alert.  Note that this
-recommendation updates Section 3 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>: "If the server understood the
+recommendation updates <span><a href="https://rfc-editor.org/rfc/rfc6066#section-3" class="relref">Section 3</a> of [<a href="#RFC6066" class="xref">RFC6066</a>]</span>: "If the server understood the
 ClientHello extension but does not recognize the server name, the server <span class="bcp14">SHOULD</span>
 take one of two actions: either abort the handshake by sending a fatal-level
 <code>unrecognized_name(112)</code> alert or continue the handshake." It is also
@@ -1690,7 +1690,7 @@ Application-Layer Protocol Negotiation (ALPN) extension <span>[<a href="#RFC7301
 <p id="section-3.8-2">In order to prevent "cross-protocol" attacks resulting from failure to ensure
 that a message intended for use in one protocol cannot be mistaken for a
 message for use in another protocol, servers should strictly enforce the
-behavior prescribed in Section 3.2 of <span>[<a href="#RFC7301" class="xref">RFC7301</a>]</span>: "In the event that the
+behavior prescribed in <span><a href="https://rfc-editor.org/rfc/rfc7301#section-3.2" class="relref">Section 3.2</a> of [<a href="#RFC7301" class="xref">RFC7301</a>]</span>: "In the event that the
 server supports no protocols that the client advertises, then the server <span class="bcp14">SHALL</span>
 respond with a fatal <code>no_application_protocol</code> alert."  It is also <span class="bcp14">RECOMMENDED</span>
 that clients abort the handshake if the server acknowledges the ALPN extension,
@@ -1866,11 +1866,10 @@ first decryption failure.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 <p id="section-4.4-4">When a sender is approaching CL, the implementation <span class="bcp14">SHOULD</span> initiate a new
 handshake (or in TLS 1.3, a Key Update) to rotate the session key.<a href="#section-4.4-4" class="pilcrow">¶</a></p>
 <p id="section-4.4-5">When a receiver has reached IL, the implementation <span class="bcp14">SHOULD</span> close the connection.<a href="#section-4.4-5" class="pilcrow">¶</a></p>
-<p id="section-4.4-6">For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> for the values of CL and IL. For all DTLS 1.3 cipher suites, readers are referred to Section 4.5.3 of
-<span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-4.4-6" class="pilcrow">¶</a></p>
+<p id="section-4.4-6">For all TLS 1.3 cipher suites, readers are referred to <span><a href="https://rfc-editor.org/rfc/rfc8446#section-5.5" class="relref">Section 5.5</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span> for the values of CL and IL. For all DTLS 1.3 cipher suites, readers are referred to <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-dtls13-43#section-4.5.3" class="relref">Section 4.5.3</a> of [<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-4.4-6" class="pilcrow">¶</a></p>
 <p id="section-4.4-7">For all AES-GCM cipher suites recommended for TLS 1.2 and DTLS 1.2 in this
 document, CL can be derived by plugging the corresponding parameters into the
-inequalities in Section 6.1 of <span>[<a href="#I-D.irtf-cfrg-aead-limits" class="xref">I-D.irtf-cfrg-aead-limits</a>]</span> that apply to
+inequalities in <span><a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-aead-limits-03#section-6.1" class="relref">Section 6.1</a> of [<a href="#I-D.irtf-cfrg-aead-limits" class="xref">I-D.irtf-cfrg-aead-limits</a>]</span> that apply to
 random, partially implicit nonces, i.e., the nonce construction used in TLS
 1.2.  Although the obtained figures are slightly higher than those for TLS 1.3,
 it is <span class="bcp14">RECOMMENDED</span> that the same limit of 2<sup>24.5</sup> records is used for
@@ -1913,7 +1912,7 @@ revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]<
         <h3 id="name-truncated-hmac">
 <a href="#section-4.6" class="section-number selfRef">4.6. </a><a href="#name-truncated-hmac" class="section-name selfRef">Truncated HMAC</a>
         </h3>
-<p id="section-4.6-1">Implementations <span class="bcp14">MUST NOT</span> use the Truncated HMAC extension, defined in Section 7 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
+<p id="section-4.6-1">Implementations <span class="bcp14">MUST NOT</span> use the Truncated HMAC extension, defined in <span><a href="https://rfc-editor.org/rfc/rfc6066#section-7" class="relref">Section 7</a> of [<a href="#RFC6066" class="xref">RFC6066</a>]</span>.<a href="#section-4.6-1" class="pilcrow">¶</a></p>
 <p id="section-4.6-2">Rationale: the extension does not apply to the AEAD
       cipher suites recommended above. However it does apply to most other TLS cipher suites. Its use
       has been shown to be insecure in <span>[<a href="#PatersonRS11" class="xref">PatersonRS11</a>]</span>.<a href="#section-4.6-2" class="pilcrow">¶</a></p>
@@ -2006,7 +2005,7 @@ revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]<
         <h3 id="name-aes-gcm">
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-aes-gcm" class="section-name selfRef">AES-GCM</a>
         </h3>
-<p id="section-6.2-1"><a href="#rec-cipher" class="xref">Section 4.2</a> above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to Section 11 of <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> for general security considerations when using TLS 1.2, and to Section 6 of <span>[<a href="#RFC5288" class="xref">RFC5288</a>]</span> for security considerations that apply specifically to AES-GCM when used with TLS.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-1"><a href="#rec-cipher" class="xref">Section 4.2</a> above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to <span><a href="https://rfc-editor.org/rfc/rfc5246#section-11" class="relref">Section 11</a> of [<a href="#RFC5246" class="xref">RFC5246</a>]</span> for general security considerations when using TLS 1.2, and to <span><a href="https://rfc-editor.org/rfc/rfc5288#section-6" class="relref">Section 6</a> of [<a href="#RFC5288" class="xref">RFC5288</a>]</span> for security considerations that apply specifically to AES-GCM when used with TLS.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 <div id="nonce-reuse-in-tls-12">
 <section id="section-6.2.1">
           <h4 id="name-nonce-reuse-in-tls-12">
@@ -2023,8 +2022,8 @@ all of its AEAD cipher suites (including AES-GCM), TLS 1.2 implementations
 could still choose their own (potentially insecure) nonce generation methods.<a href="#section-6.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-6.2.1-3">It is therefore <span class="bcp14">RECOMMENDED</span> that TLS 1.2 implementations use the 64-bit
 sequence number to populate the <code>nonce_explicit</code> part of the GCM nonce, as
-described in the first two paragraphs of Section 5.3 of <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.  Note
-that this recommendation updates Section 3 of <span>[<a href="#RFC5288" class="xref">RFC5288</a>]</span>: "The nonce_explicit
+described in the first two paragraphs of <span><a href="https://rfc-editor.org/rfc/rfc8446#section-5.3" class="relref">Section 5.3</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>.  Note
+that this recommendation updates <span><a href="https://rfc-editor.org/rfc/rfc5288#section-3" class="relref">Section 3</a> of [<a href="#RFC5288" class="xref">RFC5288</a>]</span>: "The nonce_explicit
 <span class="bcp14">MAY</span> be the 64-bit sequence number."<a href="#section-6.2.1-3" class="pilcrow">¶</a></p>
 <p id="section-6.2.1-4">We note that at the time of writing there are no cipher suites defined for nonce
 reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="xref">RFC8452</a>]</span>.<a href="#section-6.2.1-4" class="pilcrow">¶</a></p>
@@ -2092,7 +2091,7 @@ reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="
 </li>
           <li class="normal" id="section-6.5-2.3">The On-Line Certification Status Protocol (OCSP) <span>[<a href="#RFC6960" class="xref">RFC6960</a>]</span> presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.)<a href="#section-6.5-2.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.5-2.4">The TLS Certificate Status Request extension (Section 8 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.<a href="#section-6.5-2.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.5-2.4">The TLS Certificate Status Request extension (<span><a href="https://rfc-editor.org/rfc/rfc6066#section-8" class="relref">Section 8</a> of [<a href="#RFC6066" class="xref">RFC6066</a>]</span>), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.<a href="#section-6.5-2.4" class="pilcrow">¶</a>
 </li>
           <li class="normal" id="section-6.5-2.5">OCSP stapling as defined in <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> does not extend to intermediate certificates used in a certificate chain. Although the Multiple Certificate Status extension <span>[<a href="#RFC6961" class="xref">RFC6961</a>]</span> addresses this shortcoming, it is a recent addition without much deployment.<a href="#section-6.5-2.5" class="pilcrow">¶</a>
 </li>
