@@ -342,7 +342,7 @@ performance feature for most deployments.
 
 Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
 {{?RFC5077}}.  For TLS 1.3, a more secure PSK-based mechanism is described in
-Section 4.6.1 of {{RFC8446}}. See [this post](https://blog.filippo.io/we-need-to-talk-about-session-tickets/) for a comparison of TLS 1.2 and 1.3 session resumption, and {{Springall16}} for a quantitative study of TLS cryptographic "shortcuts", including session resumption.
+{{Section 4.6.1 of RFC8446}}. See [this post](https://blog.filippo.io/we-need-to-talk-about-session-tickets/) for a comparison of TLS 1.2 and 1.3 session resumption, and {{Springall16}} for a quantitative study of TLS cryptographic "shortcuts", including session resumption.
 
 When it is used, the resumption information MUST
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
