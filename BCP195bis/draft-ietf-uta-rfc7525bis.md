@@ -70,7 +70,7 @@ informative:
     target: https://www.cabforum.org/documents.html
     title: Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6
 
-  Heninger2012: 
+  Heninger2012:
     author:
     - ins: N. Heninger
       name: Nadia Heninger
