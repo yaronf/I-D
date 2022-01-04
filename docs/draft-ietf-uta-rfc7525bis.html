@@ -1672,13 +1672,12 @@ to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" cl
       use of TLS Encrypted Client Hello.<a href="#section-3.7-2" class="pilcrow">¶</a></p>
 <p id="section-3.7-3">In order to prevent the attacks described in <span>[<a href="#ALPACA" class="xref">ALPACA</a>]</span>, a server that does not
 recognize the presented server name <span class="bcp14">SHOULD NOT</span> continue the handshake and
-instead fail with a fatal-level <code>unrecognized_name(112)</code> alert.  Note that this
+instead <span class="bcp14">SHOULD</span> fail with a fatal-level <code>unrecognized_name(112)</code> alert.  Note that this
 recommendation updates Section 3 of <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>: "If the server understood the
 ClientHello extension but does not recognize the server name, the server <span class="bcp14">SHOULD</span>
 take one of two actions: either abort the handshake by sending a fatal-level
 <code>unrecognized_name(112)</code> alert or continue the handshake." It is also
-<span class="bcp14">RECOMMENDED</span> that clients abort the handshake if the server acknowledges the SNI
-hostname with a different hostname than the one sent by the client.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
+<span class="bcp14">RECOMMENDED</span> that clients abort the handshake if the server acknowledges the SNI extension, but presents a certificate with a different hostname than the one sent by the client.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="application-layer-protocol-negotiation">
