@@ -397,13 +397,12 @@ Rationale: SNI supports deployment of multiple TLS-protected virtual servers on 
 
 In order to prevent the attacks described in {{ALPACA}}, a server that does not
 recognize the presented server name SHOULD NOT continue the handshake and
-instead fail with a fatal-level `unrecognized_name(112)` alert.  Note that this
+instead SHOULD fail with a fatal-level `unrecognized_name(112)` alert.  Note that this
 recommendation updates Section 3 of {{!RFC6066}}: "If the server understood the
 ClientHello extension but does not recognize the server name, the server SHOULD
 take one of two actions: either abort the handshake by sending a fatal-level
 `unrecognized_name(112)` alert or continue the handshake." It is also
-RECOMMENDED that clients abort the handshake if the server acknowledges the SNI
-hostname with a different hostname than the one sent by the client.
+RECOMMENDED that clients abort the handshake if the server acknowledges the SNI extension, but presents a certificate with a different hostname than the one sent by the client.
 
 ## Application-Layer Protocol Negotiation
 
