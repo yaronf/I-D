@@ -26,7 +26,7 @@
     Jinja2 2.11.3
     kitchen 1.2.6
     lxml 4.7.1
-    pycountry 20.7.3
+    pycountry 22.1.10
     pyflakes 2.4.0
     PyYAML 5.3.1
     requests 2.22.0
@@ -1192,7 +1192,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 8 July 2022</td>
+<td class="center">Expires 16 July 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1211,12 +1211,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc5288" class="eref">5288</a>, <a href="https://www.rfc-editor.org/rfc/rfc6066" class="eref">6066</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-01-04" class="published">4 January 2022</time>
+<time datetime="2022-01-12" class="published">12 January 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-07-08">8 July 2022</time></dd>
+<dd class="expires"><time datetime="2022-07-16">16 July 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1259,7 +1259,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 8 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 16 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1619,27 +1619,29 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
 <p id="section-3.4-1">Session resumption drastically reduces the number of TLS handshakes and thus is an essential
 performance feature for most deployments.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <p id="section-3.4-2">Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
-<span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span>.  For TLS 1.3, an equivalent PSK-based mechanism is described in
-<span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6.1" class="relref">Section 4.6.1</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>.
-When it is used, the resumption information <span class="bcp14">MUST</span>
+<span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span>.  For TLS 1.3, a more secure PSK-based mechanism is described in
+<span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6.1" class="relref">Section 4.6.1</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>. See <a href="https://blog.filippo.io/we-need-to-talk-about-session-tickets/">this post</a> by Filippo Valsorda for a comparison of TLS 1.2 and 1.3 session resumption, and <span>[<a href="#Springall16" class="xref">Springall16</a>]</span> for a quantitative study of TLS cryptographic "shortcuts", including session resumption.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">When it is used, the resumption information <span class="bcp14">MUST</span>
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
-Further recommendations apply to session tickets:<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+Further recommendations apply to session tickets:<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.4-3.1">A strong cipher suite <span class="bcp14">MUST</span> be used when encrypting the ticket (as least as strong as the main TLS cipher suite).<a href="#section-3.4-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-3.4-4.1">A strong cipher suite <span class="bcp14">MUST</span> be used when encrypting the ticket (as least as strong as the main TLS cipher suite).<a href="#section-3.4-4.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.4-3.2">Ticket keys <span class="bcp14">MUST</span> be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see <a href="#sec-pfs" class="xref">Section 6.3</a> for details on forward secrecy).<a href="#section-3.4-3.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.4-4.2">Ticket keys <span class="bcp14">MUST</span> be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see <a href="#sec-pfs" class="xref">Section 6.3</a> for details on forward secrecy). Old ticket keys <span class="bcp14">MUST</span> be destroyed shortly after a new key version is made available.<a href="#section-3.4-4.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.4-3.3">For similar reasons, session ticket validity <span class="bcp14">SHOULD</span> be limited to a reasonable duration (e.g., half as long as ticket key validity).<a href="#section-3.4-3.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.4-4.3">For similar reasons, session ticket validity <span class="bcp14">SHOULD</span> be limited to a reasonable duration (e.g., half as long as ticket key validity).<a href="#section-3.4-4.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.4-4.4">TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where a stolen ticket key is used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server <span class="bcp14">SHOULD NOT</span> resume sessions that are too old, e.g. sessions that have been open longer than two ticket key rotation periods. Note that this implies that some server implementations might need to abort sessions after a certain duration.<a href="#section-3.4-4.4" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-3.4-4">Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document (<a href="#detail" class="xref">Section 4</a>) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.<a href="#section-3.4-4" class="pilcrow">¶</a></p>
-<p id="section-3.4-5">TLS 1.3 provides the powerful option of forward secrecy even within a long-lived connection
+<p id="section-3.4-5">Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document (<a href="#detail" class="xref">Section 4</a>) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
+<p id="section-3.4-6">TLS 1.3 provides the powerful option of forward secrecy even within a long-lived connection
 that is periodically resumed. <span><a href="https://rfc-editor.org/rfc/rfc8446#section-2.2" class="relref">Section 2.2</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span> recommends that clients <span class="bcp14">SHOULD</span>
 send a "key_share" when initiating session resumption.
 In order to gain forward secrecy, this document recommends that server implementations <span class="bcp14">SHOULD</span>
-respond with a "key_share", to complete an ECDHE exchange on each session resumption.<a href="#section-3.4-5" class="pilcrow">¶</a></p>
-<p id="section-3.4-6">TLS session resumption introduces potential privacy issues where the server is able
-to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" class="xref">Sy2018</a>]</span> for more details.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+respond with a "key_share", to complete an ECDHE exchange on each session resumption.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+<p id="section-3.4-7">TLS session resumption introduces potential privacy issues where the server is able
+to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" class="xref">Sy2018</a>]</span> for more details.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="tls-renegotiation">
@@ -1936,7 +1938,7 @@ revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]<
         <li class="normal" id="section-5-2.4">Realtime media software and services that wish to protect Secure Realtime Transport Protocol (SRTP) traffic with DTLS.<a href="#section-5-2.4" class="pilcrow">¶</a>
 </li>
       </ul>
-<p id="section-5-3">This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS. If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to explicitly update the existing application protocol definition (one example is <span>[<a href="#TLS-XMPP" class="xref">TLS-XMPP</a>]</span>, which updates <span>[<a href="#RFC6120" class="xref">RFC6120</a>]</span>).<a href="#section-5-3" class="pilcrow">¶</a></p>
+<p id="section-5-3">This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS. If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to explicitly update the existing application protocol definition (one example is <span>[<a href="#RFC7590" class="xref">RFC7590</a>]</span>, which updates <span>[<a href="#RFC6120" class="xref">RFC6120</a>]</span>).<a href="#section-5-3" class="pilcrow">¶</a></p>
 <p id="section-5-4">Designers of new application protocols developed through the Internet
   Standards Process <span>[<a href="#RFC2026" class="xref">RFC2026</a>]</span> are expected at minimum to conform to the best
   practices recommended here, unless they provide documentation of
@@ -2299,7 +2301,7 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dd class="break"></dd>
 <dt id="Krawczyk2001">[Krawczyk2001]</dt>
         <dd>
-<span class="refAuthor">Krawczyk, H.</span>, <span class="refTitle">"The Order of Encryption and Authentication for Protecting Communications (Or: How Secure is SSL?)"</span>, <span class="seriesInfo">CRYPTO 01</span>, <time datetime="2001" class="refDate">2001</time>, <span>&lt;<a href="https://www.iacr.org/archive/crypto2001/21390309.pdf">https://www.iacr.org/archive/crypto2001/21390309.pdf</a>&gt;</span>. </dd>
+<span class="refAuthor">Krawczyk, H.</span>, <span class="refTitle">"The Order of Encryption and Authentication for Protecting Communications (or: How Secure Is SSL?)"</span>, <span class="seriesInfo">Advances in Cryptology - CRYPTO 2001 pp. 310-331</span>, <span class="seriesInfo">DOI 10.1007/3-540-44647-8_19</span>, <time datetime="2001" class="refDate">2001</time>, <span>&lt;<a href="https://doi.org/10.1007/3-540-44647-8_19">https://doi.org/10.1007/3-540-44647-8_19</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Logjam">[Logjam]</dt>
         <dd>
@@ -2405,6 +2407,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Sheffer, Y.</span>, <span class="refAuthor">Holz, R.</span>, and <span class="refAuthor">P. Saint-Andre</span>, <span class="refTitle">"Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)"</span>, <span class="seriesInfo">BCP 195</span>, <span class="seriesInfo">RFC 7525</span>, <span class="seriesInfo">DOI 10.17487/RFC7525</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7525">https://www.rfc-editor.org/info/rfc7525</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7590">[RFC7590]</dt>
+        <dd>
+<span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">T. Alkemade</span>, <span class="refTitle">"Use of Transport Layer Security (TLS) in the Extensible Messaging and Presence Protocol (XMPP)"</span>, <span class="seriesInfo">RFC 7590</span>, <span class="seriesInfo">DOI 10.17487/RFC7590</span>, <time datetime="2015-06" class="refDate">June 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7590">https://www.rfc-editor.org/info/rfc7590</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC8452">[RFC8452]</dt>
         <dd>
 <span class="refAuthor">Gueron, S.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">Y. Lindell</span>, <span class="refTitle">"AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption"</span>, <span class="seriesInfo">RFC 8452</span>, <span class="seriesInfo">DOI 10.17487/RFC8452</span>, <time datetime="2019-04" class="refDate">April 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8452">https://www.rfc-editor.org/info/rfc8452</a>&gt;</span>. </dd>
@@ -2421,13 +2427,13 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Soghoian, C.</span> and <span class="refAuthor">S. Stamm</span>, <span class="refTitle">"Certified Lies: Detecting and Defeating Government Interception Attacks Against SSL"</span>, <span class="seriesInfo">SSRN Electronic Journal</span>, <span class="seriesInfo">DOI 10.2139/ssrn.1591033</span>, <time datetime="2010" class="refDate">2010</time>, <span>&lt;<a href="https://doi.org/10.2139/ssrn.1591033">https://doi.org/10.2139/ssrn.1591033</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="Springall16">[Springall16]</dt>
+        <dd>
+<span class="refAuthor">Springall, D.</span>, <span class="refAuthor">Durumeric, Z.</span>, and <span class="refAuthor">J. Halderman</span>, <span class="refTitle">"Measuring the Security Harm of TLS Crypto Shortcuts"</span>, <span class="seriesInfo">Proceedings of the 2016 Internet Measurement Conference</span>, <span class="seriesInfo">DOI 10.1145/2987443.2987480</span>, <time datetime="2016-11" class="refDate">November 2016</time>, <span>&lt;<a href="https://doi.org/10.1145/2987443.2987480">https://doi.org/10.1145/2987443.2987480</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="Sy2018">[Sy2018]</dt>
         <dd>
 <span class="refAuthor">Sy, E.</span>, <span class="refAuthor">Burkert, C.</span>, <span class="refAuthor">Federrath, H.</span>, and <span class="refAuthor">M. Fischer</span>, <span class="refTitle">"Tracking Users across the Web via TLS Session Resumption"</span>, <span class="seriesInfo">Proceedings of the 34th Annual Computer Security Applications Conference</span>, <span class="seriesInfo">DOI 10.1145/3274694.3274708</span>, <time datetime="2018-12" class="refDate">December 2018</time>, <span>&lt;<a href="https://doi.org/10.1145/3274694.3274708">https://doi.org/10.1145/3274694.3274708</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="TLS-XMPP">[TLS-XMPP]</dt>
-        <dd>
-<span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">T. Alkemade</span>, <span class="refTitle">"Use of Transport Layer Security (TLS) in the Extensible Messaging and Presence Protocol (XMPP)"</span>, <span class="seriesInfo">RFC 7590</span>, <span class="seriesInfo">DOI 10.17487/RFC7590</span>, <time datetime="2015-06" class="refDate">June 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7590">https://www.rfc-editor.org/info/rfc7590</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="triple-handshake">[triple-handshake]</dt>
       <dd>
@@ -2478,6 +2484,9 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
             <li class="normal" id="appendix-A-2.2.2.3">2048-bit DH now a <span class="bcp14">MUST</span>, ECDH minimal curve size is 224, vs. 192 previously.<a href="#appendix-A-2.2.2.3" class="pilcrow">¶</a>
 </li>
             <li class="normal" id="appendix-A-2.2.2.4">Support for <code>extended_master_secret</code> is a <span class="bcp14">SHOULD</span>. Also removed other, more complicated, related mitigations.<a href="#appendix-A-2.2.2.4" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="appendix-A-2.2.2.5">
+              <span class="bcp14">SHOULD</span>-level restriction on the TLS session duration, depending on the rotation period of an <span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span> ticket key.<a href="#appendix-A-2.2.2.5" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
