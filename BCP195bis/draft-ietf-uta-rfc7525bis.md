@@ -209,11 +209,11 @@ This document was published as RFC 7525 when the industry was in the midst of it
 
 # Introduction
 
-Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.
+Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
 
 The TLS community reacted to these attacks in several ways:
 
-- Detailed guidance was published on the use of TLS 1.2 {{!RFC5246}} and DTLS 1.2 {{!RFC6347}}, along with earlier protocol versions. This guidance is included in the original {{?RFC7525}} and mostly retained in this revised version.
+- Detailed guidance was published on the use of TLS 1.2 {{!RFC5246}} and DTLS 1.2 {{!RFC6347}}, along with earlier protocol versions. This guidance is included in the original {{?RFC7525}} and mostly retained in this revised version; note that this guidance was mostly adopted by the industry since the publication of RFC 7525 in 2015.
 - Versions of TLS earlier than 1.2 were deprecated {{!RFC8996}}.
 - Version 1.3 of TLS {{!RFC8446}} was released and version 1.3 of DTLS was finalized {{!I-D.ietf-tls-dtls13}}; these versions largely mitigate or resolve the described attacks.
 
