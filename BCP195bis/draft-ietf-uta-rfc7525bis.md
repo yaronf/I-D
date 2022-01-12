@@ -226,7 +226,7 @@ Community knowledge about the strength of various algorithms and feasible attack
 
 A number of security-related terms in this document are used in the sense defined in {{!RFC4949}}.
 
-{::boilerplate bcp14}
+{::boilerplate bcp14-tagged}
 
 # General Recommendations
 {: #rec}
@@ -300,7 +300,7 @@ TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those ver
 ## Strict TLS
 
 
-The following recommendations are provided to help prevent SSL Stripping (an attack that is summarized in Section 2.1 of {{?RFC7457}}):
+The following recommendations are provided to help prevent SSL Stripping (an attack that is summarized in {{Section 2.1 of RFC7457}}):
       
 * In cases where an application protocol allows implementations or deployments a choice between strict TLS configuration and dynamic upgrade from unencrypted to TLS-protected traffic (such as STARTTLS), clients and servers SHOULD prefer strict TLS configuration.
 
@@ -317,7 +317,7 @@ The following recommendations are provided to help prevent SSL Stripping (an att
 
 
 
-* Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in Section 11.3 of {{?RFC6797}}).
+* Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in {{Section 11.3 of RFC6797}}).
       
 
 Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear. 
@@ -326,12 +326,12 @@ Rationale: Combining unprotected and TLS-protected communication opens the way t
 ## Compression
 {: #rec-compress}
 
-In order to help prevent compression-related attacks (summarized in Section 2.6 of {{?RFC7457}}), when using TLS 1.2 implementations and deployments SHOULD disable TLS-level compression (Section 6.2.2 of {{!RFC5246}}), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.
+In order to help prevent compression-related attacks (summarized in {{Section 2.6 of RFC7457}}), when using TLS 1.2 implementations and deployments SHOULD disable TLS-level compression ({{Section 6.2.2 of RFC5246}}), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.
 
 
 Rationale: TLS compression has been subject to security attacks, such as the CRIME attack.
 
-Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside of TLS and are thus outside the scope of this document. See Section 2.6 of {{?RFC7457}} for further details.
+Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside of TLS and are thus outside the scope of this document. See {{Section 2.6 of RFC7457}} for further details.
       
 
 ## TLS Session Resumption
@@ -356,7 +356,7 @@ Further recommendations apply to session tickets:
 Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document ({{detail}}) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.
 
 TLS 1.3 provides the powerful option of forward secrecy even within a long-lived connection
-that is periodically resumed. Section 2.2 of {{RFC8446}} recommends that clients SHOULD
+that is periodically resumed. {{Section 2.2 of RFC8446}} recommends that clients SHOULD
 send a "key_share" when initiating session resumption.
 In order to gain forward secrecy, this document recommends that server implementations SHOULD
 respond with a "key_share", to complete an ECDHE exchange on each session resumption.
@@ -377,7 +377,7 @@ Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake auth
 
 ## Server Name Indication
 
-TLS implementations MUST support the Server Name Indication (SNI) extension defined in Section 3 of {{!RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello (formerly called Encrypted SNI) once {{?I-D.ietf-tls-esni}} has been standardized.
+TLS implementations MUST support the Server Name Indication (SNI) extension defined in {{Section 3 of RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello (formerly called Encrypted SNI) once {{?I-D.ietf-tls-esni}} has been standardized.
 
 
 
@@ -389,13 +389,12 @@ Rationale: SNI supports deployment of multiple TLS-protected virtual servers on 
 
 In order to prevent the attacks described in {{ALPACA}}, a server that does not
 recognize the presented server name SHOULD NOT continue the handshake and
-instead fail with a fatal-level `unrecognized_name(112)` alert.  Note that this
-recommendation updates Section 3 of {{!RFC6066}}: "If the server understood the
+instead SHOULD fail with a fatal-level `unrecognized_name(112)` alert.  Note that this
+recommendation updates {{Section 3 of RFC6066}}: "If the server understood the
 ClientHello extension but does not recognize the server name, the server SHOULD
 take one of two actions: either abort the handshake by sending a fatal-level
 `unrecognized_name(112)` alert or continue the handshake." It is also
-RECOMMENDED that clients abort the handshake if the server acknowledges the SNI
-hostname with a different hostname than the one sent by the client.
+RECOMMENDED that clients abort the handshake if the server acknowledges the SNI extension, but presents a certificate with a different hostname than the one sent by the client.
 
 ## Application-Layer Protocol Negotiation
 
@@ -405,7 +404,7 @@ Application-Layer Protocol Negotiation (ALPN) extension {{!RFC7301}}.
 In order to prevent "cross-protocol" attacks resulting from failure to ensure
 that a message intended for use in one protocol cannot be mistaken for a
 message for use in another protocol, servers should strictly enforce the
-behavior prescribed in Section 3.2 of {{!RFC7301}}: "In the event that the
+behavior prescribed in {{Section 3.2 of RFC7301}}: "In the event that the
 server supports no protocols that the client advertises, then the server SHALL
 respond with a fatal `no_application_protocol` alert."  It is also RECOMMENDED
 that clients abort the handshake if the server acknowledges the ALPN extension,
@@ -428,7 +427,7 @@ For QUIC-on-TLS, refer to Sec. 9.2 of {{?RFC9001}}.
 
 For other protocols, generic guidance is given in Sec. 8 and Appendix E.5
 of {{RFC8446}}.
-Given the complexity, we RECOMMEND to avoid this feature altogether unless
+To paraphrase Appendix E.5, applications MUST avoid this feature unless
 an explicit specification exists for the application protocol in question to clarify
 when 0-RTT is appropriate and secure. This can take the form of an IETF RFC,
 a non-IETF standard, or even documentation associated with a non-standard protocol.
@@ -571,12 +570,12 @@ handshake (or in TLS 1.3, a Key Update) to rotate the session key.
 
 When a receiver has reached IL, the implementation SHOULD close the connection.
 
-For all TLS 1.3 cipher suites, readers are referred to Section 5.5 of {{RFC8446}} for the values of CL and IL. For all DTLS 1.3 cipher suites, readers are referred to Section 4.5.3 of
-{{I-D.ietf-tls-dtls13}}.
+For all TLS 1.3 cipher suites, readers are referred to {{Section 5.5 of RFC8446}} for the values of CL and IL. For all DTLS 1.3 cipher suites, readers are referred to {{Section 4.5.3 of
+I-D.ietf-tls-dtls13}}.
 
 For all AES-GCM cipher suites recommended for TLS 1.2 and DTLS 1.2 in this
 document, CL can be derived by plugging the corresponding parameters into the
-inequalities in Section 6.1 of {{?I-D.irtf-cfrg-aead-limits}} that apply to
+inequalities in {{Section 6.1 of ?I-D.irtf-cfrg-aead-limits}} that apply to
 random, partially implicit nonces, i.e., the nonce construction used in TLS
 1.2.  Although the obtained figures are slightly higher than those for TLS 1.3,
 it is RECOMMENDED that the same limit of 2<sup>24.5</sup> records is used for
@@ -619,7 +618,7 @@ When using RSA, servers SHOULD authenticate using certificates with at least a 2
 
 ## Truncated HMAC
 
-Implementations MUST NOT use the Truncated HMAC extension, defined in Section 7 of {{!RFC6066}}.
+Implementations MUST NOT use the Truncated HMAC extension, defined in {{Section 7 of RFC6066}}.
 
 
 
@@ -713,7 +712,7 @@ Host name validation typically applies only to the leaf "end entity" certificate
 ## AES-GCM
 {: #sec-aes}
 
-{{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to Section 11 of {{RFC5246}} for general security considerations when using TLS 1.2, and to Section 6 of {{!RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
+{{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to {{Section 11 of RFC5246}} for general security considerations when using TLS 1.2, and to {{Section 6 of !RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
 
 ### Nonce Reuse in TLS 1.2
 
@@ -730,8 +729,8 @@ could still choose their own (potentially insecure) nonce generation methods.
 
 It is therefore RECOMMENDED that TLS 1.2 implementations use the 64-bit
 sequence number to populate the `nonce_explicit` part of the GCM nonce, as
-described in the first two paragraphs of Section 5.3 of {{!RFC8446}}.  Note
-that this recommendation updates Section 3 of {{!RFC5288}}: "The nonce_explicit
+described in the first two paragraphs of {{Section 5.3 of RFC8446}}.  Note
+that this recommendation updates {{Section 3 of RFC5288}}: "The nonce_explicit
 MAY be the 64-bit sequence number."
 
 We note that at the time of writing there are no cipher suites defined for nonce
@@ -795,7 +794,7 @@ The following considerations and recommendations represent the current state of 
 
 * The On-Line Certification Status Protocol (OCSP) {{?RFC6960}} presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.)
 
-* The TLS Certificate Status Request extension (Section 8 of {{!RFC6066}}), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.
+* The TLS Certificate Status Request extension ({{Section 8 of RFC6066}}), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.
 
 * OCSP stapling as defined in {{!RFC6066}} does not extend to intermediate certificates used in a certificate chain. Although the Multiple Certificate Status extension {{?RFC6961}} addresses this shortcoming, it is a recent addition without much deployment.
 
