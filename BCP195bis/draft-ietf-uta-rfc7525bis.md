@@ -372,7 +372,7 @@ TLS 1.2 clients and servers MUST implement the `renegotiation_info` extension, a
 
 TLS 1.2 clients MUST send `renegotiation_info` in the Client Hello.  If the server does not acknowledge the extension, the client MUST generate a fatal `handshake_failure` alert prior to terminating the connection.
 
-Rationale: It is not safe for client to connect to a TLS 1.2 server that does not support `renegotiation_info`, regardless of if either endpoint actually implements renegotiation.  See also {{Section 4.1 of RFC5746}}.
+Rationale: It is not safe for a client to connect to a TLS 1.2 server that does not support `renegotiation_info`, regardless of whether either endpoint actually implements renegotiation.  See also {{Section 4.1 of RFC5746}}.
 
 A related attack resulting from TLS session parameters not properly authenticated is Triple Handshake {{triple-handshake}}. To address this attack, TLS 1.2 implementations SHOULD support the `extended_master_secret` extension defined in {{!RFC7627}}.      
 
