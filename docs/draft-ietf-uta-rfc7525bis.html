@@ -9,8 +9,8 @@
 <meta content="Peter Saint-Andre" name="author">
 <meta content="Thomas Fossati" name="author">
 <meta content="
-       Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases. 
-       This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, we believe new guidance is needed. 
+       Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years, the industry has witnessed several serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases. 
+       This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, updated guidance is needed. 
     " name="description">
 <meta content="xml2rfc 3.12.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
@@ -1192,7 +1192,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 16 July 2022</td>
+<td class="center">Expires 17 July 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1211,12 +1211,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc5288" class="eref">5288</a>, <a href="https://www.rfc-editor.org/rfc/rfc6066" class="eref">6066</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-01-12" class="published">12 January 2022</time>
+<time datetime="2022-01-13" class="published">13 January 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-07-16">16 July 2022</time></dd>
+<dd class="expires"><time datetime="2022-07-17">17 July 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1237,8 +1237,8 @@ li > p:last-of-type {
 <h1 id="title">Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, we believe new guidance is needed.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years, the industry has witnessed several serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, updated guidance is needed.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1259,7 +1259,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 16 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 17 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1344,7 +1344,7 @@ li > p:last-of-type {
                 <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-general-guidelines" class="xref">General Guidelines</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
-                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-recommended-cipher-suites" class="xref">Recommended Cipher Suites</a></p>
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-cipher-suites-for-tls-12" class="xref">Cipher Suites for TLS 1.2</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.1">
                     <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="xref">4.2.1</a>.  <a href="#name-implementation-details" class="xref">Implementation Details</a></p>
@@ -1456,12 +1456,14 @@ li > p:last-of-type {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Transport Layer Security (TLS) <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> and Datagram Transport Security Layer (DTLS) <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span> are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC <span>[<a href="#RFC3602" class="xref">RFC3602</a>]</span> and RC4 <span>[<a href="#RFC7465" class="xref">RFC7465</a>]</span> encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span> provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">The TLS community reacted to these attacks in two ways:<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-1">Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC <span>[<a href="#RFC3602" class="xref">RFC3602</a>]</span> and RC4 <span>[<a href="#RFC7465" class="xref">RFC7465</a>]</span> encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span> provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">The TLS community reacted to these attacks in several ways:<a href="#section-1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1-3.1">Detailed guidance was published on the use of TLS 1.2 and earlier protocol versions. This guidance is included in the original <span>[<a href="#RFC7525" class="xref">RFC7525</a>]</span> and mostly retained in this revised version.<a href="#section-1-3.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1-3.1">Detailed guidance was published on the use of TLS 1.2 <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> and DTLS 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span>, along with earlier protocol versions. This guidance is included in the original <span>[<a href="#RFC7525" class="xref">RFC7525</a>]</span> and mostly retained in this revised version; note that this guidance was mostly adopted by the industry since the publication of RFC 7525 in 2015.<a href="#section-1-3.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-1-3.2">A new protocol version was released, TLS 1.3 <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>, which largely mitigates or resolves these attacks.<a href="#section-1-3.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-3.2">Versions of TLS earlier than 1.2 were deprecated <span>[<a href="#RFC8996" class="xref">RFC8996</a>]</span>.<a href="#section-1-3.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-1-3.3">Version 1.3 of TLS <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> was released and version 1.3 of DTLS was finalized <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>; these versions largely mitigate or resolve the described attacks.<a href="#section-1-3.3" class="pilcrow">¶</a>
 </li>
       </ul>
 <p id="section-1-4">Those who implement and deploy TLS and DTLS, in particular versions 1.2 or earlier of these protocols, need guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in environments defined in <a href="#applicability" class="xref">Section 5</a>. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.<a href="#section-1-4" class="pilcrow">¶</a></p>
@@ -1521,8 +1523,6 @@ Rationale: TLS 1.0 (published in 1999) does not support many modern, strong ciph
               <p id="section-3.1.1-2.4.1">Implementations <span class="bcp14">MUST NOT</span> negotiate TLS version 1.1 <span>[<a href="#RFC4346" class="xref">RFC4346</a>]</span>.<a href="#section-3.1.1-2.4.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.4.2">
 Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.<a href="#section-3.1.1-2.4.2" class="pilcrow">¶</a></p>
-<p id="section-3.1.1-2.4.3">
-NOTE: This recommendation has been changed from <span class="bcp14">SHOULD NOT</span> to <span class="bcp14">MUST NOT</span> on the assumption that <span>[<a href="#I-D.ietf-tls-oldversions-deprecate" class="xref">I-D.ietf-tls-oldversions-deprecate</a>]</span> will be published as an RFC before this document.<a href="#section-3.1.1-2.4.3" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.1-2.5">
               <p id="section-3.1.1-2.5.1">Implementations <span class="bcp14">MUST</span> support TLS 1.2 <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> and <span class="bcp14">MUST</span> prefer to negotiate TLS version 1.2 over earlier versions of TLS.<a href="#section-3.1.1-2.5.1" class="pilcrow">¶</a></p>
@@ -1530,7 +1530,7 @@ NOTE: This recommendation has been changed from <span class="bcp14">SHOULD NOT</
 Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 (<a href="#rec-cipher" class="xref">Section 4.2</a> below) are only available in this version.<a href="#section-3.1.1-2.5.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.1-2.6">
-              <p id="section-3.1.1-2.6.1">Implementations <span class="bcp14">SHOULD</span> support TLS 1.3 <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> and if implemented, <span class="bcp14">MUST</span> prefer to negotiate TLS 1.3 over earlier versions of TLS.<a href="#section-3.1.1-2.6.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.1-2.6.1">Implementations <span class="bcp14">SHOULD</span> support TLS 1.3 <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> and, if implemented, <span class="bcp14">MUST</span> prefer to negotiate TLS 1.3 over earlier versions of TLS.<a href="#section-3.1.1-2.6.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-2.6.2">
 Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers <span class="bcp14">MUST</span> still follow all the recommendations in this document.<a href="#section-3.1.1-2.6.2" class="pilcrow">¶</a></p>
 </li>
@@ -1556,13 +1556,13 @@ Rationale: secure deployment of TLS 1.3 is significantly easier and less error p
 Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).<a href="#section-3.1.2-2.1.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.2-2.2">
-              <p id="section-3.1.2-2.2.1">Implementations <span class="bcp14">MUST</span> support and (unless a higher version is available) <span class="bcp14">MUST</span> prefer to negotiate DTLS version 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span><a href="#section-3.1.2-2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.2-2.2.1">Implementations <span class="bcp14">MUST</span> support DTLS 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span> and <span class="bcp14">MUST</span> prefer to negotiate DTLS version 1.2 over earlier versions of DTLS.<a href="#section-3.1.2-2.2.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.2-2.2.2">
 Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
 (There is no version 1.1 of DTLS.)<a href="#section-3.1.2-2.2.2" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.1.2-2.3">
-              <p id="section-3.1.2-2.3.1">Implementations <span class="bcp14">SHOULD</span> support and, if available, <span class="bcp14">MUST</span> prefer to negotiate DTLS version 1.3 as specified in <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-3.1.2-2.3.1" class="pilcrow">¶</a></p>
+              <p id="section-3.1.2-2.3.1">Implementations <span class="bcp14">SHOULD</span> support DTLS 1.3 <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span> and, if implemented, <span class="bcp14">MUST</span> prefer to negotiate DTLS version 1.3 over earlier versions of DTLS.<a href="#section-3.1.2-2.3.1" class="pilcrow">¶</a></p>
 <p id="section-3.1.2-2.3.2">
 Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#section-3.1.2-2.3.2" class="pilcrow">¶</a></p>
 </li>
@@ -1806,8 +1806,8 @@ Rationale: Forward secrecy (sometimes called "perfect forward
 </div>
 <div id="rec-cipher">
 <section id="section-4.2">
-        <h3 id="name-recommended-cipher-suites">
-<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-recommended-cipher-suites" class="section-name selfRef">Recommended Cipher Suites</a>
+        <h3 id="name-cipher-suites-for-tls-12">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-cipher-suites-for-tls-12" class="section-name selfRef">Cipher Suites for TLS 1.2</a>
         </h3>
 <p id="section-4.2-1">Given the foregoing considerations, implementation and deployment of the following cipher suites is <span class="bcp14">RECOMMENDED</span>:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2069,7 +2069,7 @@ reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="
         </h3>
 <p id="section-6.4-1">For performance reasons, many TLS implementations reuse Diffie-Hellman and Elliptic Curve Diffie-Hellman exponents across multiple connections. Such reuse can result in major security issues:<a href="#section-6.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.4-2.1">If exponents are reused for too long (e.g., even more than a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.<a href="#section-6.4-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-6.4-2.1">If exponents are reused for too long (in some cases, even as little as a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.<a href="#section-6.4-2.1" class="pilcrow">¶</a>
 </li>
           <li class="normal" id="section-6.4-2.2">TLS implementations that reuse exponents should test the DH public key they receive for group membership, in order to avoid some known attacks. These tests are not standardized in TLS at the time of writing. See <span>[<a href="#RFC6989" class="xref">RFC6989</a>]</span> for recipient tests required of IKEv2 implementations that reuse DH exponents.<a href="#section-6.4-2.2" class="pilcrow">¶</a>
 </li>
@@ -2151,10 +2151,6 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="I-D.ietf-tls-dtls13">[I-D.ietf-tls-dtls13]</dt>
         <dd>
 <span class="refAuthor">Rescorla, E.</span>, <span class="refAuthor">Tschofenig, H.</span>, and <span class="refAuthor">N. Modadugu</span>, <span class="refTitle">"The Datagram Transport Layer Security (DTLS) Protocol Version 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-dtls13-43</span>, <time datetime="2021-04-30" class="refDate">30 April 2021</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-tls-dtls13-43.txt">https://www.ietf.org/archive/id/draft-ietf-tls-dtls13-43.txt</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="I-D.ietf-tls-oldversions-deprecate">[I-D.ietf-tls-oldversions-deprecate]</dt>
-        <dd>
-<span class="refAuthor">Moriarty, K.</span> and <span class="refAuthor">S. Farrell</span>, <span class="refTitle">"Deprecating TLS 1.0 and TLS 1.1"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-oldversions-deprecate-12</span>, <time datetime="2021-01-21" class="refDate">21 January 2021</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-tls-oldversions-deprecate-12.txt">https://www.ietf.org/archive/id/draft-ietf-tls-oldversions-deprecate-12.txt</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
