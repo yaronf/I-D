@@ -550,7 +550,7 @@ This document does not change the mandatory-to-implement (MTI) TLS cipher suite(
 
 Note that some profiles of TLS 1.2 use different cipher suites. For example, {{?RFC6460}} defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.
 
-{{!RFC8422}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC8422}}.  Clients and servers SHOULD support the NIST P-256 (secp256r1) curve {{!RFC8422}} and X25519 {{!RFC7748}}. For backwards compatibility purposes, clients MAY send an ec_point_formats extension with a single element, "uncompressed".
+{{!RFC8422}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC8422}}.  Clients and servers SHOULD support the NIST P-256 (secp256r1) {{!RFC8422}} and X25519 (x25519) {{!RFC7748}} curves.  Note that {{!RFC8422}} deprecates all but the uncompressed point format.  Therefore, if the client sends an ec_point_formats extension, the ECPointFormatList MUST contain a single element, "uncompressed".
 
 ## Cipher Suites for TLS 1.3
 
