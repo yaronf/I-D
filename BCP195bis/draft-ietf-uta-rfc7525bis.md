@@ -508,11 +508,12 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 * Implementations MUST support and prefer to negotiate cipher suites 
                offering forward secrecy, such as those in the Ephemeral 
                Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
-               and "ECDHE") families.  However, given the known limitations
-               around both construction (e.g., {{RACCOON}}) and negotiation
-               (including using {{?RFC7919}}), TLS 1.2 implementations SHOULD
-               NOT negotiate cipher suites based on ephemeral finite-field
-               Diffie-Hellman key agreement (i.e., "TLS_DHE_*" suites).
+               and "ECDHE") families.  However, given the known fragility
+               of the construction (see {{RACCOON}}) and the limitation around
+               negotiation (including using {{?RFC7919}}, which has seen very
+               limited uptake), TLS 1.2 implementations SHOULD NOT negotiate
+               cipher suites based on ephemeral finite-field Diffie-Hellman key
+               agreement (i.e., "TLS_DHE_*" suites).
 
   Rationale: Forward secrecy (sometimes called "perfect forward 
                secrecy") prevents the recovery of information that was encrypted 
