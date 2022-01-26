@@ -857,10 +857,13 @@ on the normative changes.
   * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".
 * Differences specific to TLS 1.2:
   * SHOULD-level guidance on AES-GCM nonce generation.
-  * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
+  * SHOULD NOT use (static or ephemeral) finite-field DH key agreement.
+  * SHOULD NOT reuse ephemeral finite-field DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
   * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
   * SHOULD-level restriction on the TLS session duration, depending on the rotation period of an {{RFC5077}} ticket key.
+  * Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers
+  * Recommend curve X25519 alongside NIST P-256
 * Differences specific to TLS 1.3:
   * New TLS 1.3 capabilities: 0-RTT.
   * Removed capabilities: renegotiation, compression.
