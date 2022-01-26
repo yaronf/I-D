@@ -500,7 +500,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                the fact that they do not support forward secrecy.
             
 * Implementations SHOULD NOT negotiate cipher suites based on
-               non-ephemeral finite-field Diffie-Hellman key agreement.
+               non-ephemeral (static) finite-field Diffie-Hellman key agreement.
 
   Rationale: These cipher suites, which have assigned values starting
                with the string "TLS_DH_*", have several drawbacks, especially
