@@ -823,7 +823,7 @@ For performance reasons, many TLS implementations reuse Diffie-Hellman and Ellip
 To address these concerns:
 
 * TLS implementations SHOULD NOT use static finite-field DH keys and SHOULD NOT reuse ephemeral finite-field DH keys across multiple connections.
-* Implementations that want to reuse elliptic-curve DH keys SHOULD either use a "safe curve" {{SAFECURVES}} (e.g., X25519), or perform the checks described in {{NIST.SP.800-56A}} on the received points.
+* Server implementations that want to reuse elliptic-curve DH keys SHOULD either use a "safe curve" {{SAFECURVES}} (e.g., X25519), or perform the checks described in {{NIST.SP.800-56A}} on the received points.
 
 ## Certificate Revocation
 
