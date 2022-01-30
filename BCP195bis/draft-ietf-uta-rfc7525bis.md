@@ -506,9 +506,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                the fact that they do not support forward secrecy.
 
 * Implementations MUST support and prefer to negotiate cipher suites 
-               offering forward secrecy, such as those in the Ephemeral 
-               Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
-               and "ECDHE") families.  However, given the known fragility
+               offering forward secrecy.  However, given the known fragility
                of the construction (see {{RACCOON}}) and the limitation around
                negotiation (including using {{?RFC7919}}, which has seen very
                limited uptake), TLS 1.2 implementations SHOULD NOT negotiate
