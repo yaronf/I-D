@@ -497,11 +497,19 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                with the string "TLS_RSA_WITH_*", have several drawbacks, especially
                the fact that they do not support forward secrecy.
             
+* Implementations SHOULD NOT negotiate cipher suites based on
+               non-ephemeral (static) finite-field Diffie-Hellman key agreement.
+
+  Rationale: These cipher suites, which have assigned values prefixed by "TLS_DH_*", have several drawbacks, especially
+               the fact that they do not support forward secrecy.
 
 * Implementations MUST support and prefer to negotiate cipher suites 
-               offering forward secrecy, such as those in the Ephemeral 
-               Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
-               and "ECDHE") families.
+               offering forward secrecy.  However, TLS 1.2 implementations SHOULD NOT negotiate
+               cipher suites based on ephemeral finite-field Diffie-Hellman key
+               agreement (i.e., "TLS_DHE_*" suites).  This is justified by the known fragility
+               of the construction (see {{RACCOON}}) and the limitation around
+               negotiation, including using {{?RFC7919}}, which has seen very
+               limited uptake.
 
   Rationale: Forward secrecy (sometimes called "perfect forward 
                secrecy") prevents the recovery of information that was encrypted 
@@ -515,11 +523,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 Given the foregoing considerations, implementation and deployment of the following cipher suites is RECOMMENDED:
 
 
-* TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
-
 * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-
-* TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
 
 * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         
@@ -541,7 +545,7 @@ Clients are of course free to offer stronger cipher suites, e.g., using AES-256;
 
 The previous version of this document implicitly allowed the old RFC 5246 mandatory-to-implement cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA. At the time of writing, this cipher suite does not provide additional interoperability, except with extremely old clients. As with other cipher suites that do not provide forward secrecy, implementations SHOULD NOT support this cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).
 
-{{!RFC4492}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC4492}}.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve {{!RFC4492}}. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".
+{{!RFC8422}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC8422}}.  Clients and servers SHOULD support the NIST P-256 (secp256r1) {{!RFC8422}} and X25519 (x25519) {{!RFC7748}} curves.  Note that {{!RFC8422}} deprecates all but the uncompressed point format.  Therefore, if the client sends an ec_point_formats extension, the ECPointFormatList MUST contain a single element, "uncompressed".
 
 ## Cipher Suites for TLS 1.3
 
@@ -761,7 +765,7 @@ In the context of TLS and DTLS, such compromise of long-term keys is not entirel
 Forward secrecy ensures in such cases that it is not feasible for an attacker to determine the session keys even if the attacker has obtained the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys but remains passive during the conversation.
 
 
-Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetic.
+Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses elliptic curves instead of the originally proposed modular arithmetic. Given the current state of the art, elliptic-curve Diffie-Hellman appears to be more efficient, permits shorter key lengths, and allows less freedom for implementation errors than finite-field Diffie–Hellman.
 
 Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  This document therefore advocates strict use of forward-secrecy-only ciphers.
       
@@ -848,11 +852,14 @@ on the normative changes.
   * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".
 * Differences specific to TLS 1.2:
   * SHOULD-level guidance on AES-GCM nonce generation.
-  * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
+  * SHOULD NOT use (static or ephemeral) finite-field DH key agreement.
+  * SHOULD NOT reuse ephemeral finite-field DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
   * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
   * SHOULD-level restriction on the TLS session duration, depending on the rotation period of an {{RFC5077}} ticket key.
+  * Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers
   * SHOULD NOT use the old MTI cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.
+  * Recommend curve X25519 alongside NIST P-256
 * Differences specific to TLS 1.3:
   * New TLS 1.3 capabilities: 0-RTT.
   * Removed capabilities: renegotiation, compression.
