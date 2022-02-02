@@ -114,8 +114,8 @@ informative:
 
   Boeck2016:
     author:
-    - ins: H. Boeck
-      name: Hanno Boeck
+    - ins: H. Böck
+      name: Hanno Böck
     - ins: A. Zauner
       name: Aaron Zauner
     - ins: S. Devlin
@@ -153,12 +153,12 @@ informative:
       name: Robert Merget
     - ins: D. Poddebniak
       name: Damian Poddebniak
-    - ins: J. Mueller
-      name: Jens Mueller
+    - ins: J. Müller
+      name: Jens Müller
     - ins: J. Somorovsky
       name: Juraj Somorovsky
     - ins: J. Schwenk
-      name: Joerg Schwenk
+      name: Jörg Schwenk
     - ins: S. Schinzel
       name: Sebastian Schinzel
     date: '2021'
@@ -182,7 +182,7 @@ informative:
     - ins: J. Mittmann
       name: Johannes Mittmann
     - ins: J. Schwenk
-      name: Joerg Schwenk
+      name: Jörg Schwenk
     date: '2021'
     target:
       https://www.usenix.org/conference/usenixsecurity21/presentation/merget
