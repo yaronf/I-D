@@ -190,6 +190,44 @@ informative:
       'Raccoon Attack: Finding and Exploiting Most-Significant-Bit-Oracles in TLS-DH(E)'
     seriesinfo: '30th USENIX Security Symposium (USENIX Security 21)'
 
+  Antipa2003:
+    author:
+    - ins: A. Antipa
+      name: Adrian Antipa
+    - ins: D. R. L. Brown
+      name: Daniel R. L. Brown
+    - ins: A. Menezes
+      name: Alfred Menezes
+    - ins: R. Struik
+      name: Rene Struik
+    - ins: S. A. Vanstone
+      name: Scott A. Vanstone
+    date: '2003'
+    title: Validation of Elliptic Curve Public Keys
+    seriesinfo: 'Public Key Cryptography - PKC 2003'
+
+  Jager2015:
+    author:
+    - ins: T. Jager
+      name: Tibor Jager
+    - ins: J. Schwenk
+      name: Jorg Schwenk
+    - ins: J. Somorovsky
+      name: Juraj Somorovsky
+    date: '2015'
+    title: Practical Invalid Curve Attacks on TLS-ECDH
+    seriesinfo: 'European Symposium on Research in Computer Security (ESORICS) 2015'
+
+  SAFECURVES:
+    author:
+    - ins: D. J. Bernstein
+      name: Daniel J. Bernstein
+    - ins: T. Lange
+      name: Tanja Lange
+    date: 1 December 2014
+    target: https://safecurves.cr.yp.to
+    title: 'SafeCurves: Choosing Safe Curves for Elliptic-Curve Cryptography'
+
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years, the industry has witnessed several serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
 
@@ -776,13 +814,16 @@ For performance reasons, many TLS implementations reuse Diffie-Hellman and Ellip
 
 * If exponents are reused for too long (in some cases, even as little as a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.
 
-* TLS implementations that reuse exponents should test the DH public key they receive for group membership, in order to avoid some known attacks. These tests are not standardized in TLS at the time of writing. See {{?RFC6989}} for recipient tests required of IKEv2 implementations that reuse DH exponents.
+* TLS implementations that reuse exponents should test the DH public key they receive for group membership, in order to avoid some known attacks. These tests are not standardized in TLS at the time of writing, although general guidance in this area is provided by {{NIST.SP.800-56A}} and available in many protocol implementations.
 
-* Under certain conditions, the use of static DH keys, or of ephemeral DH keys that are reused across multiple connections, can lead to timing attacks (such as those described in {{RACCOON}}) on the shared secrets used in Diffie-Hellman key exchange.
+* Under certain conditions, the use of static finite-field DH keys, or of ephemeral finite-field DH keys that are reused across multiple connections, can lead to timing attacks (such as those described in {{RACCOON}}) on the shared secrets used in Diffie-Hellman key exchange.
 
-To address these concerns, TLS implementations SHOULD NOT use static DH keys and SHOULD NOT reuse ephemeral DH keys across multiple connections.
+* An "invalid curve" attack can be mounted against elliptic-curve DH if the victim does not verify that the received point lies on the correct curve.  If the victim is reusing the DH secrets, the attacker can repeat the probe varying the points to recover the full secret (see {{Antipa2003}} and {{Jager2015}}).
 
-<cref>TODO: revisit when draft-bartle-tls-deprecate-ffdhe becomes a TLS WG item, since it specifies MUST NOT rather than SHOULD NOT.</cref>
+To address these concerns:
+
+* TLS implementations SHOULD NOT use static finite-field DH keys and SHOULD NOT reuse ephemeral finite-field DH keys across multiple connections.
+* Server implementations that want to reuse elliptic-curve DH keys SHOULD either use a "safe curve" {{SAFECURVES}} (e.g., X25519), or perform the checks described in {{NIST.SP.800-56A}} on the received points.
 
 ## Certificate Revocation
 
