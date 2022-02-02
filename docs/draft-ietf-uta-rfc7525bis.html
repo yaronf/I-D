@@ -2102,29 +2102,28 @@ reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="
         </h3>
 <p id="section-6.5-1">The following considerations and recommendations represent the current state of the art regarding certificate revocation, even though no complete and efficient solution exists for the problem of checking the revocation status of common public key certificates <span>[<a href="#RFC5280" class="xref">RFC5280</a>]</span>:<a href="#section-6.5-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.5-2.1">Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness (despite workarounds such as partitioned CRLs and delta CRLs).<a href="#section-6.5-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-6.5-2.1">Certificate revocation is an important tool when recovering from attacks on the TLS implementation, as well as cases of misissued certificates. TLS implementations <span class="bcp14">MUST</span> implement a strategy to distrust revoked certificates.<a href="#section-6.5-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.5-2.2">Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond a small number of the most heavily used Web servers.<a href="#section-6.5-2.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.5-2.2">Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness, despite workarounds such as partitioned CRLs and delta CRLs. The more modern <span>[<a href="#CRLite" class="xref">CRLite</a>]</span> and the follow-on Let's Revoke <span>[<a href="#LetsRevoke" class="xref">LetsRevoke</a>]</span> build on the availability of Certificate Transparency <span>[<a href="#RFC9162" class="xref">RFC9162</a>]</span> logs and aggressive compression to allow practical use of the CRL infrastructure, but at the time of writing, neither solution is deployed for client-side revocation processing at scale.<a href="#section-6.5-2.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.5-2.3">The On-Line Certification Status Protocol (OCSP) <span>[<a href="#RFC6960" class="xref">RFC6960</a>]</span> presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.)<a href="#section-6.5-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.5-2.3">Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond a small number of the most heavily used Web servers.<a href="#section-6.5-2.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.5-2.4">The TLS Certificate Status Request extension (<span><a href="https://rfc-editor.org/rfc/rfc6066#section-8" class="relref">Section 8</a> of [<a href="#RFC6066" class="xref">RFC6066</a>]</span>), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.<a href="#section-6.5-2.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.5-2.4">The On-Line Certification Status Protocol (OCSP) <span>[<a href="#RFC6960" class="xref">RFC6960</a>]</span> in its basic form presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.). For an up-to-date survey of the status of OCSP deployment in the Web PKI see <span>[<a href="#Chung18" class="xref">Chung18</a>]</span>.<a href="#section-6.5-2.4" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.5-2.5">OCSP stapling as defined in <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> does not extend to intermediate certificates used in a certificate chain. Although the Multiple Certificate Status extension <span>[<a href="#RFC6961" class="xref">RFC6961</a>]</span> addresses this shortcoming, it is a recent addition without much deployment.<a href="#section-6.5-2.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.5-2.5">The TLS Certificate Status Request extension (<span><a href="https://rfc-editor.org/rfc/rfc6066#section-8" class="relref">Section 8</a> of [<a href="#RFC6066" class="xref">RFC6066</a>]</span>), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.<a href="#section-6.5-2.5" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.5-2.6">Both CRLs and OCSP depend on relatively reliable connectivity to the Internet, which might not be available to certain kinds of nodes (such as newly provisioned devices that need to establish a secure connection in order to boot up for the first time).<a href="#section-6.5-2.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.5-2.6">
+            <span>[<a href="#RFC7633" class="xref">RFC7633</a>]</span> defines a certificate extension that indicates that clients must expect stapled OCSP responses for the certificate and must abort the handshake ("hard-fail") if such a response is not available.<a href="#section-6.5-2.6" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.5-2.7">OCSP stapling as used in TLS 1.2 does not extend to intermediate certificates within a certificate chain. The Multiple Certificate Status extension <span>[<a href="#RFC6961" class="xref">RFC6961</a>]</span> addresses this shortcoming, but it has seen little deployment and had been deprecated by <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>. As a result, we no longer recommend this extension for TLS 1.2.<a href="#section-6.5-2.7" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.5-2.8">TLS 1.3 (<span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.4.2.1" class="relref">Section 4.4.2.1</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>) allows the association of OCSP information with intermediate certificates by using an extension to the CertificateEntry structure. However using this facility remains impractical because many CAs either do not publish OCSP for CA certificates or publish OCSP reports with a lifetime that is too long to be useful.<a href="#section-6.5-2.8" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.5-2.9">Both CRLs and OCSP depend on relatively reliable connectivity to the Internet, which might not be available to certain kinds of nodes. A common example is newly provisioned devices that need to establish a secure connection in order to boot up for the first time.<a href="#section-6.5-2.9" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-6.5-3">With regard to common public key certificates, servers <span class="bcp14">SHOULD</span> support the following as a best practice given the current state of the art and as a foundation for a possible future solution:<a href="#section-6.5-3" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-6.5-4">
-<li id="section-6.5-4.1">OCSP <span>[<a href="#RFC6960" class="xref">RFC6960</a>]</span><a href="#section-6.5-4.1" class="pilcrow">¶</a>
-</li>
-          <li id="section-6.5-4.2">Both the status_request extension defined in <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> and the status_request_v2 extension defined in <span>[<a href="#RFC6961" class="xref">RFC6961</a>]</span> (This might enable interoperability with the widest range of clients.)<a href="#section-6.5-4.2" class="pilcrow">¶</a>
-</li>
-          <li id="section-6.5-4.3">The OCSP stapling extension defined in <span>[<a href="#RFC6961" class="xref">RFC6961</a>]</span><a href="#section-6.5-4.3" class="pilcrow">¶</a>
-</li>
-        </ol>
-<p id="section-6.5-5">The considerations in this section do not apply to scenarios where the DANE-TLSA resource record <span>[<a href="#RFC6698" class="xref">RFC6698</a>]</span> is used to signal to a client which certificate a server considers valid and good to use for TLS connections.<a href="#section-6.5-5" class="pilcrow">¶</a></p>
+<p id="section-6.5-3">For the common use cases of public key certificates in TLS, servers <span class="bcp14">SHOULD</span> support the following as a best practice given the current state of the art and as a foundation for a possible future solution: OCSP <span>[<a href="#RFC6960" class="xref">RFC6960</a>]</span> and OCSP stapling using the <code>status_request</code> extension defined in <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span>. Note that the exact mechanism for embedding the <code>status_request</code> extension differs between TLS 1.2 and 1.3. As a matter of local policy, server operators <span class="bcp14">MAY</span> request that CAs issue must-staple <span>[<a href="#RFC7633" class="xref">RFC7633</a>]</span> certificates for the server and/or for client authentication, but we recommend to review the operational conditions before deciding on this approach.<a href="#section-6.5-3" class="pilcrow">¶</a></p>
+<p id="section-6.5-4">The considerations in this section do not apply to scenarios where the DANE-TLSA resource record <span>[<a href="#RFC6698" class="xref">RFC6698</a>]</span> is used to signal to a client which certificate a server considers valid and good to use for TLS connections.<a href="#section-6.5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2146,8 +2145,8 @@ Nimrod Aviram,
 Sean Turner,
 Valery Smyslov
 for helpful comments and discussions that have shaped this document.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">The authors gratefully acknowlege the contribution of Ralph Holz, who was a coauthor of RFC 7525, the previous version of this document.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">See RFC 7525 for additional acknowledgements for the previous revision of this document.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-2">The authors gratefully acknowledge the contribution of Ralph Holz, who was a coauthor of RFC 7525, the previous version of this document.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">See RFC 7525 for additional acknowledgments for the previous revision of this document.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <section id="section-8">
@@ -2256,7 +2255,7 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dl class="references">
 <dt id="ALPACA">[ALPACA]</dt>
         <dd>
-<span class="refAuthor">Brinkmann, M.</span>, <span class="refAuthor">Dresen, C.</span>, <span class="refAuthor">Merget, R.</span>, <span class="refAuthor">Poddebniak, D.</span>, <span class="refAuthor">Mueller, J.</span>, <span class="refAuthor">Somorovsky, J.</span>, <span class="refAuthor">Schwenk, J.</span>, and <span class="refAuthor">S. Schinzel</span>, <span class="refTitle">"ALPACA: Application Layer Protocol Confusion - Analyzing and Mitigating Cracks in TLS Authentication"</span>, <span class="seriesInfo">30th USENIX Security Symposium (USENIX Security 21) </span>, <time datetime="2021" class="refDate">2021</time>, <span>&lt;<a href="https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann">https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann</a>&gt;</span>. </dd>
+<span class="refAuthor">Brinkmann, M.</span>, <span class="refAuthor">Dresen, C.</span>, <span class="refAuthor">Merget, R.</span>, <span class="refAuthor">Poddebniak, D.</span>, <span class="refAuthor">Müller, J.</span>, <span class="refAuthor">Somorovsky, J.</span>, <span class="refAuthor">Schwenk, J.</span>, and <span class="refAuthor">S. Schinzel</span>, <span class="refTitle">"ALPACA: Application Layer Protocol Confusion - Analyzing and Mitigating Cracks in TLS Authentication"</span>, <span class="seriesInfo">30th USENIX Security Symposium (USENIX Security 21) </span>, <time datetime="2021" class="refDate">2021</time>, <span>&lt;<a href="https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann">https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Antipa2003">[Antipa2003]</dt>
         <dd>
@@ -2268,11 +2267,19 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dd class="break"></dd>
 <dt id="Boeck2016">[Boeck2016]</dt>
         <dd>
-<span class="refAuthor">Boeck, H.</span>, <span class="refAuthor">Zauner, A.</span>, <span class="refAuthor">Devlin, S.</span>, <span class="refAuthor">Somorovsky, J.</span>, and <span class="refAuthor">P. Jovanovic</span>, <span class="refTitle">"Nonce-Disrespecting Adversaries: Practical Forgery Attacks on GCM in TLS"</span>, <time datetime="2016-05" class="refDate">May 2016</time>, <span>&lt;<a href="https://eprint.iacr.org/2016/475.pdf">https://eprint.iacr.org/2016/475.pdf</a>&gt;</span>. </dd>
+<span class="refAuthor">Böck, H.</span>, <span class="refAuthor">Zauner, A.</span>, <span class="refAuthor">Devlin, S.</span>, <span class="refAuthor">Somorovsky, J.</span>, and <span class="refAuthor">P. Jovanovic</span>, <span class="refTitle">"Nonce-Disrespecting Adversaries: Practical Forgery Attacks on GCM in TLS"</span>, <time datetime="2016-05" class="refDate">May 2016</time>, <span>&lt;<a href="https://eprint.iacr.org/2016/475.pdf">https://eprint.iacr.org/2016/475.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="CAB-Baseline">[CAB-Baseline]</dt>
         <dd>
 <span class="refAuthor">CA/Browser Forum</span>, <span class="refTitle">"Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6"</span>, <time datetime="2013" class="refDate">2013</time>, <span>&lt;<a href="https://www.cabforum.org/documents.html">https://www.cabforum.org/documents.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Chung18">[Chung18]</dt>
+        <dd>
+<span class="refAuthor">Chung, T.</span>, <span class="refAuthor">Lok, J.</span>, <span class="refAuthor">Chandrasekaran, B.</span>, <span class="refAuthor">Choffnes, D.</span>, <span class="refAuthor">Levin, D.</span>, <span class="refAuthor">Maggs, B.</span>, <span class="refAuthor">Mislove, A.</span>, <span class="refAuthor">Rula, J.</span>, <span class="refAuthor">Sullivan, N.</span>, and <span class="refAuthor">C. Wilson</span>, <span class="refTitle">"Is the Web Ready for OCSP Must-Staple?"</span>, <span class="seriesInfo">Proceedings of the Internet Measurement Conference 2018</span>, <span class="seriesInfo">DOI 10.1145/3278532.3278543</span>, <time datetime="2018-10" class="refDate">October 2018</time>, <span>&lt;<a href="https://doi.org/10.1145/3278532.3278543">https://doi.org/10.1145/3278532.3278543</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="CRLite">[CRLite]</dt>
+        <dd>
+<span class="refAuthor">Larisch, J.</span>, <span class="refAuthor">Choffnes, D.</span>, <span class="refAuthor">Levin, D.</span>, <span class="refAuthor">Maggs, B.</span>, <span class="refAuthor">Mislove, A.</span>, and <span class="refAuthor">C. Wilson</span>, <span class="refTitle">"CRLite: A Scalable System for Pushing All TLS Revocations to All Browsers"</span>, <span class="seriesInfo">2017 IEEE Symposium on Security and Privacy (SP)</span>, <span class="seriesInfo">DOI 10.1109/sp.2017.17</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://doi.org/10.1109/sp.2017.17">https://doi.org/10.1109/sp.2017.17</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="CVE">[CVE]</dt>
         <dd>
@@ -2321,6 +2328,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="Kleinjung2010">[Kleinjung2010]</dt>
         <dd>
 <span class="refAuthor">Kleinjung, T.</span>, <span class="refAuthor">Aoki, K.</span>, <span class="refAuthor">Franke, J.</span>, <span class="refAuthor">Lenstra, A.</span>, <span class="refAuthor">Thomé, E.</span>, <span class="refAuthor">Bos, J.</span>, <span class="refAuthor">Gaudry, P.</span>, <span class="refAuthor">Kruppa, A.</span>, <span class="refAuthor">Montgomery, P.</span>, <span class="refAuthor">Osvik, D.</span>, <span class="refAuthor">te Riele, H.</span>, <span class="refAuthor">Timofeev, A.</span>, and <span class="refAuthor">P. Zimmermann</span>, <span class="refTitle">"Factorization of a 768-Bit RSA Modulus"</span>, <span class="seriesInfo">Advances in Cryptology - CRYPTO 2010 pp. 333-350</span>, <span class="seriesInfo">DOI 10.1007/978-3-642-14623-7_18</span>, <time datetime="2010" class="refDate">2010</time>, <span>&lt;<a href="https://doi.org/10.1007/978-3-642-14623-7_18">https://doi.org/10.1007/978-3-642-14623-7_18</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="LetsRevoke">[LetsRevoke]</dt>
+        <dd>
+<span class="refAuthor">Smith, T.</span>, <span class="refAuthor">Dickinson, L.</span>, and <span class="refAuthor">K. Seamons</span>, <span class="refTitle">"Let's Revoke: Scalable Global Certificate Revocation"</span>, <span class="seriesInfo">Proceedings 2020 Network and Distributed System Security Symposium</span>, <span class="seriesInfo">DOI 10.14722/ndss.2020.24084</span>, <time datetime="2020" class="refDate">2020</time>, <span>&lt;<a href="https://doi.org/10.14722/ndss.2020.24084">https://doi.org/10.14722/ndss.2020.24084</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Logjam">[Logjam]</dt>
         <dd>
@@ -2422,6 +2433,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">T. Alkemade</span>, <span class="refTitle">"Use of Transport Layer Security (TLS) in the Extensible Messaging and Presence Protocol (XMPP)"</span>, <span class="seriesInfo">RFC 7590</span>, <span class="seriesInfo">DOI 10.17487/RFC7590</span>, <time datetime="2015-06" class="refDate">June 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7590">https://www.rfc-editor.org/info/rfc7590</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7633">[RFC7633]</dt>
+        <dd>
+<span class="refAuthor">Hallam-Baker, P.</span>, <span class="refTitle">"X.509v3 Transport Layer Security (TLS) Feature Extension"</span>, <span class="seriesInfo">RFC 7633</span>, <span class="seriesInfo">DOI 10.17487/RFC7633</span>, <time datetime="2015-10" class="refDate">October 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7633">https://www.rfc-editor.org/info/rfc7633</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC7919">[RFC7919]</dt>
         <dd>
 <span class="refAuthor">Gillmor, D.</span>, <span class="refTitle">"Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7919</span>, <span class="seriesInfo">DOI 10.17487/RFC7919</span>, <time datetime="2016-08" class="refDate">August 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7919">https://www.rfc-editor.org/info/rfc7919</a>&gt;</span>. </dd>
@@ -2437,6 +2452,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="RFC9001">[RFC9001]</dt>
         <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">S. Turner, Ed.</span>, <span class="refTitle">"Using TLS to Secure QUIC"</span>, <span class="seriesInfo">RFC 9001</span>, <span class="seriesInfo">DOI 10.17487/RFC9001</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9001">https://www.rfc-editor.org/info/rfc9001</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9162">[RFC9162]</dt>
+        <dd>
+<span class="refAuthor">Laurie, B.</span>, <span class="refAuthor">Messeri, E.</span>, and <span class="refAuthor">R. Stradling</span>, <span class="refTitle">"Certificate Transparency Version 2.0"</span>, <span class="seriesInfo">RFC 9162</span>, <span class="seriesInfo">DOI 10.17487/RFC9162</span>, <time datetime="2021-12" class="refDate">December 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9162">https://www.rfc-editor.org/info/rfc9162</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="SAFECURVES">[SAFECURVES]</dt>
         <dd>
@@ -2488,6 +2507,8 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
             <li class="normal" id="appendix-A-2.1.2.7">Limits on key usage.<a href="#appendix-A-2.1.2.7" class="pilcrow">¶</a>
 </li>
             <li class="normal" id="appendix-A-2.1.2.8">New attacks since <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span>: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".<a href="#appendix-A-2.1.2.8" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="appendix-A-2.1.2.9">RFC 6961 (OCSP status_request_v2) has been deprecated.<a href="#appendix-A-2.1.2.9" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
