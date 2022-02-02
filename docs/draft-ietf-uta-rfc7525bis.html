@@ -12,11 +12,11 @@
        Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years, the industry has witnessed several serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases. 
        This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, updated guidance is needed. 
     " name="description">
-<meta content="xml2rfc 3.12.0" name="generator">
+<meta content="xml2rfc 3.12.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-ietf-uta-rfc7525bis-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.12.0
+  xml2rfc 3.12.1
     Python 3.8.10
     appdirs 1.4.4
     ConfigArgParse 1.5.3
@@ -1188,11 +1188,11 @@ li > p:last-of-type {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">TLS Recommendations</td>
-<td class="right">January 2022</td>
+<td class="right">February 2022</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 23 July 2022</td>
+<td class="center">Expires 6 August 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1211,12 +1211,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc5288" class="eref">5288</a>, <a href="https://www.rfc-editor.org/rfc/rfc6066" class="eref">6066</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-01-19" class="published">19 January 2022</time>
+<time datetime="2022-02-02" class="published">2 February 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-07-23">23 July 2022</time></dd>
+<dd class="expires"><time datetime="2022-08-06">6 August 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1259,7 +1259,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 23 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 August 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1793,16 +1793,26 @@ Rationale: These cipher suites, which have assigned values starting
              the fact that they do not support forward secrecy.<a href="#section-4.1-2.5.2" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-4.1-2.6">
-            <p id="section-4.1-2.6.1">Implementations <span class="bcp14">MUST</span> support and prefer to negotiate cipher suites 
-             offering forward secrecy, such as those in the Ephemeral 
-             Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
-             and "ECDHE") families.<a href="#section-4.1-2.6.1" class="pilcrow">¶</a></p>
+            <p id="section-4.1-2.6.1">Implementations <span class="bcp14">SHOULD NOT</span> negotiate cipher suites based on
+             non-ephemeral (static) finite-field Diffie-Hellman key agreement.<a href="#section-4.1-2.6.1" class="pilcrow">¶</a></p>
 <p id="section-4.1-2.6.2">
+Rationale: These cipher suites, which have assigned values prefixed by "TLS_DH_*", have several drawbacks, especially
+             the fact that they do not support forward secrecy.<a href="#section-4.1-2.6.2" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-2.7">
+            <p id="section-4.1-2.7.1">Implementations <span class="bcp14">MUST</span> support and prefer to negotiate cipher suites 
+             offering forward secrecy.  However, TLS 1.2 implementations <span class="bcp14">SHOULD NOT</span> negotiate
+             cipher suites based on ephemeral finite-field Diffie-Hellman key
+             agreement (i.e., "TLS_DHE_*" suites).  This is justified by the known fragility
+             of the construction (see <span>[<a href="#RACCOON" class="xref">RACCOON</a>]</span>) and the limitation around
+             negotiation, including using <span>[<a href="#RFC7919" class="xref">RFC7919</a>]</span>, which has seen very
+             limited uptake.<a href="#section-4.1-2.7.1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2.7.2">
 Rationale: Forward secrecy (sometimes called "perfect forward 
              secrecy") prevents the recovery of information that was encrypted 
              with older session keys, thus limiting the amount of time during 
              which attacks can be successful. See <a href="#sec-pfs" class="xref">Section 6.3</a> for 
-             a detailed discussion.<a href="#section-4.1-2.6.2" class="pilcrow">¶</a></p>
+             a detailed discussion.<a href="#section-4.1-2.7.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -1814,13 +1824,9 @@ Rationale: Forward secrecy (sometimes called "perfect forward
         </h3>
 <p id="section-4.2-1">Given the foregoing considerations, implementation and deployment of the following cipher suites is <span class="bcp14">RECOMMENDED</span>:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4.2-2.1">TLS_DHE_RSA_WITH_AES_128_GCM_SHA256<a href="#section-4.2-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.2-2.1">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256<a href="#section-4.2-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-4.2-2.2">TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256<a href="#section-4.2-2.2" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.2-2.3">TLS_DHE_RSA_WITH_AES_256_GCM_SHA384<a href="#section-4.2-2.3" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-4.2-2.4">TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384<a href="#section-4.2-2.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.2-2.2">TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384<a href="#section-4.2-2.2" class="pilcrow">¶</a>
 </li>
         </ul>
 <p id="section-4.2-3">These cipher suites are supported only in TLS 1.2 and not in earlier protocol versions, because they are authenticated encryption (AEAD) algorithms <span>[<a href="#RFC5116" class="xref">RFC5116</a>]</span>.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
@@ -1834,9 +1840,8 @@ Rationale: Forward secrecy (sometimes called "perfect forward
 <p id="section-4.2.1-1">Clients <span class="bcp14">SHOULD</span> include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server, unless they have prior knowledge that the server cannot respond to a TLS 1.2 client_hello message.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.2.1-2">Servers <span class="bcp14">MUST</span> prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.2.1-3">Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server <span class="bcp14">SHOULD</span> prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-4">This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here. (The GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS <span>[<a href="#Krawczyk2001" class="xref">Krawczyk2001</a>]</span>, since it uses an AEAD mode of operation.) Implementers should consider the interoperability gain against the loss in security when deploying the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).<a href="#section-4.2.1-4" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-5">Note that some profiles of TLS 1.2 use different cipher suites. For example, <span>[<a href="#RFC6460" class="xref">RFC6460</a>]</span> defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.<a href="#section-4.2.1-5" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-6"><span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers <span class="bcp14">SHOULD</span> include the "Supported Elliptic Curves" extension <span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span>.  For interoperability, clients and servers <span class="bcp14">SHOULD</span> support the NIST P-256 (secp256r1) curve <span>[<a href="#RFC4492" class="xref">RFC4492</a>]</span>. In addition, clients <span class="bcp14">SHOULD</span> send an ec_point_formats extension with a single element, "uncompressed".<a href="#section-4.2.1-6" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-4">The previous version of this document implicitly allowed the old RFC 5246 mandatory-to-implement cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA. At the time of writing, this cipher suite does not provide additional interoperability, except with extremely old clients. As with other cipher suites that do not provide forward secrecy, implementations <span class="bcp14">SHOULD NOT</span> support this cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).<a href="#section-4.2.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-5"><span>[<a href="#RFC8422" class="xref">RFC8422</a>]</span> allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers <span class="bcp14">SHOULD</span> include the "Supported Elliptic Curves" extension <span>[<a href="#RFC8422" class="xref">RFC8422</a>]</span>.  Clients and servers <span class="bcp14">SHOULD</span> support the NIST P-256 (secp256r1) <span>[<a href="#RFC8422" class="xref">RFC8422</a>]</span> and X25519 (x25519) <span>[<a href="#RFC7748" class="xref">RFC7748</a>]</span> curves.  Note that <span>[<a href="#RFC8422" class="xref">RFC8422</a>]</span> deprecates all but the uncompressed point format.  Therefore, if the client sends an ec_point_formats extension, the ECPointFormatList <span class="bcp14">MUST</span> contain a single element, "uncompressed".<a href="#section-4.2.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2061,7 +2066,7 @@ reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="
 </li>
         </ul>
 <p id="section-6.3-5">Forward secrecy ensures in such cases that it is not feasible for an attacker to determine the session keys even if the attacker has obtained the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys but remains passive during the conversation.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
-<p id="section-6.3-6">Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetic.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
+<p id="section-6.3-6">Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses elliptic curves instead of the originally proposed modular arithmetic. Given the current state of the art, elliptic-curve Diffie-Hellman appears to be more efficient, permits shorter key lengths, and allows less freedom for implementation errors than finite-field Diffie-Hellman.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
 <p id="section-6.3-7">Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  This document therefore advocates strict use of forward-secrecy-only ciphers.<a href="#section-6.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2074,13 +2079,20 @@ reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="
 <ul class="normal">
 <li class="normal" id="section-6.4-2.1">If exponents are reused for too long (in some cases, even as little as a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.<a href="#section-6.4-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.4-2.2">TLS implementations that reuse exponents should test the DH public key they receive for group membership, in order to avoid some known attacks. These tests are not standardized in TLS at the time of writing. See <span>[<a href="#RFC6989" class="xref">RFC6989</a>]</span> for recipient tests required of IKEv2 implementations that reuse DH exponents.<a href="#section-6.4-2.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.4-2.2">TLS implementations that reuse exponents should test the DH public key they receive for group membership, in order to avoid some known attacks. These tests are not standardized in TLS at the time of writing, although general guidance in this area is provided by <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]</span> and available in many protocol implementations.<a href="#section-6.4-2.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-6.4-2.3">Under certain conditions, the use of static DH keys, or of ephemeral DH keys that are reused across multiple connections, can lead to timing attacks (such as those described in <span>[<a href="#RACCOON" class="xref">RACCOON</a>]</span>) on the shared secrets used in Diffie-Hellman key exchange.<a href="#section-6.4-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-6.4-2.3">Under certain conditions, the use of static finite-field DH keys, or of ephemeral finite-field DH keys that are reused across multiple connections, can lead to timing attacks (such as those described in <span>[<a href="#RACCOON" class="xref">RACCOON</a>]</span>) on the shared secrets used in Diffie-Hellman key exchange.<a href="#section-6.4-2.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.4-2.4">An "invalid curve" attack can be mounted against elliptic-curve DH if the victim does not verify that the received point lies on the correct curve.  If the victim is reusing the DH secrets, the attacker can repeat the probe varying the points to recover the full secret (see <span>[<a href="#Antipa2003" class="xref">Antipa2003</a>]</span> and <span>[<a href="#Jager2015" class="xref">Jager2015</a>]</span>).<a href="#section-6.4-2.4" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-6.4-3">To address these concerns, TLS implementations <span class="bcp14">SHOULD NOT</span> use static DH keys and <span class="bcp14">SHOULD NOT</span> reuse ephemeral DH keys across multiple connections.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
-<p id="section-6.4-4"><span class="cref">TODO: revisit when draft-bartle-tls-deprecate-ffdhe becomes a TLS WG item, since it specifies MUST NOT rather than SHOULD NOT.</span><a href="#section-6.4-4" class="pilcrow">¶</a></p>
+<p id="section-6.4-3">To address these concerns:<a href="#section-6.4-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.4-4.1">TLS implementations <span class="bcp14">SHOULD NOT</span> use static finite-field DH keys and <span class="bcp14">SHOULD NOT</span> reuse ephemeral finite-field DH keys across multiple connections.<a href="#section-6.4-4.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.4-4.2">Server implementations that want to reuse elliptic-curve DH keys <span class="bcp14">SHOULD</span> either use a "safe curve" <span>[<a href="#SAFECURVES" class="xref">SAFECURVES</a>]</span> (e.g., X25519), or perform the checks described in <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]</span> on the received points.<a href="#section-6.4-4.2" class="pilcrow">¶</a>
+</li>
+        </ul>
 </section>
 </div>
 <div id="certificate-revocation">
@@ -2163,10 +2175,6 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Orman, H.</span> and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Determining Strengths For Public Keys Used For Exchanging Symmetric Keys"</span>, <span class="seriesInfo">BCP 86</span>, <span class="seriesInfo">RFC 3766</span>, <span class="seriesInfo">DOI 10.17487/RFC3766</span>, <time datetime="2004-04" class="refDate">April 2004</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3766">https://www.rfc-editor.org/info/rfc3766</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC4492">[RFC4492]</dt>
-        <dd>
-<span class="refAuthor">Blake-Wilson, S.</span>, <span class="refAuthor">Bolyard, N.</span>, <span class="refAuthor">Gupta, V.</span>, <span class="refAuthor">Hawk, C.</span>, and <span class="refAuthor">B. Moeller</span>, <span class="refTitle">"Elliptic Curve Cryptography (ECC) Cipher Suites for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 4492</span>, <span class="seriesInfo">DOI 10.17487/RFC4492</span>, <time datetime="2006-05" class="refDate">May 2006</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc4492">https://www.rfc-editor.org/info/rfc4492</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC4949">[RFC4949]</dt>
         <dd>
 <span class="refAuthor">Shirey, R.</span>, <span class="refTitle">"Internet Security Glossary, Version 2"</span>, <span class="seriesInfo">FYI 36</span>, <span class="seriesInfo">RFC 4949</span>, <span class="seriesInfo">DOI 10.17487/RFC4949</span>, <time datetime="2007-08" class="refDate">August 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc4949">https://www.rfc-editor.org/info/rfc4949</a>&gt;</span>. </dd>
@@ -2211,9 +2219,17 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Bhargavan, K., Ed.</span>, <span class="refAuthor">Delignat-Lavaud, A.</span>, <span class="refAuthor">Pironti, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">M. Ray</span>, <span class="refTitle">"Transport Layer Security (TLS) Session Hash and Extended Master Secret Extension"</span>, <span class="seriesInfo">RFC 7627</span>, <span class="seriesInfo">DOI 10.17487/RFC7627</span>, <time datetime="2015-09" class="refDate">September 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7627">https://www.rfc-editor.org/info/rfc7627</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7748">[RFC7748]</dt>
+        <dd>
+<span class="refAuthor">Langley, A.</span>, <span class="refAuthor">Hamburg, M.</span>, and <span class="refAuthor">S. Turner</span>, <span class="refTitle">"Elliptic Curves for Security"</span>, <span class="seriesInfo">RFC 7748</span>, <span class="seriesInfo">DOI 10.17487/RFC7748</span>, <time datetime="2016-01" class="refDate">January 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7748">https://www.rfc-editor.org/info/rfc7748</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
         <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8422">[RFC8422]</dt>
+        <dd>
+<span class="refAuthor">Nir, Y.</span>, <span class="refAuthor">Josefsson, S.</span>, and <span class="refAuthor">M. Pegourie-Gonnard</span>, <span class="refTitle">"Elliptic Curve Cryptography (ECC) Cipher Suites for Transport Layer Security (TLS) Versions 1.2 and Earlier"</span>, <span class="seriesInfo">RFC 8422</span>, <span class="seriesInfo">DOI 10.17487/RFC8422</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8422">https://www.rfc-editor.org/info/rfc8422</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8446">[RFC8446]</dt>
         <dd>
@@ -2240,7 +2256,11 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dl class="references">
 <dt id="ALPACA">[ALPACA]</dt>
         <dd>
-<span class="refAuthor">Brinkmann, M.</span>, <span class="refAuthor">Dresen, C.</span>, <span class="refAuthor">Merget, R.</span>, <span class="refAuthor">Poddebniak, D.</span>, <span class="refAuthor">Müller, J.</span>, <span class="refAuthor">Somorovsky, J.</span>, <span class="refAuthor">Schwenk, J.</span>, and <span class="refAuthor">S. Schinzel</span>, <span class="refTitle">"ALPACA: Application Layer Protocol Confusion - Analyzing and Mitigating Cracks in TLS Authentication"</span>, <span class="seriesInfo">30th USENIX Security Symposium (USENIX Security 21) </span>, <time datetime="2021" class="refDate">2021</time>, <span>&lt;<a href="https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann">https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann</a>&gt;</span>. </dd>
+<span class="refAuthor">Brinkmann, M.</span>, <span class="refAuthor">Dresen, C.</span>, <span class="refAuthor">Merget, R.</span>, <span class="refAuthor">Poddebniak, D.</span>, <span class="refAuthor">Mueller, J.</span>, <span class="refAuthor">Somorovsky, J.</span>, <span class="refAuthor">Schwenk, J.</span>, and <span class="refAuthor">S. Schinzel</span>, <span class="refTitle">"ALPACA: Application Layer Protocol Confusion - Analyzing and Mitigating Cracks in TLS Authentication"</span>, <span class="seriesInfo">30th USENIX Security Symposium (USENIX Security 21) </span>, <time datetime="2021" class="refDate">2021</time>, <span>&lt;<a href="https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann">https://www.usenix.org/conference/usenixsecurity21/presentation/brinkmann</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="Antipa2003">[Antipa2003]</dt>
+        <dd>
+<span class="refAuthor">Antipa, A.</span>, <span class="refAuthor">Brown, D.R.L.</span>, <span class="refAuthor">Menezes, A.</span>, <span class="refAuthor">Struik, R.</span>, and <span class="refAuthor">S.A. Vanstone</span>, <span class="refTitle">"Validation of Elliptic Curve Public Keys"</span>, <span class="seriesInfo">Public Key Cryptography - PKC 2003 </span>, <time datetime="2003" class="refDate">2003</time>. </dd>
 <dd class="break"></dd>
 <dt id="BETTERCRYPTO">[BETTERCRYPTO]</dt>
         <dd>
@@ -2248,7 +2268,7 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dd class="break"></dd>
 <dt id="Boeck2016">[Boeck2016]</dt>
         <dd>
-<span class="refAuthor">Böck, H.</span>, <span class="refAuthor">Zauner, A.</span>, <span class="refAuthor">Devlin, S.</span>, <span class="refAuthor">Somorovsky, J.</span>, and <span class="refAuthor">P. Jovanovic</span>, <span class="refTitle">"Nonce-Disrespecting Adversaries: Practical Forgery Attacks on GCM in TLS"</span>, <time datetime="2016-05" class="refDate">May 2016</time>, <span>&lt;<a href="https://eprint.iacr.org/2016/475.pdf">https://eprint.iacr.org/2016/475.pdf</a>&gt;</span>. </dd>
+<span class="refAuthor">Boeck, H.</span>, <span class="refAuthor">Zauner, A.</span>, <span class="refAuthor">Devlin, S.</span>, <span class="refAuthor">Somorovsky, J.</span>, and <span class="refAuthor">P. Jovanovic</span>, <span class="refTitle">"Nonce-Disrespecting Adversaries: Practical Forgery Attacks on GCM in TLS"</span>, <time datetime="2016-05" class="refDate">May 2016</time>, <span>&lt;<a href="https://eprint.iacr.org/2016/475.pdf">https://eprint.iacr.org/2016/475.pdf</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="CAB-Baseline">[CAB-Baseline]</dt>
         <dd>
@@ -2290,6 +2310,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">IANA</span>, <span class="refTitle">"Transport Layer Security (TLS) Parameters"</span>, <span>&lt;<a href="https://www.iana.org/assignments/tls-parameters">https://www.iana.org/assignments/tls-parameters</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="Jager2015">[Jager2015]</dt>
+        <dd>
+<span class="refAuthor">Jager, T.</span>, <span class="refAuthor">Schwenk, J.</span>, and <span class="refAuthor">J. Somorovsky</span>, <span class="refTitle">"Practical Invalid Curve Attacks on TLS-ECDH"</span>, <span class="seriesInfo">European Symposium on Research in Computer Security (ESORICS) 2015 </span>, <time datetime="2015" class="refDate">2015</time>. </dd>
+<dd class="break"></dd>
 <dt id="Joux2006">[Joux2006]</dt>
         <dd>
 <span class="refAuthor">Joux, A.</span>, <span class="refTitle">"Authentication Failures in NIST version of GCM"</span>, <time datetime="2006" class="refDate">2006</time>, <span>&lt;<a href="https://csrc.nist.gov/csrc/media/projects/block-cipher-techniques/documents/bcm/comments/800-38-series-drafts/gcm/joux_comments.pdf">https://csrc.nist.gov/csrc/media/projects/block-cipher-techniques/documents/bcm/comments/800-38-series-drafts/gcm/joux_comments.pdf</a>&gt;</span>. </dd>
@@ -2297,10 +2321,6 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="Kleinjung2010">[Kleinjung2010]</dt>
         <dd>
 <span class="refAuthor">Kleinjung, T.</span>, <span class="refAuthor">Aoki, K.</span>, <span class="refAuthor">Franke, J.</span>, <span class="refAuthor">Lenstra, A.</span>, <span class="refAuthor">Thomé, E.</span>, <span class="refAuthor">Bos, J.</span>, <span class="refAuthor">Gaudry, P.</span>, <span class="refAuthor">Kruppa, A.</span>, <span class="refAuthor">Montgomery, P.</span>, <span class="refAuthor">Osvik, D.</span>, <span class="refAuthor">te Riele, H.</span>, <span class="refAuthor">Timofeev, A.</span>, and <span class="refAuthor">P. Zimmermann</span>, <span class="refTitle">"Factorization of a 768-Bit RSA Modulus"</span>, <span class="seriesInfo">Advances in Cryptology - CRYPTO 2010 pp. 333-350</span>, <span class="seriesInfo">DOI 10.1007/978-3-642-14623-7_18</span>, <time datetime="2010" class="refDate">2010</time>, <span>&lt;<a href="https://doi.org/10.1007/978-3-642-14623-7_18">https://doi.org/10.1007/978-3-642-14623-7_18</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="Krawczyk2001">[Krawczyk2001]</dt>
-        <dd>
-<span class="refAuthor">Krawczyk, H.</span>, <span class="refTitle">"The Order of Encryption and Authentication for Protecting Communications (or: How Secure Is SSL?)"</span>, <span class="seriesInfo">Advances in Cryptology - CRYPTO 2001 pp. 310-331</span>, <span class="seriesInfo">DOI 10.1007/3-540-44647-8_19</span>, <time datetime="2001" class="refDate">2001</time>, <span>&lt;<a href="https://doi.org/10.1007/3-540-44647-8_19">https://doi.org/10.1007/3-540-44647-8_19</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Logjam">[Logjam]</dt>
         <dd>
@@ -2366,10 +2386,6 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Saint-Andre, P.</span>, <span class="refTitle">"Extensible Messaging and Presence Protocol (XMPP): Core"</span>, <span class="seriesInfo">RFC 6120</span>, <span class="seriesInfo">DOI 10.17487/RFC6120</span>, <time datetime="2011-03" class="refDate">March 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6120">https://www.rfc-editor.org/info/rfc6120</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC6460">[RFC6460]</dt>
-        <dd>
-<span class="refAuthor">Salter, M.</span> and <span class="refAuthor">R. Housley</span>, <span class="refTitle">"Suite B Profile for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 6460</span>, <span class="seriesInfo">DOI 10.17487/RFC6460</span>, <time datetime="2012-01" class="refDate">January 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6460">https://www.rfc-editor.org/info/rfc6460</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC6698">[RFC6698]</dt>
         <dd>
 <span class="refAuthor">Hoffman, P.</span> and <span class="refAuthor">J. Schlyter</span>, <span class="refTitle">"The DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS) Protocol: TLSA"</span>, <span class="seriesInfo">RFC 6698</span>, <span class="seriesInfo">DOI 10.17487/RFC6698</span>, <time datetime="2012-08" class="refDate">August 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6698">https://www.rfc-editor.org/info/rfc6698</a>&gt;</span>. </dd>
@@ -2385,10 +2401,6 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="RFC6961">[RFC6961]</dt>
         <dd>
 <span class="refAuthor">Pettersen, Y.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Multiple Certificate Status Request Extension"</span>, <span class="seriesInfo">RFC 6961</span>, <span class="seriesInfo">DOI 10.17487/RFC6961</span>, <time datetime="2013-06" class="refDate">June 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6961">https://www.rfc-editor.org/info/rfc6961</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC6989">[RFC6989]</dt>
-        <dd>
-<span class="refAuthor">Sheffer, Y.</span> and <span class="refAuthor">S. Fluhrer</span>, <span class="refTitle">"Additional Diffie-Hellman Tests for the Internet Key Exchange Protocol Version 2 (IKEv2)"</span>, <span class="seriesInfo">RFC 6989</span>, <span class="seriesInfo">DOI 10.17487/RFC6989</span>, <time datetime="2013-07" class="refDate">July 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6989">https://www.rfc-editor.org/info/rfc6989</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7435">[RFC7435]</dt>
         <dd>
@@ -2410,6 +2422,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Saint-Andre, P.</span> and <span class="refAuthor">T. Alkemade</span>, <span class="refTitle">"Use of Transport Layer Security (TLS) in the Extensible Messaging and Presence Protocol (XMPP)"</span>, <span class="seriesInfo">RFC 7590</span>, <span class="seriesInfo">DOI 10.17487/RFC7590</span>, <time datetime="2015-06" class="refDate">June 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7590">https://www.rfc-editor.org/info/rfc7590</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7919">[RFC7919]</dt>
+        <dd>
+<span class="refAuthor">Gillmor, D.</span>, <span class="refTitle">"Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7919</span>, <span class="seriesInfo">DOI 10.17487/RFC7919</span>, <time datetime="2016-08" class="refDate">August 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7919">https://www.rfc-editor.org/info/rfc7919</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC8452">[RFC8452]</dt>
         <dd>
 <span class="refAuthor">Gueron, S.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">Y. Lindell</span>, <span class="refTitle">"AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption"</span>, <span class="seriesInfo">RFC 8452</span>, <span class="seriesInfo">DOI 10.17487/RFC8452</span>, <time datetime="2019-04" class="refDate">April 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8452">https://www.rfc-editor.org/info/rfc8452</a>&gt;</span>. </dd>
@@ -2421,6 +2437,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="RFC9001">[RFC9001]</dt>
         <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">S. Turner, Ed.</span>, <span class="refTitle">"Using TLS to Secure QUIC"</span>, <span class="seriesInfo">RFC 9001</span>, <span class="seriesInfo">DOI 10.17487/RFC9001</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9001">https://www.rfc-editor.org/info/rfc9001</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SAFECURVES">[SAFECURVES]</dt>
+        <dd>
+<span class="refAuthor">Bernstein, D.J.</span> and <span class="refAuthor">T. Lange</span>, <span class="refTitle">"SafeCurves: Choosing Safe Curves for Elliptic-Curve Cryptography"</span>, <time datetime="2014-12" class="refDate">December 2014</time>, <span>&lt;<a href="https://safecurves.cr.yp.to">https://safecurves.cr.yp.to</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Soghoian2011">[Soghoian2011]</dt>
         <dd>
@@ -2478,14 +2498,24 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
               <span class="bcp14">SHOULD</span>-level guidance on AES-GCM nonce generation.<a href="#appendix-A-2.2.2.1" class="pilcrow">¶</a>
 </li>
             <li class="normal" id="appendix-A-2.2.2.2">
-              <span class="bcp14">SHOULD NOT</span> use static DH keys or reuse ephemeral DH keys across multiple connections.<a href="#appendix-A-2.2.2.2" class="pilcrow">¶</a>
+              <span class="bcp14">SHOULD NOT</span> use (static or ephemeral) finite-field DH key agreement.<a href="#appendix-A-2.2.2.2" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.3">2048-bit DH now a <span class="bcp14">MUST</span>, ECDH minimal curve size is 224, vs. 192 previously.<a href="#appendix-A-2.2.2.3" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.3">
+              <span class="bcp14">SHOULD NOT</span> reuse ephemeral finite-field DH keys across multiple connections.<a href="#appendix-A-2.2.2.3" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.4">Support for <code>extended_master_secret</code> is a <span class="bcp14">SHOULD</span>. Also removed other, more complicated, related mitigations.<a href="#appendix-A-2.2.2.4" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.4">2048-bit DH now a <span class="bcp14">MUST</span>, ECDH minimal curve size is 224, vs. 192 previously.<a href="#appendix-A-2.2.2.4" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.5">
-              <span class="bcp14">SHOULD</span>-level restriction on the TLS session duration, depending on the rotation period of an <span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span> ticket key.<a href="#appendix-A-2.2.2.5" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.5">Support for <code>extended_master_secret</code> is a <span class="bcp14">SHOULD</span>. Also removed other, more complicated, related mitigations.<a href="#appendix-A-2.2.2.5" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="appendix-A-2.2.2.6">
+              <span class="bcp14">SHOULD</span>-level restriction on the TLS session duration, depending on the rotation period of an <span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span> ticket key.<a href="#appendix-A-2.2.2.6" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="appendix-A-2.2.2.7">Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers<a href="#appendix-A-2.2.2.7" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="appendix-A-2.2.2.8">
+              <span class="bcp14">SHOULD NOT</span> use the old MTI cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.<a href="#appendix-A-2.2.2.8" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="appendix-A-2.2.2.9">Recommend curve X25519 alongside NIST P-256<a href="#appendix-A-2.2.2.9" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
