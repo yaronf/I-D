@@ -97,8 +97,6 @@ informative:
 
   IANA_TLS: IANA.tls-parameters
 
-  Krawczyk2001: DOI.10.1007/3-540-44647-8_19
-
   Multiple-Encryption: DOI.10.1145/358699.358718 
 
   BETTERCRYPTO:
@@ -545,9 +543,7 @@ Servers MUST prefer this cipher suite over weaker cipher suites whenever it is p
 
 Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.
 
-This document does not change the mandatory-to-implement (MTI) TLS cipher suite(s) prescribed by TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here. (The GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS {{Krawczyk2001}}, since it uses an AEAD mode of operation.) Implementers should consider the interoperability gain against the loss in security when deploying the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite. Other application protocols specify other cipher suites as MTI.
-
-Note that some profiles of TLS 1.2 use different cipher suites. For example, {{?RFC6460}} defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.
+The previous version of this document implicitly allowed the old RFC 5246 mandatory-to-implement cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA. At the time of writing, this cipher suite does not provide additional interoperability, except with extremely old clients. As with other cipher suites that do not provide forward secrecy, implementations SHOULD NOT support this cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).
 
 {{!RFC8422}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC8422}}.  Clients and servers SHOULD support the NIST P-256 (secp256r1) {{!RFC8422}} and X25519 (x25519) {{!RFC7748}} curves.  Note that {{!RFC8422}} deprecates all but the uncompressed point format.  Therefore, if the client sends an ec_point_formats extension, the ECPointFormatList MUST contain a single element, "uncompressed".
 
@@ -862,6 +858,7 @@ on the normative changes.
   * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
   * SHOULD-level restriction on the TLS session duration, depending on the rotation period of an {{RFC5077}} ticket key.
   * Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers
+  * SHOULD NOT use the old MTI cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.
   * Recommend curve X25519 alongside NIST P-256
 * Differences specific to TLS 1.3:
   * New TLS 1.3 capabilities: 0-RTT.
