@@ -69,8 +69,6 @@ informative:
     target: https://www.us-cert.gov/ncas/alerts/TA14-290A
     title: SSL 3.0 Protocol Vulnerability and POODLE Attack
 
-  TLS-XMPP: RFC7590
-
   CAB-Baseline:
     author:
     - org: CA/Browser Forum
@@ -105,16 +103,6 @@ informative:
 
   IANA_TLS: IANA.tls-parameters
 
-  Krawczyk2001:
-    author:
-    - ins: H. Krawczyk
-      name: Hugo Krawczyk
-    date: '2001'
-    seriesinfo:
-      CRYPTO: '01'
-    target: https://www.iacr.org/archive/crypto2001/21390309.pdf
-    title: 'The Order of Encryption and Authentication for Protecting Communications (Or: How Secure is SSL?)'
-
   Multiple-Encryption: DOI.10.1145/358699.358718 
 
   BETTERCRYPTO:
@@ -125,6 +113,8 @@ informative:
     title: Applied Crypto Hardening
 
   NIST.SP.800-56A: DOI.10.6028/NIST.SP.800-56Ar3
+
+  Springall16: DOI.10.1145/2987443.2987480
 
   DEP-SSLv3: RFC7568
 
@@ -206,21 +196,60 @@ informative:
       'Raccoon Attack: Finding and Exploiting Most-Significant-Bit-Oracles in TLS-DH(E)'
     seriesinfo: '30th USENIX Security Symposium (USENIX Security 21)'
 
---- abstract
-Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the last few years, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
+  Antipa2003:
+    author:
+    - ins: A. Antipa
+      name: Adrian Antipa
+    - ins: D. R. L. Brown
+      name: Daniel R. L. Brown
+    - ins: A. Menezes
+      name: Alfred Menezes
+    - ins: R. Struik
+      name: Rene Struik
+    - ins: S. A. Vanstone
+      name: Scott A. Vanstone
+    date: '2003'
+    title: Validation of Elliptic Curve Public Keys
+    seriesinfo: 'Public Key Cryptography - PKC 2003'
 
-This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, we believe new guidance is needed.
+  Jager2015:
+    author:
+    - ins: T. Jager
+      name: Tibor Jager
+    - ins: J. Schwenk
+      name: Jorg Schwenk
+    - ins: J. Somorovsky
+      name: Juraj Somorovsky
+    date: '2015'
+    title: Practical Invalid Curve Attacks on TLS-ECDH
+    seriesinfo: 'European Symposium on Research in Computer Security (ESORICS) 2015'
+
+  SAFECURVES:
+    author:
+    - ins: D. J. Bernstein
+      name: Daniel J. Bernstein
+    - ins: T. Lange
+      name: Tanja Lange
+    date: 1 December 2014
+    target: https://safecurves.cr.yp.to
+    title: 'SafeCurves: Choosing Safe Curves for Elliptic-Curve Cryptography'
+
+--- abstract
+Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years, the industry has witnessed several serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
+
+This document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. Given the new environment, updated guidance is needed.
 
 --- middle
 
 # Introduction
 
-Transport Layer Security (TLS) {{!RFC5246}} and Datagram Transport Security Layer (DTLS) {{!RFC6347}} are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, several serious attacks on TLS have emerged, including attacks on its most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together have been the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here.
+Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
 
-The TLS community reacted to these attacks in two ways:
+The TLS community reacted to these attacks in several ways:
 
-- Detailed guidance was published on the use of TLS 1.2 and earlier protocol versions. This guidance is included in the original {{?RFC7525}} and mostly retained in this revised version.
-- A new protocol version was released, TLS 1.3 {{!RFC8446}}, which largely mitigates or resolves these attacks.
+- Detailed guidance was published on the use of TLS 1.2 {{!RFC5246}} and DTLS 1.2 {{!RFC6347}}, along with earlier protocol versions. This guidance is included in the original {{?RFC7525}} and mostly retained in this revised version; note that this guidance was mostly adopted by the industry since the publication of RFC 7525 in 2015.
+- Versions of TLS earlier than 1.2 were deprecated {{!RFC8996}}.
+- Version 1.3 of TLS {{!RFC8446}} was released and version 1.3 of DTLS was finalized {{!I-D.ietf-tls-dtls13}}; these versions largely mitigate or resolve the described attacks.
 
 Those who implement and deploy TLS and DTLS, in particular versions 1.2 or earlier of these protocols, need guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
 
@@ -230,9 +259,7 @@ This document attempts to minimize new guidance to TLS 1.2 implementations, and 
 
 As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. This document is being republished with this in mind, and with an explicit goal to migrate most uses of TLS 1.2 into TLS 1.3.
 
-
 These are minimum recommendations for the use of TLS in the vast majority of implementation and deployment scenarios, with the exception of unauthenticated TLS (see {{applicability}}). Other specifications that reference this document can have stricter requirements related to one or more aspects of the protocol, based on their particular circumstances (e.g., for use with a particular application protocol); when that is the case, implementers are advised to adhere to those stricter requirements. Furthermore, this document provides a floor, not a ceiling, so stronger options are always allowed (e.g., depending on differing evaluations of the importance of cryptographic strength vs. computational load).
-
 
 Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a Best Current Practice (BCP) document about security is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.
     
@@ -269,16 +296,13 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * Implementations MUST NOT negotiate TLS version 1.1 {{?RFC4346}}.
 
-
   Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
 
-  NOTE: This recommendation has been changed from SHOULD NOT to MUST NOT on the assumption that {{!I-D.ietf-tls-oldversions-deprecate}} will be published as an RFC before this document.
-            
 * Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
 
   Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are only available in this version.
 
-* Implementations SHOULD support TLS 1.3 {{!RFC8446}} and if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
+* Implementations SHOULD support TLS 1.3 {{!RFC8446}} and, if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
                
   Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers MUST still follow all the recommendations in this document.
 
@@ -296,13 +320,12 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 
   Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
 
-* Implementations MUST support and (unless a higher version is available) MUST prefer to negotiate DTLS version 1.2 {{!RFC6347}} 
-
+* Implementations MUST support DTLS 1.2 {{!RFC6347}} and MUST prefer to negotiate DTLS version 1.2 over earlier versions of DTLS.
 
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
 
-* Implementations SHOULD support and, if available, MUST prefer to negotiate DTLS version 1.3 as specified in {{!I-D.ietf-tls-dtls13}}.
+* Implementations SHOULD support DTLS 1.3 {{!I-D.ietf-tls-dtls13}} and, if implemented, MUST prefer to negotiate DTLS version 1.3 over earlier versions of DTLS.
 
   Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).
 
@@ -355,17 +378,17 @@ Session resumption drastically reduces the number of TLS handshakes and thus is 
 performance feature for most deployments.
 
 Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
-{{?RFC5077}}.  For TLS 1.3, an equivalent PSK-based mechanism is described in
-{{Section 4.6.1 of RFC8446}}.
+{{?RFC5077}}.  For TLS 1.3, a more secure PSK-based mechanism is described in
+{{Section 4.6.1 of RFC8446}}. See [this post](https://blog.filippo.io/we-need-to-talk-about-session-tickets/) by Filippo Valsorda for a comparison of TLS 1.2 and 1.3 session resumption, and {{Springall16}} for a quantitative study of TLS cryptographic "shortcuts", including session resumption.
+
 When it is used, the resumption information MUST
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
 Further recommendations apply to session tickets:
 
 * A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
-
-* Ticket keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy).
-
+* Ticket keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy). Old ticket keys MUST be destroyed shortly after a new key version is made available.
 * For similar reasons, session ticket validity SHOULD be limited to a reasonable duration (e.g., half as long as ticket key validity).
+* TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where a stolen ticket key is used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server SHOULD NOT resume sessions that are too old, e.g. sessions that have been open longer than two ticket key rotation periods. Note that this implies that some server implementations might need to abort sessions after a certain duration.
 
 Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document ({{detail}}) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.
 
@@ -378,9 +401,15 @@ respond with a "key_share", to complete an ECDHE exchange on each session resump
 TLS session resumption introduces potential privacy issues where the server is able
 to track the client, in some cases indefinitely. See {{Sy2018}} for more details.
 
-## TLS Renegotiation
+## Renegotiation in TLS 1.2
 
-Where handshake renegotiation is implemented, both clients and servers MUST implement the `renegotiation_info` extension, as defined in {{!RFC5746}}. Note: this recommendation applies to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.
+The recommendations in this section apply to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.
+
+TLS 1.2 clients and servers MUST implement the `renegotiation_info` extension, as defined in {{!RFC5746}}.
+
+TLS 1.2 clients MUST send `renegotiation_info` in the Client Hello.  If the server does not acknowledge the extension, the client MUST generate a fatal `handshake_failure` alert prior to terminating the connection.
+
+Rationale: It is not safe for a client to connect to a TLS 1.2 server that does not support `renegotiation_info`, regardless of whether either endpoint actually implements renegotiation.  See also {{Section 4.1 of RFC5746}}.
 
 A related attack resulting from TLS session parameters not properly authenticated is Triple Handshake {{triple-handshake}}. To address this attack, TLS 1.2 implementations SHOULD support the `extended_master_secret` extension defined in {{!RFC7627}}.      
 
@@ -512,11 +541,19 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                with the string "TLS_RSA_WITH_*", have several drawbacks, especially
                the fact that they do not support forward secrecy.
             
+* Implementations SHOULD NOT negotiate cipher suites based on
+               non-ephemeral (static) finite-field Diffie-Hellman key agreement.
+
+  Rationale: These cipher suites, which have assigned values prefixed by "TLS_DH_*", have several drawbacks, especially
+               the fact that they do not support forward secrecy.
 
 * Implementations MUST support and prefer to negotiate cipher suites 
-               offering forward secrecy, such as those in the Ephemeral 
-               Diffie-Hellman and Elliptic Curve Ephemeral Diffie-Hellman ("DHE" 
-               and "ECDHE") families.
+               offering forward secrecy.  However, TLS 1.2 implementations SHOULD NOT negotiate
+               cipher suites based on ephemeral finite-field Diffie-Hellman key
+               agreement (i.e., "TLS_DHE_*" suites).  This is justified by the known fragility
+               of the construction (see {{RACCOON}}) and the limitation around
+               negotiation, including using {{?RFC7919}}, which has seen very
+               limited uptake.
 
   Rationale: Forward secrecy (sometimes called "perfect forward 
                secrecy") prevents the recovery of information that was encrypted 
@@ -524,17 +561,13 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                which attacks can be successful. See {{sec-pfs}} for 
                a detailed discussion.
             
-## Recommended Cipher Suites
+## Cipher Suites for TLS 1.2
 {: #rec-cipher}
 
 Given the foregoing considerations, implementation and deployment of the following cipher suites is RECOMMENDED:
 
 
-* TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
-
 * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-
-* TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
 
 * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         
@@ -554,11 +587,9 @@ Servers MUST prefer this cipher suite over weaker cipher suites whenever it is p
 
 Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.
 
-This document does not change the mandatory-to-implement TLS cipher suite(s) prescribed by TLS. To maximize interoperability, RFC 5246 mandates implementation of the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite, which is significantly weaker than the cipher suites recommended here. (The GCM mode does not suffer from the same weakness, caused by the order of MAC-then-Encrypt in TLS {{Krawczyk2001}}, since it uses an AEAD mode of operation.) Implementers should consider the interoperability gain against the loss in security when deploying the TLS_RSA_WITH_AES_128_CBC_SHA cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).
+The previous version of this document implicitly allowed the old RFC 5246 mandatory-to-implement cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA. At the time of writing, this cipher suite does not provide additional interoperability, except with extremely old clients. As with other cipher suites that do not provide forward secrecy, implementations SHOULD NOT support this cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).
 
-Note that some profiles of TLS 1.2 use different cipher suites. For example, {{?RFC6460}} defines a profile that uses the TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 and TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384 cipher suites.
-
-{{!RFC4492}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC4492}}.  For interoperability, clients and servers SHOULD support the NIST P-256 (secp256r1) curve {{!RFC4492}}. In addition, clients SHOULD send an ec_point_formats extension with a single element, "uncompressed".
+{{!RFC8422}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC8422}}.  Clients and servers SHOULD support the NIST P-256 (secp256r1) {{!RFC8422}} and X25519 (x25519) {{!RFC7748}} curves.  Note that {{!RFC8422}} deprecates all but the uncompressed point format.  Therefore, if the client sends an ec_point_formats extension, the ECPointFormatList MUST contain a single element, "uncompressed".
 
 ## Cipher Suites for TLS 1.3
 
@@ -656,7 +687,7 @@ The recommendations of this document primarily apply to the implementation and d
 * Realtime media software and services that wish to protect Secure Realtime Transport Protocol (SRTP) traffic with DTLS.
         
 
-This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS. If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to explicitly update the existing application protocol definition (one example is {{TLS-XMPP}}, which updates {{?RFC6120}}). 
+This document does not modify the implementation and deployment recommendations (e.g., mandatory-to-implement cipher suites) prescribed by existing application protocols that employ TLS or DTLS. If the community that uses such an application protocol wishes to modernize its usage of TLS or DTLS to be consistent with the best practices recommended here, it needs to explicitly update the existing application protocol definition (one example is {{?RFC7590}}, which updates {{?RFC6120}}). 
 
 
 
@@ -778,7 +809,7 @@ In the context of TLS and DTLS, such compromise of long-term keys is not entirel
 Forward secrecy ensures in such cases that it is not feasible for an attacker to determine the session keys even if the attacker has obtained the long-term keys some time after the conversation. It also protects against an attacker who is in possession of the long-term keys but remains passive during the conversation.
 
 
-Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses Elliptic Curves instead of the originally proposed modular arithmetic.
+Forward secrecy is generally achieved by using the Diffie-Hellman scheme to derive session keys. The Diffie-Hellman scheme has both parties maintain private secrets and send parameters over the network as modular powers over certain cyclic groups. The properties of the so-called Discrete Logarithm Problem (DLP) allow the parties to derive the session keys without an eavesdropper being able to do so. There is currently no known attack against DLP if sufficiently large parameters are chosen. A variant of the Diffie-Hellman scheme uses elliptic curves instead of the originally proposed modular arithmetic. Given the current state of the art, elliptic-curve Diffie-Hellman appears to be more efficient, permits shorter key lengths, and allows less freedom for implementation errors than finite-field Diffie–Hellman.
 
 Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  This document therefore advocates strict use of forward-secrecy-only ciphers.
       
@@ -787,15 +818,18 @@ Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forw
 
 For performance reasons, many TLS implementations reuse Diffie-Hellman and Elliptic Curve Diffie-Hellman exponents across multiple connections. Such reuse can result in major security issues:
 
-* If exponents are reused for too long (e.g., even more than a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.
+* If exponents are reused for too long (in some cases, even as little as a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.
 
-* TLS implementations that reuse exponents should test the DH public key they receive for group membership, in order to avoid some known attacks. These tests are not standardized in TLS at the time of writing. See {{?RFC6989}} for recipient tests required of IKEv2 implementations that reuse DH exponents.
+* TLS implementations that reuse exponents should test the DH public key they receive for group membership, in order to avoid some known attacks. These tests are not standardized in TLS at the time of writing, although general guidance in this area is provided by {{NIST.SP.800-56A}} and available in many protocol implementations.
 
-* Under certain conditions, the use of static DH keys, or of ephemeral DH keys that are reused across multiple connections, can lead to timing attacks (such as those described in {{RACCOON}}) on the shared secrets used in Diffie-Hellman key exchange.
+* Under certain conditions, the use of static finite-field DH keys, or of ephemeral finite-field DH keys that are reused across multiple connections, can lead to timing attacks (such as those described in {{RACCOON}}) on the shared secrets used in Diffie-Hellman key exchange.
 
-To address these concerns, TLS implementations SHOULD NOT use static DH keys and SHOULD NOT reuse ephemeral DH keys across multiple connections.
+* An "invalid curve" attack can be mounted against elliptic-curve DH if the victim does not verify that the received point lies on the correct curve.  If the victim is reusing the DH secrets, the attacker can repeat the probe varying the points to recover the full secret (see {{Antipa2003}} and {{Jager2015}}).
 
-<cref>TODO: revisit when draft-bartle-tls-deprecate-ffdhe becomes a TLS WG item, since it specifies MUST NOT rather than SHOULD NOT.</cref>
+To address these concerns:
+
+* TLS implementations SHOULD NOT use static finite-field DH keys and SHOULD NOT reuse ephemeral finite-field DH keys across multiple connections.
+* Server implementations that want to reuse elliptic-curve DH keys SHOULD either use a "safe curve" {{SAFECURVES}} (e.g., X25519), or perform the checks described in {{NIST.SP.800-56A}} on the received points.
 
 ## Certificate Revocation
 
@@ -856,9 +890,14 @@ on the normative changes.
   * RFC 6961 (OCSP status_request_v2) has been deprecated.
 * Differences specific to TLS 1.2:
   * SHOULD-level guidance on AES-GCM nonce generation.
-  * SHOULD NOT use static DH keys or reuse ephemeral DH keys across multiple connections.
+  * SHOULD NOT use (static or ephemeral) finite-field DH key agreement.
+  * SHOULD NOT reuse ephemeral finite-field DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
   * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
+  * SHOULD-level restriction on the TLS session duration, depending on the rotation period of an {{RFC5077}} ticket key.
+  * Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers
+  * SHOULD NOT use the old MTI cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.
+  * Recommend curve X25519 alongside NIST P-256
 * Differences specific to TLS 1.3:
   * New TLS 1.3 capabilities: 0-RTT.
   * Removed capabilities: renegotiation, compression.
