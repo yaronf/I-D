@@ -1828,10 +1828,15 @@ Rationale: Forward secrecy (sometimes called "perfect forward
 </li>
           <li class="normal" id="section-4.2-2.2">TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384<a href="#section-4.2-2.2" class="pilcrow">¶</a>
 </li>
+          <li class="normal" id="section-4.2-2.3">TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256<a href="#section-4.2-2.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-4.2-2.4">TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384<a href="#section-4.2-2.4" class="pilcrow">¶</a>
+</li>
         </ul>
 <p id="section-4.2-3">These cipher suites are supported only in TLS 1.2 and not in earlier protocol versions, because they are authenticated encryption (AEAD) algorithms <span>[<a href="#RFC5116" class="xref">RFC5116</a>]</span>.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 <p id="section-4.2-4">Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software. (See <span>[<a href="#BETTERCRYPTO" class="xref">BETTERCRYPTO</a>]</span> for helpful deployment guidelines, but note that its recommendations differ from the current document in some details.)  It would be ideal if server software implementations were to prefer these suites by default.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <p id="section-4.2-5">Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but they are out of scope entirely.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.2-6">When using ECDSA signatures for authentication of TLS peers, it is <span class="bcp14">RECOMMENDED</span> that implementations use the NIST curve P-256. In addition, to avoid predictable or repeated nonces (that would allow revealing the long term signing key), it is <span class="bcp14">RECOMMENDED</span> that implementations implement "deterministic ECDSA" as specified in <span>[<a href="#RFC6979" class="xref">RFC6979</a>]</span> and in line with the recommendations in <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.<a href="#section-4.2-6" class="pilcrow">¶</a></p>
 <div id="detail-neg">
 <section id="section-4.2.1">
           <h4 id="name-implementation-details">
@@ -2206,6 +2211,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Rescorla, E.</span> and <span class="refAuthor">N. Modadugu</span>, <span class="refTitle">"Datagram Transport Layer Security Version 1.2"</span>, <span class="seriesInfo">RFC 6347</span>, <span class="seriesInfo">DOI 10.17487/RFC6347</span>, <time datetime="2012-01" class="refDate">January 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6347">https://www.rfc-editor.org/info/rfc6347</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC6979">[RFC6979]</dt>
+        <dd>
+<span class="refAuthor">Pornin, T.</span>, <span class="refTitle">"Deterministic Usage of the Digital Signature Algorithm (DSA) and Elliptic Curve Digital Signature Algorithm (ECDSA)"</span>, <span class="seriesInfo">RFC 6979</span>, <span class="seriesInfo">DOI 10.17487/RFC6979</span>, <time datetime="2013-08" class="refDate">August 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6979">https://www.rfc-editor.org/info/rfc6979</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC7301">[RFC7301]</dt>
         <dd>
 <span class="refAuthor">Friedl, S.</span>, <span class="refAuthor">Popov, A.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">E. Stephan</span>, <span class="refTitle">"Transport Layer Security (TLS) Application-Layer Protocol Negotiation Extension"</span>, <span class="seriesInfo">RFC 7301</span>, <span class="seriesInfo">DOI 10.17487/RFC7301</span>, <time datetime="2014-07" class="refDate">July 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7301">https://www.rfc-editor.org/info/rfc7301</a>&gt;</span>. </dd>
@@ -2533,10 +2542,12 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="appendix-A-2.2.2.7">Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers<a href="#appendix-A-2.2.2.7" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.8">
-              <span class="bcp14">SHOULD NOT</span> use the old MTI cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.<a href="#appendix-A-2.2.2.8" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.8">Add TLS_ECDHE_ECDSA_WITH_AES to the recommended ciphers<a href="#appendix-A-2.2.2.8" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.9">Recommend curve X25519 alongside NIST P-256<a href="#appendix-A-2.2.2.9" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.9">
+              <span class="bcp14">SHOULD NOT</span> use the old MTI cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.<a href="#appendix-A-2.2.2.9" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="appendix-A-2.2.2.10">Recommend curve X25519 alongside NIST P-256<a href="#appendix-A-2.2.2.10" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
