@@ -570,13 +570,19 @@ Given the foregoing considerations, implementation and deployment of the followi
 * TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 
 * TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        
+
+* TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+
+* TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+
 
 These cipher suites are supported only in TLS 1.2 and not in earlier protocol versions, because they are authenticated encryption (AEAD) algorithms {{?RFC5116}}.
 
 Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software. (See {{BETTERCRYPTO}} for helpful deployment guidelines, but note that its recommendations differ from the current document in some details.)  It would be ideal if server software implementations were to prefer these suites by default.
 
 Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but they are out of scope entirely.
+
+When using ECDSA signatures for authentication of TLS peers, it is RECOMMENDED that implementations use the NIST curve P-256. In addition, to avoid predictable or repeated nonces (that would allow revealing the long term signing key), it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{!RFC6979}} and in line with the recommendations in {{RFC8446}}.
 
 ### Implementation Details
 {: #detail-neg}
@@ -896,6 +902,7 @@ on the normative changes.
   * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
   * SHOULD-level restriction on the TLS session duration, depending on the rotation period of an {{RFC5077}} ticket key.
   * Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers
+  * Add TLS_ECDHE_ECDSA_WITH_AES to the recommended ciphers
   * SHOULD NOT use the old MTI cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.
   * Recommend curve X25519 alongside NIST P-256
 * Differences specific to TLS 1.3:
