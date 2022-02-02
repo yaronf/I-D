@@ -50,6 +50,10 @@ informative:
 
   Chung18: DOI.10.1145_3278532.3278543
 
+  CRLite: DOI.10.1109/SP.2017.17
+
+  LetsRevoke: DOI.10.14722/ndss.2020.24084
+
   DegabrieleP07: DOI.10.1109/SP.2007.8
 
   triple-handshake: DOI.10.1109/SP.2014.14
@@ -799,7 +803,7 @@ The following considerations and recommendations represent the current state of 
 
 
 * Certificate revocation is an important tool when recovering from attacks on the TLS implementation, as well as cases of misissued certificates. TLS implementations MUST implement a strategy to distrust revoked certificates.
-* Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness, despite workarounds such as partitioned CRLs and delta CRLs.
+* Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness, despite workarounds such as partitioned CRLs and delta CRLs. The more modern {{?CRLite}} and the follow-on Let's Revoke {{?LetsRevoke}} build on the availability of Certificate Transparency {{?RFC9162}} logs and aggressive compression to allow practical use of the CRL infrastructure, but at the time of writing, neither solution is deployed for client-side revocation processing at scale.
 * Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond a small number of the most heavily used Web servers.
 * The On-Line Certification Status Protocol (OCSP) {{?RFC6960}} in its basic form presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.). For an up-to-date survey of the status of OCSP deployment in the Web PKI see {{Chung18}}.
 * The TLS Certificate Status Request extension ({{Section 8 of RFC6066}}), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.
@@ -808,7 +812,7 @@ The following considerations and recommendations represent the current state of 
 * TLS 1.3 ({{Section 4.4.2.1 of RFC8446}}) allows the association of OCSP information with intermediate certificates by using an extension to the CertificateEntry structure. However using this facility remains impractical because many CAs either do not publish OCSP for CA certificates or publish OCSP reports with a lifetime that is too long to be useful.
 * Both CRLs and OCSP depend on relatively reliable connectivity to the Internet, which might not be available to certain kinds of nodes. A common example is newly provisioned devices that need to establish a secure connection in order to boot up for the first time.    
 
-With regard to common public key certificates, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution: OCSP {{?RFC6960}} and OCSP stapling using the `status_request` extension defined in {{!RFC6066}}. The exact mechanism for embedding the  `status_request` extension differs between TLS 1.2 and 1.3. As a matter of local policy, server operators MAY issue must-staple {{RFC7633}} certificates for the server and/or for client authentication, but we recommend to review the operational conditions before deciding on this feature. 
+For the common use cases of public key certificates in TLS, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution: OCSP {{?RFC6960}} and OCSP stapling using the `status_request` extension defined in {{!RFC6066}}. Note that the exact mechanism for embedding the `status_request` extension differs between TLS 1.2 and 1.3. As a matter of local policy, server operators MAY request that CAs issue must-staple {{RFC7633}} certificates for the server and/or for client authentication, but we recommend to review the operational conditions before deciding on this approach.
 
 The considerations in this section do not apply to scenarios where the DANE-TLSA resource record {{?RFC6698}} is used to signal to a client which certificate a server considers valid and good to use for TLS connections.
 
