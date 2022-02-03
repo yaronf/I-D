@@ -540,7 +540,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
   Rationale: These cipher suites, which have assigned values starting 
                with the string "TLS_RSA_WITH_*", have several drawbacks, especially
                the fact that they do not support forward secrecy.
-            
+  
 * Implementations SHOULD NOT negotiate cipher suites based on
                non-ephemeral (static) finite-field Diffie-Hellman key agreement.
 
@@ -843,7 +843,7 @@ The following considerations and recommendations represent the current state of 
 
 
 * Certificate revocation is an important tool when recovering from attacks on the TLS implementation, as well as cases of misissued certificates. TLS implementations MUST implement a strategy to distrust revoked certificates.
-* Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness, despite workarounds such as partitioned CRLs and delta CRLs. The more modern {{?CRLite}} and the follow-on Let's Revoke {{?LetsRevoke}} build on the availability of Certificate Transparency {{?RFC9162}} logs and aggressive compression to allow practical use of the CRL infrastructure, but at the time of writing, neither solution is deployed for client-side revocation processing at scale.
+* Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness, despite workarounds such as partitioned CRLs and delta CRLs. The more modern {{CRLite}} and the follow-on Let's Revoke {{LetsRevoke}} build on the availability of Certificate Transparency {{?RFC9162}} logs and aggressive compression to allow practical use of the CRL infrastructure, but at the time of writing, neither solution is deployed for client-side revocation processing at scale.
 * Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond a small number of the most heavily used Web servers.
 * The On-Line Certification Status Protocol (OCSP) {{?RFC6960}} in its basic form presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.). For an up-to-date survey of the status of OCSP deployment in the Web PKI see {{Chung18}}.
 * The TLS Certificate Status Request extension ({{Section 8 of RFC6066}}), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.
@@ -861,15 +861,26 @@ The considerations in this section do not apply to scenarios where the DANE-TLSA
 
 Thanks to
 Alexey Melnikov,
+Andrei Popov,
 Christian Huitema,
+Daniel Kahn Gillmor,
 David Benjamin,
+Eric Rescorla,
+Hannes Tschofenig,
+Hubert Kario,
 Ilari Liusvaara,
+John Mattsson,
 John R Levine,
 Julien <contact fullname="Élie" asciiFullname="Elie"/>,
 Martin Thomson,
+Mohit Sahni,
+Nick Sullivan,
 Nimrod Aviram,
+Rich Salz,
+Ryan Sleevi,
 Sean Turner,
-Valery Smyslov
+Valery Smyslov,
+Viktor Dukhovni
 for helpful comments and discussions that have shaped this document.
 
 The authors gratefully acknowledge the contribution of Ralph Holz, who was a coauthor of RFC 7525, the previous version of this document.
@@ -916,6 +927,20 @@ on the normative changes.
 # Document History
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
+
+## draft-ietf-uta-rfc7525bis-05
+
+* Addressed WG Last Call comments, specifically:
+  * More clarity and guidance on session resumption.
+  * Clarity on TLS 1.2 renegotiation.
+  * Wording on the 0-RTT feature aligned with RFC 8446.
+  * SHOULD NOT guidance on static and ephemeral finite field DH cipher suites.
+  * Revamped the recommended TLS 1.2 cipher suites, removing DHE and adding ECDSA. The latter due to the wide adoption of ECDSA certificates and in line with RFC 8446.
+  * Recommendation to use deterministic ECDSA.
+  * Finally deprecated the old TLS 1.2 MTI cipher suite.
+  * Deeper discussion of ECDH public key reuse issues, and as a result, recommended support of X25519.
+  * Reworded the section on certificate revocation and OCSP following a long mailing list thread.
+
 
 ## draft-ietf-uta-rfc7525bis-04
 
