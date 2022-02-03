@@ -552,7 +552,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                cipher suites based on ephemeral finite-field Diffie-Hellman key
                agreement (i.e., "TLS_DHE_*" suites).  This is justified by the known fragility
                of the construction (see {{RACCOON}}) and the limitation around
-               negotiation, including using {{?RFC7919}}, which has seen very
+               negotiation -- including using {{?RFC7919}}, which has seen very
                limited uptake.
 
   Rationale: Forward secrecy (sometimes called "perfect forward 
