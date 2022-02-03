@@ -861,15 +861,26 @@ The considerations in this section do not apply to scenarios where the DANE-TLSA
 
 Thanks to
 Alexey Melnikov,
+Andrei Popov,
 Christian Huitema,
+Daniel Kahn Gillmor,
 David Benjamin,
+Eric Rescorla,
+Hannes Tschofenig,
+Hubert Kario,
 Ilari Liusvaara,
+John Mattsson,
 John R Levine,
 Julien <contact fullname="Élie" asciiFullname="Elie"/>,
 Martin Thomson,
+Mohit Sahni,
+Nick Sullivan,
 Nimrod Aviram,
+Rich Salz,
+Ryan Sleevi,
 Sean Turner,
-Valery Smyslov
+Valery Smyslov,
+Viktor Dukhovni
 for helpful comments and discussions that have shaped this document.
 
 The authors gratefully acknowledge the contribution of Ralph Holz, who was a coauthor of RFC 7525, the previous version of this document.
