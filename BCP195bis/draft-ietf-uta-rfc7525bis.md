@@ -36,8 +36,8 @@ author:
  -
     ins: P. Saint-Andre
     name: Peter Saint-Andre
-    organization: Mozilla
-    email: stpeter@mozilla.com
+    organization: independent
+    email: stpeter@stpeter.im
  -
     ins: T. Fossati
     name: Thomas Fossati
