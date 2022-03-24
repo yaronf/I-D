@@ -237,7 +237,7 @@ informative:
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years, the industry has witnessed several serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
 
-An earlier version of this document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. This document updates the guidance, given the new environment.
+An earlier version of this document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. This document updates the guidance, given the new environment. In addition, the document updates RFC 5288 and RFC 6066 in view of recent attacks.
 
 --- middle
 
@@ -265,7 +265,7 @@ Community knowledge about the strength of various algorithms and feasible attack
     
 # Terminology
 
-A number of security-related terms in this document are used in the sense defined in {{!RFC4949}}.
+A number of security-related terms in this document are used in the sense defined in {{?RFC4949}}.
 
 {::boilerplate bcp14-tagged}
 
@@ -736,6 +736,10 @@ There are several important scenarios in which the use of TLS is optional, i.e.,
 
 In these scenarios, some of the recommendations in this document might be too strict, since adhering to them could cause fallback to cleartext, a worse outcome than using TLS with an outdated protocol version or cipher suite.
 
+# IANA Considerations
+
+This document has no IANA actions.
+
 # Security Considerations
 {: #sec}
 
@@ -781,7 +785,7 @@ could still choose their own (potentially insecure) nonce generation methods.
 It is therefore RECOMMENDED that TLS 1.2 implementations use the 64-bit
 sequence number to populate the `nonce_explicit` part of the GCM nonce, as
 described in the first two paragraphs of {{Section 5.3 of RFC8446}}.  Note
-that this recommendation updates {{Section 3 of RFC5288}}: "The nonce_explicit
+that this stronger recommendation updates {{Section 3 of RFC5288}}: "The nonce_explicit
 MAY be the 64-bit sequence number."
 
 We note that at the time of writing there are no cipher suites defined for nonce
