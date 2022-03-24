@@ -876,6 +876,7 @@ Ilari Liusvaara,
 John Mattsson,
 John R Levine,
 Julien <contact fullname="Élie" asciiFullname="Elie"/>,
+Leif Johansson,
 Martin Thomson,
 Mohit Sahni,
 Nick Sullivan,
@@ -931,6 +932,10 @@ on the normative changes.
 # Document History
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
+
+## draft-ietf-uta-rfc7525bis-06
+
+* Addressed several I-D nits raised by the document shepherd.
 
 ## draft-ietf-uta-rfc7525bis-05
 
