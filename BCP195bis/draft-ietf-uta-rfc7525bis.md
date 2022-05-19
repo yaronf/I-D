@@ -448,7 +448,7 @@ Application-Layer Protocol Negotiation (ALPN) extension {{!RFC7301}}.
 
 In order to prevent "cross-protocol" attacks resulting from failure to ensure
 that a message intended for use in one protocol cannot be mistaken for a
-message for use in another protocol, servers should strictly enforce the
+message for use in another protocol, servers SHOULD strictly enforce the
 behavior prescribed in {{Section 3.2 of RFC7301}}: "In the event that the
 server supports no protocols that the client advertises, then the server SHALL
 respond with a fatal `no_application_protocol` alert."  Clients SHOULD
