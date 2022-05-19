@@ -237,7 +237,7 @@ informative:
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years, the industry has witnessed several serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  This document provides recommendations for improving the security of deployed services that use TLS and DTLS. The recommendations are applicable to the majority of use cases.
 
-An earlier version of this document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. This document updates the guidance, given the new environment. In addition, the document updates RFC 5288 and RFC 6066 in view of recent attacks.
+An earlier version of this document was published as RFC 7525 when the industry was in the midst of its transition to TLS 1.2. Years later this transition is largely complete and TLS 1.3 is widely available. This document updates the guidance given the new environment and obsoletes RFC 7525. In addition, the document updates RFC 5288 and RFC 6066 in view of recent attacks.
 
 --- middle
 
@@ -249,7 +249,7 @@ The TLS community reacted to these attacks in several ways:
 
 - Detailed guidance was published on the use of TLS 1.2 {{!RFC5246}} and DTLS 1.2 {{!RFC6347}}, along with earlier protocol versions. This guidance is included in the original {{?RFC7525}} and mostly retained in this revised version; note that this guidance was mostly adopted by the industry since the publication of RFC 7525 in 2015.
 - Versions of TLS earlier than 1.2 were deprecated {{!RFC8996}}.
-- Version 1.3 of TLS {{!RFC8446}} was released and version 1.3 of DTLS was finalized {{!I-D.ietf-tls-dtls13}}; these versions largely mitigate or resolve the described attacks.
+- Version 1.3 of TLS {{!RFC8446}} was released, followed by version 1.3 of DTLS {{!RFC9147}}; these versions largely mitigate or resolve the described attacks.
 
 Those who implement and deploy TLS and DTLS, in particular versions 1.2 or earlier of these protocols, need guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
 
@@ -325,7 +325,7 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
 
-* Implementations SHOULD support DTLS 1.3 {{!I-D.ietf-tls-dtls13}} and, if implemented, MUST prefer to negotiate DTLS version 1.3 over earlier versions of DTLS.
+* Implementations SHOULD support DTLS 1.3 {{!RFC9147}} and, if implemented, MUST prefer to negotiate DTLS version 1.3 over earlier versions of DTLS.
 
   Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).
 
@@ -418,7 +418,7 @@ A related attack resulting from TLS session parameters not properly authenticate
 Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in {{!RFC8740}}.
       
 
-## Server Name Indication
+## Server Name Indication (SNI)
 
 TLS implementations MUST support the Server Name Indication (SNI) extension defined in {{Section 3 of RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello (formerly called Encrypted SNI) once {{?I-D.ietf-tls-esni}} has been standardized.
 
@@ -427,7 +427,7 @@ TLS implementations MUST support the Server Name Indication (SNI) extension defi
 Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
       address, and therefore enables fine-grained security for these virtual servers,
       by allowing each one to have its own certificate. However, SNI also leaks the 
-      target domain for a given connection; this information leak will be plugged by 
+      target domain for a given connection; this information leak will is closed by 
       use of TLS Encrypted Client Hello.
 
 In order to prevent the attacks described in {{ALPACA}}, a server that does not
@@ -436,10 +436,10 @@ instead SHOULD fail with a fatal-level `unrecognized_name(112)` alert.  Note tha
 recommendation updates {{Section 3 of RFC6066}}: "If the server understood the
 ClientHello extension but does not recognize the server name, the server SHOULD
 take one of two actions: either abort the handshake by sending a fatal-level
-`unrecognized_name(112)` alert or continue the handshake." It is also
-RECOMMENDED that clients abort the handshake if the server acknowledges the SNI extension, but presents a certificate with a different hostname than the one sent by the client.
+`unrecognized_name(112)` alert or continue the handshake."
+Clients SHOULD abort the handshake if the server acknowledges the SNI extension, but presents a certificate with a different hostname than the one sent by the client.
 
-## Application-Layer Protocol Negotiation
+## Application-Layer Protocol Negotiation (ALPN)
 
 TLS implementations (both client- and server-side) MUST support the
 Application-Layer Protocol Negotiation (ALPN) extension {{!RFC7301}}.
@@ -449,8 +449,8 @@ that a message intended for use in one protocol cannot be mistaken for a
 message for use in another protocol, servers should strictly enforce the
 behavior prescribed in {{Section 3.2 of RFC7301}}: "In the event that the
 server supports no protocols that the client advertises, then the server SHALL
-respond with a fatal `no_application_protocol` alert."  It is also RECOMMENDED
-that clients abort the handshake if the server acknowledges the ALPN extension,
+respond with a fatal `no_application_protocol` alert."  Clients SHOULD
+abort the handshake if the server acknowledges the ALPN extension,
 but does not select a protocol from the client list.  Failure to do so can
 result in attacks such those described in {{ALPACA}}.
 
@@ -458,7 +458,7 @@ Protocol developers are strongly encouraged to register an ALPN identifier for t
 
 ## Zero Round Trip Time (0-RTT) Data in TLS 1.3
 
-The 0-RTT early data feature is new in TLS 1.3. It provides improved latency
+The 0-RTT early data feature is new in TLS 1.3. It provides reduced latency
 when TLS connections are resumed, at the potential cost of security.
 As a result, it requires special attention from implementers on both
 the server and the client side. Typically this extends to both the
@@ -576,11 +576,11 @@ Given the foregoing considerations, implementation and deployment of the followi
 * TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
 
 
-These cipher suites are supported only in TLS 1.2 and not in earlier protocol versions, because they are authenticated encryption (AEAD) algorithms {{?RFC5116}}.
+As these are authenticated encryption (AEAD) algorithms {{?RFC5116}}, these cipher suites are supported only in TLS 1.2 and not in earlier protocol versions.
 
 Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software. (See {{BETTERCRYPTO}} for helpful deployment guidelines, but note that its recommendations differ from the current document in some details.)  It would be ideal if server software implementations were to prefer these suites by default.
 
-Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but they are out of scope entirely.
+Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but these are out of scope entirely.
 
 When using ECDSA signatures for authentication of TLS peers, it is RECOMMENDED that implementations use the NIST curve P-256. In addition, to avoid predictable or repeated nonces (that would allow revealing the long term signing key), it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{!RFC6979}} and in line with the recommendations in {{RFC8446}}.
 
@@ -622,7 +622,7 @@ handshake (or in TLS 1.3, a Key Update) to rotate the session key.
 When a receiver has reached IL, the implementation SHOULD close the connection.
 
 For all TLS 1.3 cipher suites, readers are referred to {{Section 5.5 of RFC8446}} for the values of CL and IL. For all DTLS 1.3 cipher suites, readers are referred to {{Section 4.5.3 of
-I-D.ietf-tls-dtls13}}.
+RFC9147}}.
 
 For all AES-GCM cipher suites recommended for TLS 1.2 and DTLS 1.2 in this
 document, CL can be derived by plugging the corresponding parameters into the
@@ -904,7 +904,7 @@ on the normative changes.
   * Clarified items (e.g. renegotiation) that only apply to TLS 1.2.
   * Changed status of TLS 1.0 and 1.1 from SHOULD NOT to MUST NOT.
   * Added TLS 1.3 at a SHOULD level.
-  * Similar changes to DTLS, pending publication of DTLS 1.3.
+  * Similar changes to DTLS.
   * Specific guidance for multiplexed protocols.
   * MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.
   * Limits on key usage.
