@@ -10,6 +10,8 @@ updates: 5288, 6066
 ipr: trust200902
 area: Applications
 workgroup: UTA Working Group
+
+stream: IETF
 keyword: Internet-Draft
 consensus: false
 
