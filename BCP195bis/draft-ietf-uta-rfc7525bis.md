@@ -429,7 +429,7 @@ TLS implementations MUST support the Server Name Indication (SNI) extension defi
 Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
       address, and therefore enables fine-grained security for these virtual servers,
       by allowing each one to have its own certificate. However, SNI also leaks the 
-      target domain for a given connection; this information leak will is closed by 
+      target domain for a given connection; this information leak is closed by 
       use of TLS Encrypted Client Hello.
 
 In order to prevent the attacks described in {{ALPACA}}, a server that does not
