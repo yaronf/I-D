@@ -361,11 +361,15 @@ The following recommendations are provided to help prevent SSL Stripping (an att
 
 Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear. 
 
-
 ## Compression
+
 {: #rec-compress}
 
-In order to help prevent compression-related attacks (summarized in {{Section 2.6 of RFC7457}}), when using TLS 1.2 implementations and deployments SHOULD disable TLS-level compression ({{Section 6.2.2 of RFC5246}}), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.
+In order to help prevent compression-related attacks (summarized in {{Section 2.6 of RFC7457}}), when using TLS 1.2 implementations and deployments SHOULD NOT support
+TLS-level compression ({{Section 6.2.2 of RFC5246}}); the only exception is when
+the application protocol in question has been proved not to be open to such attacks,
+however even in this case extreme caution is warranted because of the potential for
+future attacks related to TLS compression. More specifically, the HTTP protocol is known to be vulnerable to compression-related attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.
 
 
 Rationale: TLS compression has been subject to security attacks, such as the CRIME attack.
