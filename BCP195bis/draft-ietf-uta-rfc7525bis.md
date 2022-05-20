@@ -526,7 +526,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 * Implementations SHOULD NOT negotiate cipher suites that use 
                algorithms offering less than 128 bits of security.
 
-  Rationale: Cipher suites that offer between 112-bits and 128-bits 
+  Rationale: Cipher suites that offer more than 112 bits but less than 128 bits
                of security are not considered weak at this time; however, it is 
                expected that their useful lifespan is short enough to justify 
                supporting stronger cipher suites at this time.  128-bit ciphers 
