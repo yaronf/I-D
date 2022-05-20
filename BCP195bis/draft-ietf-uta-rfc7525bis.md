@@ -13,7 +13,7 @@ workgroup: UTA Working Group
 
 stream: IETF
 keyword: Internet-Draft
-consensus: false
+consensus: true
 
 stand_alone: yes
 pi:
@@ -410,6 +410,8 @@ to track the client, in some cases indefinitely. See {{Sy2018}} for more details
 ## Renegotiation in TLS 1.2
 
 The recommendations in this section apply to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.
+
+Renegotiation in TLS 1.2 is a handshake that establishes new cryptographic parameters for an existing session. The mechanism existed in TLS 1.2 and in earlier protocol versions, and was improved following several major attacks including a plaintext injection attack, CVE-2009-3555 {{CVE}}.
 
 TLS 1.2 clients and servers MUST implement the `renegotiation_info` extension, as defined in {{!RFC5746}}.
 
