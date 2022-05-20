@@ -306,7 +306,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
                
   Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. We note that as long as TLS 1.2 is still allowed by a particular implementation, even if it defaults to TLS 1.3, implementers MUST still follow all the recommendations in this document.
 
-* Implementations of newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions, since there is no need to allow legacy endpoints that support TLS 1.2. Similarly, we recommend to base new protocol designs that embed the TLS mechanisms on TLS 1.3, as was done for QUIC {{RFC9001}}).
+* Implementations of newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions, since there is no need to allow legacy endpoints that support TLS 1.2. Similarly, we recommend basing new protocol designs that embed the TLS mechanisms on TLS 1.3, as was done for QUIC {{RFC9001}}).
 
   Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.
 
