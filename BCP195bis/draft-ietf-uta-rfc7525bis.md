@@ -407,6 +407,8 @@ to track the client, in some cases indefinitely. See {{Sy2018}} for more details
 
 The recommendations in this section apply to TLS 1.2 only, because renegotiation has been removed from TLS 1.3.
 
+Renegotiation in TLS 1.2 is a handshake that establishes new cryptographic parameters for an existing session. The mechanism existed in TLS 1.2 and in earlier protocol versions, and was improved following several major attacks including a plaintext injection attack, CVE-2009-3555 {{CVE}}.
+
 TLS 1.2 clients and servers MUST implement the `renegotiation_info` extension, as defined in {{!RFC5746}}.
 
 TLS 1.2 clients MUST send `renegotiation_info` in the Client Hello.  If the server does not acknowledge the extension, the client MUST generate a fatal `handshake_failure` alert prior to terminating the connection.
