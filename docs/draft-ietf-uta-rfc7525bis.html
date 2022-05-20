@@ -1614,12 +1614,18 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
 <p id="section-3.2-3">Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="rec-compress">
+<div id="compression">
 <section id="section-3.3">
         <h3 id="name-compression">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-compression" class="section-name selfRef">Compression</a>
         </h3>
-<p id="section-3.3-1">In order to help prevent compression-related attacks (summarized in <span><a href="https://rfc-editor.org/rfc/rfc7457#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC7457" class="xref">RFC7457</a>]</span>), when using TLS 1.2 implementations and deployments <span class="bcp14">SHOULD</span> disable TLS-level compression (<span><a href="https://rfc-editor.org/rfc/rfc5246#section-6.2.2" class="relref">Section 6.2.2</a> of [<a href="#RFC5246" class="xref">RFC5246</a>]</span>), unless the application protocol in question has been shown not to be open to such attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<div id="rec-compress">
+<p id="section-3.3-1">In order to help prevent compression-related attacks (summarized in <span><a href="https://rfc-editor.org/rfc/rfc7457#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC7457" class="xref">RFC7457</a>]</span>), when using TLS 1.2 implementations and deployments <span class="bcp14">SHOULD NOT</span> support
+TLS-level compression (<span><a href="https://rfc-editor.org/rfc/rfc5246#section-6.2.2" class="relref">Section 6.2.2</a> of [<a href="#RFC5246" class="xref">RFC5246</a>]</span>); the only exception is when
+the application protocol in question has been proved not to be open to such attacks,
+however even in this case extreme caution is warranted because of the potential for
+future attacks related to TLS compression. More specifically, the HTTP protocol is known to be vulnerable to compression-related attacks. Note: this recommendation applies to TLS 1.2 only, because compression has been removed from TLS 1.3.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+</div>
 <p id="section-3.3-2">Rationale: TLS compression has been subject to security attacks, such as the CRIME attack.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3-3">Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside of TLS and are thus outside the scope of this document. See <span><a href="https://rfc-editor.org/rfc/rfc7457#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC7457" class="xref">RFC7457</a>]</span> for further details.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 </section>
