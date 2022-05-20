@@ -790,7 +790,7 @@ could still choose their own (potentially insecure) nonce generation methods.
 
 It is therefore RECOMMENDED that TLS 1.2 implementations use the 64-bit
 sequence number to populate the `nonce_explicit` part of the GCM nonce, as
-described in the first two paragraphs of {{Section 5.3 of RFC8446}}. This stronger recommendation updates {{Section 3 of RFC5288}}, which specified that 64-bit sequence numbers were optional.
+described in the first two paragraphs of {{Section 5.3 of RFC8446}}. This stronger recommendation updates {{Section 3 of RFC5288}}, which specified that the use of 64-bit sequence numbers to populate the `nonce_explicit` field was optional.
 
 We note that at the time of writing there are no cipher suites defined for nonce
 reuse resistant algorithms such as AES-GCM-SIV {{?RFC8452}}.
