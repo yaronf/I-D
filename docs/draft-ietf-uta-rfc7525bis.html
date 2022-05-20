@@ -2065,9 +2065,7 @@ all of its AEAD cipher suites (including AES-GCM), TLS 1.2 implementations
 could still choose their own (potentially insecure) nonce generation methods.<a href="#section-7.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-7.2.1-3">It is therefore <span class="bcp14">RECOMMENDED</span> that TLS 1.2 implementations use the 64-bit
 sequence number to populate the <code>nonce_explicit</code> part of the GCM nonce, as
-described in the first two paragraphs of <span><a href="https://rfc-editor.org/rfc/rfc8446#section-5.3" class="relref">Section 5.3</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>.  Note
-that this stronger recommendation updates <span><a href="https://rfc-editor.org/rfc/rfc5288#section-3" class="relref">Section 3</a> of [<a href="#RFC5288" class="xref">RFC5288</a>]</span>: "The nonce_explicit
-<span class="bcp14">MAY</span> be the 64-bit sequence number."<a href="#section-7.2.1-3" class="pilcrow">¶</a></p>
+described in the first two paragraphs of <span><a href="https://rfc-editor.org/rfc/rfc8446#section-5.3" class="relref">Section 5.3</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>. This stronger recommendation updates <span><a href="https://rfc-editor.org/rfc/rfc5288#section-3" class="relref">Section 3</a> of [<a href="#RFC5288" class="xref">RFC5288</a>]</span>, which specified that the use of 64-bit sequence numbers to populate the <code>nonce_explicit</code> field was optional.<a href="#section-7.2.1-3" class="pilcrow">¶</a></p>
 <p id="section-7.2.1-4">We note that at the time of writing there are no cipher suites defined for nonce
 reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="xref">RFC8452</a>]</span>.<a href="#section-7.2.1-4" class="pilcrow">¶</a></p>
 </section>
