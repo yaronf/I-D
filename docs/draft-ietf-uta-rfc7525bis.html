@@ -1469,7 +1469,7 @@ li > p:last-of-type {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC <span>[<a href="#RFC3602" class="xref">RFC3602</a>]</span> and RC4 <span>[<a href="#RFC7465" class="xref">RFC7465</a>]</span> encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span> provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP <span>[<a href="#HTTP1.1" class="xref">HTTP1.1</a>]</span> <span>[<a href="#HTTP2" class="xref">HTTP2</a>]</span>, SMTP <span>[<a href="#RFC5321" class="xref">RFC5321</a>]</span>, IMAP <span>[<a href="#RFC9051" class="xref">RFC9051</a>]</span>, POP <span>[<a href="#STD53" class="xref">STD53</a>]</span>, SIP <span>[<a href="#RFC3261" class="xref">RFC3261</a>]</span>, and XMPP <span>[<a href="#RFC6120" class="xref">RFC6120</a>]</span>.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC <span>[<a href="#RFC3602" class="xref">RFC3602</a>]</span> and RC4 <span>[<a href="#RFC7465" class="xref">RFC7465</a>]</span> encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document <span>[<a href="#RFC7457" class="xref">RFC7457</a>]</span> provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">The TLS community reacted to these attacks in several ways:<a href="#section-1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-3.1">Detailed guidance was published on the use of TLS 1.2 <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> and DTLS 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span>, along with earlier protocol versions. This guidance is included in the original <span>[<a href="#RFC7525" class="xref">RFC7525</a>]</span> and mostly retained in this revised version; note that this guidance was mostly adopted by the industry since the publication of RFC 7525 in 2015.<a href="#section-1-3.1" class="pilcrow">¶</a>
@@ -1639,7 +1639,7 @@ future attacks related to TLS compression. More specifically, the HTTP protocol 
 performance feature for most deployments.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <p id="section-3.4-2">Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
 <span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span>.  For TLS 1.3, a more secure PSK-based mechanism is described in
-<span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6.1" class="relref">Section 4.6.1</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>. See <a href="https://blog.filippo.io/we-need-to-talk-about-session-tickets/">this post</a> by Filippo Valsorda for a comparison of TLS 1.2 and 1.3 session resumption, and <span>[<a href="#Springall16" class="xref">Springall16</a>]</span> for a quantitative study of TLS cryptographic "shortcuts", including session resumption.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<span><a href="https://rfc-editor.org/rfc/rfc8446#section-4.6.1" class="relref">Section 4.6.1</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span>. See <span>[<a href="#Springall16" class="xref">Springall16</a>]</span> for a quantitative study of TLS cryptographic "shortcuts", including session resumption.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 <p id="section-3.4-3">When it is used, the resumption information <span class="bcp14">MUST</span>
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
 Further recommendations apply to session tickets:<a href="#section-3.4-3" class="pilcrow">¶</a></p>
@@ -1681,7 +1681,7 @@ to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" cl
         <h3 id="name-post-handshake-authenticati">
 <a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-post-handshake-authenticati" class="section-name selfRef">Post-Handshake Authentication</a>
         </h3>
-<p id="section-3.6-1">Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols <span class="bcp14">SHOULD</span> follow the advice provided for HTTP/2 in <span>[<a href="#RFC8740" class="xref">RFC8740</a>]</span>.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
+<p id="section-3.6-1">Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2 <span>[<a href="#HTTP2" class="xref">HTTP2</a>]</span>), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols <span class="bcp14">SHOULD</span> follow the advice provided for HTTP/2 in <span>[<a href="#RFC8740" class="xref">RFC8740</a>]</span>.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="server-name-indication-sni">
@@ -2348,6 +2348,14 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Heninger, N.</span>, <span class="refAuthor">Durumeric, Z.</span>, <span class="refAuthor">Wustrow, E.</span>, and <span class="refAuthor">J. A. Halderman</span>, <span class="refTitle">"Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices"</span>, <span class="seriesInfo">Usenix Security Symposium 2012</span>, <time datetime="2012" class="refDate">2012</time>. </dd>
 <dd class="break"></dd>
+<dt id="HTTP1.1">[HTTP1.1]</dt>
+        <dd>
+<span class="refAuthor">Fielding, R. T.</span>, <span class="refAuthor">Nottingham, M.</span>, and <span class="refAuthor">J. Reschke</span>, <span class="refTitle">"HTTP/1.1"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-messaging-19</span>, <time datetime="2021-09-12" class="refDate">12 September 2021</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-httpbis-messaging-19.txt">https://www.ietf.org/archive/id/draft-ietf-httpbis-messaging-19.txt</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="HTTP2">[HTTP2]</dt>
+        <dd>
+<span class="refAuthor">Thomson, M.</span> and <span class="refAuthor">C. Benfield</span>, <span class="refTitle">"HTTP/2"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-http2bis-07</span>, <time datetime="2022-01-24" class="refDate">24 January 2022</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-httpbis-http2bis-07.txt">https://www.ietf.org/archive/id/draft-ietf-httpbis-http2bis-07.txt</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.ietf-tls-esni">[I-D.ietf-tls-esni]</dt>
         <dd>
 <span class="refAuthor">Rescorla, E.</span>, <span class="refAuthor">Oku, K.</span>, <span class="refAuthor">Sullivan, N.</span>, and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"TLS Encrypted Client Hello"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-esni-14</span>, <time datetime="2022-02-13" class="refDate">13 February 2022</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-tls-esni-14.txt">https://www.ietf.org/archive/id/draft-ietf-tls-esni-14.txt</a>&gt;</span>. </dd>
@@ -2408,6 +2416,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Dierks, T.</span> and <span class="refAuthor">C. Allen</span>, <span class="refTitle">"The TLS Protocol Version 1.0"</span>, <span class="seriesInfo">RFC 2246</span>, <span class="seriesInfo">DOI 10.17487/RFC2246</span>, <time datetime="1999-01" class="refDate">January 1999</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2246">https://www.rfc-editor.org/info/rfc2246</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC3261">[RFC3261]</dt>
+        <dd>
+<span class="refAuthor">Rosenberg, J.</span>, <span class="refAuthor">Schulzrinne, H.</span>, <span class="refAuthor">Camarillo, G.</span>, <span class="refAuthor">Johnston, A.</span>, <span class="refAuthor">Peterson, J.</span>, <span class="refAuthor">Sparks, R.</span>, <span class="refAuthor">Handley, M.</span>, and <span class="refAuthor">E. Schooler</span>, <span class="refTitle">"SIP: Session Initiation Protocol"</span>, <span class="seriesInfo">RFC 3261</span>, <span class="seriesInfo">DOI 10.17487/RFC3261</span>, <time datetime="2002-06" class="refDate">June 2002</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3261">https://www.rfc-editor.org/info/rfc3261</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC3602">[RFC3602]</dt>
         <dd>
 <span class="refAuthor">Frankel, S.</span>, <span class="refAuthor">Glenn, R.</span>, and <span class="refAuthor">S. Kelly</span>, <span class="refTitle">"The AES-CBC Cipher Algorithm and Its Use with IPsec"</span>, <span class="seriesInfo">RFC 3602</span>, <span class="seriesInfo">DOI 10.17487/RFC3602</span>, <time datetime="2003-09" class="refDate">September 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3602">https://www.rfc-editor.org/info/rfc3602</a>&gt;</span>. </dd>
@@ -2435,6 +2447,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="RFC5280">[RFC5280]</dt>
         <dd>
 <span class="refAuthor">Cooper, D.</span>, <span class="refAuthor">Santesson, S.</span>, <span class="refAuthor">Farrell, S.</span>, <span class="refAuthor">Boeyen, S.</span>, <span class="refAuthor">Housley, R.</span>, and <span class="refAuthor">W. Polk</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 5280</span>, <span class="seriesInfo">DOI 10.17487/RFC5280</span>, <time datetime="2008-05" class="refDate">May 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5280">https://www.rfc-editor.org/info/rfc5280</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5321">[RFC5321]</dt>
+        <dd>
+<span class="refAuthor">Klensin, J.</span>, <span class="refTitle">"Simple Mail Transfer Protocol"</span>, <span class="seriesInfo">RFC 5321</span>, <span class="seriesInfo">DOI 10.17487/RFC5321</span>, <time datetime="2008-10" class="refDate">October 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc5321">https://www.rfc-editor.org/info/rfc5321</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC6101">[RFC6101]</dt>
         <dd>
@@ -2500,6 +2516,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">S. Turner, Ed.</span>, <span class="refTitle">"Using TLS to Secure QUIC"</span>, <span class="seriesInfo">RFC 9001</span>, <span class="seriesInfo">DOI 10.17487/RFC9001</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9001">https://www.rfc-editor.org/info/rfc9001</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC9051">[RFC9051]</dt>
+        <dd>
+<span class="refAuthor">Melnikov, A., Ed.</span> and <span class="refAuthor">B. Leiba, Ed.</span>, <span class="refTitle">"Internet Message Access Protocol (IMAP) - Version 4rev2"</span>, <span class="seriesInfo">RFC 9051</span>, <span class="seriesInfo">DOI 10.17487/RFC9051</span>, <time datetime="2021-08" class="refDate">August 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9051">https://www.rfc-editor.org/info/rfc9051</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC9162">[RFC9162]</dt>
         <dd>
 <span class="refAuthor">Laurie, B.</span>, <span class="refAuthor">Messeri, E.</span>, and <span class="refAuthor">R. Stradling</span>, <span class="refTitle">"Certificate Transparency Version 2.0"</span>, <span class="seriesInfo">RFC 9162</span>, <span class="seriesInfo">DOI 10.17487/RFC9162</span>, <time datetime="2021-12" class="refDate">December 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9162">https://www.rfc-editor.org/info/rfc9162</a>&gt;</span>. </dd>
@@ -2515,6 +2535,12 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="Springall16">[Springall16]</dt>
         <dd>
 <span class="refAuthor">Springall, D.</span>, <span class="refAuthor">Durumeric, Z.</span>, and <span class="refAuthor">J. Halderman</span>, <span class="refTitle">"Measuring the Security Harm of TLS Crypto Shortcuts"</span>, <span class="seriesInfo">Proceedings of the 2016 Internet Measurement Conference</span>, <span class="seriesInfo">DOI 10.1145/2987443.2987480</span>, <time datetime="2016-11" class="refDate">November 2016</time>, <span>&lt;<a href="https://doi.org/10.1145/2987443.2987480">https://doi.org/10.1145/2987443.2987480</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="STD53">[STD53]</dt>
+        <dd><div class="refInstance" id="RFC1939">
+            <span class="refAuthor">Myers, J.</span> and <span class="refAuthor">M. Rose</span>, <span class="refTitle">"Post Office Protocol - Version 3"</span>, <span class="seriesInfo">STD 53</span>, <span class="seriesInfo">RFC 1939</span>, <time datetime="1996-05" class="refDate">May 1996</time>. </div>
+<span>&lt;<a href="https://www.rfc-editor.org/info/std53">https://www.rfc-editor.org/info/std53</a>&gt;</span>
+</dd>
 <dd class="break"></dd>
 <dt id="Sy2018">[Sy2018]</dt>
         <dd>
