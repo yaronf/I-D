@@ -101,6 +101,10 @@ informative:
 
   DANE-SRV: RFC7673
 
+  HTTP1.1: I-D.ietf-httpbis-messaging
+
+  HTTP2: I-D.ietf-httpbis-http2bis
+
   Kleinjung2010: DOI.10.1007/978-3-642-14623-7_18
 
   IANA_TLS: IANA.tls-parameters
@@ -245,7 +249,7 @@ An earlier version of this document was published as RFC 7525 when the industry 
 
 # Introduction
 
-Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
+Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP {{HTTP1.1}} {{HTTP2}}, SMTP {{?RFC5321}}, IMAP {{?RFC9051}}, POP {{?STD53}}, SIP {{?RFC3261}}, and XMPP {{?RFC6120}}.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
 
 The TLS community reacted to these attacks in several ways:
 
@@ -385,7 +389,7 @@ performance feature for most deployments.
 
 Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
 {{?RFC5077}}.  For TLS 1.3, a more secure PSK-based mechanism is described in
-{{Section 4.6.1 of RFC8446}}. See [this post](https://blog.filippo.io/we-need-to-talk-about-session-tickets/) by Filippo Valsorda for a comparison of TLS 1.2 and 1.3 session resumption, and {{Springall16}} for a quantitative study of TLS cryptographic "shortcuts", including session resumption.
+{{Section 4.6.1 of RFC8446}}. See {{Springall16}} for a quantitative study of TLS cryptographic "shortcuts", including session resumption.
 
 When it is used, the resumption information MUST
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
@@ -423,7 +427,7 @@ A related attack resulting from TLS session parameters not properly authenticate
 
 ## Post-Handshake Authentication
 
-Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in {{!RFC8740}}.
+Renegotiation in TLS 1.2 was replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2 {{HTTP2}}), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in {{!RFC8740}}.
       
 
 ## Server Name Indication (SNI)
