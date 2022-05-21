@@ -1648,7 +1648,7 @@ Further recommendations apply to session tickets:<a href="#section-3.4-3" class=
 </li>
           <li class="normal" id="section-3.4-4.2">Ticket keys <span class="bcp14">MUST</span> be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see <a href="#sec-pfs" class="xref">Section 7.3</a> for details on forward secrecy). Old ticket keys <span class="bcp14">MUST</span> be destroyed shortly after a new key version is made available.<a href="#section-3.4-4.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.4-4.3">For similar reasons, session ticket validity <span class="bcp14">SHOULD</span> be limited to a reasonable duration (e.g., half as long as ticket key validity).<a href="#section-3.4-4.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.4-4.3">For similar reasons, session ticket validity <span class="bcp14">MUST</span> be limited to a reasonable duration (e.g., half as long as ticket key validity).<a href="#section-3.4-4.3" class="pilcrow">¶</a>
 </li>
           <li class="normal" id="section-3.4-4.4">TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where a stolen ticket key is used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server <span class="bcp14">SHOULD NOT</span> resume sessions that are too old, e.g. sessions that have been open longer than two ticket key rotation periods. Note that this implies that some server implementations might need to abort sessions after a certain duration.<a href="#section-3.4-4.4" class="pilcrow">¶</a>
 </li>
@@ -2602,16 +2602,19 @@ on the normative changes.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
             <li class="normal" id="appendix-A-2.2.2.5">Support for <code>extended_master_secret</code> is a <span class="bcp14">SHOULD</span>. Also removed other, more complicated, related mitigations.<a href="#appendix-A-2.2.2.5" class="pilcrow">¶</a>
 </li>
             <li class="normal" id="appendix-A-2.2.2.6">
-              <span class="bcp14">SHOULD</span>-level restriction on the TLS session duration, depending on the rotation period of an <span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span> ticket key.<a href="#appendix-A-2.2.2.6" class="pilcrow">¶</a>
+              <span class="bcp14">MUST</span>-level restriction on session ticket validity, replacing a <span class="bcp14">SHOULD</span>.<a href="#appendix-A-2.2.2.6" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.7">Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers<a href="#appendix-A-2.2.2.7" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.7">
+              <span class="bcp14">SHOULD</span>-level restriction on the TLS session duration, depending on the rotation period of an <span>[<a href="#RFC5077" class="xref">RFC5077</a>]</span> ticket key.<a href="#appendix-A-2.2.2.7" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.8">Add TLS_ECDHE_ECDSA_WITH_AES to the recommended ciphers<a href="#appendix-A-2.2.2.8" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.8">Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers<a href="#appendix-A-2.2.2.8" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.9">
-              <span class="bcp14">SHOULD NOT</span> use the old MTI cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.<a href="#appendix-A-2.2.2.9" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.9">Add TLS_ECDHE_ECDSA_WITH_AES to the recommended ciphers<a href="#appendix-A-2.2.2.9" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="appendix-A-2.2.2.10">Recommend curve X25519 alongside NIST P-256<a href="#appendix-A-2.2.2.10" class="pilcrow">¶</a>
+            <li class="normal" id="appendix-A-2.2.2.10">
+              <span class="bcp14">SHOULD NOT</span> use the old MTI cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA.<a href="#appendix-A-2.2.2.10" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="appendix-A-2.2.2.11">Recommend curve X25519 alongside NIST P-256<a href="#appendix-A-2.2.2.11" class="pilcrow">¶</a>
 </li>
           </ul>
 </li>
