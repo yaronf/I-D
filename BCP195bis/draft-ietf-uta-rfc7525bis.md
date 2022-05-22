@@ -568,9 +568,9 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 
   Rationale: Forward secrecy (sometimes called "perfect forward 
                secrecy") prevents the recovery of information that was encrypted 
-               with older session keys, thus limiting the amount of time during 
-               which attacks can be successful. See {{sec-pfs}} for 
-               a detailed discussion.
+               with older session keys, thus limiting how far back in time data
+               can be decrypted when an attack is successful.  See {{sec-pfs}}
+               for a detailed discussion.
             
 ## Cipher Suites for TLS 1.2
 {: #rec-cipher}
