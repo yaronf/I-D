@@ -306,7 +306,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
 
-  Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are only available in this version.
+  Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are not available in older versions of the protocol.
 
 * Implementations SHOULD support TLS 1.3 {{!RFC8446}} and, if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
                
@@ -525,10 +525,9 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 
   Rationale: Based on {{!RFC3766}}, at least 112 bits 
                of security is needed.  40-bit and 56-bit security are considered 
-               insecure today.  TLS 1.1 and 1.2 never negotiate 40-bit or 56-bit 
-               export ciphers.
+               insecure today.  TLS 1.2 never negotiates 40-bit or 56-bit export ciphers and such ciphers are not supported at all in TLS 1.3.
             
-
+  
 * Implementations SHOULD NOT negotiate cipher suites that use 
                algorithms offering less than 128 bits of security.
 
