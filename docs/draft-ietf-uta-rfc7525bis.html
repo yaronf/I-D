@@ -1658,7 +1658,12 @@ Further recommendations apply to session tickets:<a href="#section-3.4-3" class=
 that is periodically resumed. <span><a href="https://rfc-editor.org/rfc/rfc8446#section-2.2" class="relref">Section 2.2</a> of [<a href="#RFC8446" class="xref">RFC8446</a>]</span> recommends that clients <span class="bcp14">SHOULD</span>
 send a "key_share" when initiating session resumption.
 In order to gain forward secrecy, this document recommends that server implementations <span class="bcp14">SHOULD</span>
-respond with a "key_share", to complete an ECDHE exchange on each session resumption.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
+respond with a "key_share", to complete an ECDHE exchange on each session resumption.
+As a more performant alternative, server implementations <span class="bcp14">MAY</span> refrain from responding with a 
+"key_share" until a certain amount of time (e.g., measured in days) has passed since the last 
+ECDHE exchange; this implies that the "key_share" operation would not occur for the presumed
+majority of session resumption requests occurring within a few hours, while still ensuring 
+forward secrecy for longer-lived sessions.<a href="#section-3.4-6" class="pilcrow">¶</a></p>
 <p id="section-3.4-7">TLS session resumption introduces potential privacy issues where the server is able
 to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" class="xref">Sy2018</a>]</span> for more details.<a href="#section-3.4-7" class="pilcrow">¶</a></p>
 </section>
