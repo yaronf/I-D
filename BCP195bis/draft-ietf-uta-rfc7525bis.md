@@ -407,6 +407,11 @@ that is periodically resumed. {{Section 2.2 of RFC8446}} recommends that clients
 send a "key_share" when initiating session resumption.
 In order to gain forward secrecy, this document recommends that server implementations SHOULD
 respond with a "key_share", to complete an ECDHE exchange on each session resumption.
+As a more performant alternative, server implementations MAY refrain from responding with a 
+"key_share" until a certain amount of time (e.g., measured in days) has passed since the last 
+ECDHE exchange; this implies that the "key_share" operation would not occur for the presumed
+majority of session resumption requests occurring within a few hours, while still ensuring 
+forward secrecy for longer-lived sessions.
 
 TLS session resumption introduces potential privacy issues where the server is able
 to track the client, in some cases indefinitely. See {{Sy2018}} for more details.
