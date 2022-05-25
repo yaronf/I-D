@@ -343,13 +343,9 @@ TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those ver
 ## Strict TLS
 
 
-The following recommendations are provided to help prevent SSL Stripping (an attack that is summarized in {{Section 2.1 of RFC7457}}):
-      
-* In cases where an application protocol allows implementations or deployments a choice between strict TLS configuration and dynamic upgrade from unencrypted to TLS-protected traffic (such as STARTTLS), clients and servers SHOULD prefer strict TLS configuration.
+The following recommendations are provided to help prevent SSL Stripping and STARTTLS Command Injection (attacks that are summarized in {{RFC7457}}):
 
-
-
-* Application protocols typically provide a way for the server to offer TLS during an initial protocol exchange, and sometimes also provide a way for the server to advertise support for TLS (e.g., through a flag indicating that TLS is required); unfortunately, these indications are sent before the communication channel is encrypted. A client SHOULD attempt to negotiate TLS even if these indications are not communicated by the server.
+* Many existing application protocols were designed before the use of TLS became common. These protocols typically support TLS in one of two ways: either via a separate port for TLS-only communication (e.g., port 443 for HTTPS) or via a method for dynamically upgrading a channel from unencrypted to TLS-protected (such as STARTTLS, which is used in protocols such as SMTP and XMPP). Because dynamic upgrade methods depend on negotiations that begin over an unencrypted channel (e.g., the server might send a flag indicating that TLS is required), they are subject to downgrade attacks; nevertheless, a client SHOULD attempt to negotiate TLS even if these indications are not communicated by the server. In any case, whether the mechanism for protecting the communication channel is a TLS-only port or a dynamic upgrade method, what matters is the end state of the channel. In general, clients and servers SHOULD prefer to negotiate TLS and as a matter of local policy ought to be configured by default to require TLS wherever possible.
 
 
 
