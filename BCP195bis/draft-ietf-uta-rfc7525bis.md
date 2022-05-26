@@ -343,13 +343,9 @@ TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those ver
 ## Strict TLS
 
 
-The following recommendations are provided to help prevent SSL Stripping (an attack that is summarized in {{Section 2.1 of RFC7457}}):
-      
-* In cases where an application protocol allows implementations or deployments a choice between strict TLS configuration and dynamic upgrade from unencrypted to TLS-protected traffic (such as STARTTLS), clients and servers SHOULD prefer strict TLS configuration.
+The following recommendations are provided to help prevent SSL Stripping and STARTTLS Command Injection (attacks that are summarized in {{RFC7457}}):
 
-
-
-* Application protocols typically provide a way for the server to offer TLS during an initial protocol exchange, and sometimes also provide a way for the server to advertise support for TLS (e.g., through a flag indicating that TLS is required); unfortunately, these indications are sent before the communication channel is encrypted. A client SHOULD attempt to negotiate TLS even if these indications are not communicated by the server.
+* Many existing application protocols were designed before the use of TLS became common. These protocols typically support TLS in one of two ways: either via a separate port for TLS-only communication (e.g., port 443 for HTTPS) or via a method for dynamically upgrading a channel from unencrypted to TLS-protected (e.g., STARTTLS, which is used in protocols such as SMTP and XMPP). Because dynamic upgrade methods depend on negotiations that begin over an unencrypted channel (e.g., the server might send a flag indicating that TLS is supported or required), they are subject to downgrade attacks (e.g., an attacker could remove such indications); if the server does not indicate that it supports TLS, a client that insists on TLS protection would simply abort the connection, although the details might depend on the particular application protocol in use. In any case, whether the mechanism for protecting the communication channel is a TLS-only port or a dynamic upgrade method, what matters is the end state of the channel. When TLS-only communication is available for a certain protocol, it MUST be used by implementations and MUST be configured by administrators. When a protocol only supports dynamic upgrade, implementations MUST enable a strict local policy (a policy that forbids fallback to plaintext) and administrators MUST use this policy.
 
 
 
