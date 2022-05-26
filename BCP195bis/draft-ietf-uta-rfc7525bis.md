@@ -881,6 +881,7 @@ Christian Huitema,
 Daniel Kahn Gillmor,
 David Benjamin,
 Eric Rescorla,
+Francesca Palombini,
 Hannes Tschofenig,
 Hubert Kario,
 Ilari Liusvaara,
@@ -892,6 +893,7 @@ Martin Thomson,
 Mohit Sahni,
 Nick Sullivan,
 Nimrod Aviram,
+Paul Wouters,
 Rich Salz,
 Ryan Sleevi,
 Sean Turner,
@@ -918,6 +920,7 @@ on the normative changes.
   * Similar changes to DTLS.
   * Specific guidance for multiplexed protocols.
   * MUST-level implementation requirement for ALPN, and more specific SHOULD-level guidance for ALPN and SNI.
+  * Clarified discussion of strict TLS policies, including MUST-level recommendations.
   * Limits on key usage.
   * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".
   * RFC 6961 (OCSP status_request_v2) has been deprecated.
@@ -944,6 +947,10 @@ on the normative changes.
 # Document History
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
+
+## draft-ietf-uta-rfc7525bis-07
+
+* Addressed AD reviews by Francesca and Paul.
 
 ## draft-ietf-uta-rfc7525bis-06
 
