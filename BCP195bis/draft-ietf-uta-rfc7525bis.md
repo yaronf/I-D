@@ -249,7 +249,7 @@ An earlier version of this document was published as RFC 7525 when the industry 
 
 # Introduction
 
-Transport Layer Security (TLS) and Datagram Transport Security Layer (DTLS) are widely used to protect data exchanged over application protocols such as HTTP {{HTTP1.1}} {{HTTP2}}, SMTP {{?RFC5321}}, IMAP {{?RFC9051}}, POP {{?STD53}}, SIP {{?RFC3261}}, and XMPP {{?RFC6120}}.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
+Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP {{HTTP1.1}} {{HTTP2}}, SMTP {{?RFC5321}}, IMAP {{?RFC9051}}, POP {{?STD53}}, SIP {{?RFC3261}}, and XMPP {{?RFC6120}}.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
 
 The TLS community reacted to these attacks in several ways:
 
@@ -479,10 +479,10 @@ TLS library as well as protocol layers above it.
 
 For use in HTTP-over-TLS, readers are referred to {{?RFC8470}} for guidance.
 
-For QUIC-on-TLS, refer to Sec. 9.2 of {{?RFC9001}}.
+For QUIC-on-TLS, refer to {{Section 9.2 of ?RFC9001}}.
 
-For other protocols, generic guidance is given in Sec. 8 and Appendix E.5
-of {{RFC8446}}.
+For other protocols, generic guidance is given in {{Section 8 and Appendix E.5
+of RFC8446}}.
 To paraphrase Appendix E.5, applications MUST avoid this feature unless
 an explicit specification exists for the application protocol in question to clarify
 when 0-RTT is appropriate and secure. This can take the form of an IETF RFC,
@@ -612,7 +612,7 @@ The previous version of this document implicitly allowed the old RFC 5246 mandat
 ## Cipher Suites for TLS 1.3
 
 This document does not specify any cipher suites for TLS 1.3. Readers
-are referred to Sec. 9.1 of {{RFC8446}} for cipher suite recommendations.
+are referred to {{Section 9.1 of RFC8446}} for cipher suite recommendations.
 
 ## Limits on Key Usage
 
