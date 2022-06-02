@@ -249,19 +249,19 @@ An earlier version of this document was published as RFC 7525 when the industry 
 
 # Introduction
 
-Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP {{HTTP1.1}} {{HTTP2}}, SMTP {{?RFC5321}}, IMAP {{?RFC9051}}, POP {{?STD53}}, SIP {{?RFC3261}}, and XMPP {{?RFC6120}}.  Over the years leading to 2015, the industry has witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, have been attacked in the context of TLS.  A companion document {{?RFC7457}} provides detailed information about these attacks and will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
+Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP {{HTTP1.1}} {{HTTP2}}, SMTP {{?RFC5321}}, IMAP {{?RFC9051}}, POP {{?STD53}}, SIP {{?RFC3261}}, and XMPP {{?RFC6120}}.  Over the years leading to 2015, the industry had witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, were attacked in the context of TLS.  Detailed information about the attacks known prior to 2015 is provided in a companion document ({{?RFC7457}}) to the previous version of this specification, which will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
 
-The TLS community reacted to these attacks in several ways:
+The TLS community reacted to the attacks described in {{?RFC7457}} in several ways:
 
 - Detailed guidance was published on the use of TLS 1.2 {{!RFC5246}} and DTLS 1.2 {{!RFC6347}}, along with earlier protocol versions. This guidance is included in the original {{?RFC7525}} and mostly retained in this revised version; note that this guidance was mostly adopted by the industry since the publication of RFC 7525 in 2015.
 - Versions of TLS earlier than 1.2 were deprecated {{!RFC8996}}.
 - Version 1.3 of TLS {{!RFC8446}} was released, followed by version 1.3 of DTLS {{!RFC9147}}; these versions largely mitigate or resolve the described attacks.
 
-Those who implement and deploy TLS and DTLS, in particular versions 1.2 or earlier of these protocols, need guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
+Those who implement and deploy TLS and DTLS, in particular versions 1.2 or earlier of these protocols, need guidance on how TLS can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in the environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
 
 The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless it is explicitly called out that a recommendation applies to TLS alone or to DTLS alone, each recommendation applies to both TLS and DTLS.
 
-This document attempts to minimize new guidance to TLS 1.2 implementations, and the overall approach is to encourage systems to move to TLS 1.3. However this is not always practical. Newly discovered attacks, as well as ecosystem changes, necessitated some new requirements that apply to TLS 1.2 environments. Those are summarized in {{diff-rfc}}.
+This document attempts to minimize new guidance to TLS 1.2 implementations, and the overall approach is to encourage systems to move to TLS 1.3. However, this is not always practical. Newly discovered attacks, as well as ecosystem changes, necessitated some new requirements that apply to TLS 1.2 environments. Those are summarized in {{diff-rfc}}.
 
 As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. Therefore this document replaces {{?RFC7525}}, with an explicit goal to encourage migration of most uses of TLS 1.2 to TLS 1.3.
 
@@ -314,7 +314,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * Implementations of newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions, since there is no need to allow legacy endpoints that support TLS 1.2. Similarly, we recommend basing new protocol designs that embed the TLS mechanisms on TLS 1.3, as was done for QUIC {{RFC9001}}).
 
-  Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than the secure deployment of TLS 1.2.
+  Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than secure deployment of TLS 1.2.
 
 This BCP applies to TLS 1.2, 1.3 and to earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
@@ -338,19 +338,19 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 ### Fallback to Lower Versions
 {: #rec-fallback}
 
-TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those versions have been deprecated {{!RFC8996}}. We note that as a result of that, the SCSV mechanism {{?RFC7507}} is no longer needed for clients. In addition, TLS 1.3 implements a new version negotiation mechanism.
+TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those versions have been deprecated {{!RFC8996}}. We note that as a result of that, the downgrade-protection SCSV mechanism {{?RFC7507}} is no longer needed for clients. In addition, TLS 1.3 implements a new version negotiation mechanism.
 
 ## Strict TLS
 
 
 The following recommendations are provided to help prevent SSL Stripping and STARTTLS Command Injection (attacks that are summarized in {{RFC7457}}):
 
-* Many existing application protocols were designed before the use of TLS became common. These protocols typically support TLS in one of two ways: either via a separate port for TLS-only communication (e.g., port 443 for HTTPS) or via a method for dynamically upgrading a channel from unencrypted to TLS-protected (e.g., STARTTLS, which is used in protocols such as SMTP and XMPP). Because dynamic upgrade methods depend on negotiations that begin over an unencrypted channel (e.g., the server might send a flag indicating that TLS is supported or required), they are subject to downgrade attacks (e.g., an attacker could remove such indications); if the server does not indicate that it supports TLS, a client that insists on TLS protection would simply abort the connection, although the details might depend on the particular application protocol in use. In any case, whether the mechanism for protecting the communication channel is a TLS-only port or a dynamic upgrade method, what matters is the end state of the channel. When TLS-only communication is available for a certain protocol, it MUST be used by implementations and MUST be configured by administrators. When a protocol only supports dynamic upgrade, implementations MUST enable a strict local policy (a policy that forbids fallback to plaintext) and administrators MUST use this policy.
+* Many existing application protocols were designed before the use of TLS became common. These protocols typically support TLS in one of two ways: either via a separate port for TLS-only communication (e.g., port 443 for HTTPS) or via a method for dynamically upgrading a channel from unencrypted to TLS-protected (e.g., STARTTLS, which is used in protocols such as SMTP and XMPP). Because dynamic upgrade methods depend on negotiations that begin over an unencrypted channel (e.g., the server might send a flag indicating that TLS is supported or required), they are subject to downgrade attacks (e.g., an attacker could remove such indications); if the server does not indicate that it supports TLS, a client that insists on TLS protection would simply abort the connection, although the details might depend on the particular application protocol in use. In any case, whether the mechanism for protecting the communication channel is a TLS-only port or a dynamic upgrade method, what matters is the end state of the channel. When TLS-only communication is available for a certain protocol, it MUST be used by implementations and MUST be configured by administrators. When a protocol only supports dynamic upgrade, implementations MUST provide a strict local policy (a policy that forbids use of plaintext in the absence of a negotiated TLS channel) and administrators MUST use this policy.
 
 
 
 * HTTP client and server implementations MUST support the HTTP Strict Transport
-      Security (HSTS) header {{?RFC6797}}, in order to allow Web servers to 
+      Security (HSTS) header field {{?RFC6797}}, in order to allow Web servers to 
       advertise that they are
       willing to accept TLS-only clients.
 
@@ -380,21 +380,21 @@ Implementers should note that compression at higher protocol levels can allow an
 ## TLS Session Resumption
 {: #rec-resume}
 
-Session resumption drastically reduces the number of TLS handshakes and thus is an essential
+Session resumption drastically reduces the number of full TLS handshakes and thus is an essential
 performance feature for most deployments.
 
 Stateless session resumption with session tickets is a popular strategy. For TLS 1.2, it is specified in
 {{?RFC5077}}.  For TLS 1.3, a more secure PSK-based mechanism is described in
-{{Section 4.6.1 of RFC8446}}. See {{Springall16}} for a quantitative study of TLS cryptographic "shortcuts", including session resumption.
+{{Section 4.6.1 of RFC8446}}. See {{Springall16}} for a quantitative study of the risks induced by TLS cryptographic "shortcuts", including session resumption.
 
 When it is used, the resumption information MUST
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
 Further recommendations apply to session tickets:
 
-* A strong cipher suite MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
-* Ticket keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy). Old ticket keys MUST be destroyed shortly after a new key version is made available.
-* For similar reasons, session ticket validity MUST be limited to a reasonable duration (e.g., half as long as ticket key validity).
-* TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where a stolen ticket key is used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server SHOULD NOT resume sessions that are too old, e.g. sessions that have been open longer than two ticket key rotation periods. Note that this implies that some server implementations might need to abort sessions after a certain duration.
+* A strong cipher MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
+* Ticket-encryption keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy). Old ticket-encryption keys MUST be destroyed shortly after a new key version is made available.
+* For similar reasons, session ticket validity MUST be limited to a reasonable duration (e.g., half as long as ticket-encryption key validity).
+* TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where a stolen ticket key is used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server SHOULD NOT resume sessions that are too old, e.g. sessions that have been open longer than two ticket-encryption key rotation periods. Note that this implies that some server implementations might need to abort sessions after a certain duration.
 
 Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document ({{detail}}) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.
 
@@ -404,7 +404,7 @@ send a "key_share" when initiating session resumption.
 In order to gain forward secrecy, this document recommends that server implementations SHOULD
 respond with a "key_share", to complete an ECDHE exchange on each session resumption.
 As a more performant alternative, server implementations MAY refrain from responding with a 
-"key_share" until a certain amount of time (e.g., measured in days) has passed since the last 
+"key_share" until a certain amount of time (e.g., measured in hours) has passed since the last 
 ECDHE exchange; this implies that the "key_share" operation would not occur for the presumed
 majority of session resumption requests occurring within a few hours, while still ensuring 
 forward secrecy for longer-lived sessions.
@@ -424,7 +424,7 @@ TLS 1.2 clients MUST send `renegotiation_info` in the Client Hello.  If the serv
 
 Rationale: It is not safe for a client to connect to a TLS 1.2 server that does not support `renegotiation_info`, regardless of whether either endpoint actually implements renegotiation.  See also {{Section 4.1 of RFC5746}}.
 
-A related attack resulting from TLS session parameters not properly authenticated is Triple Handshake {{triple-handshake}}. To address this attack, TLS 1.2 implementations SHOULD support the `extended_master_secret` extension defined in {{!RFC7627}}.      
+A related attack resulting from TLS session parameters not being properly authenticated is Triple Handshake {{triple-handshake}}. To address this attack, TLS 1.2 implementations SHOULD support the `extended_master_secret` extension defined in {{!RFC7627}}.      
 
 ## Post-Handshake Authentication
 
@@ -472,7 +472,7 @@ Protocol developers are strongly encouraged to register an ALPN identifier for t
 ## Zero Round Trip Time (0-RTT) Data in TLS 1.3
 
 The 0-RTT early data feature is new in TLS 1.3. It provides reduced latency
-when TLS connections are resumed, at the potential cost of security.
+when TLS connections are resumed, at the potential cost of certain security properties.
 As a result, it requires special attention from implementers on both
 the server and the client side. Typically this extends to both the
 TLS library as well as protocol layers above it.
@@ -532,7 +532,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 * Implementations SHOULD NOT negotiate cipher suites that use 
                algorithms offering less than 128 bits of security.
 
-  Rationale: Cipher suites that offer more than 112 bits but less than 128 bits
+  Rationale: Cipher suites that offer 112 or more bits but less than 128 bits
                of security are not considered weak at this time; however, it is 
                expected that their useful lifespan is short enough to justify 
                supporting stronger cipher suites at this time.  128-bit ciphers 
@@ -733,7 +733,7 @@ With regard to authentication, TLS enables authentication of one or both endpoin
 
 If deployers deviate from the recommendations given in this document, they need to be aware that they might lose access to one of the foregoing security services.
 
-This document applies only to environments where confidentiality is required. It recommends algorithms and configuration options that enforce secrecy of the data in transit.
+This document applies only to environments where confidentiality is required. It requires algorithms and configuration options that enforce secrecy of the data in transit.
 
 This document also assumes that data integrity protection is always one of the goals of a deployment. In cases where integrity is not required, it does not make sense to employ TLS in the first place. There are attacks against confidentiality-only protection that utilize the lack of integrity to also break confidentiality (see, for instance, {{DegabrieleP07}} in the context of IPsec).
 
@@ -771,7 +771,7 @@ It is noted that the requirements regarding host name validation (and, in genera
 
 Readers are referred to {{!RFC6125}} for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.
 
-If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an MX or SRV record), it SHOULD NOT be used as a reference identifier {{!RFC6125}} even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see {{DANE-SRV}} and {{DANE-SMTP}}).
+If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an SRV or MX record), it SHOULD NOT be used as a reference identifier {{!RFC6125}} even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see {{DANE-SRV}} and {{DANE-SMTP}}).
 
 Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with {{?RFC5280}} (see also 
         {{!RFC6125}}).
