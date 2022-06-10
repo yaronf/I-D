@@ -596,6 +596,17 @@ Some devices have hardware support for AES-CCM but not AES-GCM, so they are unab
 
 When using ECDSA signatures for authentication of TLS peers, it is RECOMMENDED that implementations use the NIST curve P-256. In addition, to avoid predictable or repeated nonces (that would allow revealing the long term signing key), it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{!RFC6979}} and in line with the recommendations in {{RFC8446}}.
 
+Note that implementations of "deterministic ECDSA" may be vulnerable to certain
+side-channel and fault injection attacks precisely because of their
+determinism.  While most fault attacks described in the literature assume
+physical access to the device (and therefore are more relevant in IoT
+deployments with poor or non-existent physical security), some can be carried
+out remotely, e.g., as Rowhammer variants.  In deployments where side-channel
+attacks and fault injection attacks are a concern, implementation strategies
+combining both randomness and determinism (for example, as described in
+{{?I-D.mattsson-cfrg-det-sigs-with-noise}}) can be used to avoid the risk of
+successful extraction of the signing key.
+
 ### Implementation Details
 {: #detail-neg}
 
