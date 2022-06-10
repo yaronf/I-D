@@ -758,7 +758,7 @@ This document has no IANA actions.
 This entire document discusses the security practices directly affecting applications
     using the TLS protocol. This section contains broader security considerations related
     to technologies used in conjunction with or by TLS.
-    The reader is referred to the security consideration sections of TLS 1.3
+    The reader is referred to the Security Considerations sections of TLS 1.3
     {{RFC8446}}, DTLS 1.3 {{RFC9147}}, TLS 1.2 {{RFC5246}} and DTLS 1.2 {{RFC6347}}
     for further context.
 
