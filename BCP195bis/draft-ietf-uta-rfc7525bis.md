@@ -312,11 +312,11 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
                
   Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. Even if a TLS implementation defaults to TLS 1.3, as long as it supports TLS 1.2 it MUST follow all the recommendations in this document.
 
-* Implementations of newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions, since there is no need to allow legacy endpoints that support TLS 1.2. Similarly, we recommend basing new protocol designs that embed the TLS mechanisms on TLS 1.3, as was done for QUIC {{RFC9001}}).
+* New protocol designs that embed TLS mechanisms SHOULD use only TLS 1.3 and SHOULD NOT use TLS 1.2; for instance, QUIC {{RFC9001}}) took this approach. As a result, implementations of such newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions.
 
   Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than secure deployment of TLS 1.2.
 
-This BCP applies to TLS 1.2, 1.3 and to earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
+This BCP applies to TLS 1.3, TLS 1.2, and earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
 ### DTLS Protocol Versions
 
@@ -349,12 +349,10 @@ The following recommendations are provided to help prevent SSL Stripping and STA
 
 
 
-* HTTP client and server implementations MUST support the HTTP Strict Transport
-      Security (HSTS) header field {{?RFC6797}}, in order to allow Web servers to 
+* HTTP client and server implementations intended for use in the World Wide Web (see {{applicability}} MUST support the HTTP Strict Transport
+      Security (HSTS) header field {{?RFC6797}}, so that Web servers can 
       advertise that they are
       willing to accept TLS-only clients.
-
-
 
 * Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in {{Section 11.3 of RFC6797}}).
       
@@ -394,7 +392,7 @@ Further recommendations apply to session tickets:
 * A strong cipher MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
 * Ticket-encryption keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy). Old ticket-encryption keys MUST be destroyed shortly after a new key version is made available.
 * For similar reasons, session ticket validity MUST be limited to a reasonable duration (e.g., half as long as ticket-encryption key validity).
-* TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where a stolen ticket key is used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server SHOULD NOT resume sessions that are too old, e.g. sessions that have been open longer than two ticket-encryption key rotation periods. Note that this implies that some server implementations might need to abort sessions after a certain duration.
+* TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where the server's private ticket-encryption key is stolen and used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server SHOULD NOT resume sessions that are too old, e.g. sessions that have been open longer than two ticket-encryption key rotation periods. Note that this implies that some server implementations might need to abort sessions after a certain duration.
 
 Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document ({{detail}}) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.
 
@@ -402,6 +400,7 @@ TLS 1.3 provides the powerful option of forward secrecy even within a long-lived
 that is periodically resumed. {{Section 2.2 of RFC8446}} recommends that clients SHOULD
 send a "key_share" when initiating session resumption.
 In order to gain forward secrecy, this document recommends that server implementations SHOULD
+select the "psk_dhe_ke" PSK key exchange mode and 
 respond with a "key_share", to complete an ECDHE exchange on each session resumption.
 As a more performant alternative, server implementations MAY refrain from responding with a 
 "key_share" until a certain amount of time (e.g., measured in hours) has passed since the last 
@@ -525,8 +524,11 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                encryption (which provide 40 or 56 bits of security).
 
   Rationale: Based on {{!RFC3766}}, at least 112 bits 
-               of security is needed.  40-bit and 56-bit security are considered 
-               insecure today.  TLS 1.2 never negotiates 40-bit or 56-bit export ciphers and such ciphers are not supported at all in TLS 1.3.
+               of security is needed.  40-bit and 56-bit security (found in 
+               so-called "export ciphers") are considered 
+               insecure today.  Although such ciphers are allowed under TLS 1.2, 
+               implementations that conform to {{!RFC5246}} would never negotiate 
+               such ciphers, and they are not supported at all in TLS 1.3.
             
   
 * Implementations SHOULD NOT negotiate cipher suites that use 
@@ -696,7 +698,7 @@ Rationale: the extension does not apply to the AEAD
 The recommendations of this document primarily apply to the implementation and deployment of application protocols that are most commonly used with TLS and DTLS on the Internet today.  Examples include, but are not limited to:
 
 
-* Web software and services that wish to protect HTTP traffic with TLS.
+* Web software and services that wish to protect HTTP traffic with TLS. (HTTP implementations not intended for use in the World Wide Web, e.g. minimal implemenations deployed only on constrained devices, are not necessarily included in this applicability statement.)
 
 * Email software and services that wish to protect IMAP, POP3, or SMTP traffic with TLS.
 
