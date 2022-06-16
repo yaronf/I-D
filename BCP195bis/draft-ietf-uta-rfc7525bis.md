@@ -526,9 +526,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
   Rationale: Based on {{!RFC3766}}, at least 112 bits 
                of security is needed.  40-bit and 56-bit security (found in 
                so-called "export ciphers") are considered 
-               insecure today.  Although such ciphers are allowed under TLS 1.2, 
-               implementations that conform to {{!RFC5246}} would never negotiate 
-               such ciphers, and they are not supported at all in TLS 1.3.
+               insecure today.
             
   
 * Implementations SHOULD NOT negotiate cipher suites that use 
@@ -698,7 +696,7 @@ Rationale: the extension does not apply to the AEAD
 The recommendations of this document primarily apply to the implementation and deployment of application protocols that are most commonly used with TLS and DTLS on the Internet today.  Examples include, but are not limited to:
 
 
-* Web software and services that wish to protect HTTP traffic with TLS. (HTTP implementations not intended for use in the World Wide Web, e.g. minimal implemenations deployed only on constrained devices, are not necessarily included in this applicability statement.)
+* Web software and services that wish to protect HTTP traffic with TLS.
 
 * Email software and services that wish to protect IMAP, POP3, or SMTP traffic with TLS.
 
