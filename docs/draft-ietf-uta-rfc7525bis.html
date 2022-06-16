@@ -2030,7 +2030,10 @@ revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]<
       </h2>
 <p id="section-7-1">This entire document discusses the security practices directly affecting applications
     using the TLS protocol. This section contains broader security considerations related
-    to technologies used in conjunction with or by TLS.<a href="#section-7-1" class="pilcrow">¶</a></p>
+    to technologies used in conjunction with or by TLS.
+    The reader is referred to the Security Considerations sections of TLS 1.3
+    <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>, DTLS 1.3 <span>[<a href="#RFC9147" class="xref">RFC9147</a>]</span>, TLS 1.2 <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span> and DTLS 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span>
+    for further context.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <div id="host-name-validation">
 <section id="section-7.1">
         <h3 id="name-host-name-validation">
@@ -2052,7 +2055,7 @@ revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]<
         <h3 id="name-aes-gcm">
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-aes-gcm" class="section-name selfRef">AES-GCM</a>
         </h3>
-<p id="section-7.2-1"><a href="#rec-cipher" class="xref">Section 4.2</a> above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to <span><a href="https://rfc-editor.org/rfc/rfc5246#section-11" class="relref">Section 11</a> of [<a href="#RFC5246" class="xref">RFC5246</a>]</span> for general security considerations when using TLS 1.2, and to <span><a href="https://rfc-editor.org/rfc/rfc5288#section-6" class="relref">Section 6</a> of [<a href="#RFC5288" class="xref">RFC5288</a>]</span> for security considerations that apply specifically to AES-GCM when used with TLS.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<p id="section-7.2-1"><a href="#rec-cipher" class="xref">Section 4.2</a> above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to <span><a href="https://rfc-editor.org/rfc/rfc5288#section-6" class="relref">Section 6</a> of [<a href="#RFC5288" class="xref">RFC5288</a>]</span> for security considerations that apply specifically to AES-GCM when used with TLS.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 <div id="nonce-reuse-in-tls-12">
 <section id="section-7.2.1">
           <h4 id="name-nonce-reuse-in-tls-12">
