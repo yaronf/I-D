@@ -223,7 +223,7 @@ informative:
     - ins: T. Jager
       name: Tibor Jager
     - ins: J. Schwenk
-      name: Jorg Schwenk
+      name: Jörg Schwenk
     - ins: J. Somorovsky
       name: Juraj Somorovsky
     date: '2015'
@@ -239,6 +239,46 @@ informative:
     date: 1 December 2014
     target: https://safecurves.cr.yp.to
     title: 'SafeCurves: Choosing Safe Curves for Elliptic-Curve Cryptography'
+
+  Poddebniak2017:
+    author:
+    - ins: D. Poddebniak
+      name: Damian Poddebniak
+    - ins: J. Somorovsky
+      name: Juraj Somorovsky
+    - ins: S. Schninzel
+      name: Sebastian Schninzel
+    - ins: M. Lochter
+      name: Manfred Lochter
+    - ins: P. Rösler
+      name: Paul Rösler
+    date: 2017
+    target: https://eprint.iacr.org/2017/1014.pdf
+    title: 'Attacking Deterministic Signature Schemes using Fault Attacks'
+
+  Kim2014:
+    author:
+    - ins: Y. Kim
+      name: Yoongu Kim
+    - ins: R. Daly
+      name: Ross Daly
+    - ins: J. Kim
+      name: Jeremie Kim
+    - ins: C. Fallin
+      name: Chris Fallin
+    - ins: J. H. Lee
+      name: Ji Jye Lee
+    - ins: D. Lee
+      name: Donghyuk Lee
+    - ins: C. Wilkerson
+      name: Chris Wilkerson
+    - ins: K. Lai
+      name: Konrad Lai
+    - ins: O. Mutlu
+      name: Onur Mutlu
+    date: 2014
+    target: https://users.ece.cmu.edu/~yoonguk/papers/kim-isca14.pdf
+    title: 'Flipping Bits in Memory Without Accessing Them: An Experimental Study of DRAM Disturbance Errors'
 
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years, the industry has witnessed several serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  This document provides the latest recommendations for ensuring the security of deployed services that use TLS and DTLS. These recommendations are applicable to the majority of use cases.
@@ -599,6 +639,17 @@ Typically, in order to prefer these suites, the order of suites needs to be expl
 Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but these are out of scope entirely.
 
 When using ECDSA signatures for authentication of TLS peers, it is RECOMMENDED that implementations use the NIST curve P-256. In addition, to avoid predictable or repeated nonces (that would allow revealing the long term signing key), it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{!RFC6979}} and in line with the recommendations in {{RFC8446}}.
+
+Note that implementations of "deterministic ECDSA" may be vulnerable to certain
+side-channel and fault injection attacks precisely because of their
+determinism.  While most fault attacks described in the literature assume
+physical access to the device (and therefore are more relevant in IoT
+deployments with poor or non-existent physical security), some can be carried
+out remotely {{Poddebniak2017}}, e.g., as Rowhammer {{Kim2014}} variants.  In
+deployments where side-channel attacks and fault injection attacks are a
+concern, implementation strategies combining both randomness and determinism
+(for example, as described in {{?I-D.mattsson-cfrg-det-sigs-with-noise}}) can
+be used to avoid the risk of successful extraction of the signing key.
 
 ### Implementation Details
 {: #detail-neg}
