@@ -111,13 +111,6 @@ informative:
 
   Multiple-Encryption: DOI.10.1145/358699.358718 
 
-  BETTERCRYPTO:
-    author:
-    - org: bettercrypto.org
-    date: April 2015
-    target: https://bettercrypto.org/
-    title: Applied Crypto Hardening
-
   NIST.SP.800-56A: DOI.10.6028/NIST.SP.800-56Ar3
 
   Springall16: DOI.10.1145/2987443.2987480
@@ -634,7 +627,7 @@ Given the foregoing considerations, implementation and deployment of the followi
 
 As these are authenticated encryption (AEAD) algorithms {{?RFC5116}}, these cipher suites are supported only in TLS 1.2 and not in earlier protocol versions.
 
-Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software. (See {{BETTERCRYPTO}} for helpful deployment guidelines, but note that its recommendations differ from the current document in some details.)  It would be ideal if server software implementations were to prefer these suites by default.
+Typically, in order to prefer these suites, the order of suites needs to be explicitly configured in server software.  It would be ideal if server software implementations were to prefer these suites by default.
 
 Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but these are out of scope entirely.
 
