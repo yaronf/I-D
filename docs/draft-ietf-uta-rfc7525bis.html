@@ -1192,7 +1192,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 6 December 2022</td>
+<td class="center">Expires 18 December 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1211,12 +1211,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc5288" class="eref">5288</a>, <a href="https://www.rfc-editor.org/rfc/rfc6066" class="eref">6066</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-06-04" class="published">4 June 2022</time>
+<time datetime="2022-06-16" class="published">16 June 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-12-06">6 December 2022</time></dd>
+<dd class="expires"><time datetime="2022-12-18">18 December 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1259,7 +1259,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 6 December 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 December 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1716,14 +1716,18 @@ Clients <span class="bcp14">SHOULD</span> abort the handshake if the server ackn
 Application-Layer Protocol Negotiation (ALPN) extension <span>[<a href="#RFC7301" class="xref">RFC7301</a>]</span>.<a href="#section-3.8-1" class="pilcrow">¶</a></p>
 <p id="section-3.8-2">In order to prevent "cross-protocol" attacks resulting from failure to ensure
 that a message intended for use in one protocol cannot be mistaken for a
-message for use in another protocol, servers <span class="bcp14">SHOULD</span> strictly enforce the
+message for use in another protocol, servers are advised to strictly enforce the
 behavior prescribed in <span><a href="https://rfc-editor.org/rfc/rfc7301#section-3.2" class="relref">Section 3.2</a> of [<a href="#RFC7301" class="xref">RFC7301</a>]</span>: "In the event that the
 server supports no protocols that the client advertises, then the server <span class="bcp14">SHALL</span>
 respond with a fatal <code>no_application_protocol</code> alert."  Clients <span class="bcp14">SHOULD</span>
 abort the handshake if the server acknowledges the ALPN extension,
 but does not select a protocol from the client list.  Failure to do so can
 result in attacks such those described in <span>[<a href="#ALPACA" class="xref">ALPACA</a>]</span>.<a href="#section-3.8-2" class="pilcrow">¶</a></p>
-<p id="section-3.8-3">Protocol developers are strongly encouraged to register an ALPN identifier for their protocols. This applies to new protocols, as well as well-established protocols.<a href="#section-3.8-3" class="pilcrow">¶</a></p>
+<p id="section-3.8-3">Protocol developers are strongly encouraged to register an ALPN identifier 
+for their protocols. This applies both to new protocols and to well-established 
+protocols; however, because the latter might have a large deployed base,
+strict enforcement of ALPN usage may not be feasible when an ALPN 
+identifier is registered for a well-established protocol.<a href="#section-3.8-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="zero-round-trip-time-0-rtt-data-in-tls-13">
