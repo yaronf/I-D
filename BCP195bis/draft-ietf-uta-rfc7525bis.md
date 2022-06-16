@@ -459,7 +459,7 @@ Application-Layer Protocol Negotiation (ALPN) extension {{!RFC7301}}.
 
 In order to prevent "cross-protocol" attacks resulting from failure to ensure
 that a message intended for use in one protocol cannot be mistaken for a
-message for use in another protocol, servers SHOULD strictly enforce the
+message for use in another protocol, servers are advised to strictly enforce the
 behavior prescribed in {{Section 3.2 of RFC7301}}: "In the event that the
 server supports no protocols that the client advertises, then the server SHALL
 respond with a fatal `no_application_protocol` alert."  Clients SHOULD
@@ -467,7 +467,11 @@ abort the handshake if the server acknowledges the ALPN extension,
 but does not select a protocol from the client list.  Failure to do so can
 result in attacks such those described in {{ALPACA}}.
 
-Protocol developers are strongly encouraged to register an ALPN identifier for their protocols. This applies to new protocols, as well as well-established protocols.
+Protocol developers are strongly encouraged to register an ALPN identifier 
+for their protocols. This applies both to new protocols and to well-established 
+protocols; however, because the latter might have a large deployed base,
+strict enforcement of ALPN usage may not be feasible when an ALPN 
+identifier is registered for a well-established protocol.
 
 ## Zero Round Trip Time (0-RTT) Data in TLS 1.3
 
