@@ -654,11 +654,7 @@ be used to avoid the risk of successful extraction of the signing key.
 ### Implementation Details
 {: #detail-neg}
 
-Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server.
-
-Servers MUST prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.
-
-Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.
+Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server.  Servers MUST prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.  Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.
 
 The previous version of this document implicitly allowed the old RFC 5246 mandatory-to-implement cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA. At the time of writing, this cipher suite does not provide additional interoperability, except with extremely old clients. As with other cipher suites that do not provide forward secrecy, implementations SHOULD NOT support this cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).
 
