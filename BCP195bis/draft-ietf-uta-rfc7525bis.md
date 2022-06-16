@@ -895,7 +895,7 @@ Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forw
       
 ## Diffie-Hellman Exponent Reuse
 
-For performance reasons, many TLS implementations reuse Diffie-Hellman and Elliptic Curve Diffie-Hellman exponents across multiple connections. Such reuse can result in major security issues:
+For performance reasons, it is not uncommon for TLS implementations to reuse Diffie-Hellman and Elliptic Curve Diffie-Hellman exponents across multiple connections. Such reuse can result in major security issues:
 
 * If exponents are reused for too long (in some cases, even as little as a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.
 
