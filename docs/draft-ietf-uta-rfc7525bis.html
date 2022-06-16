@@ -1992,6 +1992,11 @@ revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]<
   compelling reasons that would prevent such conformance (e.g.,
   widespread deployment on constrained devices that lack support for
   the necessary algorithms).<a href="#section-5-4" class="pilcrow">¶</a></p>
+<p id="section-5-5">This document does not discuss the use of TLS in constrained-node networks
+<span>[<a href="#RFC7228" class="xref">RFC7228</a>]</span>.  For recommendations regarding the profiling of TLS and DTLS for
+small devices with severe constraints on power, memory, and processing
+resources, the reader is referred to <span>[<a href="#RFC7925" class="xref">RFC7925</a>]</span> and
+<span>[<a href="#I-D.ietf-uta-tls13-iot-profile" class="xref">I-D.ietf-uta-tls13-iot-profile</a>]</span>.<a href="#section-5-5" class="pilcrow">¶</a></p>
 <div id="security-services">
 <section id="section-5.1">
         <h3 id="name-security-services">
@@ -2375,6 +2380,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Rescorla, E.</span>, <span class="refAuthor">Oku, K.</span>, <span class="refAuthor">Sullivan, N.</span>, and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"TLS Encrypted Client Hello"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-esni-14</span>, <time datetime="2022-02-13" class="refDate">13 February 2022</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-tls-esni-14.txt">https://www.ietf.org/archive/id/draft-ietf-tls-esni-14.txt</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="I-D.ietf-uta-tls13-iot-profile">[I-D.ietf-uta-tls13-iot-profile]</dt>
+        <dd>
+<span class="refAuthor">Tschofenig, H.</span> and <span class="refAuthor">T. Fossati</span>, <span class="refTitle">"TLS/DTLS 1.3 Profiles for the Internet of Things"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-uta-tls13-iot-profile-04</span>, <time datetime="2022-03-07" class="refDate">7 March 2022</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-uta-tls13-iot-profile-04.txt">https://www.ietf.org/archive/id/draft-ietf-uta-tls13-iot-profile-04.txt</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.irtf-cfrg-aead-limits">[I-D.irtf-cfrg-aead-limits]</dt>
         <dd>
 <span class="refAuthor">Günther, F.</span>, <span class="refAuthor">Thomson, M.</span>, and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"Usage Limits on AEAD Algorithms"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-irtf-cfrg-aead-limits-04</span>, <time datetime="2022-03-07" class="refDate">7 March 2022</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-irtf-cfrg-aead-limits-04.txt">https://www.ietf.org/archive/id/draft-irtf-cfrg-aead-limits-04.txt</a>&gt;</span>. </dd>
@@ -2503,6 +2512,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Pettersen, Y.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Multiple Certificate Status Request Extension"</span>, <span class="seriesInfo">RFC 6961</span>, <span class="seriesInfo">DOI 10.17487/RFC6961</span>, <time datetime="2013-06" class="refDate">June 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6961">https://www.rfc-editor.org/info/rfc6961</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7228">[RFC7228]</dt>
+        <dd>
+<span class="refAuthor">Bormann, C.</span>, <span class="refAuthor">Ersue, M.</span>, and <span class="refAuthor">A. Keranen</span>, <span class="refTitle">"Terminology for Constrained-Node Networks"</span>, <span class="seriesInfo">RFC 7228</span>, <span class="seriesInfo">DOI 10.17487/RFC7228</span>, <time datetime="2014-05" class="refDate">May 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7228">https://www.rfc-editor.org/info/rfc7228</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC7435">[RFC7435]</dt>
         <dd>
 <span class="refAuthor">Dukhovni, V.</span>, <span class="refTitle">"Opportunistic Security: Some Protection Most of the Time"</span>, <span class="seriesInfo">RFC 7435</span>, <span class="seriesInfo">DOI 10.17487/RFC7435</span>, <time datetime="2014-12" class="refDate">December 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7435">https://www.rfc-editor.org/info/rfc7435</a>&gt;</span>. </dd>
@@ -2530,6 +2543,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="RFC7919">[RFC7919]</dt>
         <dd>
 <span class="refAuthor">Gillmor, D.</span>, <span class="refTitle">"Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7919</span>, <span class="seriesInfo">DOI 10.17487/RFC7919</span>, <time datetime="2016-08" class="refDate">August 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7919">https://www.rfc-editor.org/info/rfc7919</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7925">[RFC7925]</dt>
+        <dd>
+<span class="refAuthor">Tschofenig, H., Ed.</span> and <span class="refAuthor">T. Fossati</span>, <span class="refTitle">"Transport Layer Security (TLS) / Datagram Transport Layer Security (DTLS) Profiles for the Internet of Things"</span>, <span class="seriesInfo">RFC 7925</span>, <span class="seriesInfo">DOI 10.17487/RFC7925</span>, <time datetime="2016-07" class="refDate">July 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7925">https://www.rfc-editor.org/info/rfc7925</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8452">[RFC8452]</dt>
         <dd>
