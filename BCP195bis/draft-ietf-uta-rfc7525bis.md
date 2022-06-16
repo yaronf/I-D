@@ -722,7 +722,7 @@ A DH key of 2048 bits (equivalent to a 112-bit symmetric key)
 is the minimum allowed by the latest revision of {{NIST.SP.800-56A}}, as of this writing
 (see in particular Appendix D).
 
-As noted in {{?RFC3766}}, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 65 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.
+As noted in {{?RFC3766}}, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 61 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.
 The Logjam attack {{Logjam}} further demonstrates that 1024-bit Diffie Hellman parameters
 should be avoided.
 
