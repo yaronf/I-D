@@ -2123,7 +2123,7 @@ reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="
         <h3 id="name-diffie-hellman-exponent-reu">
 <a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-diffie-hellman-exponent-reu" class="section-name selfRef">Diffie-Hellman Exponent Reuse</a>
         </h3>
-<p id="section-7.4-1">For performance reasons, many TLS implementations reuse Diffie-Hellman and Elliptic Curve Diffie-Hellman exponents across multiple connections. Such reuse can result in major security issues:<a href="#section-7.4-1" class="pilcrow">¶</a></p>
+<p id="section-7.4-1">For performance reasons, it is not uncommon for TLS implementations to reuse Diffie-Hellman and Elliptic Curve Diffie-Hellman exponents across multiple connections. Such reuse can result in major security issues:<a href="#section-7.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-7.4-2.1">If exponents are reused for too long (in some cases, even as little as a few hours), an attacker who gains access to the host can decrypt previous connections. In other words, exponent reuse negates the effects of forward secrecy.<a href="#section-7.4-2.1" class="pilcrow">¶</a>
 </li>
