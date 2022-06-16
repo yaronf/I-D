@@ -762,6 +762,9 @@ This document has no IANA actions.
 This entire document discusses the security practices directly affecting applications
     using the TLS protocol. This section contains broader security considerations related
     to technologies used in conjunction with or by TLS.
+    The reader is referred to the Security Considerations sections of TLS 1.3
+    {{RFC8446}}, DTLS 1.3 {{RFC9147}}, TLS 1.2 {{RFC5246}} and DTLS 1.2 {{RFC6347}}
+    for further context.
 
 ## Host Name Validation
 
@@ -783,7 +786,7 @@ Host name validation typically applies only to the leaf "end entity" certificate
 ## AES-GCM
 {: #sec-aes}
 
-{{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to {{Section 11 of RFC5246}} for general security considerations when using TLS 1.2, and to {{Section 6 of !RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
+{{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to {{Section 6 of !RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
 
 ### Nonce Reuse in TLS 1.2
 
