@@ -223,7 +223,7 @@ informative:
     - ins: T. Jager
       name: Tibor Jager
     - ins: J. Schwenk
-      name: Jorg Schwenk
+      name: Jörg Schwenk
     - ins: J. Somorovsky
       name: Juraj Somorovsky
     date: '2015'
@@ -239,6 +239,46 @@ informative:
     date: 1 December 2014
     target: https://safecurves.cr.yp.to
     title: 'SafeCurves: Choosing Safe Curves for Elliptic-Curve Cryptography'
+
+  Poddebniak2017:
+    author:
+    - ins: D. Poddebniak
+      name: Damian Poddebniak
+    - ins: J. Somorovsky
+      name: Juraj Somorovsky
+    - ins: S. Schninzel
+      name: Sebastian Schninzel
+    - ins: M. Lochter
+      name: Manfred Lochter
+    - ins: P. Rösler
+      name: Paul Rösler
+    date: 2017
+    target: https://eprint.iacr.org/2017/1014.pdf
+    title: 'Attacking Deterministic Signature Schemes using Fault Attacks'
+
+  Kim2014:
+    author:
+    - ins: Y. Kim
+      name: Yoongu Kim
+    - ins: R. Daly
+      name: Ross Daly
+    - ins: J. Kim
+      name: Jeremie Kim
+    - ins: C. Fallin
+      name: Chris Fallin
+    - ins: J. H. Lee
+      name: Ji Jye Lee
+    - ins: D. Lee
+      name: Donghyuk Lee
+    - ins: C. Wilkerson
+      name: Chris Wilkerson
+    - ins: K. Lai
+      name: Konrad Lai
+    - ins: O. Mutlu
+      name: Onur Mutlu
+    date: 2014
+    target: https://users.ece.cmu.edu/~yoonguk/papers/kim-isca14.pdf
+    title: 'Flipping Bits in Memory Without Accessing Them: An Experimental Study of DRAM Disturbance Errors'
 
 --- abstract
 Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are widely used to protect data exchanged over application protocols such as HTTP, SMTP, IMAP, POP, SIP, and XMPP.  Over the years, the industry has witnessed several serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  This document provides the latest recommendations for ensuring the security of deployed services that use TLS and DTLS. These recommendations are applicable to the majority of use cases.
@@ -390,9 +430,9 @@ be authenticated and encrypted to prevent modification or eavesdropping by an at
 Further recommendations apply to session tickets:
 
 * A strong cipher MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
-* Ticket-encryption keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy). Old ticket-encryption keys MUST be destroyed shortly after a new key version is made available.
+* Ticket-encryption keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy). Old ticket-encryption keys MUST be destroyed at the end of the validity period.
 * For similar reasons, session ticket validity MUST be limited to a reasonable duration (e.g., half as long as ticket-encryption key validity).
-* TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where a stolen key is used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server SHOULD NOT resume sessions that are too old, e.g. sessions that have been open longer than two ticket-encryption key rotation periods. Note that this implies that some server implementations might need to abort sessions after a certain duration.
+* TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where the server's ticket-encryption key is stolen and used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server SHOULD NOT resume sessions that are too old, e.g. sessions that have been open longer than two ticket-encryption key rotation periods.
 
 Rationale: session resumption is another kind of TLS handshake, and therefore must be as secure as the initial handshake. This document ({{detail}}) recommends the use of cipher suites that provide forward secrecy, i.e. that prevent an attacker who gains momentary access to the TLS endpoint (either client or server) and its secrets from reading either past or future communication. The tickets must be managed so as not to negate this security property.
 
@@ -458,7 +498,7 @@ Application-Layer Protocol Negotiation (ALPN) extension {{!RFC7301}}.
 
 In order to prevent "cross-protocol" attacks resulting from failure to ensure
 that a message intended for use in one protocol cannot be mistaken for a
-message for use in another protocol, servers SHOULD strictly enforce the
+message for use in another protocol, servers are advised to strictly enforce the
 behavior prescribed in {{Section 3.2 of RFC7301}}: "In the event that the
 server supports no protocols that the client advertises, then the server SHALL
 respond with a fatal `no_application_protocol` alert."  Clients SHOULD
@@ -466,7 +506,11 @@ abort the handshake if the server acknowledges the ALPN extension,
 but does not select a protocol from the client list.  Failure to do so can
 result in attacks such those described in {{ALPACA}}.
 
-Protocol developers are strongly encouraged to register an ALPN identifier for their protocols. This applies to new protocols, as well as well-established protocols.
+Protocol developers are strongly encouraged to register an ALPN identifier 
+for their protocols. This applies both to new protocols and to well-established 
+protocols; however, because the latter might have a large deployed base,
+strict enforcement of ALPN usage may not be feasible when an ALPN 
+identifier is registered for a well-established protocol.
 
 ## Zero Round Trip Time (0-RTT) Data in TLS 1.3
 
@@ -595,6 +639,17 @@ Typically, in order to prefer these suites, the order of suites needs to be expl
 Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but these are out of scope entirely.
 
 When using ECDSA signatures for authentication of TLS peers, it is RECOMMENDED that implementations use the NIST curve P-256. In addition, to avoid predictable or repeated nonces (that would allow revealing the long term signing key), it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{!RFC6979}} and in line with the recommendations in {{RFC8446}}.
+
+Note that implementations of "deterministic ECDSA" may be vulnerable to certain
+side-channel and fault injection attacks precisely because of their
+determinism.  While most fault attacks described in the literature assume
+physical access to the device (and therefore are more relevant in IoT
+deployments with poor or non-existent physical security), some can be carried
+out remotely {{Poddebniak2017}}, e.g., as Rowhammer {{Kim2014}} variants.  In
+deployments where side-channel attacks and fault injection attacks are a
+concern, implementation strategies combining both randomness and determinism
+(for example, as described in {{?I-D.mattsson-cfrg-det-sigs-with-noise}}) can
+be used to avoid the risk of successful extraction of the signing key.
 
 ### Implementation Details
 {: #detail-neg}
@@ -758,6 +813,9 @@ This document has no IANA actions.
 This entire document discusses the security practices directly affecting applications
     using the TLS protocol. This section contains broader security considerations related
     to technologies used in conjunction with or by TLS.
+    The reader is referred to the Security Considerations sections of TLS 1.3
+    {{RFC8446}}, DTLS 1.3 {{RFC9147}}, TLS 1.2 {{RFC5246}} and DTLS 1.2 {{RFC6347}}
+    for further context.
 
 ## Host Name Validation
 
@@ -779,7 +837,7 @@ Host name validation typically applies only to the leaf "end entity" certificate
 ## AES-GCM
 {: #sec-aes}
 
-{{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to {{Section 11 of RFC5246}} for general security considerations when using TLS 1.2, and to {{Section 6 of !RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
+{{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to {{Section 6 of !RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
 
 ### Nonce Reuse in TLS 1.2
 
