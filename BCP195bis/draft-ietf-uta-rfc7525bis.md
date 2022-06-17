@@ -946,6 +946,7 @@ Rich Salz,
 Ryan Sleevi,
 Sean Turner,
 Stephen Farrell,
+Tim Evans,
 Valery Smyslov,
 Viktor Dukhovni
 for helpful comments and discussions that have shaped this document.
