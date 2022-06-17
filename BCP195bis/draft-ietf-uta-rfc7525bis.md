@@ -428,7 +428,7 @@ full handshake before any caching can take place.
 
 See also {{Section 5 of RFC8879}} and {{Section 7 of RFC7924}} for security and
 privacy considerations associated with the use of the respective certificate
-compression technique.
+compression technique. To clarify: CRIME-style attacks on TLS compression do not apply to certificate compression.
 
 ## TLS Session Resumption
 {: #rec-resume}
