@@ -414,7 +414,7 @@ the handshake.  In order to manage their size, some or all of the following
 methods can be employed:
 
 * Limit the number of names or extensions;
-* Use keys with small public key representations, like ECDSA; or
+* Use keys with small public key representations, like ECDSA;
 * Use certificate compression.
 
 To achieve the latter, TLS 1.3 defines the `compress_certificate` extension in
