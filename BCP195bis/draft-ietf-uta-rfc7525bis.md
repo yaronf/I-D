@@ -417,18 +417,15 @@ methods can be employed:
 * Use keys with small public key representations, like ECDSA; or
 * Use certificate compression.
 
-TLS offers different mechanisms to achieve the latter:
+To achieve the latter, TLS 1.3 defines the `compress_certificate` extension in
+{{?RFC8879}}.  See also {{Section 5 of RFC8879}} for security and privacy
+considerations associated with its use.  To clarify, CRIME-style attacks on TLS
+compression do not apply to certificate compression.
 
-* For TLS 1.3, the `compress_certificate` extension is defined in {{?RFC8879}}.
-* For TLS 1.2 the `cached_info` extension is defined in {{?RFC7924}}.
-
-Note that while {{?RFC8879}} compression applies to all handshakes that
-successfully negotiate the extension, {{?RFC7924}} necessitates a successful
-full handshake before any caching can take place.
-
-See also {{Section 5 of RFC8879}} and {{Section 7 of RFC7924}} for security and
-privacy considerations associated with the use of the respective certificate
-compression technique. To clarify: CRIME-style attacks on TLS compression do not apply to certificate compression.
+Due to middlebox interference, RFC8879-style compression is not available in
+TLS 1.2.  In theory, the `cached_info` extension defined in {{?RFC7924}} could
+be used, but it is not widely enough supported to be considered a practical
+alternative.
 
 ## TLS Session Resumption
 {: #rec-resume}
