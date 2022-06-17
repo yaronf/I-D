@@ -1001,7 +1001,7 @@ on the normative changes.
 ## draft-ietf-uta-rfc7525bis-08
 
 * Addressed SecDir review by Ben Kaduk.
-* Addressed reviews by Stephen Farrell, Martin Thomson and John Mattsson.
+* Addressed reviews by Stephen Farrell, Martin Thomson, Tim Evans and John Mattsson.
 
 ## draft-ietf-uta-rfc7525bis-07
 
