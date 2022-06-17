@@ -410,19 +410,25 @@ Implementers should note that compression at higher protocol levels can allow an
 ### Certificate Compression
 
 Certificate chains often take up the majority of the bytes transmitted during
-the handshake.  In order to manage their size, the following methods can be
-employed:
+the handshake.  In order to manage their size, some or all of the following
+methods can be employed:
 
-* Limiting the number of names or extensions;
-* Using keys with small public key representations, like ECDSA; or
-* Using certificate compression.
+* Limit the number of names or extensions;
+* Use keys with small public key representations, like ECDSA; or
+* Use certificate compression.
 
-For TLS 1.3 the `compress_certificate` extension is defined in {{?RFC8879}}.
-For TLS 1.2 the `cached_info` extension is defined in {{?RFC7924}}.
+TLS offers different mechanisms to achieve the latter:
+
+* For TLS 1.3, the `compress_certificate` extension is defined in {{?RFC8879}}.
+* For TLS 1.2 the `cached_info` extension is defined in {{?RFC7924}}.
 
 Note that while {{?RFC8879}} compression applies to all handshakes that
 successfully negotiate the extension, {{?RFC7924}} necessitates a successful
 full handshake before any caching can take place.
+
+See also {{Section 5 of RFC8879}} and {{Section 7 of RFC7924}} for security and
+privacy considerations associated with the use of the respective certificate
+compression technique.
 
 ## TLS Session Resumption
 {: #rec-resume}
