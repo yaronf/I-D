@@ -721,7 +721,7 @@ Registry"), within the
    groups.  Curves of less than 224 bits MUST NOT be used. This recommendation is in-line with the latest
 revision of {{NIST.SP.800-56A}}. 
 
-When using RSA, servers SHOULD authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED and SHA-1 or MD5 MUST NOT be used ({{!RFC9155}}, and see {{CAB-Baseline}} for more details). Clients MUST indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. For TLS 1.3, the same requirement is already specified by {{RFC8446}}.
+When using RSA, servers MUST authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED and SHA-1 or MD5 MUST NOT be used ({{!RFC9155}}, and see {{CAB-Baseline}} for more details). Clients MUST indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. For TLS 1.3, the same requirement is already specified by {{RFC8446}}.
 
 ## Truncated HMAC
 
@@ -976,6 +976,7 @@ on the normative changes.
   * Limits on key usage.
   * New attacks since {{RFC7457}}: ALPACA, Raccoon, Logjam, "Nonce-Disrespecting Adversaries".
   * RFC 6961 (OCSP status_request_v2) has been deprecated.
+  * MUST-level requirement for server-side RSA certificates to have 2048-bit modulus at a minimum, replacing a SHOULD.
 * Differences specific to TLS 1.2:
   * SHOULD-level guidance on AES-GCM nonce generation.
   * SHOULD NOT use (static or ephemeral) finite-field DH key agreement.
