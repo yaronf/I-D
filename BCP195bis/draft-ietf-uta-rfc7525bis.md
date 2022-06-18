@@ -821,12 +821,11 @@ This entire document discusses the security practices directly affecting applica
 
 It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Sections 4.3.3, 4.3.4 and 4.3.5 of {{!I-D.ietf-httpbis-semantics}}.
 
-Readers are referred to {{!RFC6125}} for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.
+Host name validation is security-critical for all common TLS use cases. Without it, TLS ensures that the certificate is valid and guarantees possession of the private key, but does not ensure that the connection terminates at the desired endpoint. Readers are referred to {{!RFC6125}} for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.
 
 If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an SRV or MX record), it SHOULD NOT be used as a reference identifier {{!RFC6125}} even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see {{DANE-SRV}} and {{DANE-SMTP}}).
 
-Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with {{?RFC5280}} (see also 
-        {{!RFC6125}}).
+Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with {{?RFC5280}}.
 
 ## AES-GCM
 {: #sec-aes}
