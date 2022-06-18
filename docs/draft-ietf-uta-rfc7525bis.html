@@ -1316,6 +1316,11 @@ li > p:last-of-type {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="xref">3.3</a>.  <a href="#name-compression" class="xref">Compression</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.1">
+                    <p id="section-toc.1-1.3.2.3.2.1.1"><a href="#section-3.3.1" class="xref">3.3.1</a>.  <a href="#name-certificate-compression" class="xref">Certificate Compression</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
                 <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="xref">3.4</a>.  <a href="#name-tls-session-resumption" class="xref">TLS Session Resumption</a></p>
@@ -1625,6 +1630,33 @@ future attacks related to TLS compression. More specifically, the HTTP protocol 
 </div>
 <p id="section-3.3-2">Rationale: TLS compression has been subject to security attacks, such as the CRIME attack.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3-3">Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside of TLS and are thus outside the scope of this document. See <span><a href="https://rfc-editor.org/rfc/rfc7457#section-2.6" class="relref">Section 2.6</a> of [<a href="#RFC7457" class="xref">RFC7457</a>]</span> for further details.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<div id="certificate-compression">
+<section id="section-3.3.1">
+          <h4 id="name-certificate-compression">
+<a href="#section-3.3.1" class="section-number selfRef">3.3.1. </a><a href="#name-certificate-compression" class="section-name selfRef">Certificate Compression</a>
+          </h4>
+<p id="section-3.3.1-1">Certificate chains often take up the majority of the bytes transmitted during
+the handshake.  In order to manage their size, some or all of the following
+methods can be employed:<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.3.1-2.1">Limit the number of names or extensions;<a href="#section-3.3.1-2.1" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="section-3.3.1-2.2">Use keys with small public key representations, like ECDSA;<a href="#section-3.3.1-2.2" class="pilcrow">¶</a>
+</li>
+            <li class="normal" id="section-3.3.1-2.3">Use certificate compression.<a href="#section-3.3.1-2.3" class="pilcrow">¶</a>
+</li>
+          </ul>
+<p id="section-3.3.1-3">To achieve the latter, TLS 1.3 defines the <code>compress_certificate</code> extension in
+<span>[<a href="#RFC8879" class="xref">RFC8879</a>]</span>.  See also <span><a href="https://rfc-editor.org/rfc/rfc8879#section-5" class="relref">Section 5</a> of [<a href="#RFC8879" class="xref">RFC8879</a>]</span> for security and privacy
+considerations associated with its use.  To clarify, CRIME-style attacks on TLS
+compression do not apply to certificate compression.<a href="#section-3.3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.1-4">Due to the strong likelihood of middlebox interference,
+RFC8879-style compression has not been made available in
+TLS 1.2.  In theory, the <code>cached_info</code> extension defined in <span>[<a href="#RFC7924" class="xref">RFC7924</a>]</span> could
+be used, but it is not widely enough supported to be considered a practical
+alternative.<a href="#section-3.3.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="rec-resume">
@@ -2543,6 +2575,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Gillmor, D.</span>, <span class="refTitle">"Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7919</span>, <span class="seriesInfo">DOI 10.17487/RFC7919</span>, <time datetime="2016-08" class="refDate">August 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7919">https://www.rfc-editor.org/info/rfc7919</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7924">[RFC7924]</dt>
+        <dd>
+<span class="refAuthor">Santesson, S.</span> and <span class="refAuthor">H. Tschofenig</span>, <span class="refTitle">"Transport Layer Security (TLS) Cached Information Extension"</span>, <span class="seriesInfo">RFC 7924</span>, <span class="seriesInfo">DOI 10.17487/RFC7924</span>, <time datetime="2016-07" class="refDate">July 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7924">https://www.rfc-editor.org/info/rfc7924</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC7925">[RFC7925]</dt>
         <dd>
 <span class="refAuthor">Tschofenig, H., Ed.</span> and <span class="refAuthor">T. Fossati</span>, <span class="refTitle">"Transport Layer Security (TLS) / Datagram Transport Layer Security (DTLS) Profiles for the Internet of Things"</span>, <span class="seriesInfo">RFC 7925</span>, <span class="seriesInfo">DOI 10.17487/RFC7925</span>, <time datetime="2016-07" class="refDate">July 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7925">https://www.rfc-editor.org/info/rfc7925</a>&gt;</span>. </dd>
@@ -2554,6 +2590,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="RFC8470">[RFC8470]</dt>
         <dd>
 <span class="refAuthor">Thomson, M.</span>, <span class="refAuthor">Nottingham, M.</span>, and <span class="refAuthor">W. Tarreau</span>, <span class="refTitle">"Using Early Data in HTTP"</span>, <span class="seriesInfo">RFC 8470</span>, <span class="seriesInfo">DOI 10.17487/RFC8470</span>, <time datetime="2018-09" class="refDate">September 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8470">https://www.rfc-editor.org/info/rfc8470</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8879">[RFC8879]</dt>
+        <dd>
+<span class="refAuthor">Ghedini, A.</span> and <span class="refAuthor">V. Vasiliev</span>, <span class="refTitle">"TLS Certificate Compression"</span>, <span class="seriesInfo">RFC 8879</span>, <span class="seriesInfo">DOI 10.17487/RFC8879</span>, <time datetime="2020-12" class="refDate">December 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8879">https://www.rfc-editor.org/info/rfc8879</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9000">[RFC9000]</dt>
         <dd>
