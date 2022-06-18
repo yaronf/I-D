@@ -1192,7 +1192,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 19 December 2022</td>
+<td class="center">Expires 20 December 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1211,12 +1211,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc5288" class="eref">5288</a>, <a href="https://www.rfc-editor.org/rfc/rfc6066" class="eref">6066</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-06-17" class="published">17 June 2022</time>
+<time datetime="2022-06-18" class="published">18 June 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-12-19">19 December 2022</time></dd>
+<dd class="expires"><time datetime="2022-12-20">20 December 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1259,7 +1259,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 19 December 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 December 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2059,10 +2059,9 @@ resources, the reader is referred to <span>[<a href="#RFC7925" class="xref">RFC7
   using does not validate host names, authors might need to write their
   own validation code or consider using a different TLS implementation.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <p id="section-7.1-2">It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Sections 4.3.3, 4.3.4 and 4.3.5 of <span>[<a href="#I-D.ietf-httpbis-semantics" class="xref">I-D.ietf-httpbis-semantics</a>]</span>.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
-<p id="section-7.1-3">Readers are referred to <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-3">Host name validation is security-critical for all common TLS use cases. Without it, TLS ensures that the certificate is valid and guarantees possession of the private key, but does not ensure that the connection terminates at the desired endpoint. Readers are referred to <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
 <p id="section-7.1-4">If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an SRV or MX record), it <span class="bcp14">SHOULD NOT</span> be used as a reference identifier <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see <span>[<a href="#DANE-SRV" class="xref">DANE-SRV</a>]</span> and <span>[<a href="#DANE-SMTP" class="xref">DANE-SMTP</a>]</span>).<a href="#section-7.1-4" class="pilcrow">¶</a></p>
-<p id="section-7.1-5">Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with <span>[<a href="#RFC5280" class="xref">RFC5280</a>]</span> (see also 
-        <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span>).<a href="#section-7.1-5" class="pilcrow">¶</a></p>
+<p id="section-7.1-5">Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with <span>[<a href="#RFC5280" class="xref">RFC5280</a>]</span>.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-aes">
