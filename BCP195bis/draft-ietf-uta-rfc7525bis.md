@@ -422,7 +422,8 @@ To achieve the latter, TLS 1.3 defines the `compress_certificate` extension in
 considerations associated with its use.  To clarify, CRIME-style attacks on TLS
 compression do not apply to certificate compression.
 
-Due to middlebox interference, RFC8879-style compression is not available in
+Due to the strong likelihood of middlebox interference,
+RFC8879-style compression has not been made available in
 TLS 1.2.  In theory, the `cached_info` extension defined in {{?RFC7924}} could
 be used, but it is not widely enough supported to be considered a practical
 alternative.
