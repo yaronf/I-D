@@ -407,6 +407,26 @@ Rationale: TLS compression has been subject to security attacks, such as the CRI
 
 Implementers should note that compression at higher protocol levels can allow an active attacker to extract cleartext information from the connection. The BREACH attack is one such case. These issues can only be mitigated outside of TLS and are thus outside the scope of this document. See {{Section 2.6 of RFC7457}} for further details.
       
+### Certificate Compression
+
+Certificate chains often take up the majority of the bytes transmitted during
+the handshake.  In order to manage their size, some or all of the following
+methods can be employed:
+
+* Limit the number of names or extensions;
+* Use keys with small public key representations, like ECDSA;
+* Use certificate compression.
+
+To achieve the latter, TLS 1.3 defines the `compress_certificate` extension in
+{{?RFC8879}}.  See also {{Section 5 of RFC8879}} for security and privacy
+considerations associated with its use.  To clarify, CRIME-style attacks on TLS
+compression do not apply to certificate compression.
+
+Due to the strong likelihood of middlebox interference,
+RFC8879-style compression has not been made available in
+TLS 1.2.  In theory, the `cached_info` extension defined in {{?RFC7924}} could
+be used, but it is not widely enough supported to be considered a practical
+alternative.
 
 ## TLS Session Resumption
 {: #rec-resume}
