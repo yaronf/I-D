@@ -174,6 +174,45 @@ informative:
       Cracks in TLS Authentication'
     seriesinfo: '30th USENIX Security Symposium (USENIX Security 21)'
 
+  DROWN:
+    author:
+    - ins: N. Aviram
+      name: Nimrod Aviram
+    - ins: S. Schinzel
+      name: Sebastian Schinzel
+    - ins: J. Somorovsky
+      name: Juraj Somorovsky
+    - ins: N. Heninger
+      name: Nadia Heninger
+    - ins: M. Dankel
+      name: Maik Dankel
+    - ins: J. Steube
+      name: Jens Steube
+    - ins: L. Valenta
+      name: Luke Valenta
+    - ins: D. Adrian
+      name: David Adrian 
+    - ins: J. Halderman
+      name: J. Alex Halderman
+    - ins: V. Dukhovni
+      name: Viktor Dukhovni
+    - ins: E. Käsper
+      name: Emilia Käsper
+    - ins: S. Cohney
+      name: Shaanan Cohney
+    - ins: S. Engels
+      name: Susanne Engels
+    - ins: C. Paar
+      name: Christof Paar
+    - ins: Y. Shavitt
+      name: Yuval Shavitt
+    date: '2016'
+    target:
+      https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/aviram
+    title:
+      'DROWN: Breaking TLS using SSLv2'
+    seriesinfo: '25th USENIX Security Symposium (USENIX Security 16)'
+
   RACCOON:
     author:
     - ins: R. Merget
@@ -505,6 +544,7 @@ take one of two actions: either abort the handshake by sending a fatal-level
 Clients SHOULD abort the handshake if the server acknowledges the SNI extension, but presents a certificate with a different hostname than the one sent by the client.
 
 ## Application-Layer Protocol Negotiation (ALPN)
+{: #rec-alpn}
 
 TLS implementations (both client- and server-side) MUST support the
 Application-Layer Protocol Negotiation (ALPN) extension {{!RFC7301}}.
@@ -524,6 +564,30 @@ for their protocols. This applies both to new protocols and to well-established
 protocols; however, because the latter might have a large deployed base,
 strict enforcement of ALPN usage may not be feasible when an ALPN 
 identifier is registered for a well-established protocol.
+
+## Multi-Server Deployment
+
+Deployments that involve multiple servers or services can increase the size of the attack surface for TLS. Two scenarios are of interest:
+
+1. Deployments in which multiple services handle the same domain name via different 
+   protocols (e.g., HTTP and IMAP). In this case an attacker might be able to direct 
+   a connecting endpoint to the service offering a different protocol and mount a 
+   cross-protocol attack. In a cross-protocol attack, the client and server believe 
+   they are using different protocols, which the attacker might exploit if messages 
+   sent in one protocol are interpreted as messages in the other protocol with 
+   undesirable effects (see {{ALPACA}} for more detailed information about this class 
+   of attacks). To mitigate this threat, service providers SHOULD deploy ALPN (see
+   {{rec-alpn}} immediately above) and to the extent possible ensure that multiple 
+   services handling the same domain name provide equivalent levels of security that 
+   are consistent with the recommendations in this document.
+
+2. Deployments in which multiple servers providing the same service have different
+   TLS configurations. In this case, an attacker might be able to direct a connecting 
+   endpoint to a server with a TLS configuration that is more easily exploitable (see 
+   {{DROWN}} for more detailed information about this class of attacks). To mitigate 
+   this threat, service providers SHOULD ensure that all servers providing the same 
+   service provide equivalent levels of security that are consistent with the 
+   recommendations in this document.  
 
 ## Zero Round Trip Time (0-RTT) Data in TLS 1.3
 
