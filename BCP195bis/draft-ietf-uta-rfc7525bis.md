@@ -476,7 +476,7 @@ TLS 1.2 clients MUST send `renegotiation_info` in the Client Hello.  If the serv
 
 Rationale: It is not safe for a client to connect to a TLS 1.2 server that does not support `renegotiation_info`, regardless of whether either endpoint actually implements renegotiation.  See also {{Section 4.1 of RFC5746}}.
 
-A related attack resulting from TLS session parameters not being properly authenticated is Triple Handshake {{triple-handshake}}. To address this attack, TLS 1.2 implementations SHOULD support the `extended_master_secret` extension defined in {{!RFC7627}}.      
+A related attack resulting from TLS session parameters not being properly authenticated is Triple Handshake {{triple-handshake}}. To address this attack, TLS 1.2 implementations MUST support the `extended_master_secret` extension defined in {{!RFC7627}}.      
 
 ## Post-Handshake Authentication
 
@@ -1001,7 +1001,7 @@ on the normative changes.
   * SHOULD NOT use (static or ephemeral) finite-field DH key agreement.
   * SHOULD NOT reuse ephemeral finite-field DH keys across multiple connections.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
-  * Support for `extended_master_secret` is a SHOULD. Also removed other, more complicated, related mitigations.
+  * Support for `extended_master_secret` is now a MUST (previously it was a soft recommendation, as the RFC had not been published at the time). Also removed other, more complicated, related mitigations.
   * MUST-level restriction on session ticket validity, replacing a SHOULD.
   * SHOULD-level restriction on the TLS session duration, depending on the rotation period of an {{RFC5077}} ticket key.
   * Drop TLS_DHE_RSA_WITH_AES from the recommended ciphers
