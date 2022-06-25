@@ -278,8 +278,8 @@ informative:
       name: Damian Poddebniak
     - ins: J. Somorovsky
       name: Juraj Somorovsky
-    - ins: S. Schninzel
-      name: Sebastian Schninzel
+    - ins: S. Schinzel
+      name: Sebastian Schinzel
     - ins: M. Lochter
       name: Manfred Lochter
     - ins: P. Rösler
