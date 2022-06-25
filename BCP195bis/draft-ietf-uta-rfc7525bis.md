@@ -1012,6 +1012,7 @@ The considerations in this section do not apply to scenarios where the DANE-TLSA
 Thanks to
 Alexey Melnikov,
 Andrei Popov,
+Ben Kaduk,
 Christian Huitema,
 Daniel Kahn Gillmor,
 David Benjamin,
@@ -1032,6 +1033,8 @@ Paul Wouters,
 Rich Salz,
 Ryan Sleevi,
 Sean Turner,
+Stephen Farrell,
+Tim Evans,
 Valery Smyslov,
 Viktor Dukhovni
 for helpful comments and discussions that have shaped this document.
@@ -1083,6 +1086,11 @@ on the normative changes.
 # Document History
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
+
+## draft-ietf-uta-rfc7525bis-08
+
+* Addressed SecDir review by Ben Kaduk.
+* Addressed reviews by Stephen Farrell, Martin Thomson, Tim Evans and John Mattsson.
 
 ## draft-ietf-uta-rfc7525bis-07
 
