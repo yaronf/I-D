@@ -421,12 +421,16 @@ The following recommendations are provided to help prevent SSL Stripping and STA
 
 
 
-* HTTP client and server implementations intended for use in the World Wide Web (see {{applicability}} MUST support the HTTP Strict Transport
-      Security (HSTS) header field {{?RFC6797}}, so that Web servers can 
-      advertise that they are
-      willing to accept TLS-only clients.
-
-* Web servers SHOULD use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in {{Section 11.3 of RFC6797}}).
+* HTTP client and server implementations intended for use in the World Wide Web (see 
+{{applicability}} MUST support the HTTP Strict Transport Security (HSTS) header 
+field {{?RFC6797}}, so that Web servers can advertise that they are willing to 
+accept TLS-only clients. Web servers SHOULD use HSTS to indicate that they are 
+willing to accept TLS-only clients, unless they are deployed in such a way that 
+using HSTS would in fact weaken overall security (e.g., it can be problematic to 
+use HSTS with self-signed certificates, as described in {{Section 11.3 of RFC6797}}).
+Similar technologies exist for non-HTTP application protocols, such as MTA-STS for 
+mail transfer agents {{?RFC8461}} and methods founded in DNS-Based Authentication of 
+Named Entities (DANE) {{?RFC6698}} for SMTP {{?RFC7672}} and XMPP {{?RFC7712}}.
       
 
 Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear. 
