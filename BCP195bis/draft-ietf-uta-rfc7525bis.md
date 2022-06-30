@@ -422,7 +422,7 @@ The following recommendations are provided to help prevent SSL Stripping and STA
 
 
 * HTTP client and server implementations intended for use in the World Wide Web (see 
-{{applicability}} MUST support the HTTP Strict Transport Security (HSTS) header 
+{{applicability}}) MUST support the HTTP Strict Transport Security (HSTS) header 
 field {{?RFC6797}}, so that Web servers can advertise that they are willing to 
 accept TLS-only clients. Web servers SHOULD use HSTS to indicate that they are 
 willing to accept TLS-only clients, unless they are deployed in such a way that 
@@ -1090,6 +1090,10 @@ on the normative changes.
 # Document History
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
+
+## draft-ietf-uta-rfc7525bis-09
+
+* More background on strict TLS for non-HTTP protocols.
 
 ## draft-ietf-uta-rfc7525bis-08
 
