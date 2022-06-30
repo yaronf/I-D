@@ -20,7 +20,7 @@
     Python 3.8.10
     appdirs 1.4.4
     ConfigArgParse 1.5.3
-    google-i18n-address 2.5.1
+    google-i18n-address 2.5.2
     html5lib 1.1
     intervaltree 3.1.0
     Jinja2 3.1.2
@@ -1192,7 +1192,7 @@ li > p:last-of-type {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sheffer, et al.</td>
-<td class="center">Expires 27 December 2022</td>
+<td class="center">Expires 1 January 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1211,12 +1211,12 @@ li > p:last-of-type {
 <a href="https://www.rfc-editor.org/rfc/rfc5288" class="eref">5288</a>, <a href="https://www.rfc-editor.org/rfc/rfc6066" class="eref">6066</a> (if approved)</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-06-25" class="published">25 June 2022</time>
+<time datetime="2022-06-30" class="published">30 June 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Best Current Practice</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-12-27">27 December 2022</time></dd>
+<dd class="expires"><time datetime="2023-01-01">1 January 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1259,7 +1259,7 @@ li > p:last-of-type {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 27 December 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 1 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1611,12 +1611,16 @@ Version 1.3 of DTLS correlates to version 1.3 of TLS (see above).<a href="#secti
 <ul class="normal">
 <li class="normal" id="section-3.2-2.1">Many existing application protocols were designed before the use of TLS became common. These protocols typically support TLS in one of two ways: either via a separate port for TLS-only communication (e.g., port 443 for HTTPS) or via a method for dynamically upgrading a channel from unencrypted to TLS-protected (e.g., STARTTLS, which is used in protocols such as IMAP and XMPP). Regardless of the mechanism for protecting the communication channel (TLS-only port or dynamic upgrade), what matters is the end state of the channel. When TLS-only communication is available for a certain protocol, it <span class="bcp14">MUST</span> be used by implementations and <span class="bcp14">MUST</span> be configured by administrators. When a protocol only supports dynamic upgrade, implementations <span class="bcp14">MUST</span> provide a strict local policy (a policy that forbids use of plaintext in the absence of a negotiated TLS channel) and administrators <span class="bcp14">MUST</span> use this policy.<a href="#section-3.2-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.2-2.2">HTTP client and server implementations intended for use in the World Wide Web (see <a href="#applicability" class="xref">Section 5</a> <span class="bcp14">MUST</span> support the HTTP Strict Transport
-    Security (HSTS) header field <span>[<a href="#RFC6797" class="xref">RFC6797</a>]</span>, so that Web servers can 
-    advertise that they are
-    willing to accept TLS-only clients.<a href="#section-3.2-2.2" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-3.2-2.3">Web servers <span class="bcp14">SHOULD</span> use HSTS to indicate that they are willing to accept TLS-only clients, unless they are deployed in such a way that using HSTS would in fact weaken overall security (e.g., it can be problematic to use HSTS with self-signed certificates, as described in <span><a href="https://rfc-editor.org/rfc/rfc6797#section-11.3" class="relref">Section 11.3</a> of [<a href="#RFC6797" class="xref">RFC6797</a>]</span>).<a href="#section-3.2-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.2-2.2">HTTP client and server implementations intended for use in the World Wide Web (see 
+<a href="#applicability" class="xref">Section 5</a> <span class="bcp14">MUST</span> support the HTTP Strict Transport Security (HSTS) header 
+field <span>[<a href="#RFC6797" class="xref">RFC6797</a>]</span>, so that Web servers can advertise that they are willing to 
+accept TLS-only clients. Web servers <span class="bcp14">SHOULD</span> use HSTS to indicate that they are 
+willing to accept TLS-only clients, unless they are deployed in such a way that 
+using HSTS would in fact weaken overall security (e.g., it can be problematic to 
+use HSTS with self-signed certificates, as described in <span><a href="https://rfc-editor.org/rfc/rfc6797#section-11.3" class="relref">Section 11.3</a> of [<a href="#RFC6797" class="xref">RFC6797</a>]</span>).
+Similar technologies exist for non-HTTP application protocols, such as MTA-STS for 
+mail transfer agents <span>[<a href="#RFC8461" class="xref">RFC8461</a>]</span> and methods founded in DNS-Based Authentication of 
+Named Entities (DANE) <span>[<a href="#RFC6698" class="xref">RFC6698</a>]</span> for SMTP <span>[<a href="#RFC7672" class="xref">RFC7672</a>]</span> and XMPP <span>[<a href="#RFC7712" class="xref">RFC7712</a>]</span>.<a href="#section-3.2-2.2" class="pilcrow">¶</a>
 </li>
         </ul>
 <p id="section-3.2-3">Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
@@ -2408,11 +2412,11 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dd class="break"></dd>
 <dt id="Chung18">[Chung18]</dt>
         <dd>
-<span class="refAuthor">Chung, T.</span>, <span class="refAuthor">Lok, J.</span>, <span class="refAuthor">Chandrasekaran, B.</span>, <span class="refAuthor">Choffnes, D.</span>, <span class="refAuthor">Levin, D.</span>, <span class="refAuthor">Maggs, B.</span>, <span class="refAuthor">Mislove, A.</span>, <span class="refAuthor">Rula, J.</span>, <span class="refAuthor">Sullivan, N.</span>, and <span class="refAuthor">C. Wilson</span>, <span class="refTitle">"Is the Web Ready for OCSP Must-Staple?"</span>, <span class="seriesInfo">Proceedings of the Internet Measurement Conference 2018</span>, <span class="seriesInfo">DOI 10.1145/3278532.3278543</span>, <time datetime="2018-10" class="refDate">October 2018</time>, <span>&lt;<a href="https://doi.org/10.1145/3278532.3278543">https://doi.org/10.1145/3278532.3278543</a>&gt;</span>. </dd>
+<span class="refTitle">"*** BROKEN REFERENCE ***"</span>. </dd>
 <dd class="break"></dd>
 <dt id="CRLite">[CRLite]</dt>
         <dd>
-<span class="refAuthor">Larisch, J.</span>, <span class="refAuthor">Choffnes, D.</span>, <span class="refAuthor">Levin, D.</span>, <span class="refAuthor">Maggs, B.</span>, <span class="refAuthor">Mislove, A.</span>, and <span class="refAuthor">C. Wilson</span>, <span class="refTitle">"CRLite: A Scalable System for Pushing All TLS Revocations to All Browsers"</span>, <span class="seriesInfo">2017 IEEE Symposium on Security and Privacy (SP)</span>, <span class="seriesInfo">DOI 10.1109/sp.2017.17</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://doi.org/10.1109/sp.2017.17">https://doi.org/10.1109/sp.2017.17</a>&gt;</span>. </dd>
+<span class="refAuthor">Larisch, J.</span>, <span class="refAuthor">Choffnes, D.</span>, <span class="refAuthor">Levin, D.</span>, <span class="refAuthor">Maggs, B. M.</span>, <span class="refAuthor">Mislove, A.</span>, <span class="refAuthor">Wilson, C.</span>, and <span class="refAuthor">IEEE</span>, <span class="refTitle">"CRLite: A Scalable System for Pushing All TLS Revocations to All Browsers"</span>, <span class="seriesInfo">DOI 10.1109/sp.2017.17</span>, <span>&lt;<a href="http://dx.doi.org/10.1109/sp.2017.17">http://dx.doi.org/10.1109/sp.2017.17</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="CVE">[CVE]</dt>
         <dd>
@@ -2428,7 +2432,7 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dd class="break"></dd>
 <dt id="DegabrieleP07">[DegabrieleP07]</dt>
         <dd>
-<span class="refAuthor">Degabriele, J.</span> and <span class="refAuthor">K. Paterson</span>, <span class="refTitle">"Attacking the IPsec Standards in Encryption-only Configurations"</span>, <span class="seriesInfo">2007 IEEE Symposium on Security and Privacy (SP '07)</span>, <span class="seriesInfo">DOI 10.1109/sp.2007.8</span>, <time datetime="2007-05" class="refDate">May 2007</time>, <span>&lt;<a href="https://doi.org/10.1109/sp.2007.8">https://doi.org/10.1109/sp.2007.8</a>&gt;</span>. </dd>
+<span class="refAuthor">Degabriele, J. P.</span>, <span class="refAuthor">Paterson, K. G.</span>, and <span class="refAuthor">IEEE</span>, <span class="refTitle">"Attacking the IPsec Standards in Encryption-only Configurations"</span>, <span class="seriesInfo">DOI 10.1109/sp.2007.8</span>, <span>&lt;<a href="http://dx.doi.org/10.1109/sp.2007.8">http://dx.doi.org/10.1109/sp.2007.8</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="DEP-SSLv3">[DEP-SSLv3]</dt>
         <dd>
@@ -2468,7 +2472,7 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dd class="break"></dd>
 <dt id="IANA_TLS">[IANA_TLS]</dt>
         <dd>
-<span class="refAuthor">IANA</span>, <span class="refTitle">"Transport Layer Security (TLS) Parameters"</span>, <span>&lt;<a href="https://www.iana.org/assignments/tls-parameters">https://www.iana.org/assignments/tls-parameters</a>&gt;</span>. </dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"Transport Layer Security (TLS) Parameters"</span>, <time datetime="2005-08-23" class="refDate">23 August 2005</time>, <span>&lt;<a href="https://www.iana.org/assignments/tls-parameters">https://www.iana.org/assignments/tls-parameters</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Jager2015">[Jager2015]</dt>
         <dd>
@@ -2484,27 +2488,27 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dd class="break"></dd>
 <dt id="Kleinjung2010">[Kleinjung2010]</dt>
         <dd>
-<span class="refAuthor">Kleinjung, T.</span>, <span class="refAuthor">Aoki, K.</span>, <span class="refAuthor">Franke, J.</span>, <span class="refAuthor">Lenstra, A.</span>, <span class="refAuthor">Thomé, E.</span>, <span class="refAuthor">Bos, J.</span>, <span class="refAuthor">Gaudry, P.</span>, <span class="refAuthor">Kruppa, A.</span>, <span class="refAuthor">Montgomery, P.</span>, <span class="refAuthor">Osvik, D.</span>, <span class="refAuthor">te Riele, H.</span>, <span class="refAuthor">Timofeev, A.</span>, and <span class="refAuthor">P. Zimmermann</span>, <span class="refTitle">"Factorization of a 768-Bit RSA Modulus"</span>, <span class="seriesInfo">Advances in Cryptology - CRYPTO 2010 pp. 333-350</span>, <span class="seriesInfo">DOI 10.1007/978-3-642-14623-7_18</span>, <time datetime="2010" class="refDate">2010</time>, <span>&lt;<a href="https://doi.org/10.1007/978-3-642-14623-7_18">https://doi.org/10.1007/978-3-642-14623-7_18</a>&gt;</span>. </dd>
+<span class="refAuthor">Kleinjung, T.</span>, <span class="refAuthor">Aoki, K.</span>, <span class="refAuthor">Franke, J.</span>, <span class="refAuthor">Lenstra, A. K.</span>, <span class="refAuthor">Thomé, E.</span>, <span class="refAuthor">Bos, J. W.</span>, <span class="refAuthor">Gaudry, P.</span>, <span class="refAuthor">Kruppa, A.</span>, <span class="refAuthor">Montgomery, P. L.</span>, <span class="refAuthor">Osvik, D. A.</span>, <span class="refAuthor">Riele, H. T.</span>, <span class="refAuthor">Timofeev, A.</span>, <span class="refAuthor">Zimmermann, P.</span>, and <span class="refAuthor">Springer Berlin Heidelberg</span>, <span class="refTitle">"Factorization of a 768-Bit RSA Modulus"</span>, <span class="seriesInfo">DOI 10.1007/978-3-642-14623-7_18</span>, <span>&lt;<a href="http://dx.doi.org/10.1007/978-3-642-14623-7_18">http://dx.doi.org/10.1007/978-3-642-14623-7_18</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="LetsRevoke">[LetsRevoke]</dt>
         <dd>
-<span class="refAuthor">Smith, T.</span>, <span class="refAuthor">Dickinson, L.</span>, and <span class="refAuthor">K. Seamons</span>, <span class="refTitle">"Let's Revoke: Scalable Global Certificate Revocation"</span>, <span class="seriesInfo">Proceedings 2020 Network and Distributed System Security Symposium</span>, <span class="seriesInfo">DOI 10.14722/ndss.2020.24084</span>, <time datetime="2020" class="refDate">2020</time>, <span>&lt;<a href="https://doi.org/10.14722/ndss.2020.24084">https://doi.org/10.14722/ndss.2020.24084</a>&gt;</span>. </dd>
+<span class="refAuthor">Smith, T.</span>, <span class="refAuthor">Dickinson, L.</span>, <span class="refAuthor">Seamons, K.</span>, and <span class="refAuthor">Internet Society</span>, <span class="refTitle">"Let's Revoke: Scalable Global Certificate Revocation"</span>, <span class="seriesInfo">DOI 10.14722/ndss.2020.24084</span>, <span>&lt;<a href="http://dx.doi.org/10.14722/ndss.2020.24084">http://dx.doi.org/10.14722/ndss.2020.24084</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Logjam">[Logjam]</dt>
         <dd>
-<span class="refAuthor">Adrian, D.</span>, <span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Durumeric, Z.</span>, <span class="refAuthor">Gaudry, P.</span>, <span class="refAuthor">Green, M.</span>, <span class="refAuthor">Halderman, J.</span>, <span class="refAuthor">Heninger, N.</span>, <span class="refAuthor">Springall, D.</span>, <span class="refAuthor">Thomé, E.</span>, <span class="refAuthor">Valenta, L.</span>, <span class="refAuthor">VanderSloot, B.</span>, <span class="refAuthor">Wustrow, E.</span>, <span class="refAuthor">Zanella-Béguelin, S.</span>, and <span class="refAuthor">P. Zimmermann</span>, <span class="refTitle">"Imperfect Forward Secrecy: How Diffie-Hellman Fails in Practice"</span>, <span class="seriesInfo">Proceedings of the 22nd ACM SIGSAC Conference on Computer and Communications Security</span>, <span class="seriesInfo">DOI 10.1145/2810103.2813707</span>, <time datetime="2015-10" class="refDate">October 2015</time>, <span>&lt;<a href="https://doi.org/10.1145/2810103.2813707">https://doi.org/10.1145/2810103.2813707</a>&gt;</span>. </dd>
+<span class="refAuthor">Adrian, D.</span>, <span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Durumeric, Z.</span>, <span class="refAuthor">Gaudry, P.</span>, <span class="refAuthor">Green, M.</span>, <span class="refAuthor">Halderman, J. A.</span>, <span class="refAuthor">Heninger, N.</span>, <span class="refAuthor">Springall, D.</span>, <span class="refAuthor">Thomé, E.</span>, <span class="refAuthor">Valenta, L.</span>, <span class="refAuthor">VanderSloot, B.</span>, <span class="refAuthor">Wustrow, E.</span>, <span class="refAuthor">Zanella-Béguelin, S.</span>, <span class="refAuthor">Zimmermann, P.</span>, and <span class="refAuthor">ACM</span>, <span class="refTitle">"Imperfect Forward Secrecy"</span>, <span class="seriesInfo">DOI 10.1145/2810103.2813707</span>, <span>&lt;<a href="http://dx.doi.org/10.1145/2810103.2813707">http://dx.doi.org/10.1145/2810103.2813707</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Multiple-Encryption">[Multiple-Encryption]</dt>
         <dd>
-<span class="refAuthor">Merkle, R.</span> and <span class="refAuthor">M. Hellman</span>, <span class="refTitle">"On the security of multiple encryption"</span>, <span class="seriesInfo">Communications of the ACM Vol. 24, pp. 465-467</span>, <span class="seriesInfo">DOI 10.1145/358699.358718</span>, <time datetime="1981-07" class="refDate">July 1981</time>, <span>&lt;<a href="https://doi.org/10.1145/358699.358718">https://doi.org/10.1145/358699.358718</a>&gt;</span>. </dd>
+<span class="refAuthor">Merkle, R. C.</span>, <span class="refAuthor">Hellman, M. E.</span>, and <span class="refAuthor">Association for Computing Machinery (ACM)</span>, <span class="refTitle">"On the security of multiple encryption"</span>, <span class="seriesInfo">DOI 10.1145/358699.358718</span>, <span>&lt;<a href="http://dx.doi.org/10.1145/358699.358718">http://dx.doi.org/10.1145/358699.358718</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="NIST.SP.800-56A">[NIST.SP.800-56A]</dt>
         <dd>
-<span class="refAuthor">Barker, E.</span>, <span class="refAuthor">Chen, L.</span>, <span class="refAuthor">Roginsky, A.</span>, <span class="refAuthor">Vassilev, A.</span>, and <span class="refAuthor">R. Davis</span>, <span class="refTitle">"Recommendation for pair-wise key-establishment schemes using discrete logarithm cryptography"</span>, <span class="seriesInfo">National Institute of Standards and Technology report</span>, <span class="seriesInfo">DOI 10.6028/nist.sp.800-56ar3</span>, <time datetime="2018-04" class="refDate">April 2018</time>, <span>&lt;<a href="https://doi.org/10.6028/nist.sp.800-56ar3">https://doi.org/10.6028/nist.sp.800-56ar3</a>&gt;</span>. </dd>
+<span class="refAuthor">Barker, E.</span>, <span class="refAuthor">Chen, L.</span>, <span class="refAuthor">Roginsky, A.</span>, <span class="refAuthor">Vassilev, A.</span>, <span class="refAuthor">Davis, R.</span>, and <span class="refAuthor">National Institute of Standards and Technology</span>, <span class="refTitle">"Recommendation for pair-wise key-establishment schemes using discrete logarithm cryptography"</span>, <span class="seriesInfo">DOI 10.6028/nist.sp.800-56ar3</span>, <span>&lt;<a href="http://dx.doi.org/10.6028/nist.sp.800-56ar3">http://dx.doi.org/10.6028/nist.sp.800-56ar3</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="PatersonRS11">[PatersonRS11]</dt>
         <dd>
-<span class="refAuthor">Paterson, K.</span>, <span class="refAuthor">Ristenpart, T.</span>, and <span class="refAuthor">T. Shrimpton</span>, <span class="refTitle">"Tag Size Does Matter: Attacks and Proofs for the TLS Record Protocol"</span>, <span class="seriesInfo">Lecture Notes in Computer Science pp. 372-389</span>, <span class="seriesInfo">DOI 10.1007/978-3-642-25385-0_20</span>, <time datetime="2011" class="refDate">2011</time>, <span>&lt;<a href="https://doi.org/10.1007/978-3-642-25385-0_20">https://doi.org/10.1007/978-3-642-25385-0_20</a>&gt;</span>. </dd>
+<span class="refAuthor">Paterson, K. G.</span>, <span class="refAuthor">Ristenpart, T.</span>, <span class="refAuthor">Shrimpton, T.</span>, and <span class="refAuthor">Springer Berlin Heidelberg</span>, <span class="refTitle">"Tag Size Does Matter: Attacks and Proofs for the TLS Record Protocol"</span>, <span class="seriesInfo">DOI 10.1007/978-3-642-25385-0_20</span>, <span>&lt;<a href="http://dx.doi.org/10.1007/978-3-642-25385-0_20">http://dx.doi.org/10.1007/978-3-642-25385-0_20</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Poddebniak2017">[Poddebniak2017]</dt>
         <dd>
@@ -2614,6 +2618,14 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Hallam-Baker, P.</span>, <span class="refTitle">"X.509v3 Transport Layer Security (TLS) Feature Extension"</span>, <span class="seriesInfo">RFC 7633</span>, <span class="seriesInfo">DOI 10.17487/RFC7633</span>, <time datetime="2015-10" class="refDate">October 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7633">https://www.rfc-editor.org/info/rfc7633</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7672">[RFC7672]</dt>
+        <dd>
+<span class="refAuthor">Dukhovni, V.</span> and <span class="refAuthor">W. Hardaker</span>, <span class="refTitle">"SMTP Security via Opportunistic DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7672</span>, <span class="seriesInfo">DOI 10.17487/RFC7672</span>, <time datetime="2015-10" class="refDate">October 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7672">https://www.rfc-editor.org/info/rfc7672</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7712">[RFC7712]</dt>
+        <dd>
+<span class="refAuthor">Saint-Andre, P.</span>, <span class="refAuthor">Miller, M.</span>, and <span class="refAuthor">P. Hancke</span>, <span class="refTitle">"Domain Name Associations (DNA) in the Extensible Messaging and Presence Protocol (XMPP)"</span>, <span class="seriesInfo">RFC 7712</span>, <span class="seriesInfo">DOI 10.17487/RFC7712</span>, <time datetime="2015-11" class="refDate">November 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7712">https://www.rfc-editor.org/info/rfc7712</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC7919">[RFC7919]</dt>
         <dd>
 <span class="refAuthor">Gillmor, D.</span>, <span class="refTitle">"Negotiated Finite Field Diffie-Hellman Ephemeral Parameters for Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7919</span>, <span class="seriesInfo">DOI 10.17487/RFC7919</span>, <time datetime="2016-08" class="refDate">August 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7919">https://www.rfc-editor.org/info/rfc7919</a>&gt;</span>. </dd>
@@ -2629,6 +2641,10 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="RFC8452">[RFC8452]</dt>
         <dd>
 <span class="refAuthor">Gueron, S.</span>, <span class="refAuthor">Langley, A.</span>, and <span class="refAuthor">Y. Lindell</span>, <span class="refTitle">"AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption"</span>, <span class="seriesInfo">RFC 8452</span>, <span class="seriesInfo">DOI 10.17487/RFC8452</span>, <time datetime="2019-04" class="refDate">April 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8452">https://www.rfc-editor.org/info/rfc8452</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8461">[RFC8461]</dt>
+        <dd>
+<span class="refAuthor">Margolis, D.</span>, <span class="refAuthor">Risher, M.</span>, <span class="refAuthor">Ramakrishnan, B.</span>, <span class="refAuthor">Brotman, A.</span>, and <span class="refAuthor">J. Jones</span>, <span class="refTitle">"SMTP MTA Strict Transport Security (MTA-STS)"</span>, <span class="seriesInfo">RFC 8461</span>, <span class="seriesInfo">DOI 10.17487/RFC8461</span>, <time datetime="2018-09" class="refDate">September 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8461">https://www.rfc-editor.org/info/rfc8461</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8470">[RFC8470]</dt>
         <dd>
@@ -2660,25 +2676,26 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dd class="break"></dd>
 <dt id="Soghoian2011">[Soghoian2011]</dt>
         <dd>
-<span class="refAuthor">Soghoian, C.</span> and <span class="refAuthor">S. Stamm</span>, <span class="refTitle">"Certified Lies: Detecting and Defeating Government Interception Attacks Against SSL"</span>, <span class="seriesInfo">SSRN Electronic Journal</span>, <span class="seriesInfo">DOI 10.2139/ssrn.1591033</span>, <time datetime="2010" class="refDate">2010</time>, <span>&lt;<a href="https://doi.org/10.2139/ssrn.1591033">https://doi.org/10.2139/ssrn.1591033</a>&gt;</span>. </dd>
+<span class="refAuthor">Soghoian, C.</span>, <span class="refAuthor">Stamm, S.</span>, and <span class="refAuthor">Elsevier BV</span>, <span class="refTitle">"Certified Lies: Detecting and Defeating Government Interception Attacks Against SSL"</span>, <span class="seriesInfo">DOI 10.2139/ssrn.1591033</span>, <span>&lt;<a href="http://dx.doi.org/10.2139/ssrn.1591033">http://dx.doi.org/10.2139/ssrn.1591033</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Springall16">[Springall16]</dt>
         <dd>
-<span class="refAuthor">Springall, D.</span>, <span class="refAuthor">Durumeric, Z.</span>, and <span class="refAuthor">J. Halderman</span>, <span class="refTitle">"Measuring the Security Harm of TLS Crypto Shortcuts"</span>, <span class="seriesInfo">Proceedings of the 2016 Internet Measurement Conference</span>, <span class="seriesInfo">DOI 10.1145/2987443.2987480</span>, <time datetime="2016-11" class="refDate">November 2016</time>, <span>&lt;<a href="https://doi.org/10.1145/2987443.2987480">https://doi.org/10.1145/2987443.2987480</a>&gt;</span>. </dd>
+<span class="refAuthor">Springall, D.</span>, <span class="refAuthor">Durumeric, Z.</span>, <span class="refAuthor">Halderman, J. A.</span>, and <span class="refAuthor">ACM</span>, <span class="refTitle">"Measuring the Security Harm of TLS Crypto Shortcuts"</span>, <span class="seriesInfo">DOI 10.1145/2987443.2987480</span>, <span>&lt;<a href="http://dx.doi.org/10.1145/2987443.2987480">http://dx.doi.org/10.1145/2987443.2987480</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="STD53">[STD53]</dt>
-        <dd><div class="refInstance" id="RFC1939">
-            <span class="refAuthor">Myers, J.</span> and <span class="refAuthor">M. Rose</span>, <span class="refTitle">"Post Office Protocol - Version 3"</span>, <span class="seriesInfo">STD 53</span>, <span class="seriesInfo">RFC 1939</span>, <time datetime="1996-05" class="refDate">May 1996</time>. </div>
+        <dd>
+<div class="refInstance" id="RFC1939">
+            <span class="refAuthor">Myers, J.</span> and <span class="refAuthor">M. Rose</span>, <span class="refTitle">"Post Office Protocol - Version 3"</span>, <span class="seriesInfo">RFC 1939</span>, <span class="seriesInfo">STD 53</span>, <time datetime="1996-05" class="refDate">May 1996</time>. </div>
 <span>&lt;<a href="https://www.rfc-editor.org/info/std53">https://www.rfc-editor.org/info/std53</a>&gt;</span>
 </dd>
 <dd class="break"></dd>
 <dt id="Sy2018">[Sy2018]</dt>
         <dd>
-<span class="refAuthor">Sy, E.</span>, <span class="refAuthor">Burkert, C.</span>, <span class="refAuthor">Federrath, H.</span>, and <span class="refAuthor">M. Fischer</span>, <span class="refTitle">"Tracking Users across the Web via TLS Session Resumption"</span>, <span class="seriesInfo">Proceedings of the 34th Annual Computer Security Applications Conference</span>, <span class="seriesInfo">DOI 10.1145/3274694.3274708</span>, <time datetime="2018-12" class="refDate">December 2018</time>, <span>&lt;<a href="https://doi.org/10.1145/3274694.3274708">https://doi.org/10.1145/3274694.3274708</a>&gt;</span>. </dd>
+<span class="refAuthor">Sy, E.</span>, <span class="refAuthor">Burkert, C.</span>, <span class="refAuthor">Federrath, H.</span>, <span class="refAuthor">Fischer, M.</span>, and <span class="refAuthor">ACM</span>, <span class="refTitle">"Tracking Users across the Web via TLS Session Resumption"</span>, <span class="seriesInfo">DOI 10.1145/3274694.3274708</span>, <span>&lt;<a href="http://dx.doi.org/10.1145/3274694.3274708">http://dx.doi.org/10.1145/3274694.3274708</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="triple-handshake">[triple-handshake]</dt>
       <dd>
-<span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Lavaud, A.</span>, <span class="refAuthor">Fournet, C.</span>, <span class="refAuthor">Pironti, A.</span>, and <span class="refAuthor">P. Strub</span>, <span class="refTitle">"Triple Handshakes and Cookie Cutters: Breaking and Fixing Authentication over TLS"</span>, <span class="seriesInfo">2014 IEEE Symposium on Security and Privacy</span>, <span class="seriesInfo">DOI 10.1109/sp.2014.14</span>, <time datetime="2014-05" class="refDate">May 2014</time>, <span>&lt;<a href="https://doi.org/10.1109/sp.2014.14">https://doi.org/10.1109/sp.2014.14</a>&gt;</span>. </dd>
+<span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Lavaud, A. D.</span>, <span class="refAuthor">Fournet, C.</span>, <span class="refAuthor">Pironti, A.</span>, <span class="refAuthor">Strub, P. Y.</span>, and <span class="refAuthor">IEEE</span>, <span class="refTitle">"Triple Handshakes and Cookie Cutters: Breaking and Fixing Authentication over TLS"</span>, <span class="seriesInfo">DOI 10.1109/sp.2014.14</span>, <span>&lt;<a href="http://dx.doi.org/10.1109/sp.2014.14">http://dx.doi.org/10.1109/sp.2014.14</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
