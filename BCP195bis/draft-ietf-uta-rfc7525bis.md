@@ -329,7 +329,7 @@ The TLS community reacted to the attacks described in {{?RFC7457}} in several wa
 - Versions of TLS earlier than 1.2 were deprecated {{!RFC8996}}.
 - Version 1.3 of TLS {{!RFC8446}} was released, followed by version 1.3 of DTLS {{!RFC9147}}; these versions largely mitigate or resolve the described attacks.
 
-Those who implement and deploy TLS and TLS-based protocols need guidance on how they can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in the environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
+Those who implement and deploy TLS and TLS-based protocols need guidance on how they can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects their code to be deployed in the environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
 
 The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless it is explicitly called out that a recommendation applies to TLS alone or to DTLS alone, each recommendation applies to both TLS and DTLS.
 
