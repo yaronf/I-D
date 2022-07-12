@@ -75,7 +75,7 @@ informative:
     author:
     - org: CA/Browser Forum
     date: '2013'
-    target: https://www.cabforum.org/documents.html
+    target: https://cabforum.org/documents/
     title: Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6
 
   Heninger2012:
