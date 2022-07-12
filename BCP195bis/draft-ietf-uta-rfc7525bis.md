@@ -429,7 +429,7 @@ willing to accept TLS-only clients, unless they are deployed in such a way that
 using HSTS would in fact weaken overall security (e.g., it can be problematic to 
 use HSTS with self-signed certificates, as described in {{Section 11.3 of RFC6797}}).
 Similar technologies exist for non-HTTP application protocols, such as MTA-STS for 
-mail transfer agents {{?RFC8461}} and methods founded in DNS-Based Authentication of 
+mail transfer agents {{?RFC8461}} and methods found in DNS-Based Authentication of 
 Named Entities (DANE) {{?RFC6698}} for SMTP {{?RFC7672}} and XMPP {{?RFC7712}}.
       
 
@@ -462,7 +462,7 @@ methods can be employed:
 
 To achieve the latter, TLS 1.3 defines the `compress_certificate` extension in
 {{?RFC8879}}.  See also {{Section 5 of RFC8879}} for security and privacy
-considerations associated with its use.  To clarify, CRIME-style attacks on TLS
+considerations associated with its use.  For clarity, CRIME-style attacks on TLS
 compression do not apply to certificate compression.
 
 Due to the strong likelihood of middlebox interference,
