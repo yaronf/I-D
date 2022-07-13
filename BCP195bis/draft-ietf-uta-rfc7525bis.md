@@ -376,7 +376,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
   Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
 
-* Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
+* Implementations MUST support TLS 1.2 {{!RFC5246}}.
 
   Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are not available in older versions of the protocol.
 
@@ -398,7 +398,7 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 
   Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
 
-* Implementations MUST support DTLS 1.2 {{!RFC6347}} and MUST prefer to negotiate DTLS version 1.2 over earlier versions of DTLS.
+* Implementations MUST support DTLS 1.2 {{!RFC6347}}.
 
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
