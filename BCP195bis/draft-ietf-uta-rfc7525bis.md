@@ -429,7 +429,7 @@ willing to accept TLS-only clients, unless they are deployed in such a way that
 using HSTS would in fact weaken overall security (e.g., it can be problematic to 
 use HSTS with self-signed certificates, as described in {{Section 11.3 of RFC6797}}).
 Similar technologies exist for non-HTTP application protocols, such as MTA-STS for 
-mail transfer agents {{?RFC8461}} and methods found in DNS-Based Authentication of 
+mail transfer agents {{?RFC8461}} and methods based on DNS-Based Authentication of 
 Named Entities (DANE) {{?RFC6698}} for SMTP {{?RFC7672}} and XMPP {{?RFC7712}}.
       
 
