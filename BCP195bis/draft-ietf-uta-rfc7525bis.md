@@ -385,7 +385,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * Implementations SHOULD support TLS 1.3 {{!RFC8446}} and, if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
                
-  Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. Even if a TLS implementation defaults to TLS 1.3, as long as it supports TLS 1.2 it MUST follow all the recommendations in this document.
+  Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. To the extent that an implementation supports TLS 1.2 (even if it defaults to TLS 1.3), it MUST follow the recommendations regarding TLS 1.2 specified in this document.
 
 * New protocol designs that embed TLS mechanisms SHOULD use only TLS 1.3 and SHOULD NOT use TLS 1.2; for instance, QUIC {{RFC9001}}) took this approach. As a result, implementations of such newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions.
 
