@@ -760,7 +760,7 @@ limits are maintained for each key:
 1. Integrity limit (IL), i.e., the number of records that are allowed to fail
    authentication.
 
-The latter only applies to DTLS since TLS connections are torn down on the
+The latter applies to DTLS and QUIC but not to TLS itself, since TLS connections are torn down on the
 first decryption failure.
 
 When a sender is approaching CL, the implementation SHOULD initiate a new
