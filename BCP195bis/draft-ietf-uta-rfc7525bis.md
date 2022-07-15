@@ -345,7 +345,7 @@ Community knowledge about the strength of various algorithms and feasible attack
 
 A number of security-related terms in this document are used in the sense defined in {{?RFC4949}},
 including "attack", "authentication", "certificate", "cipher", "compromise", "confidentiality", 
-"credential", "encryption", "forward secrecy", "key", "key length", "self-signed certificate", 
+"credential", "data integrity", "encryption", "forward secrecy", "key", "key length", "self-signed certificate", 
 "strength", and "strong".
 
 {::boilerplate bcp14-tagged}
