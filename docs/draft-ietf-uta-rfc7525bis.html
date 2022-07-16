@@ -1626,7 +1626,7 @@ using HSTS would in fact weaken overall security (e.g., it can be problematic to
 use HSTS with self-signed certificates, as described in <span><a href="https://rfc-editor.org/rfc/rfc6797#section-11.3" class="relref">Section 11.3</a> of [<a href="#RFC6797" class="xref">RFC6797</a>]</span>).
 Similar technologies exist for non-HTTP application protocols, such as MTA-STS for 
 mail transfer agents <span>[<a href="#RFC8461" class="xref">RFC8461</a>]</span> and methods based on DNS-Based Authentication of 
-Named Entities (DANE) <span>[<a href="#RFC6698" class="xref">RFC6698</a>]</span> for SMTP <span>[<a href="#RFC7672" class="xref">RFC7672</a>]</span> and XMPP <span>[<a href="#RFC7712" class="xref">RFC7712</a>]</span>.<a href="#section-3.2-2.2" class="pilcrow">¶</a>
+Named Entities (DANE) <span>[<a href="#RFC6698" class="xref">RFC6698</a>]</span> for SMTP <span>[<a href="#DANE-SMTP" class="xref">DANE-SMTP</a>]</span> and XMPP <span>[<a href="#RFC7712" class="xref">RFC7712</a>]</span>.<a href="#section-3.2-2.2" class="pilcrow">¶</a>
 </li>
         </ul>
 <p id="section-3.2-3">Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
@@ -2619,10 +2619,6 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="RFC7633">[RFC7633]</dt>
         <dd>
 <span class="refAuthor">Hallam-Baker, P.</span>, <span class="refTitle">"X.509v3 Transport Layer Security (TLS) Feature Extension"</span>, <span class="seriesInfo">RFC 7633</span>, <span class="seriesInfo">DOI 10.17487/RFC7633</span>, <time datetime="2015-10" class="refDate">October 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7633">https://www.rfc-editor.org/info/rfc7633</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC7672">[RFC7672]</dt>
-        <dd>
-<span class="refAuthor">Dukhovni, V.</span> and <span class="refAuthor">W. Hardaker</span>, <span class="refTitle">"SMTP Security via Opportunistic DNS-Based Authentication of Named Entities (DANE) Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7672</span>, <span class="seriesInfo">DOI 10.17487/RFC7672</span>, <time datetime="2015-10" class="refDate">October 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7672">https://www.rfc-editor.org/info/rfc7672</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7712">[RFC7712]</dt>
         <dd>
