@@ -49,6 +49,18 @@ author:
 normative:
 
 informative:
+  TWIRL:
+    author:
+    - ins: A. Shamir
+      name: Adi Shamir
+    - ins: E. Tromer
+      name: Eran Tromer
+    date: '2003'
+    target:
+      http://cs.tau.ac.il/~tromer/papers/twirl.pdf
+    title:
+      'Factoring Large Numbers with the TWIRL Device'
+    seriesinfo: 'proc. Crypto 2003, LNCS 2729, 1-26, Springer-Verlag'
 
   Chung18: DOI.10.1145_3278532.3278543
 
@@ -101,9 +113,11 @@ informative:
 
   DANE-SRV: RFC7673
 
-  HTTP1.1: I-D.ietf-httpbis-messaging
+  HTTP-SEMA: RFC9110
 
-  HTTP2: I-D.ietf-httpbis-http2bis
+  HTTP1.1: RFC9112
+
+  HTTP2: RFC9113
 
   Kleinjung2010: DOI.10.1007/978-3-642-14623-7_18
 
@@ -329,7 +343,7 @@ The TLS community reacted to the attacks described in {{?RFC7457}} in several wa
 - Versions of TLS earlier than 1.2 were deprecated {{!RFC8996}}.
 - Version 1.3 of TLS {{!RFC8446}} was released, followed by version 1.3 of DTLS {{!RFC9147}}; these versions largely mitigate or resolve the described attacks.
 
-Those who implement and deploy TLS and TLS-based protocols need guidance on how they can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects his or her code to be deployed in the environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
+Those who implement and deploy TLS and TLS-based protocols need guidance on how they can be used securely.  This document provides guidance for deployed services as well as for software implementations, assuming the implementer expects their code to be deployed in the environments defined in {{applicability}}. Concerning deployment, this document targets a wide audience -- namely, all deployers who wish to add authentication (be it one-way only or mutual), confidentiality, and data integrity protection to their communications.
 
 The recommendations herein take into consideration the security of various mechanisms, their technical maturity and interoperability, and their prevalence in implementations at the time of writing.  Unless it is explicitly called out that a recommendation applies to TLS alone or to DTLS alone, each recommendation applies to both TLS and DTLS.
 
@@ -337,13 +351,16 @@ This document attempts to minimize new guidance to TLS 1.2 implementations, and 
 
 As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. Therefore, this document replaces {{?RFC7525}}, with an explicit goal to encourage migration of most uses of TLS 1.2 to TLS 1.3.
 
-These are minimum recommendations for the use of TLS in the vast majority of implementation and deployment scenarios, with the exception of unauthenticated TLS (see {{applicability}}). Other specifications that reference this document can have stricter requirements related to one or more aspects of the protocol, based on their particular circumstances (e.g., for use with a particular application protocol); when that is the case, implementers are advised to adhere to those stricter requirements. Furthermore, this document provides a floor, not a ceiling, so stronger options are always allowed (e.g., depending on differing evaluations of the importance of cryptographic strength vs. computational load).
+These are minimum recommendations for the use of TLS in the vast majority of implementation and deployment scenarios, with the exception of unauthenticated TLS (see {{applicability}}). Other specifications that reference this document can have stricter requirements related to one or more aspects of the protocol, based on their particular circumstances (e.g., for use with a particular application protocol); when that is the case, implementers are advised to adhere to those stricter requirements. Furthermore, this document provides a floor, not a ceiling, so more secure options are always allowed (e.g., depending on differing evaluations of the importance of cryptographic strength vs. computational load).
 
 Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a Best Current Practice (BCP) document about security is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.
     
 # Terminology
 
-A number of security-related terms in this document are used in the sense defined in {{?RFC4949}}.
+A number of security-related terms in this document are used in the sense defined in {{?RFC4949}},
+including "attack", "authentication", "certificate", "cipher", "compromise", "confidentiality", 
+"credential", "data integrity", "encryption", "forward secrecy", "key", "key length", "self-signed certificate", 
+"strength", and "strong".
 
 {::boilerplate bcp14-tagged}
 
@@ -376,13 +393,13 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
   Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
 
-* Implementations MUST support TLS 1.2 {{!RFC5246}} and MUST prefer to negotiate TLS version 1.2 over earlier versions of TLS.
+* Implementations MUST support TLS 1.2 {{!RFC5246}}.
 
   Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are not available in older versions of the protocol.
 
 * Implementations SHOULD support TLS 1.3 {{!RFC8446}} and, if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
                
-  Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. Even if a TLS implementation defaults to TLS 1.3, as long as it supports TLS 1.2 it MUST follow all the recommendations in this document.
+  Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. To the extent that an implementation supports TLS 1.2 (even if it defaults to TLS 1.3), it MUST follow the recommendations regarding TLS 1.2 specified in this document.
 
 * New protocol designs that embed TLS mechanisms SHOULD use only TLS 1.3 and SHOULD NOT use TLS 1.2; for instance, QUIC {{RFC9001}}) took this approach. As a result, implementations of such newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions.
 
@@ -398,7 +415,7 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 
   Version 1.0 of DTLS correlates to version 1.1 of TLS (see above).
 
-* Implementations MUST support DTLS 1.2 {{!RFC6347}} and MUST prefer to negotiate DTLS version 1.2 over earlier versions of DTLS.
+* Implementations MUST support DTLS 1.2 {{!RFC6347}}.
 
   Version 1.2 of DTLS correlates to version 1.2 of TLS (see above).
   (There is no version 1.1 of DTLS.)
@@ -410,7 +427,7 @@ DTLS, an adaptation of TLS for UDP datagrams, was introduced when TLS 1.1 was pu
 ### Fallback to Lower Versions
 {: #rec-fallback}
 
-TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those versions have been deprecated {{!RFC8996}}. We note that as a result of that, the downgrade-protection SCSV mechanism {{?RFC7507}} is no longer needed for clients. In addition, TLS 1.3 implements a new version negotiation mechanism.
+TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those versions have been deprecated {{!RFC8996}}. We note that as a result of that, the downgrade-protection SCSV (Signaling Cipher Suite Value) mechanism {{?RFC7507}} is no longer needed for clients. In addition, TLS 1.3 implements a new version negotiation mechanism.
 
 ## Strict TLS
 
@@ -429,9 +446,8 @@ willing to accept TLS-only clients, unless they are deployed in such a way that
 using HSTS would in fact weaken overall security (e.g., it can be problematic to 
 use HSTS with self-signed certificates, as described in {{Section 11.3 of RFC6797}}).
 Similar technologies exist for non-HTTP application protocols, such as MTA-STS for 
-mail transfer agents {{?RFC8461}} and methods founded in DNS-Based Authentication of 
-Named Entities (DANE) {{?RFC6698}} for SMTP {{?RFC7672}} and XMPP {{?RFC7712}}.
-      
+mail transfer agents {{?RFC8461}} and methods based on DNS-Based Authentication of 
+Named Entities (DANE) {{?RFC6698}} for SMTP {{?DANE-SMTP}} and XMPP {{?RFC7712}}.
 
 Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear. 
 
@@ -462,7 +478,7 @@ methods can be employed:
 
 To achieve the latter, TLS 1.3 defines the `compress_certificate` extension in
 {{?RFC8879}}.  See also {{Section 5 of RFC8879}} for security and privacy
-considerations associated with its use.  To clarify, CRIME-style attacks on TLS
+considerations associated with its use.  For clarity, CRIME-style attacks on TLS
 compression do not apply to certificate compression.
 
 Due to the strong likelihood of middlebox interference,
@@ -523,7 +539,7 @@ A related attack resulting from TLS session parameters not being properly authen
 
 ## Post-Handshake Authentication
 
-Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2 {{HTTP2}}), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in {{!RFC8740}}.
+Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2 {{HTTP2}}), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in {{Section 9.3.2 of HTTP2}}.
       
 
 ## Server Name Indication (SNI)
@@ -757,7 +773,7 @@ limits are maintained for each key:
 1. Integrity limit (IL), i.e., the number of records that are allowed to fail
    authentication.
 
-The latter only applies to DTLS since TLS connections are torn down on the
+The latter applies to DTLS and QUIC but not to TLS itself, since TLS connections are torn down on the
 first decryption failure.
 
 When a sender is approaching CL, the implementation SHOULD initiate a new
@@ -799,7 +815,7 @@ A DH key of 2048 bits (equivalent to a 112-bit symmetric key)
 is the minimum allowed by the latest revision of {{NIST.SP.800-56A}}, as of this writing
 (see in particular Appendix D).
 
-As noted in {{?RFC3766}}, correcting for the emergence of a TWIRL machine would imply that 1024-bit DH keys yield about 61 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.
+As noted in {{?RFC3766}}, correcting for the emergence of a TWIRL machine {{TWIRL}} would imply that 1024-bit DH keys yield about 61 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.
 The Logjam attack {{Logjam}} further demonstrates that 1024-bit Diffie-Hellman parameters
 should be avoided.
 
@@ -907,7 +923,7 @@ This entire document discusses the security practices directly affecting applica
   own validation code or consider using a different TLS implementation.
 
 
-It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Sections 4.3.3, 4.3.4 and 4.3.5 of {{!I-D.ietf-httpbis-semantics}}.
+It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Sections 4.3.3, 4.3.4 and 4.3.5 of {{HTTP-SEMA}}.
 
 Host name validation is security-critical for all common TLS use cases. Without it, TLS ensures that the certificate is valid and guarantees possession of the private key, but does not ensure that the connection terminates at the desired endpoint. Readers are referred to {{!RFC6125}} for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.
 
