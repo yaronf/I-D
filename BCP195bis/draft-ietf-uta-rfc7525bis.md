@@ -349,7 +349,7 @@ The recommendations herein take into consideration the security of various mecha
 
 This document attempts to minimize new guidance to TLS 1.2 implementations, and the overall approach is to encourage systems to move to TLS 1.3. However, this is not always practical. Newly discovered attacks, as well as ecosystem changes, necessitated some new requirements that apply to TLS 1.2 environments. Those are summarized in {{diff-rfc}}.
 
-As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. Therefore this document replaces {{?RFC7525}}, with an explicit goal to encourage migration of most uses of TLS 1.2 to TLS 1.3.
+As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. Therefore, this document replaces {{?RFC7525}}, with an explicit goal to encourage migration of most uses of TLS 1.2 to TLS 1.3.
 
 These are minimum recommendations for the use of TLS in the vast majority of implementation and deployment scenarios, with the exception of unauthenticated TLS (see {{applicability}}). Other specifications that reference this document can have stricter requirements related to one or more aspects of the protocol, based on their particular circumstances (e.g., for use with a particular application protocol); when that is the case, implementers are advised to adhere to those stricter requirements. Furthermore, this document provides a floor, not a ceiling, so more secure options are always allowed (e.g., depending on differing evaluations of the importance of cryptographic strength vs. computational load).
 
@@ -403,7 +403,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * New protocol designs that embed TLS mechanisms SHOULD use only TLS 1.3 and SHOULD NOT use TLS 1.2; for instance, QUIC {{RFC9001}}) took this approach. As a result, implementations of such newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions.
 
-  Rationale: secure deployment of TLS 1.3 is significantly easier and less error prone than secure deployment of TLS 1.2.
+  Rationale: secure deployment of TLS 1.3 is significantly easier and less error-prone than secure deployment of TLS 1.2.
 
 This BCP applies to TLS 1.3, TLS 1.2, and earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
@@ -501,7 +501,7 @@ When it is used, the resumption information MUST
 be authenticated and encrypted to prevent modification or eavesdropping by an attacker.
 Further recommendations apply to session tickets:
 
-* A strong cipher MUST be used when encrypting the ticket (as least as strong as the main TLS cipher suite).
+* A strong cipher MUST be used when encrypting the ticket (at least as strong as the main TLS cipher suite).
 * Ticket-encryption keys MUST be changed regularly, e.g., once every week, so as not to negate the benefits of forward secrecy (see {{sec-pfs}} for details on forward secrecy). Old ticket-encryption keys MUST be destroyed at the end of the validity period.
 * For similar reasons, session ticket validity MUST be limited to a reasonable duration (e.g., half as long as ticket-encryption key validity).
 * TLS 1.2 does not roll the session key forward within a single session. Thus, to prevent an attack where the server's ticket-encryption key is stolen and used to decrypt the entire content of a session (negating the concept of forward secrecy), a TLS 1.2 server SHOULD NOT resume sessions that are too old, e.g. sessions that have been open longer than two ticket-encryption key rotation periods.
@@ -614,7 +614,7 @@ Deployments that involve multiple servers or services can increase the size of t
 The 0-RTT early data feature is new in TLS 1.3. It provides reduced latency
 when TLS connections are resumed, at the potential cost of certain security properties.
 As a result, it requires special attention from implementers on both
-the server and the client side. Typically this extends to both the
+the server and the client side. Typically, this extends to both the
 TLS library as well as protocol layers above it.
 
 For use in HTTP-over-TLS, readers are referred to {{?RFC8470}} for guidance.
@@ -753,7 +753,7 @@ be used to avoid the risk of successful extraction of the signing key.
 
 Clients SHOULD include TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 as the first proposal to any server.  Servers MUST prefer this cipher suite over weaker cipher suites whenever it is proposed, even if it is not the first proposal.  Clients are of course free to offer stronger cipher suites, e.g., using AES-256; when they do, the server SHOULD prefer the stronger cipher suite unless there are compelling reasons (e.g., seriously degraded performance) to choose otherwise.
 
-The previous version of this document implicitly allowed the old RFC 5246 mandatory-to-implement cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA. At the time of writing, this cipher suite does not provide additional interoperability, except with extremely old clients. As with other cipher suites that do not provide forward secrecy, implementations SHOULD NOT support this cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).
+The previous version of this document implicitly allowed the old RFC 5246 mandatory-to-implement cipher suite, TLS_RSA_WITH_AES_128_CBC_SHA. At the time of writing, this cipher suite does not provide additional interoperability, except with very old clients. As with other cipher suites that do not provide forward secrecy, implementations SHOULD NOT support this cipher suite. Other application protocols specify other cipher suites as mandatory to implement (MTI).
 
 {{!RFC8422}} allows clients and servers to negotiate ECDH parameters (curves).  Both clients and servers SHOULD include the "Supported Elliptic Curves" extension {{!RFC8422}}.  Clients and servers SHOULD support the NIST P-256 (secp256r1) {{!RFC8422}} and X25519 (x25519) {{!RFC7748}} curves.  Note that {{!RFC8422}} deprecates all but the uncompressed point format.  Therefore, if the client sends an ec_point_formats extension, the ECPointFormatList MUST contain a single element, "uncompressed".
 
@@ -816,7 +816,7 @@ is the minimum allowed by the latest revision of {{NIST.SP.800-56A}}, as of this
 (see in particular Appendix D).
 
 As noted in {{?RFC3766}}, correcting for the emergence of a TWIRL machine {{TWIRL}} would imply that 1024-bit DH keys yield about 61 bits of equivalent strength and that a 2048-bit DH key would yield about 92 bits of equivalent strength.
-The Logjam attack {{Logjam}} further demonstrates that 1024-bit Diffie Hellman parameters
+The Logjam attack {{Logjam}} further demonstrates that 1024-bit Diffie-Hellman parameters
 should be avoided.
 
 With regard to ECDH keys, implementers are referred to the IANA "Supported Groups Registry" (former "EC Named Curve
@@ -834,7 +834,7 @@ Implementations MUST NOT use the Truncated HMAC extension, defined in {{Section 
 
 
 Rationale: the extension does not apply to the AEAD
-      cipher suites recommended above. However it does apply to most other TLS cipher suites. Its use
+      cipher suites recommended above. However, it does apply to most other TLS cipher suites. Its use
       has been shown to be insecure in {{PatersonRS11}}.
 
 # Applicability Statement
@@ -927,7 +927,7 @@ It is noted that the requirements regarding host name validation (and, in genera
 
 Host name validation is security-critical for all common TLS use cases. Without it, TLS ensures that the certificate is valid and guarantees possession of the private key, but does not ensure that the connection terminates at the desired endpoint. Readers are referred to {{!RFC6125}} for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.
 
-If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an SRV or MX record), it SHOULD NOT be used as a reference identifier {{!RFC6125}} even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see {{DANE-SRV}} and {{DANE-SMTP}}).
+If the host name is discovered indirectly and insecurely (e.g., by a clear-text DNS query for an SRV or MX record), it SHOULD NOT be used as a reference identifier {{!RFC6125}} even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see {{DANE-SRV}} and {{DANE-SMTP}}).
 
 Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with {{?RFC5280}}.
 
@@ -940,7 +940,7 @@ Host name validation typically applies only to the leaf "end entity" certificate
 
 The existence of deployed TLS stacks that mistakenly reuse the AES-GCM nonce is
 documented in {{Boeck2016}}, showing there is an actual risk of AES-GCM getting
-implemented in an insecure way and thus making TLS sessions that use an
+implemented insecurely and thus making TLS sessions that use an
 AES-GCM cipher suite vulnerable to attacks such as {{Joux2006}}.  (See {{CVE}}
 records: CVE-2016-0270, CVE-2016-10213, CVE-2016-10212, CVE-2017-5933.)
 
@@ -1014,12 +1014,12 @@ The following considerations and recommendations represent the current state of 
 
 * Certificate revocation is an important tool when recovering from attacks on the TLS implementation, as well as cases of misissued certificates. TLS implementations MUST implement a strategy to distrust revoked certificates.
 * Although Certificate Revocation Lists (CRLs) are the most widely supported mechanism for distributing revocation information, they have known scaling challenges that limit their usefulness, despite workarounds such as partitioned CRLs and delta CRLs. The more modern {{CRLite}} and the follow-on Let's Revoke {{LetsRevoke}} build on the availability of Certificate Transparency {{?RFC9162}} logs and aggressive compression to allow practical use of the CRL infrastructure, but at the time of writing, neither solution is deployed for client-side revocation processing at scale.
-* Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond a small number of the most heavily used Web servers.
+* Proprietary mechanisms that embed revocation lists in the Web browser's configuration database cannot scale beyond the few, most heavily used Web servers.
 * The On-Line Certification Status Protocol (OCSP) {{?RFC6960}} in its basic form presents both scaling and privacy issues. In addition, clients typically "soft-fail", meaning that they do not abort the TLS connection if the OCSP server does not respond. (However, this might be a workaround to avoid denial-of-service attacks if an OCSP responder is taken offline.). For an up-to-date survey of the status of OCSP deployment in the Web PKI see {{Chung18}}.
 * The TLS Certificate Status Request extension ({{Section 8 of RFC6066}}), commonly called "OCSP stapling", resolves the operational issues with OCSP. However, it is still ineffective in the presence of a MITM attacker because the attacker can simply ignore the client's request for a stapled OCSP response.
 * {{?RFC7633}} defines a certificate extension that indicates that clients must expect stapled OCSP responses for the certificate and must abort the handshake ("hard-fail") if such a response is not available.
 * OCSP stapling as used in TLS 1.2 does not extend to intermediate certificates within a certificate chain. The Multiple Certificate Status extension {{?RFC6961}} addresses this shortcoming, but it has seen little deployment and had been deprecated by {{RFC8446}}. As a result, we no longer recommend this extension for TLS 1.2.
-* TLS 1.3 ({{Section 4.4.2.1 of RFC8446}}) allows the association of OCSP information with intermediate certificates by using an extension to the CertificateEntry structure. However using this facility remains impractical because many CAs either do not publish OCSP for CA certificates or publish OCSP reports with a lifetime that is too long to be useful.
+* TLS 1.3 ({{Section 4.4.2.1 of RFC8446}}) allows the association of OCSP information with intermediate certificates by using an extension to the CertificateEntry structure. However, using this facility remains impractical because many CAs either do not publish OCSP for CA certificates or publish OCSP reports with a lifetime that is too long to be useful.
 * Both CRLs and OCSP depend on relatively reliable connectivity to the Internet, which might not be available to certain kinds of nodes. A common example is newly provisioned devices that need to establish a secure connection in order to boot up for the first time.    
 
 For the common use cases of public key certificates in TLS, servers SHOULD support the following as a best practice given the current state of the art and as a foundation for a possible future solution: OCSP {{?RFC6960}} and OCSP stapling using the `status_request` extension defined in {{!RFC6066}}. Note that the exact mechanism for embedding the `status_request` extension differs between TLS 1.2 and 1.3. As a matter of local policy, server operators MAY request that CAs issue must-staple {{RFC7633}} certificates for the server and/or for client authentication, but we recommend to review the operational conditions before deciding on this approach.
