@@ -1732,7 +1732,7 @@ to track the client, in some cases indefinitely. See <span>[<a href="#Sy2018" cl
         <h3 id="name-post-handshake-authenticati">
 <a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-post-handshake-authenticati" class="section-name selfRef">Post-Handshake Authentication</a>
         </h3>
-<p id="section-3.6-1">Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2 <span>[<a href="#HTTP2" class="xref">HTTP2</a>]</span>), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols <span class="bcp14">SHOULD</span> follow the advice provided for HTTP/2 in <span>[<a href="#RFC8740" class="xref">RFC8740</a>]</span>.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
+<p id="section-3.6-1">Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2 <span>[<a href="#HTTP2" class="xref">HTTP2</a>]</span>), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols <span class="bcp14">SHOULD</span> follow the advice provided for HTTP/2 in <span><a href="https://rfc-editor.org/rfc/rfc9113#section-9.3.2" class="relref">Section 9.3.2</a> of [<a href="#HTTP2" class="xref">HTTP2</a>]</span>.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="server-name-indication-sni">
@@ -2136,7 +2136,7 @@ resources, the reader is referred to <span>[<a href="#RFC7925" class="xref">RFC7
   do not validate host names.  If the TLS implementation they are
   using does not validate host names, authors might need to write their
   own validation code or consider using a different TLS implementation.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
-<p id="section-7.1-2">It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Sections 4.3.3, 4.3.4 and 4.3.5 of <span>[<a href="#I-D.ietf-httpbis-semantics" class="xref">I-D.ietf-httpbis-semantics</a>]</span>.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+<p id="section-7.1-2">It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Sections 4.3.3, 4.3.4 and 4.3.5 of <span>[<a href="#HTTP-SEMA" class="xref">HTTP-SEMA</a>]</span>.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
 <p id="section-7.1-3">Host name validation is security-critical for all common TLS use cases. Without it, TLS ensures that the certificate is valid and guarantees possession of the private key, but does not ensure that the connection terminates at the desired endpoint. Readers are referred to <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
 <p id="section-7.1-4">If the host name is discovered indirectly and in an insecure manner (e.g., by an insecure DNS query for an SRV or MX record), it <span class="bcp14">SHOULD NOT</span> be used as a reference identifier <span>[<a href="#RFC6125" class="xref">RFC6125</a>]</span> even when it matches the presented certificate.  This proviso does not apply if the host name is discovered securely (for further discussion, see <span>[<a href="#DANE-SRV" class="xref">DANE-SRV</a>]</span> and <span>[<a href="#DANE-SMTP" class="xref">DANE-SMTP</a>]</span>).<a href="#section-7.1-4" class="pilcrow">¶</a></p>
 <p id="section-7.1-5">Host name validation typically applies only to the leaf "end entity" certificate. Naturally, in order to ensure proper authentication in the context of the PKI, application clients need to verify the entire certification path in accordance with <span>[<a href="#RFC5280" class="xref">RFC5280</a>]</span>.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
@@ -2305,10 +2305,6 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
-<dt id="I-D.ietf-httpbis-semantics">[I-D.ietf-httpbis-semantics]</dt>
-        <dd>
-<span class="refAuthor">Fielding, R. T.</span>, <span class="refAuthor">Nottingham, M.</span>, and <span class="refAuthor">J. Reschke</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-semantics-19</span>, <time datetime="2021-09-12" class="refDate">12 September 2021</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-httpbis-semantics-19.txt">https://www.ietf.org/archive/id/draft-ietf-httpbis-semantics-19.txt</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
@@ -2376,10 +2372,6 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dt id="RFC8446">[RFC8446]</dt>
         <dd>
 <span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8446">https://www.rfc-editor.org/info/rfc8446</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC8740">[RFC8740]</dt>
-        <dd>
-<span class="refAuthor">Benjamin, D.</span>, <span class="refTitle">"Using TLS 1.3 with HTTP/2"</span>, <span class="seriesInfo">RFC 8740</span>, <span class="seriesInfo">DOI 10.17487/RFC8740</span>, <time datetime="2020-02" class="refDate">February 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8740">https://www.rfc-editor.org/info/rfc8740</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8996">[RFC8996]</dt>
         <dd>
@@ -2452,13 +2444,17 @@ for helpful comments and discussions that have shaped this document.<a href="#se
         <dd>
 <span class="refAuthor">Heninger, N.</span>, <span class="refAuthor">Durumeric, Z.</span>, <span class="refAuthor">Wustrow, E.</span>, and <span class="refAuthor">J. A. Halderman</span>, <span class="refTitle">"Mining Your Ps and Qs: Detection of Widespread Weak Keys in Network Devices"</span>, <span class="seriesInfo">Usenix Security Symposium 2012</span>, <time datetime="2012" class="refDate">2012</time>. </dd>
 <dd class="break"></dd>
+<dt id="HTTP-SEMA">[HTTP-SEMA]</dt>
+        <dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP Semantics"</span>, <span class="seriesInfo">STD 97</span>, <span class="seriesInfo">RFC 9110</span>, <span class="seriesInfo">DOI 10.17487/RFC9110</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9110">https://www.rfc-editor.org/info/rfc9110</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="HTTP1.1">[HTTP1.1]</dt>
         <dd>
-<span class="refAuthor">Fielding, R. T.</span>, <span class="refAuthor">Nottingham, M.</span>, and <span class="refAuthor">J. Reschke</span>, <span class="refTitle">"HTTP/1.1"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-messaging-19</span>, <time datetime="2021-09-12" class="refDate">12 September 2021</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-httpbis-messaging-19.txt">https://www.ietf.org/archive/id/draft-ietf-httpbis-messaging-19.txt</a>&gt;</span>. </dd>
+<span class="refAuthor">Fielding, R., Ed.</span>, <span class="refAuthor">Nottingham, M., Ed.</span>, and <span class="refAuthor">J. Reschke, Ed.</span>, <span class="refTitle">"HTTP/1.1"</span>, <span class="seriesInfo">STD 99</span>, <span class="seriesInfo">RFC 9112</span>, <span class="seriesInfo">DOI 10.17487/RFC9112</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9112">https://www.rfc-editor.org/info/rfc9112</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="HTTP2">[HTTP2]</dt>
         <dd>
-<span class="refAuthor">Thomson, M.</span> and <span class="refAuthor">C. Benfield</span>, <span class="refTitle">"HTTP/2"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-http2bis-07</span>, <time datetime="2022-01-24" class="refDate">24 January 2022</time>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-ietf-httpbis-http2bis-07.txt">https://www.ietf.org/archive/id/draft-ietf-httpbis-http2bis-07.txt</a>&gt;</span>. </dd>
+<span class="refAuthor">Thomson, M., Ed.</span> and <span class="refAuthor">C. Benfield, Ed.</span>, <span class="refTitle">"HTTP/2"</span>, <span class="seriesInfo">RFC 9113</span>, <span class="seriesInfo">DOI 10.17487/RFC9113</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9113">https://www.rfc-editor.org/info/rfc9113</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-tls-esni">[I-D.ietf-tls-esni]</dt>
         <dd>
