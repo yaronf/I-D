@@ -1795,8 +1795,9 @@ sent in one protocol are interpreted as messages in the other protocol with
 undesirable effects (see <span>[<a href="#ALPACA" class="xref">ALPACA</a>]</span> for more detailed information about this class 
 of attacks). To mitigate this threat, service providers <span class="bcp14">SHOULD</span> deploy ALPN (see
 <a href="#rec-alpn" class="xref">Section 3.8</a> immediately above) and to the extent possible ensure that multiple 
-services handling the same domain name provide equivalent levels of security that 
-are consistent with the recommendations in this document.<a href="#section-3.9-2.1" class="pilcrow">¶</a>
+services handling the same domain name provide equivalent levels of security 
+(including both the TLS configuration and protections against compromise of
+server credentials) that are consistent with the recommendations in this document.<a href="#section-3.9-2.1" class="pilcrow">¶</a>
 </li>
           <li id="section-3.9-2.2">Deployments in which multiple servers providing the same service have different
 TLS configurations. In this case, an attacker might be able to direct a connecting 
