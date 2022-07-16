@@ -447,8 +447,7 @@ using HSTS would in fact weaken overall security (e.g., it can be problematic to
 use HSTS with self-signed certificates, as described in {{Section 11.3 of RFC6797}}).
 Similar technologies exist for non-HTTP application protocols, such as MTA-STS for 
 mail transfer agents {{?RFC8461}} and methods based on DNS-Based Authentication of 
-Named Entities (DANE) {{?RFC6698}} for SMTP {{?RFC7672}} and XMPP {{?RFC7712}}.
-      
+Named Entities (DANE) {{?RFC6698}} for SMTP {{?DANE-SMTP}} and XMPP {{?RFC7712}}.
 
 Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear. 
 
