@@ -470,7 +470,7 @@ Implementers should note that compression at higher protocol levels can allow an
 
 Certificate chains often take up the majority of the bytes transmitted during
 the handshake.  In order to manage their size, some or all of the following
-methods can be employed:
+methods can be employed (see also {{Section 4 of RFC9191}} for further suggestions):
 
 * Limit the number of names or extensions;
 * Use keys with small public key representations, like ECDSA;
@@ -478,7 +478,7 @@ methods can be employed:
 
 To achieve the latter, TLS 1.3 defines the `compress_certificate` extension in
 {{?RFC8879}}.  See also {{Section 5 of RFC8879}} for security and privacy
-considerations associated with its use.  For clarity, CRIME-style attacks on TLS
+considerations associated with its use.  For the avoidance of doubt, CRIME-style attacks on TLS
 compression do not apply to certificate compression.
 
 Due to the strong likelihood of middlebox interference,
