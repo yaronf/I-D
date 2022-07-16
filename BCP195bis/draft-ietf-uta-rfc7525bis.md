@@ -598,8 +598,9 @@ Deployments that involve multiple servers or services can increase the size of t
    undesirable effects (see {{ALPACA}} for more detailed information about this class 
    of attacks). To mitigate this threat, service providers SHOULD deploy ALPN (see
    {{rec-alpn}} immediately above) and to the extent possible ensure that multiple 
-   services handling the same domain name provide equivalent levels of security that 
-   are consistent with the recommendations in this document.
+   services handling the same domain name provide equivalent levels of security 
+   (including both the TLS configuration and protections against compromise of
+   server credentials) that are consistent with the recommendations in this document.
 
 2. Deployments in which multiple servers providing the same service have different
    TLS configurations. In this case, an attacker might be able to direct a connecting 
