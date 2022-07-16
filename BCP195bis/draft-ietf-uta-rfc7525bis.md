@@ -113,9 +113,11 @@ informative:
 
   DANE-SRV: RFC7673
 
-  HTTP1.1: I-D.ietf-httpbis-messaging
+  HTTP-SEMA: RFC9110
 
-  HTTP2: I-D.ietf-httpbis-http2bis
+  HTTP1.1: RFC9112
+
+  HTTP2: RFC9113
 
   Kleinjung2010: DOI.10.1007/978-3-642-14623-7_18
 
@@ -538,7 +540,7 @@ A related attack resulting from TLS session parameters not being properly authen
 
 ## Post-Handshake Authentication
 
-Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2 {{HTTP2}}), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in {{!RFC8740}}.
+Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-handshake authentication and key update mechanisms.  In the context of protocols that multiplex requests over a single connection (such as HTTP/2 {{HTTP2}}), post-handshake authentication has the same problems as TLS 1.2 renegotiation.  Multiplexed protocols SHOULD follow the advice provided for HTTP/2 in {{Section 9.3.2 of HTTP2}}.
       
 
 ## Server Name Indication (SNI)
@@ -922,7 +924,7 @@ This entire document discusses the security practices directly affecting applica
   own validation code or consider using a different TLS implementation.
 
 
-It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Sections 4.3.3, 4.3.4 and 4.3.5 of {{!I-D.ietf-httpbis-semantics}}.
+It is noted that the requirements regarding host name validation (and, in general, binding between the TLS layer and the protocol that runs above it) vary between different protocols. For HTTPS, these requirements are defined by Sections 4.3.3, 4.3.4 and 4.3.5 of {{HTTP-SEMA}}.
 
 Host name validation is security-critical for all common TLS use cases. Without it, TLS ensures that the certificate is valid and guarantees possession of the private key, but does not ensure that the connection terminates at the desired endpoint. Readers are referred to {{!RFC6125}} for further details regarding generic host name validation in the TLS context. In addition, that RFC contains a long list of example protocols, some of which implement a policy very different from HTTPS.
 
