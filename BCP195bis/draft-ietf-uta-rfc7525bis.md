@@ -865,7 +865,7 @@ This document does not modify the implementation and deployment recommendations 
   widespread deployment on constrained devices that lack support for
   the necessary algorithms).
 
-This document does not discuss the use of TLS in constrained-node networks
+This document does not address the use of TLS in constrained-node networks
 {{?RFC7228}}.  For recommendations regarding the profiling of TLS and DTLS for
 small devices with severe constraints on power, memory, and processing
 resources, the reader is referred to {{?RFC7925}} and
