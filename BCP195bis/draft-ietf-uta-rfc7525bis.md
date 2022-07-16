@@ -343,7 +343,10 @@ Community knowledge about the strength of various algorithms and feasible attack
     
 # Terminology
 
-A number of security-related terms in this document are used in the sense defined in {{?RFC4949}}.
+A number of security-related terms in this document are used in the sense defined in {{?RFC4949}},
+including "attack", "authentication", "certificate", "cipher", "compromise", "confidentiality", 
+"credential", "encryption", "forward secrecy", "key", "key length", "self-signed certificate", 
+"strength", and "strong".
 
 {::boilerplate bcp14-tagged}
 
@@ -757,7 +760,7 @@ limits are maintained for each key:
 1. Integrity limit (IL), i.e., the number of records that are allowed to fail
    authentication.
 
-The latter only applies to DTLS since TLS connections are torn down on the
+The latter applies to DTLS and QUIC but not to TLS itself, since TLS connections are torn down on the
 first decryption failure.
 
 When a sender is approaching CL, the implementation SHOULD initiate a new
