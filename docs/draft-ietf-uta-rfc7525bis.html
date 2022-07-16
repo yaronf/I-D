@@ -1625,7 +1625,7 @@ willing to accept TLS-only clients, unless they are deployed in such a way that
 using HSTS would in fact weaken overall security (e.g., it can be problematic to 
 use HSTS with self-signed certificates, as described in <span><a href="https://rfc-editor.org/rfc/rfc6797#section-11.3" class="relref">Section 11.3</a> of [<a href="#RFC6797" class="xref">RFC6797</a>]</span>).
 Similar technologies exist for non-HTTP application protocols, such as MTA-STS for 
-mail transfer agents <span>[<a href="#RFC8461" class="xref">RFC8461</a>]</span> and methods founded in DNS-Based Authentication of 
+mail transfer agents <span>[<a href="#RFC8461" class="xref">RFC8461</a>]</span> and methods based on DNS-Based Authentication of 
 Named Entities (DANE) <span>[<a href="#RFC6698" class="xref">RFC6698</a>]</span> for SMTP <span>[<a href="#RFC7672" class="xref">RFC7672</a>]</span> and XMPP <span>[<a href="#RFC7712" class="xref">RFC7712</a>]</span>.<a href="#section-3.2-2.2" class="pilcrow">¶</a>
 </li>
         </ul>
@@ -1664,7 +1664,7 @@ methods can be employed:<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
           </ul>
 <p id="section-3.3.1-3">To achieve the latter, TLS 1.3 defines the <code>compress_certificate</code> extension in
 <span>[<a href="#RFC8879" class="xref">RFC8879</a>]</span>.  See also <span><a href="https://rfc-editor.org/rfc/rfc8879#section-5" class="relref">Section 5</a> of [<a href="#RFC8879" class="xref">RFC8879</a>]</span> for security and privacy
-considerations associated with its use.  To clarify, CRIME-style attacks on TLS
+considerations associated with its use.  For clarity, CRIME-style attacks on TLS
 compression do not apply to certificate compression.<a href="#section-3.3.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.3.1-4">Due to the strong likelihood of middlebox interference,
 RFC8879-style compression has not been made available in
