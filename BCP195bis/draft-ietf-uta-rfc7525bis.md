@@ -355,6 +355,10 @@ These are minimum recommendations for the use of TLS in the vast majority of imp
 
 Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a Best Current Practice (BCP) document about security is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.
     
+This document updates {{RFC5288}} in view of the {{Boeck2016}} attack. See {{nonce-reuse}} for the details.
+
+This document updates {{RFC6066}} in view of the {{ALPACA}} attack.  See {{sni}} for the details.
+
 # Terminology
 
 A number of security-related terms in this document are used in the sense defined in {{?RFC4949}},
@@ -543,6 +547,7 @@ Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-ha
       
 
 ## Server Name Indication (SNI)
+{: #sni}
 
 TLS implementations MUST support the Server Name Indication (SNI) extension defined in {{Section 3 of RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello once {{?I-D.ietf-tls-esni}} has been standardized.
 
@@ -938,6 +943,7 @@ Host name validation typically applies only to the leaf "end entity" certificate
 {{rec-cipher}} above recommends the use of the AES-GCM authenticated encryption algorithm. Please refer to {{Section 6 of !RFC5288}} for security considerations that apply specifically to AES-GCM when used with TLS.
 
 ### Nonce Reuse in TLS 1.2
+{: #nonce-reuse}
 
 The existence of deployed TLS stacks that mistakenly reuse the AES-GCM nonce is
 documented in {{Boeck2016}}, showing there is an actual risk of AES-GCM getting
