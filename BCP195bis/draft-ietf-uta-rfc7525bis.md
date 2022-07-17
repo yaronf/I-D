@@ -341,8 +341,9 @@ These are minimum recommendations for the use of TLS in the vast majority of imp
 
 Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a Best Current Practice (BCP) document about security is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.
     
-This document updates {{RFC5288}} and {{RFC6066}} in view of the recent {{Boeck2016}} and {{ALPACA}} attacks.
-See {{nonce-reuse}} and {{sni}} for the details.
+This document updates {{RFC5288}} in view of the {{Boeck2016}} attack. See {{nonce-reuse}} for the details.
+
+This document updates {{RFC6066}} in view of the {{ALPACA}} attack.  See {{sni}} for the details.
 
 # Terminology
 
