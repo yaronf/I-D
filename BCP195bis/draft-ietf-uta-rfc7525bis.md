@@ -474,7 +474,7 @@ Implementers should note that compression at higher protocol levels can allow an
 
 Certificate chains often take up the majority of the bytes transmitted during
 the handshake.  In order to manage their size, some or all of the following
-methods can be employed (see also {{Section 4 of RFC9191}} for further suggestions):
+methods can be employed (see also {{Section 4 of ?RFC9191}} for further suggestions):
 
 * Limit the number of names or extensions;
 * Use keys with small public key representations, like ECDSA;
