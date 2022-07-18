@@ -395,11 +395,11 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * Implementations MUST NOT negotiate TLS version 1.1 {{?RFC4346}}.
 
-  Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites that were introduced with the standardization of TLS 1.2 in 2008, including the cipher suites recommended for TLS 1.2 by this document (see {{rec-cipher}} below).
+  Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
 
 * Implementations MUST support TLS 1.2 {{!RFC5246}}.
 
-  Rationale: TLS 1.2 is implemented and deployed more widely than TLS 1.3 at this time and, when the recommendations in this document are followed to mitigate known attacks, the use of TLS 1.2 is nearly as safe as the use of TLS 1.3.  In most application protocols that re-use TLS and DTLS, there is no immediate need to migrate solely to TLS 1.3 and proactively deprecate TLS 1.2, especially because the existence of large numbers of application clients dependent on TLS libraries or operating systems that do not yet support TLS 1.3 would introduce significant interoperability issues, thus harming security more than helping it.  Nevertheless, it is expected that a future version of this BCP will deprecate the use of TLS 1.2 when it is appropriate to do so.
+  Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are not available in older versions of the protocol.
 
 * Implementations SHOULD support TLS 1.3 {{!RFC8446}} and, if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
                
