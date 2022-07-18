@@ -809,7 +809,9 @@ Registry"), within the
    groups.  Curves of less than 224 bits MUST NOT be used. This recommendation is in-line with the latest
 revision of {{NIST.SP.800-56A}}. 
 
-When using RSA, servers MUST authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED and SHA-1 or MD5 MUST NOT be used ({{!RFC9155}}, and see {{CAB-Baseline}} for more details). Clients MUST indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. For TLS 1.3, the same requirement is already specified by {{RFC8446}}.
+When using RSA, servers MUST authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED and SHA-1 or MD5 MUST NOT be used ({{!RFC9155}}, and see {{CAB-Baseline}}[^live-ref-question] for more details). Clients MUST indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. For TLS 1.3, the same requirement is already specified by {{RFC8446}}.
+
+[^live-ref-question]: RFC Editor: We are looking for advice on how to best handle this constantly updated guidance.  In particular: which URL to use, which (if any) version to reference
 
 ## Truncated HMAC
 
