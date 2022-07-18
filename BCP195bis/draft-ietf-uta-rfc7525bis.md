@@ -335,7 +335,7 @@ An earlier version of this document was published as RFC 7525 when the industry 
 
 # Introduction
 
-Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are used to protect data exchanged over a wide variety of application protocols, including HTTP {{HTTP1.1}} {{HTTP2}}, IMAP {{?RFC9051}}, POP {{?STD53}}, SIP {{?RFC3261}}, SMTP {{?RFC5321}}, and XMPP {{?RFC6120}}.  Such protocols use both the TLS or DTLS handshake protocol and the TLS or DTLS record layer.  The TLS handshake protocol can also be used with different record layers to define secure transport protocols; at present the most prominent example is QUIC {{?RFC9000}}.  Over the years leading to 2015, the industry had witnessed serious attacks on the TLS "family" of protocols, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, were attacked in the context of TLS.  Detailed information about the attacks known prior to 2015 is provided in a companion document ({{?RFC7457}}) to the previous version of this specification, which will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
+Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS) are used to protect data exchanged over a wide variety of application protocols, including HTTP {{HTTP1.1}} {{HTTP2}}, IMAP {{?RFC9051}}, POP {{?STD53}}, SIP {{?RFC3261}}, SMTP {{?RFC5321}}, and XMPP {{?RFC6120}}.  Such protocols use both the TLS or DTLS handshake protocol and the TLS or DTLS record layer.  Although the TLS handshake protocol can also be used with different record layers to define secure transport protocols - the most prominent example is QUIC {{?RFC9000}} - such transport protocols are not directly in scope for this document; nevertheless, many of the recommendations here might apply insofar as such protocols use the TLS handshake protocol.  Over the years leading to 2015, the industry had witnessed serious attacks on TLS and DTLS, including attacks on the most commonly used cipher suites and their modes of operation.  For instance, both the AES-CBC {{?RFC3602}} and RC4 {{!RFC7465}} encryption algorithms, which together were once the most widely deployed ciphers, were attacked in the context of TLS.  Detailed information about the attacks known prior to 2015 is provided in a companion document ({{?RFC7457}}) to the previous version of this specification, which will help the reader understand the rationale behind the recommendations provided here. That document has not been updated in concert with this one; instead, newer attacks are described in this document, as are mitigations for those attacks.
 
 The TLS community reacted to the attacks described in {{?RFC7457}} in several ways:
 
@@ -405,7 +405,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
                
   Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. To the extent that an implementation supports TLS 1.2 (even if it defaults to TLS 1.3), it MUST follow the recommendations regarding TLS 1.2 specified in this document.
 
-* New protocol designs that embed TLS mechanisms SHOULD use only TLS 1.3 and SHOULD NOT use TLS 1.2; for instance, QUIC {{RFC9001}}) took this approach. As a result, implementations of such newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions.
+* New protocol designs that embed TLS mechanisms SHOULD use only TLS 1.3 and SHOULD NOT use TLS 1.2; for instance, QUIC {{RFC9001}}) took this approach by using the TLS handshake protocol with a different record layer. As a result, implementations of such newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of TLS 1.2.
 
   Rationale: secure deployment of TLS 1.3 is significantly easier and less error-prone than secure deployment of TLS 1.2.
 
@@ -779,7 +779,7 @@ limits are maintained for each key:
 1. Integrity limit (IL), i.e., the number of records that are allowed to fail
    authentication.
 
-The latter applies to DTLS and QUIC but not to TLS itself, since TLS connections are torn down on the
+The latter applies to DTLS (and also to QUIC) but not to TLS itself, since TLS connections are torn down on the
 first decryption failure.
 
 When a sender is approaching CL, the implementation SHOULD initiate a new
@@ -869,6 +869,11 @@ This document does not modify the implementation and deployment recommendations 
   compelling reasons that would prevent such conformance (e.g.,
   widespread deployment on constrained devices that lack support for
   the necessary algorithms).
+
+Although many of the recommendations provided here might also apply to QUIC insofar 
+it uses the TLS 1.3 handshake protocol, QUIC and other such secure transport protocols 
+are not the primary focus of this document. For QUIC specifically, readers are 
+referred to {{Section 9.2 of ?RFC9001}}.
 
 This document does not address the use of TLS in constrained-node networks
 {{?RFC7228}}.  For recommendations regarding the profiling of TLS and DTLS for
