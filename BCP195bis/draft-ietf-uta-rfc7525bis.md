@@ -407,7 +407,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * New protocol designs that embed TLS mechanisms SHOULD use only TLS 1.3 and SHOULD NOT use TLS 1.2; for instance, QUIC {{RFC9001}}) took this approach. As a result, implementations of such newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions.
 
-  Rationale: Secure deployment of TLS 1.3 is significantly easier and less error-prone than secure deployment of TLS 1.2.  This advice applies especially to new secure transport protocols such as QUIC, where there is likely no reason to support TLS 1.2.  By contrast, new application protocols that re-use TLS might find it helpful to support both TLS 1.3 and TLS 1.2 in order to take advantage of underlying library or operating system support for both versions, and thus avoid the significant effort involved in designing a new secure transport protocol such as QUIC.
+  Rationale: Secure deployment of TLS 1.3 is significantly easier and less error-prone than secure deployment of TLS 1.2.  This advice applies especially to new secure transport protocols such as QUIC, where there is likely no reason to support TLS 1.2.  By contrast, new application protocols that re-use TLS MAY support both TLS 1.3 and TLS 1.2 in order to take advantage of underlying library or operating system support for both versions, and thus avoid the significant effort involved in designing a new secure transport protocol such as QUIC.
 
 This BCP applies to TLS 1.3, TLS 1.2, and earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
