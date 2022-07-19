@@ -549,7 +549,7 @@ Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-ha
 ## Server Name Indication (SNI)
 {: #sni}
 
-TLS implementations MUST support the Server Name Indication (SNI) extension defined in {{Section 3 of RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  At the time of writing, a technology for encrypting the SNI (called Encrypted Client Hello) is being worked on in the TLS Working Group {{?I-D.ietf-tls-esni}}.  Once that method has been standardized and widely implemented, it will likely be appropriate to recommend or mandate its usage in a future version of this BCP.
+TLS implementations MUST support the Server Name Indication (SNI) extension defined in {{Section 3 of RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  At the time of writing, a technology for encrypting the SNI (called Encrypted Client Hello) is being worked on in the TLS Working Group {{?I-D.ietf-tls-esni}}.  Once that method has been standardized and widely implemented, it will likely be appropriate to recommend its usage in a future version of this BCP.
 
 
 
