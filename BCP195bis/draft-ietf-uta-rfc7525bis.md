@@ -1116,7 +1116,15 @@ on the normative changes.
 
 ## draft-ietf-uta-rfc7525bis-09
 
-* More background on strict TLS for non-HTTP protocols.
+* Addressed IESG feedback, ARTART review by Cullen Jennings, and TSVART review by Magnus Westerlund.
+* Improved the rationale for still recommending TLS 1.2.
+* Specified TLS 1.3 as a MUST for new transport protocols and a SHOULD for new application protocols.
+* Clarified TLS-only vs. dynamic upgrade for non-HTTP protocols.
+* Clarified distinction between implementation and deployment.
+* Noted that these recommendations might apply to QUIC, but that QUIC is out of scope.
+* Further specified what to do on reaching the confidentiality limit or integrity limit.
+* Added a note about post-quantum cryptography.
+* Improved the text about Encrypted Client Hello.
 
 ## draft-ietf-uta-rfc7525bis-08
 
