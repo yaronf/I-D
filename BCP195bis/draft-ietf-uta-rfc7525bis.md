@@ -407,7 +407,7 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * New transport protocols that integrate the TLS/DTLS handshake protocol and/or record layer MUST use only TLS/DTLS 1.3 (for instance, QUIC {{RFC9001}} took this approach). New application protocols that employ TLS/DTLS for channel or session encryption MUST use TLS/DTLS 1.2 and/or 1.3.
 
-  Rationale: Although secure deployment of TLS 1.3 is easier and less error-prone than TLS 1.2 because of the need to follow the recommendations provided in this document for secure deployment of TLS 1.2, development of new transport protocols is significantly more complex than simply re-using the existing support for TLS/DTLS in underlying libraries or operating systems as is usually done in application protocols.
+  Rationale: Secure deployment of TLS 1.3 is significantly easier and less error-prone than secure deployment of TLS 1.2. When designing a new secure transport protocols such as QUIC, there is no reason to support TLS 1.2. By contrast, new application protocols that re-use TLS MAY support both TLS 1.3 and TLS 1.2 in order to take advantage of underlying library or operating system support for both versions.
 
 This BCP applies to TLS 1.3, TLS 1.2, and earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
