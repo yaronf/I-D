@@ -1114,7 +1114,7 @@ on the normative changes.
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
 
-## draft-ietf-uta-rfc7525bis-09
+## draft-ietf-uta-rfc7525bis-10
 
 * Addressed IESG feedback, ARTART review by Cullen Jennings, and TSVART review by Magnus Westerlund.
 * Improved the rationale for still recommending TLS 1.2.
@@ -1125,6 +1125,10 @@ on the normative changes.
 * Further specified what to do on reaching the confidentiality limit or integrity limit.
 * Added a note about post-quantum cryptography.
 * Improved the text about Encrypted Client Hello.
+
+## draft-ietf-uta-rfc7525bis-09
+
+*  More background on strict TLS for non-HTTP protocols.
 
 ## draft-ietf-uta-rfc7525bis-08
 
