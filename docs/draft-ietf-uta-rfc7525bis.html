@@ -2036,6 +2036,7 @@ Registry"), within the
    groups.  Curves of less than 224 bits <span class="bcp14">MUST NOT</span> be used. This recommendation is in-line with the latest
 revision of <span>[<a href="#NIST.SP.800-56A" class="xref">NIST.SP.800-56A</a>]</span>.<a href="#section-4.5-5" class="pilcrow">¶</a></p>
 <p id="section-4.5-6">When using RSA, servers <span class="bcp14">MUST</span> authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is <span class="bcp14">RECOMMENDED</span> and SHA-1 or MD5 <span class="bcp14">MUST NOT</span> be used (<span>[<a href="#RFC9155" class="xref">RFC9155</a>]</span>, and see <span>[<a href="#CAB-Baseline" class="xref">CAB-Baseline</a>]</span> for more details). Clients <span class="bcp14">MUST</span> indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. For TLS 1.3, the same requirement is already specified by <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>.<a href="#section-4.5-6" class="pilcrow">¶</a></p>
+<p id="section-4.5-7"><span class="cref" id="live-ref-question">Note to RFC Editor: we are looking for advice on how to best handle this constantly updated guidance from the CA/Browser Forum.  In particular: which URL to use, which (if any) version to reference</span><a href="#section-4.5-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="truncated-hmac">
@@ -2410,7 +2411,7 @@ for helpful comments and discussions that have shaped this document.<a href="#se
 <dd class="break"></dd>
 <dt id="CAB-Baseline">[CAB-Baseline]</dt>
         <dd>
-<span class="refAuthor">CA/Browser Forum</span>, <span class="refTitle">"Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6"</span>, <time datetime="2013" class="refDate">2013</time>, <span>&lt;<a href="https://www.cabforum.org/documents.html">https://www.cabforum.org/documents.html</a>&gt;</span>. </dd>
+<span class="refAuthor">CA/Browser Forum</span>, <span class="refTitle">"Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6"</span>, <time datetime="2013" class="refDate">2013</time>, <span>&lt;<a href="https://cabforum.org/documents/">https://cabforum.org/documents/</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="Chung18">[Chung18]</dt>
         <dd>
