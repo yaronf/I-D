@@ -786,10 +786,7 @@ limits are maintained for each key:
 The latter applies to DTLS (and also to QUIC) but not to TLS itself, since TLS connections are torn down on the
 first decryption failure.
 
-When a sender is approaching CL, the implementation SHOULD initiate a new
-handshake (or in TLS 1.3, a Key Update) to rotate the session key.
-
-When a receiver has reached IL, the implementation SHOULD close the connection.
+When a sender is approaching CL, the implementation SHOULD initiate a new handshake (in TLS 1.3, this can be achieved by sending a KeyUpdate message on the established session) to rotate the session key. When a receiver has reached IL, the implementation SHOULD close the connection. Although these recommendations are a best practice, implementers need to be aware that it is not always easy to accomplish them in protocols that are built on top of TLS/DTLS without introducing coordination across layer boundaries.  See {{Section 6 of RFC9001}} for an example of the cooperation that was necessary in QUIC between the crypto and transport layers to support key updates.  Note that in general, application protocols might not be able to emulate that method given their more constrained interaction with TLS/DTLS. As a result of these complexities, these recommendations are not mandatory.
 
 For all TLS 1.3 cipher suites, readers are referred to {{Section 5.5 of RFC8446}} for the values of CL and IL. For all DTLS 1.3 cipher suites, readers are referred to {{Section 4.5.3 of
 RFC9147}}.
