@@ -407,9 +407,9 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
                
   Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. To the extent that an implementation supports TLS 1.2 (even if it defaults to TLS 1.3), it MUST follow the recommendations regarding TLS 1.2 specified in this document.
 
-* New protocol designs that embed TLS mechanisms SHOULD use only TLS 1.3 and SHOULD NOT use TLS 1.2; for instance, QUIC {{RFC9001}}) took this approach. As a result, implementations of such newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of earlier versions.
+* New transport protocols that integrate the TLS/DTLS handshake protocol and/or record layer MUST use only TLS/DTLS 1.3 (for instance, QUIC {{RFC9001}} took this approach). New application protocols that employ TLS/DTLS for channel or session encryption MUST integrate with both TLS/DTLS versions 1.2 and 1.3; nevertheless, in rare cases where broad interoperability is not a concern, application protocol designers MAY choose to forego TLS 1.2.
 
-  Rationale: Secure deployment of TLS 1.3 is significantly easier and less error-prone than secure deployment of TLS 1.2.  This advice applies especially to new secure transport protocols such as QUIC, where there is likely no reason to support TLS 1.2.  By contrast, new application protocols that re-use TLS might find it helpful to support both TLS 1.3 and TLS 1.2 in order to take advantage of underlying library or operating system support for both versions, and thus avoid the significant effort involved in designing a new secure transport protocol such as QUIC.
+  Rationale: Secure deployment of TLS 1.3 is significantly easier and less error-prone than secure deployment of TLS 1.2. When designing a new secure transport protocol such as QUIC, there is no reason to support TLS 1.2. By contrast, new application protocols that re-use TLS MAY support both TLS 1.3 and TLS 1.2 in order to take advantage of underlying library or operating system support for both versions.
 
 This BCP applies to TLS 1.3, TLS 1.2, and earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
