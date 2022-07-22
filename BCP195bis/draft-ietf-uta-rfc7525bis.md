@@ -874,7 +874,7 @@ This document does not modify the implementation and deployment recommendations 
 
 Although many of the recommendations provided here might also apply to QUIC insofar 
 it uses the TLS 1.3 handshake protocol, QUIC and other such secure transport protocols 
-are not the primary focus of this document. For QUIC specifically, readers are 
+are out of scope of this document. For QUIC specifically, readers are 
 referred to {{Section 9.2 of ?RFC9001}}.
 
 This document does not address the use of TLS in constrained-node networks
