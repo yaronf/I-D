@@ -87,7 +87,7 @@ informative:
     author:
     - org: CA/Browser Forum
     date: '2013'
-    target: https://www.cabforum.org/documents.html
+    target: https://cabforum.org/documents/
     title: Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates Version 1.1.6
 
   Heninger2012:
@@ -351,9 +351,11 @@ The recommendations herein take into consideration the security of various mecha
 
 This document attempts to minimize new guidance to TLS 1.2 implementations, and the overall approach is to encourage systems to move to TLS 1.3. However, this is not always practical. Newly discovered attacks, as well as ecosystem changes, necessitated some new requirements that apply to TLS 1.2 environments. Those are summarized in {{diff-rfc}}.
 
+Naturally, future attacks are likely, and this document does not address them.  Those who implement and deploy TLS/DTLS and protocols based on TLS/DTLS are strongly advised to pay attention to future developments.  In particular, although it is known that the creation of quantum computers will have a significant impact on the security of cryptographic primitives and the technologies that use them, currently post-quantum cryptography is a work in progress and it is too early to make recommendations; once the relevant specifications are standardized in the IETF or elsewhere, this document should be updated to reflect best practices at that time.
+
 As noted, the TLS 1.3 specification resolves many of the vulnerabilities listed in this document. A system that deploys TLS 1.3 should have fewer vulnerabilities than TLS 1.2 or below. Therefore, this document replaces {{?RFC7525}}, with an explicit goal to encourage migration of most uses of TLS 1.2 to TLS 1.3.
 
-These are minimum recommendations for the use of TLS in the vast majority of implementation and deployment scenarios, with the exception of unauthenticated TLS (see {{applicability}}). Other specifications that reference this document can have stricter requirements related to one or more aspects of the protocol, based on their particular circumstances (e.g., for use with a particular application protocol); when that is the case, implementers are advised to adhere to those stricter requirements. Furthermore, this document provides a floor, not a ceiling, so more secure options are always allowed (e.g., depending on differing evaluations of the importance of cryptographic strength vs. computational load).
+These are minimum recommendations for the use of TLS in the vast majority of implementation and deployment scenarios, with the exception of unauthenticated TLS (see {{applicability}}). Other specifications that reference this document can have stricter requirements related to one or more aspects of the protocol, based on their particular circumstances (e.g., for use with a particular application protocol); when that is the case, implementers are advised to adhere to those stricter requirements. Furthermore, this document provides a floor, not a ceiling: where feasible, administrators of services are encouraged to go beyond the minimum support available in implementations to provide the strongest security possible. For example, based on knowledge about the deployed base for an existing application protocol and a cost-benefit analysis regarding security strength vs. interoperability, a given service provider might decide to disable TLS 1.2 entirely and offer only TLS 1.3.
 
 Community knowledge about the strength of various algorithms and feasible attacks can change quickly, and experience shows that a Best Current Practice (BCP) document about security is a point-in-time statement.  Readers are advised to seek out any errata or updates that apply to this document.
     
@@ -397,19 +399,19 @@ It is important both to stop using old, less secure versions of SSL/TLS and to s
 
 * Implementations MUST NOT negotiate TLS version 1.1 {{?RFC4346}}.
 
-  Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites.
+  Rationale: TLS 1.1 (published in 2006) is a security improvement over TLS 1.0 but still does not support certain stronger cipher suites that were introduced with the standardization of TLS 1.2 in 2008, including the cipher suites recommended for TLS 1.2 by this document (see {{rec-cipher}} below).
 
 * Implementations MUST support TLS 1.2 {{!RFC5246}}.
 
-  Rationale: Several stronger cipher suites are available only with TLS 1.2 (published in 2008). In fact, the cipher suites recommended by this document for TLS 1.2 ({{rec-cipher}} below) are not available in older versions of the protocol.
+  Rationale: TLS 1.2 is implemented and deployed more widely than TLS 1.3 at this time and, when the recommendations in this document are followed to mitigate known attacks, the use of TLS 1.2 is as safe as the use of TLS 1.3.  In most application protocols that re-use TLS and DTLS, there is no immediate need to migrate solely to TLS 1.3 and proactively deprecate TLS 1.2, especially because the existence of large numbers of application clients dependent on TLS libraries or operating systems that do not yet support TLS 1.3 would introduce significant interoperability issues, thus harming security more than helping it.  Nevertheless, it is expected that a future version of this BCP will deprecate the use of TLS 1.2 when it is appropriate to do so.
 
 * Implementations SHOULD support TLS 1.3 {{!RFC8446}} and, if implemented, MUST prefer to negotiate TLS 1.3 over earlier versions of TLS.
                
   Rationale: TLS 1.3 is a major overhaul to the protocol and resolves many of the security issues with TLS 1.2. To the extent that an implementation supports TLS 1.2 (even if it defaults to TLS 1.3), it MUST follow the recommendations regarding TLS 1.2 specified in this document.
 
-* New protocol designs that embed TLS mechanisms SHOULD use only TLS 1.3 and SHOULD NOT use TLS 1.2; for instance, QUIC {{RFC9001}}) took this approach by using the TLS handshake protocol with a different record layer. As a result, implementations of such newly-developed protocols SHOULD support TLS 1.3 only with no negotiation of TLS 1.2.
+* New transport protocols that integrate the TLS/DTLS handshake protocol and/or record layer MUST use only TLS/DTLS 1.3 (for instance, QUIC {{RFC9001}} took this approach). New application protocols that employ TLS/DTLS for channel or session encryption MUST integrate with both TLS/DTLS versions 1.2 and 1.3; nevertheless, in rare cases where broad interoperability is not a concern, application protocol designers MAY choose to forego TLS 1.2.
 
-  Rationale: secure deployment of TLS 1.3 is significantly easier and less error-prone than secure deployment of TLS 1.2.
+  Rationale: Secure deployment of TLS 1.3 is significantly easier and less error-prone than secure deployment of TLS 1.2. When designing a new secure transport protocol such as QUIC, there is no reason to support TLS 1.2. By contrast, new application protocols that re-use TLS MAY support both TLS 1.3 and TLS 1.2 in order to take advantage of underlying library or operating system support for both versions.
 
 This BCP applies to TLS 1.3, TLS 1.2, and earlier versions. It is not safe for readers to assume that the recommendations in this BCP apply to any future version of TLS.
 
@@ -440,7 +442,7 @@ TLS/DTLS 1.2 clients MUST NOT fall back to earlier TLS versions, since those ver
 
 The following recommendations are provided to help prevent SSL Stripping and STARTTLS Command Injection (attacks that are summarized in {{RFC7457}}):
 
-* Many existing application protocols were designed before the use of TLS became common. These protocols typically support TLS in one of two ways: either via a separate port for TLS-only communication (e.g., port 443 for HTTPS) or via a method for dynamically upgrading a channel from unencrypted to TLS-protected (e.g., STARTTLS, which is used in protocols such as IMAP and XMPP). Regardless of the mechanism for protecting the communication channel (TLS-only port or dynamic upgrade), what matters is the end state of the channel. When TLS-only communication is available for a certain protocol, it MUST be used by implementations and MUST be configured by administrators. When a protocol only supports dynamic upgrade, implementations MUST provide a strict local policy (a policy that forbids use of plaintext in the absence of a negotiated TLS channel) and administrators MUST use this policy.
+* Many existing application protocols were designed before the use of TLS became common. These protocols typically support TLS in one of two ways: either via a separate port for TLS-only communication (e.g., port 443 for HTTPS) or via a method for dynamically upgrading a channel from unencrypted to TLS-protected (e.g., STARTTLS, which is used in protocols such as IMAP and XMPP). Regardless of the mechanism for protecting the communication channel (TLS-only port or dynamic upgrade), what matters is the end state of the channel. When a protocol defines both a dynamic upgrade method and a separate TLS-only method, then the separate TLS-only method MUST be supported by implementations and MUST be configured by administrators to be used in preference to the dynamic upgrade method.  When a protocol supports only a dynamic upgrade, implementations MUST provide a way for administrators to set a strict local policy that forbids use of plaintext in the absence of a negotiated TLS channel, and administrators MUST use this policy.
 
 
 
@@ -551,15 +553,15 @@ Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-ha
 ## Server Name Indication (SNI)
 {: #sni}
 
-TLS implementations MUST support the Server Name Indication (SNI) extension defined in {{Section 3 of RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello once {{?I-D.ietf-tls-esni}} has been standardized.
+TLS implementations MUST support the Server Name Indication (SNI) extension defined in {{Section 3 of RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  At the time of writing, a technology for encrypting the SNI (called Encrypted Client Hello) is being worked on in the TLS Working Group {{?I-D.ietf-tls-esni}}.  Once that method has been standardized and widely implemented, it will likely be appropriate to recommend its usage in a future version of this BCP.
 
 
 
 Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
       address, and therefore enables fine-grained security for these virtual servers,
       by allowing each one to have its own certificate. However, SNI also leaks the 
-      target domain for a given connection; this information leak is closed by 
-      use of TLS Encrypted Client Hello.
+      target domain for a given connection; this information leak will be closed by 
+      use of TLS Encrypted Client Hello once that method has been standardized.
 
 In order to prevent the attacks described in {{ALPACA}}, a server that does not
 recognize the presented server name SHOULD NOT continue the handshake and
@@ -834,6 +836,9 @@ Registry"), within the
 revision of {{NIST.SP.800-56A}}. 
 
 When using RSA, servers MUST authenticate using certificates with at least a 2048-bit modulus for the public key.  In addition, the use of the SHA-256 hash algorithm is RECOMMENDED and SHA-1 or MD5 MUST NOT be used ({{!RFC9155}}, and see {{CAB-Baseline}} for more details). Clients MUST indicate to servers that they request SHA-256, by using the "Signature Algorithms" extension defined in TLS 1.2. For TLS 1.3, the same requirement is already specified by {{RFC8446}}.
+
+[^live-ref-question]: Note to RFC Editor: we are looking for advice on how to best handle this constantly updated guidance from the CA/Browser Forum.  In particular: which URL to use, which (if any) version to reference
+[^live-ref-question]
 
 ## Truncated HMAC
 
@@ -1121,9 +1126,21 @@ on the normative changes.
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
 
+## draft-ietf-uta-rfc7525bis-10
+
+* Addressed IESG feedback, ARTART review by Cullen Jennings, and TSVART review by Magnus Westerlund.
+* Improved the rationale for still recommending TLS 1.2.
+* Specified TLS 1.3 as a MUST for new transport protocols and a SHOULD for new application protocols.
+* Clarified TLS-only vs. dynamic upgrade for non-HTTP protocols.
+* Clarified distinction between implementation and deployment.
+* Clarified applicability to QUIC.
+* Further specified what to do on reaching the confidentiality limit or integrity limit.
+* Added a note about post-quantum cryptography.
+* Improved the text about Encrypted Client Hello.
+
 ## draft-ietf-uta-rfc7525bis-09
 
-* More background on strict TLS for non-HTTP protocols.
+*  More background on strict TLS for non-HTTP protocols.
 
 ## draft-ietf-uta-rfc7525bis-08
 
