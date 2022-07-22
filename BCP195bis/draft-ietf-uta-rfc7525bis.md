@@ -549,15 +549,15 @@ Renegotiation in TLS 1.2 was (partially) replaced in TLS 1.3 by separate post-ha
 ## Server Name Indication (SNI)
 {: #sni}
 
-TLS implementations MUST support the Server Name Indication (SNI) extension defined in {{Section 3 of RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  Implementers are strongly encouraged to support TLS Encrypted Client Hello once {{?I-D.ietf-tls-esni}} has been standardized.
+TLS implementations MUST support the Server Name Indication (SNI) extension defined in {{Section 3 of RFC6066}} for those higher-level protocols that would benefit from it, including HTTPS. However, the actual use of SNI in particular circumstances is a matter of local policy.  At the time of writing, a technology for encrypting the SNI (called Encrypted Client Hello) is being worked on in the TLS Working Group {{?I-D.ietf-tls-esni}}.  Once that method has been standardized and widely implemented, it will likely be appropriate to recommend its usage in a future version of this BCP.
 
 
 
 Rationale: SNI supports deployment of multiple TLS-protected virtual servers on a single
       address, and therefore enables fine-grained security for these virtual servers,
       by allowing each one to have its own certificate. However, SNI also leaks the 
-      target domain for a given connection; this information leak is closed by 
-      use of TLS Encrypted Client Hello.
+      target domain for a given connection; this information leak will be closed by 
+      use of TLS Encrypted Client Hello once that method has been standardized.
 
 In order to prevent the attacks described in {{ALPACA}}, a server that does not
 recognize the presented server name SHOULD NOT continue the handshake and
