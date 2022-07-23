@@ -62,7 +62,7 @@ informative:
       'Factoring Large Numbers with the TWIRL Device'
     seriesinfo: 'proc. Crypto 2003, LNCS 2729, 1-26, Springer-Verlag'
 
-  Chung18: DOI.10.1145_3278532.3278543
+  Chung18: DOI.10.1145/3278532.3278543
 
   CRLite: DOI.10.1109/SP.2017.17
 
@@ -455,7 +455,7 @@ using HSTS would in fact weaken overall security (e.g., it can be problematic to
 use HSTS with self-signed certificates, as described in {{Section 11.3 of RFC6797}}).
 Similar technologies exist for non-HTTP application protocols, such as MTA-STS for 
 mail transfer agents {{?RFC8461}} and methods based on DNS-Based Authentication of 
-Named Entities (DANE) {{?RFC6698}} for SMTP {{?DANE-SMTP}} and XMPP {{?RFC7712}}.
+Named Entities (DANE) {{?RFC6698}} for SMTP {{DANE-SMTP}} and XMPP {{?RFC7712}}.
 
 Rationale: Combining unprotected and TLS-protected communication opens the way to SSL Stripping and similar attacks, since an initial part of the communication is not integrity protected and therefore can be manipulated by an attacker whose goal is to keep the communication in the clear. 
 
@@ -1088,6 +1088,7 @@ This revision of the Best Current Practices contains numerous changes, and this 
 on the normative changes.
 
 * High level differences:
+  * Described the expectations from new TLS-incorporating transport protocols and from new application protocols layered on TLS.
   * Clarified items (e.g. renegotiation) that only apply to TLS 1.2.
   * Changed status of TLS 1.0 and 1.1 from SHOULD NOT to MUST NOT.
   * Added TLS 1.3 at a SHOULD level.
