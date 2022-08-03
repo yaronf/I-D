@@ -1087,7 +1087,7 @@ Stephen Farrell,
 Tim Evans,
 Valery Smyslov,
 Viktor Dukhovni
-Warren Kumari
+and Warren Kumari
 for helpful comments and discussions that have shaped this document.
 
 The authors gratefully acknowledge the contribution of Ralph Holz, who was a coauthor of RFC 7525, the previous version of this document.
