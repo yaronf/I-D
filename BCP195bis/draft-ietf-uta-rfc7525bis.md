@@ -722,7 +722,7 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                secrecy") prevents the recovery of information that was encrypted 
                with older session keys, thus limiting how far back in time data
                can be decrypted when an attack is successful.  See {{sec-pfs}}
-               for a detailed discussion.
+               and {{sec-dhe}} for a detailed discussion.
             
 ## Cipher Suites for TLS 1.2
 {: #rec-cipher}
@@ -1012,6 +1012,7 @@ Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forw
       
       
 ## Diffie-Hellman Exponent Reuse
+{: #sec-dhe}
 
 For performance reasons, it is not uncommon for TLS implementations to reuse Diffie-Hellman and Elliptic Curve Diffie-Hellman exponents across multiple connections. Such reuse can result in major security issues:
 
