@@ -747,7 +747,7 @@ Some devices have hardware support for AES-CCM but not AES-GCM, so they are unab
 
 A cipher suite that operates in CBC (cipher block chaining) mode (e.g.,
 TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) SHOULD NOT be used unless the
-encrypt_then_mac extension {{!RFC 7366}} is also successfully negotiated.
+encrypt_then_mac extension {{!RFC7366}} is also successfully negotiated.
 This requirement applies to both client and server implementations.
 
 When using ECDSA signatures for authentication of TLS peers, it is RECOMMENDED that implementations use the NIST curve P-256. In addition, to avoid predictable or repeated nonces (that would allow revealing the long term signing key), it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{!RFC6979}} and in line with the recommendations in {{RFC8446}}.
@@ -1048,36 +1048,48 @@ For the common use cases of public key certificates in TLS, servers SHOULD suppo
 The considerations in this section do not apply to scenarios where the DANE-TLSA resource record {{?RFC6698}} is used to signal to a client which certificate a server considers valid and good to use for TLS connections.
 
 # Acknowledgments
-{: #d1e1127}
+{:unnumbered}
 
 Thanks to
 Alexey Melnikov,
+Alvaro Retana,
 Andrei Popov,
 Ben Kaduk,
 Christian Huitema,
+Corey Bonnell,
+Cullen Jennings,
 Daniel Kahn Gillmor,
 David Benjamin,
 Eric Rescorla,
+{{{Éric Vyncke}}},
 Francesca Palombini,
 Hannes Tschofenig,
 Hubert Kario,
 Ilari Liusvaara,
 John Mattsson,
 John R Levine,
-Julien <contact fullname="Élie" asciiFullname="Elie"/>,
+{{{Julien Élie}}},
+Lars Eggert,
 Leif Johansson,
+Magnus Westerlund,
+Martin Duke,
 Martin Thomson,
 Mohit Sahni,
 Nick Sullivan,
 Nimrod Aviram,
 Paul Wouters,
+Peter Gutmann,
 Rich Salz,
+Robert Sayre,
+Robert Wilton,
+Roman Danyliw,
 Ryan Sleevi,
 Sean Turner,
 Stephen Farrell,
 Tim Evans,
 Valery Smyslov,
 Viktor Dukhovni
+and Warren Kumari
 for helpful comments and discussions that have shaped this document.
 
 The authors gratefully acknowledge the contribution of Ralph Holz, who was a coauthor of RFC 7525, the previous version of this document.
