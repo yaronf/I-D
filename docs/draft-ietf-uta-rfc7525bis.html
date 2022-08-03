@@ -1924,7 +1924,7 @@ Rationale: Forward secrecy (sometimes called "perfect forward
              secrecy") prevents the recovery of information that was encrypted 
              with older session keys, thus limiting how far back in time data
              can be decrypted when an attack is successful.  See <a href="#sec-pfs" class="xref">Section 7.3</a>
-             for a detailed discussion.<a href="#section-4.1-2.7.2" class="pilcrow">¶</a></p>
+             and <a href="#sec-dhe" class="xref">Section 7.4</a> for a detailed discussion.<a href="#section-4.1-2.7.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2215,7 +2215,7 @@ reuse resistant algorithms such as AES-GCM-SIV <span>[<a href="#RFC8452" class="
 <p id="section-7.3-7">Unfortunately, many TLS/DTLS cipher suites were defined that do not feature forward secrecy, e.g., TLS_RSA_WITH_AES_256_CBC_SHA256.  This document therefore advocates strict use of forward-secrecy-only ciphers.<a href="#section-7.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="diffie-hellman-exponent-reuse">
+<div id="sec-dhe">
 <section id="section-7.4">
         <h3 id="name-diffie-hellman-exponent-reu">
 <a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-diffie-hellman-exponent-reu" class="section-name selfRef">Diffie-Hellman Exponent Reuse</a>
