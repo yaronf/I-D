@@ -746,7 +746,7 @@ Typically, in order to prefer these suites, the order of suites needs to be expl
 Some devices have hardware support for AES-CCM but not AES-GCM, so they are unable to follow the foregoing recommendations regarding cipher suites.  There are even devices that do not support public key cryptography at all, but these are out of scope entirely.
 
 A cipher suite that operates in CBC (cipher block chaining) mode (e.g.,
-TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) MUST NOT be used unless the
+TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) SHOULD NOT be used unless the
 encrypt_then_mac extension {{!RFC 7366}} is also successfully negotiated.
 
 When using ECDSA signatures for authentication of TLS peers, it is RECOMMENDED that implementations use the NIST curve P-256. In addition, to avoid predictable or repeated nonces (that would allow revealing the long term signing key), it is RECOMMENDED that implementations implement "deterministic ECDSA" as specified in {{!RFC6979}} and in line with the recommendations in {{RFC8446}}.
