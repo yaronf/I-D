@@ -697,8 +697,8 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
 * Implementations SHOULD NOT negotiate cipher suites based on
                non-ephemeral (static) finite-field Diffie-Hellman key agreement. Similarly, implementations SHOULD NOT negotiate non-ephemeral elliptic curve DH key agreement.
 
-  Rationale: The former cipher suites, which have assigned values prefixed by "TLS_DH_*", have several drawbacks, especially
-               the fact that they do not support forward secrecy. The latter also lack forward secrecy, and are subject to invalid curve attacks {{Jager2015}}.
+  Rationale: The former cipher suites, which have assigned values prefixed by "TLS_DH_\*", have several drawbacks, especially
+               the fact that they do not support forward secrecy. The latter ("TLS_ECDH_\*") also lack forward secrecy, and are subject to invalid curve attacks {{Jager2015}}.
 
 * Implementations MUST support and prefer to negotiate cipher suites 
                offering forward secrecy.  However, TLS 1.2 implementations SHOULD NOT negotiate
@@ -1112,6 +1112,7 @@ on the normative changes.
   * SHOULD-level guidance on AES-GCM nonce generation.
   * SHOULD NOT use (static or ephemeral) finite-field DH key agreement.
   * SHOULD NOT reuse ephemeral finite-field DH keys across multiple connections.
+  * SHOULD NOT use static elliptic curve DH key exchange.
   * 2048-bit DH now a MUST, ECDH minimal curve size is 224, vs. 192 previously.
   * Support for `extended_master_secret` is now a MUST (previously it was a soft recommendation, as the RFC had not been published at the time). Also removed other, more complicated, related mitigations.
   * MUST-level restriction on session ticket validity, replacing a SHOULD.
@@ -1131,6 +1132,10 @@ on the normative changes.
 # Document History
 
 <cref>Note to RFC Editor: please remove before publication.</cref>
+
+## draft-ietf-uta-rfc7525bis-11
+
+* Addressed outstanding comments by Peter Gutmann.
 
 ## draft-ietf-uta-rfc7525bis-10
 
