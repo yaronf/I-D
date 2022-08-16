@@ -264,17 +264,7 @@ informative:
     title: Validation of Elliptic Curve Public Keys
     seriesinfo: 'Public Key Cryptography - PKC 2003'
 
-  Jager2015:
-    author:
-    - ins: T. Jager
-      name: Tibor Jager
-    - ins: J. Schwenk
-      name: Jörg Schwenk
-    - ins: J. Somorovsky
-      name: Juraj Somorovsky
-    date: '2015'
-    title: Practical Invalid Curve Attacks on TLS-ECDH
-    seriesinfo: 'European Symposium on Research in Computer Security (ESORICS) 2015'
+  Jager2015: DOI.10.1007/978-3-319-24174-6_21
 
   SAFECURVES:
     author:
@@ -705,10 +695,10 @@ Cryptographic algorithms weaken over time as cryptanalysis improves: algorithms 
                the fact that they do not support forward secrecy.
   
 * Implementations SHOULD NOT negotiate cipher suites based on
-               non-ephemeral (static) finite-field Diffie-Hellman key agreement.
+               non-ephemeral (static) finite-field Diffie-Hellman key agreement. Similarly, implementations SHOULD NOT negotiate non-ephemeral elliptic curve DH key agreement.
 
-  Rationale: These cipher suites, which have assigned values prefixed by "TLS_DH_*", have several drawbacks, especially
-               the fact that they do not support forward secrecy.
+  Rationale: The former cipher suites, which have assigned values prefixed by "TLS_DH_*", have several drawbacks, especially
+               the fact that they do not support forward secrecy. The latter also lack forward secrecy, and are subject to invalid curve attacks {{Jager2015}}.
 
 * Implementations MUST support and prefer to negotiate cipher suites 
                offering forward secrecy.  However, TLS 1.2 implementations SHOULD NOT negotiate
