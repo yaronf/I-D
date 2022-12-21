@@ -52,17 +52,14 @@ diff-commit: $(draft).txt $(draft)-$(COMMIT).txt
 $(next).md: $(draft).md
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" $< > $@
 
-%.md2: %.md
-	python mk-appendix.py < $< > $@
-
-%.xml: %.md2
+%.xml: %.md
 	$(kramdown-rfc2629) $< > $@
 
 %.txt: %.xml
-	$(xml2rfc) $< $@
+	$(xml2rfc) $< --text
 
 %.html: %.xml
-	$(xml2rfc) --html $< $@
+	$(xml2rfc) --html $<
 
 upload: $(draft).html $(draft).txt
 	python upload-draft.py $(draft).html
